@@ -1,5 +1,5 @@
 import Image from "next/image";
 
 export default function Home() {
-  return <h1 className="text-bold">Hello</h1>;
+  return <section className="text-bold">Find your favorite creators</section>;
 }
