@@ -1,157 +1,228 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  select:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px rgb(255, 255, 255) inset !important;
+  }
 }
 
-body {
-  font-family: Inter;
+@layer components {
+  .chainLogo {
+    @apply h-[38px] pointer-events-none;
+  }
+
+  .gasFees {
+    @apply w-16 mx-0.5 text-xs text-center;
+  }
+
+  .sectionMargin {
+    @apply px-2.5 xs:px-4 lg:px-32 py-12 md:py-16;
+  }
+
+  .heading {
+    @apply font-extrabold text-4xl sm:text-5xl;
+  }
+
+  .body1 {
+    @apply mt-4 mb-4 md:mb-8 text-xl text-center;
+  }
+
+  .link {
+    @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
+  }
+
+  .learnContainer {
+    @apply py-4 border-b-2 border-slate-300;
+  }
+
+  .learnIcon {
+    @apply text-base rounded-full bg-purple text-white p-2 mr-3;
+  }
+
+  .learnLessonWord {
+    @apply text-2xl font-bold leading-none;
+  }
+
+  .learnLessonTitle {
+    @apply mt-1 text-base leading-none;
+  }
+
+  .learnLearnWord {
+    @apply cursor-pointer text-blue-500 font-bold whitespace-nowrap;
+  }
+
+  .learnChip {
+    @apply text-sm xs:text-base leading-tight xs:leading-tight px-4 py-2.5 rounded-md bg-white text-slate-600 border;
+  }
+
+  .whyCard {
+    @apply relative w-[310px] md:w-[286px] h-[320px] py-3 px-3 md:px-5 text-lg leading-snug bg-white rounded-xl text-slate-600 shadow-[0px_2px_4px_2px_rgba(128,128,128,0.3)] sm:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+  }
+
+  .whyImage {
+    @apply absolute bottom-4;
+  }
+
+  .customerChip {
+    @apply w-full text-lg leading-snug;
+  }
+
+  .modalContainer {
+    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
+  }
+
+  .modalHeaderContainer {
+    @apply flex justify-between items-center pt-3 pb-2 border-b-2 mx-2 sm:mx-3 md:mx-4 lg:mx-5;
+  }
+
+  .modalHeaderText {
+    @apply text-2xl leading-tight sm:text-2xl sm:ml-2 font-bold w-full text-center;
+  }
+
+  .modalContentContainer {
+    @apply mt-2 sm:mt-4 sm:mx-4 text-lg leading-snug md:text-base md:leading-snug px-2 sm:px-3 md:px-4 lg:px-5;
+  }
+
+  .modalNumber {
+    @apply mr-2 md:mr-3;
+  }
+
+  .modalCloseButton {
+    @apply text-red-500 font-bold px-3 py-1.5 text-lg rounded-md transition-all duration-300 hover:bg-gray-300;
+  }
+
+  .modalBlackout {
+    @apply opacity-70 fixed inset-0 z-10 bg-black;
+  }
+
+  .savingsCountry {
+    @apply mt-3 text-slate-600 font-bold text-base leading-none;
+  }
+
+  .savingsSavings {
+    @apply mt-3 text-green-600 font-bold text-base leading-none;
+  }
+
+  .savingsConversion {
+    @apply leading-tight text-[10px] text-slate-950;
+  }
+
+  .advantageHeader {
+    @apply font-bold text-lg sm:text-base;
+  }
+
+  .advantageLearnWord {
+    @apply text-blue-300 lg:hover:text-blue-500 active:text-blue-500 cursor-pointer font-normal ml-2 whitespace-nowrap text-base sm:text-sm;
+  }
+
+  .advantageBody {
+    @apply leading-tight text-lg sm:text-base text-slate-300 font-normal;
+  }
+
+  .overviewNumber {
+    @apply w-[44px] h-[44px] lg:w-[40px] lg:h-[40px] text-2xl lg:text-xl font-bold flex justify-center items-center flex-none rounded-full bg-blue-700 text-white;
+  }
+
+  .overviewStepTitle {
+    @apply ml-2 text-2xl lg:text-lg font-bold leading-none lg:leading-none;
+  }
+
+  .overviewStepBody {
+    @apply text-lg leading-snug lg:text-sm lg:leading-tight space-y-2 lg:space-y-1;
+  }
+
+  .labelfont {
+    @apply mt-2 text-lg xs:text-sm font-bold leading-tight;
+  }
+
+  .inputfont {
+    @apply mt-0.5 xs:mt-0 text-lg xs:text-base text-gray-700 px-1 h-[40px] xs:h-[28px] border border-slate-300 rounded-md outline-slate-300 lg:hover:border-blue-400 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+  }
+
+  .inputfontsmall {
+    @apply mt-0.5 xs:mt-0 text-xs xs:text-sm md:text-xs text-gray-700 px-1 h-[40px] xs:h-[28px] border border-slate-300 rounded-md outline-slate-300 lg:hover:border-blue-400 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+  }
+
+  .loginbutton {
+    @apply h-[60px] xs:h-[48px] bg-blue-500 text-2xl xs:text-lg font-bold text-white rounded-lg lg:hover:bg-blue-600;
+  }
+
+  .logininputfont {
+    @apply text-lg xs:text-base mt-0.5 border py-3 xs:py-2 px-2 border-slate-400 rounded-lg outline-slate-300 xs:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms];
+  }
+
+  .loginlabelfont {
+    @apply mt-0.5 border py-3 xs:py-2 px-2 border-slate-400 rounded-lg outline-slate-300 xs:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms];
+  }
+
+  .checkboxMobile {
+    @apply w-6 h-6 xs:w-4 xs:h-4;
+  }
+
+  /* ----UNUSED---- */
+  .startHeader {
+    @apply w-[calc(100%-55px)] xs:w-[250px] flex-none sm:w-auto sm:flex text-2xl leading-tight font-bold;
+  }
+
+  .startStepChip {
+    @apply text-lg sm:text-2xl px-3 py-0.5 mr-2 md:mr-3 font-bold text-white bg-orange-500 rounded-md;
+  }
+
+  .startStart {
+    @apply sm:ml-4 md:ml-8 text-lg bg-blue-500 hover:bg-blue-700 cursor-pointer rounded-md font-bold text-white px-4 py-2;
+  }
+
+  .startTime {
+    @apply absolute md:static md:ml-1 left-[3px] sm:left-[20px] text-center md:text-start w-[68px] bottom-[-15px] text-sm leading-none md:text-base md:leading-none;
+  }
+
+  .startStartNow {
+    @apply bg-blue-500 hover:bg-blue-700 py-1.5 px-3 rounded-md text-white font-bold cursor-pointer;
+  }
+
+  .gradientButton {
+    @apply text-white bg-gradient-to-l from-blue-700 from-20% via-pink-500 to-yellow-300 to-100% rounded-3xl hover:text-blue-400 animate-textTwo;
+  }
+
+  .gradientButtonSmall {
+    @apply text-xs md:text-sm text-white bg-gradient-to-l from-blue-700 from-20% via-pink-500 to-yellow-300 to-100% rounded-lg px-2 py-0 hover:text-black animate-textTwo;
+  }
+
+  .cashoutContainer {
+    @apply min-h-[180px] flex flex-col px-4 py-3 rounded-xl bg-white border border-slate-400;
+  }
 }
 
 @layer utilities {
-  .btn_white {
-    @apply border-white bg-white px-8 py-3 text-green-50;
+  .thinScroll::-webkit-scrollbar-thumb {
+    background-color: rgba(155, 155, 155, 0.5);
+    border-radius: 20px;
+    border: transparent;
   }
-  .btn_white_text {
-    @apply border-white bg-white px-8 py-3 text-gray-90;
+  .thinScroll::-webkit-scrollbar {
+    width: 9px;
   }
-  .btn_green {
-    @apply border-green-50 bg-green-50 px-8 py-5 text-white;
-  }
-  .btn_dark_green {
-    @apply bg-green-90 px-8 py-4 text-white transition-all hover:bg-black;
-  }
-  .btn_dark_green_outline {
-    @apply border-gray-20 bg-green-90 px-8 py-5 text-white;
+  .thinScroll::-webkit-scrollbar-track {
+    background: transparent;
   }
 
-  .max-container {
-    @apply mx-auto max-w-[1440px];
+  .animation-delay-2000 {
+    animation-delay: 2s;
   }
-
-  .padding-container {
-    @apply px-6 lg:px-20 3xl:px-0;
+  .animation-delay-4000 {
+    animation-delay: 4s;
   }
-
-  .flexCenter {
-    @apply flex items-center justify-center;
-  }
-
-  .flexBetween {
-    @apply flex items-center justify-between;
-  }
-
-  .flexStart {
-    @apply flex items-center justify-start;
-  }
-
-  .flexEnd {
-    @apply flex items-center justify-end;
-  }
-
-  /* FONTS */
-  .regular-64 {
-    @apply text-[64px] font-[400] leading-[120%];
-  }
-
-  .regular-40 {
-    @apply text-[40px] font-[400] leading-[120%];
-  }
-
-  .regular-32 {
-    @apply text-[32px] font-[400];
-  }
-
-  .regular-24 {
-    @apply text-[24px] font-[400];
-  }
-
-  .regular-20 {
-    @apply text-[20px] font-[400];
-  }
-
-  .regular-18 {
-    @apply text-[18px] font-[400];
-  }
-
-  .regular-16 {
-    @apply text-[16px] font-[400];
-  }
-
-  .regular-14 {
-    @apply text-[14px] font-[400];
-  }
-
-  .medium-14 {
-    @apply text-[14px] font-[600];
-  }
-
-  .bold-88 {
-    @apply text-[88px] font-[700] leading-[120%];
-  }
-
-  .bold-64 {
-    @apply text-[64px] font-[700] leading-[120%];
-  }
-
-  .bold-52 {
-    @apply text-[52px] font-[700] leading-[120%];
-  }
-
-  .bold-40 {
-    @apply text-[40px] font-[700] leading-[120%];
-  }
-
-  .bold-32 {
-    @apply text-[32px] font-[700] leading-[120%];
-  }
-
-  .bold-20 {
-    @apply text-[20px] font-[700];
-  }
-
-  .bold-18 {
-    @apply text-[18px] font-[700];
-  }
-
-  .bold-16 {
-    @apply text-[16px] font-[700];
-  }
-
-  /* Hero */
-  .hero-map {
-    @apply absolute right-0 top-0 h-screen w-screen bg-pattern-2 bg-cover bg-center md:-right-28 xl:-top-60;
-  }
-
-  /* Camp */
-  .camp-quote {
-    @apply absolute -right-6 bottom-4 w-[140px] lg:bottom-10 xl:-right-8 xl:w-[186px] 3xl:right-0;
-  }
-
-  /* Feature */
-  .feature-phone {
-    @apply absolute top-[13%] z-10 hidden max-w-[1500px] rotate-[15deg] md:-left-16 lg:flex  3xl:left-20;
-  }
-
-  /* Get App */
-  .get-app {
-    @apply max-container relative flex w-full  flex-col justify-between gap-32 overflow-hidden bg-green-90 bg-pattern bg-cover bg-center bg-no-repeat px-6 py-12 text-white sm:flex-row sm:gap-12 sm:py-24 lg:px-20 xl:max-h-[598px] 2xl:rounded-5xl;
-  }
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }

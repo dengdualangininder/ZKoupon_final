@@ -1,25 +1,14 @@
-"use client";
-import { useState, useEffect } from "react";
-import Pusher from "pusher-js";
-import Navbar from "./_components/Navbar";
-import Hero from "./_components/Hero";
-import Advantage from "./_components/Advantage";
-import Overview from "./_components/Overview";
-// import Why from "../components/Why.jsx";
-// import Learn from "../components/Learn.jsx";
-// import Contact from "../components/Contact.jsx";
-// import Footer from "../components/Footer.jsx";
+import React, { useEffect } from "react";
+import Navbar from "../components/Navbar.jsx";
+import Hero from "../components/Hero.jsx";
+import Advantage from "../components/Advantage.jsx";
+import Overview from "../components/Overview.jsx";
+import Why from "../components/Why.jsx";
+import Learn from "../components/Learn.jsx";
+import Contact from "../components/Contact.jsx";
+import Footer from "../components/Footer.jsx";
 
 const Home = () => {
-  // useEffect(() => {
-  //   const pusher = new Pusher("a29a22e46d485f5f2038", { cluster: "ap3" });
-  //   const channel = pusher.subscribe("my-channel");
-  //   channel.bind("my-event", (data: any) => {
-  //     alert(JSON.stringify(data));
-  //     console.log("pusher");
-  //   });
-  // }, []);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -48,12 +37,30 @@ const Home = () => {
     document.querySelectorAll("div[show='slide']").forEach((el) => observerSlide.observe(el));
   }, []);
 
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  window.onscroll = () => {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      document.getElementById("navbar").classList.add("h-[52px]", "bg-slate-100/70", "border-b");
+      document.getElementById("navbar").classList.remove("h-[92px]");
+      document.getElementById("navlogo").classList.add("h-[32px]", "lg:h-[40px]");
+      document.getElementById("navlogo").classList.remove("h-[60px]", "lg:h-[68px]");
+      document.getElementById("start").classList.remove("translate-y-[530px]", "scale-125");
+    } else {
+      document.getElementById("navbar").classList.add("h-[92px]");
+      document.getElementById("navbar").classList.remove("h-[52px]", "bg-slate-100/70", "border-b");
+      document.getElementById("navlogo").classList.add("h-[60px]", "lg:h-[68px]");
+      document.getElementById("navlogo").classList.remove("h-[32px]", "lg:h-[40px]");
+      document.getElementById("start").classList.add("translate-y-[530px]", "scale-125");
+    }
+  };
+
   return (
     <div className="overflow-hidden font-nunito">
       <div className="h-screen bg-cover bg-[url('/background.svg')] w-full flex justify-center">
-        <Navbar />
+        <Navbar isMobile={isMobile} className="" />
         <div className="w-full xl:max-w-[1440px] flex items-center justify-center">
-          <Hero />
+          <Hero className="" />
         </div>
       </div>
 
@@ -69,7 +76,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* <div show="yes" className="bg-cover bg-bggrayone w-full flex justify-center text-lg opacity-0 transition-all duration-2000">
+      <div show="yes" className="bg-cover bg-bggrayone w-full flex justify-center text-lg opacity-0 transition-all duration-2000">
         <div className="w-full xl:max-w-[1440px]">
           <Why />
         </div>
@@ -91,7 +98,7 @@ const Home = () => {
         <div className="w-full xl:max-w-[1440px]">
           <Footer />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
