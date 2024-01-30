@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { data, CEXdata, abb2full } from "../../_utils/constants";
+import { countryData, CEXdata, abb2full } from "../../_utils/constants";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -15,24 +15,23 @@ const Signup = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
   const [show, setShow] = useState(false);
-  const [dataIndex, setDataIndex] = useState<number | null>();
+  const [country, setCountry] = useState("");
 
   // const navigate = useNavigate();
   const router = useRouter();
 
   useEffect(() => {
     const getCountry = async () => {
-      let res = await axios.get("https://api.country.is");
-      let country = abb2full[res.data.country] ?? "United States";
-      setDataIndex(data.findIndex((i: any) => i.country === country));
+      let data: { ip: string; country: string } = (await axios.get("https://api.country.is")).data;
+      setCountry(abb2full[data.country] ?? "United States");
     };
     getCountry();
   }, []);
 
-  const submit = async (e) => {
+  const submit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const merchantEmail = document.getElementById("signupMerchantEmail").value;
-    const password = document.getElementById("signupPassword").value;
+    const merchantEmail = (document.getElementById("signupMerchantEmail") as HTMLInputElement)?.value;
+    const password = (document.getElementById("signupPassword") as HTMLInputElement)?.value;
     if (merchantEmail.includes("@") && merchantEmail.split("@")[1].includes(".")) {
       if (/^(?!.* )(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$&%^*-]).{8,}$/.test(password)) {
         setIsWaiting(true);
@@ -43,12 +42,12 @@ const Signup = () => {
               merchantEmail: merchantEmail,
               password: password,
               paymentSettings: {
-                merchantCountry: data[dataIndex].country,
-                merchantCurrency: data[dataIndex].currency,
-                merchantNetworks: CEXdata[data[dataIndex].CEXes[0]].networks,
-                merchantTokens: CEXdata[data[dataIndex].CEXes[0]].tokens,
+                merchantCountry: country,
+                merchantCurrency: countryData[country].currency,
+                merchantNetworks: countryData[country].networks,
+                merchantTokens: countryData[country].tokens,
               },
-              cashoutSettings: { CEX: data[dataIndex].CEXes[0] },
+              cashoutSettings: { CEX: countryData[country].CEXes[0] },
             },
             { withCredentials: true }
           )

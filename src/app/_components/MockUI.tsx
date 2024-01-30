@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import axios from "axios";
 import Lottie from "lottie-react";
 // import utils
-import { merchantType2data } from "../_utils/constants/constants";
+import { merchantType2data } from "../_utils/constants";
 import SpinningCircleGray from "../_utils/components/SpinningCircleGray";
 import circleCheck from "../_utils/lotties/circleCheck.json";
 // import images
-import { phone, polygonSvg, bscSvg, arbSvg, opSvg, gnosisSvg, avaxSvg, usdcSvg, usdtSvg, eurtPng, eurcSvg, baseSvg } from "../../public/index";
+import { polygonSvg, bscSvg, arbSvg, opSvg, gnosisSvg, avaxSvg, usdcSvg, usdtSvg, eurtPng, eurcSvg, baseSvg } from "@/public/index";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -20,23 +21,32 @@ const MockUI = ({
   merchantType,
   merchantWebsite,
   merchantFields,
-  selectedNetwork,
-  setSelectedNetwork,
   currencyAmount,
   setCurrencyAmount,
   selectedToken,
   setSelectedToken,
+}: {
+  merchantName: string;
+  merchantCurrency: string;
+  merchantNetworks: string[];
+  merchantTokens: string[];
+  paymentType: string;
+  merchantType: string;
+  merchantWebsite: string;
+  merchantFields: string[];
+  currencyAmount: number;
+  setCurrencyAmount: React.Dispatch<React.SetStateAction<number>>;
+  selectedToken: string;
+  setSelectedToken: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const [u2local, setu2local] = useState({
+  const [u2local, setu2local] = useState<{ [key: string]: number }>({
     USD: 1,
     USDC: 1,
     USDT: 1,
-    EURC: 1,
-    EURT: 1,
   });
   const [payModal, setPayModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | boolean>(false);
   const [isSendingComplete, setIsSendingComplete] = useState(false);
 
   useEffect(() => {
@@ -44,7 +54,14 @@ const MockUI = ({
     getRates(merchantCurrency);
   }, [merchantCurrency]);
 
-  const allNetworksData = {
+  type NetworksData = {
+    [key: string]: {
+      img: any;
+      id: string;
+      gas: number;
+    };
+  };
+  const allNetworksData: NetworksData = {
     Polygon: { img: polygonSvg, id: "Polygon", gas: 0.01 },
     Base: { img: baseSvg, id: "Base", gas: 0.25 },
     BNB: { img: bscSvg, id: "BNB", gas: 0.08 },
@@ -52,20 +69,26 @@ const MockUI = ({
     Arbitrum: { img: arbSvg, id: "Arbitrum", gas: 0.11 },
     Avalanche: { img: avaxSvg, id: "Avalanche", gas: 0.02 },
   };
-  const allTokensData = {
+
+  type TokensData = {
+    [key: string]: {
+      img: any;
+      id: string;
+      balance: number;
+    };
+  };
+  const allTokensData: TokensData = {
     USDC: { img: usdcSvg, id: "USDC", balance: 124.23 },
     USDT: { img: usdtSvg, id: "USDT", balance: 23.84 },
-    EURC: { img: eurcSvg, id: "EURC", balance: 273.31 },
-    EURT: { img: eurtPng, id: "EURT", balance: 56.23 },
   };
 
-  const onChangeCurrencyAmount = (e) => {
-    setCurrencyAmount(e.target.value);
+  const onChangeCurrencyAmount = (e: React.FormEvent<HTMLInputElement>) => {
+    setCurrencyAmount(Number(e.currentTarget.value));
   };
 
-  const handleOnTokenClick = (e) => {
-    document.querySelectorAll("[category = token]").forEach((element) => {
-      if (e.target.id === element.id) {
+  const handleOnTokenClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    document.querySelectorAll("[data-category = token]").forEach((element) => {
+      if (e.currentTarget.id === element.id) {
         element.classList.remove("opacity-50");
         element.classList.remove("border-gray-300");
         element.classList.add("border-blue-500");
@@ -77,33 +100,29 @@ const MockUI = ({
         element.classList.add("border-gray-300");
       }
     });
-    setSelectedToken(e.target.id);
+    setSelectedToken(e.currentTarget.id);
   };
 
-  const getRates = async (merchantCurrency) => {
+  const getRates = async (merchantCurrency: string) => {
     console.log("requesting rates api");
-    let USDres = await axios.get(
-      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-    );
+    let USDres = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${process.env.GOOGLE_API_KEY}`);
     let USDTres = await axios.get(
-      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
     );
     let USDCres = await axios.get(
-      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
     );
     let sheetCountryOrder = "twd, jpy, krw, hkd, sgd, php, thb, idr, myr, vnd, eur, gbp, cad, aud, usd".split(", ").map((i) => i.toUpperCase());
     let sheetIndex = sheetCountryOrder.findIndex((i) => i == merchantCurrency);
     setu2local({
-      USD: Number(USDres.data.values[0][sheetIndex * 2]).toPrecision(4),
-      USDC: Number(USDCres.data.values[0][sheetIndex * 2]).toPrecision(4),
-      USDT: Number(USDTres.data.values[0][sheetIndex * 2]).toPrecision(4),
-      EURC: 1,
-      EURT: 1,
+      USD: Number(USDres.data.values[0][sheetIndex * 2].toPrecision(4)),
+      USDC: Number(USDCres.data.values[0][sheetIndex * 2].toPrecision(4)),
+      USDT: Number(USDTres.data.values[0][sheetIndex * 2].toPrecision(4)),
     });
   };
 
   const send = () => {
-    if ((currencyAmount / u2local[selectedToken]).toFixed(2) > allTokensData[selectedToken]["balance"]) {
+    if (Number((currencyAmount / u2local[selectedToken]).toFixed(2)) > allTokensData[selectedToken]["balance"]) {
       setErrorModal(true);
       setErrorMsg("Insufficient balance");
     } else if (!currencyAmount) {
@@ -118,18 +137,18 @@ const MockUI = ({
   };
 
   const clickDown = () => {
-    document.getElementById("mockModalBg").classList.remove("bg-white");
-    document.getElementById("mockModalBg").classList.add("bg-gradient-to-br", "from-indigo-200", "via-red-200", "to-yellow-100");
+    document.getElementById("mockModalBg")?.classList.remove("bg-white");
+    document.getElementById("mockModalBg")?.classList.add("bg-gradient-to-br", "from-indigo-200", "via-red-200", "to-yellow-100");
   };
   const clickUp = () => {
-    document.getElementById("mockModalBg").classList.remove("bg-gradient-to-br", "from-indigo-200", "via-red-200", "to-yellow-100");
-    document.getElementById("mockModalBg").classList.add("bg-white");
+    document.getElementById("mockModalBg")?.classList.remove("bg-gradient-to-br", "from-indigo-200", "via-red-200", "to-yellow-100");
+    document.getElementById("mockModalBg")?.classList.add("bg-white");
   };
 
   return (
     <div className="w-[260px] relative flex justify-center">
-      <img src={phone} className="w-full" />
-      <div className="w-[226px] h-[420px] px-1 pb-2 absolute left-[17px] top-[40px] flex rounded-b-2xl text-black text-xs font-bold overflow-x-hidden overflow-y-auto thinScroll">
+      <Image src="/phone.png" alt="phone" fill />
+      <div className="absolute left-[17px] top-[40px] w-[226px] h-[420px] px-1 pb-2 flex rounded-b-2xl text-black text-xs font-bold overflow-x-hidden overflow-y-auto thinScroll">
         <div className="w-full flex flex-col my-auto items-center">
           {/*---top fields---*/}
           <div className="w-full flex flex-col justify-center">
@@ -232,7 +251,7 @@ const MockUI = ({
                   <div key={index} className="flex flex-col items-center">
                     <div
                       id={allNetworksData[network].id}
-                      category="network"
+                      data-category="network"
                       className="h-[40px] w-[42px] flex flex-col justify-center items-center pt-1 pb-0.5 text-[10px] text-center border rounded-[4px] border-slate-300 cursor-pointer"
                     >
                       <img className="flex-none h-[16px]" src={allNetworksData[network].img} />
@@ -253,7 +272,7 @@ const MockUI = ({
                     className={`w-[180px] flex justify-between items-center px-2 text-base font-bold border rounded-[4px] border-slate-300 cursor-pointer`}
                     id={allTokensData[token].id}
                     key={index}
-                    category="token"
+                    data-category="token"
                     onClick={handleOnTokenClick}
                   >
                     <div className="h-[24px] flex items-center pointer-events-none">
@@ -272,7 +291,7 @@ const MockUI = ({
             {/*---FX rates + savings---*/}
             <div className="w-full flex flex-col">
               {/*---fx rates---*/}
-              {merchantCurrency === "USD" || selectedToken === "EURC" || selectedToken === "EURT" ? null : (
+              {merchantCurrency === "USD" ? null : (
                 <div className="w-full flex font-normal justify-center text-[8px] leading-none tracking-tighter font-sans">
                   <div className="w-1/2 flex flex-col items-center text-center">
                     <div>CEX Rate</div>
@@ -343,7 +362,7 @@ const MockUI = ({
               <button
                 onClick={() => {
                   setErrorModal(false);
-                  document.getElementById("mockCurrencyAmount").value = "";
+                  (document.getElementById("mockCurrencyAmount") as HTMLInputElement).value = "";
                   setCurrencyAmount(0);
                 }}
                 className="w-[140px] h-[36px] text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-300 rounded-[3px] tracking-wide"
@@ -373,14 +392,14 @@ const MockUI = ({
                   </div>
                   <div className="text-xs">sent to</div>
                   <div className="text-base font-bold">{merchantName}</div>
-                  {paymentType === "onsite" ? null : <div className="mt-4 text-xs">An email with the purchase details has been sent to you.</div>}
+                  {paymentType === "online" ? <div className="mt-4 text-xs">An email with the purchase details has been sent to you.</div> : null}
                 </div>
                 {/*---close---*/}
                 <button
                   onClick={() => {
                     setPayModal(false);
                     setIsSendingComplete(false);
-                    document.getElementById("mockCurrencyAmount").value = "";
+                    (document.getElementById("mockCurrencyAmount") as HTMLInputElement).value = "";
                     setCurrencyAmount(0);
                   }}
                   className="w-[160px] h-[36px] text-sm text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-300 font-bold rounded-[3px]"
@@ -427,7 +446,7 @@ const MockUI = ({
                   onClick={(e) => {
                     setPayModal(false);
                     setIsSendingComplete(false);
-                    document.getElementById("mockCurrencyAmount").value = "";
+                    (document.getElementById("mockCurrencyAmount") as HTMLInputElement).value = "";
                     setCurrencyAmount(0);
                   }}
                   className="mb-1 w-[160px] h-[36px] text-sm text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-300 font-bold rounded-[3px]"

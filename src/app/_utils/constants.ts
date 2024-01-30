@@ -1,21 +1,27 @@
+import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDollar, faUserTag, faCartArrowDown, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+// import { config } from '@fortawesome/fontawesome-svg-core'
+// config.autoAddCss = false
+
 // import placard components
-import PlacardCoinbaseCashback from "../components/PlacardCoinbaseCashback";
-import PlacardCoinbaseUSDCCashback from "../components/PlacardCoinbaseUSDCCashback";
-import PlacardKrakenCashback from "../components/PlacardKrakenCashback";
-import PlacardMAXCashback from "../components/PlacardMAXCashback";
-import PlacardBitoCashback from "../components/PlacardBitoCashback";
+import PlacardCoinbaseCashback from "./components/PlacardCoinbaseCashback";
+import PlacardCoinbaseUSDCCashback from "./components/PlacardCoinbaseUSDCCashback";
+import PlacardKrakenCashback from "./components/PlacardKrakenCashback";
+import PlacardMAXCashback from "./components/PlacardMAXCashback";
+import PlacardBitoCashback from "./components/PlacardBitoCashback";
 
 // import placard SVGs
-import placardCoinbaseCashback from "../../../public/placardCoinbaseCashback.svg";
-import placardCoinbaseUSDCCashback from "../../../public/placardCoinbaseUSDCCashback.svg";
-import placardKrakenCashback from "../../../public/placardKrakenCashback.svg";
-import placardMAXCashback from "../../../public/placardMAXCashback.svg";
-import placardBitoCashback from "../../../public/placardBitoCashback.svg";
+import placardCoinbaseCashback from "@/public/placardCoinbaseCashback.svg";
+import placardCoinbaseUSDCCashback from "@/public/placardCoinbaseUSDCCashback.svg";
+import placardKrakenCashback from "@/public/placardKrakenCashback.svg";
+import placardMAXCashback from "@/public/placardMAXCashback.svg";
+import placardBitoCashback from "@/public/placardBitoCashback.svg";
 
 export const fieldsList = ["email", "item", "date", "daterange", "count", "sku", "shipping", "time"]; // delete??
 export const activeCountries = ["Euro countries (EUR)", "United States (USD)", "Taiwan (TWD)"];
 
-export const countryData = {
+export const countryData: any = {
   Taiwan: {
     currency: "TWD",
     CEXes: ["MAX Exchange", "BitoPro Exchange"],
@@ -229,9 +235,18 @@ export const CEXdata = {
   "Coins.ph": { networkTokens: ["Polygon-USDC", "Polygon-USDT", "BNB-USDT", "Arbitrum-USDT"], withdrawalFee: { ACH: 0 }, tradingFee: 0 },
 };
 
-import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDollar, faUserTag, faCartArrowDown, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-export const merchantType2data = {
-  // inperson: { text: "Physical Stores", merchantFields: [], merchantName: "A Store in" },
+type MerchantType2data = {
+  [key: string]: {
+    text: string;
+    subtext?: string;
+    merchantFields: string[];
+    merchantName: string;
+    itemlabel: string;
+    fa: IconDefinition;
+    tooltip?: string;
+  };
+};
+export const merchantType2data: MerchantType2data = {
   onlinephysical: {
     text: "Online Stores",
     subtext: "physical items",
@@ -289,7 +304,7 @@ export const merchantType2data = {
     merchantName: "A Concert in",
     itemlabel: "Ticket Name",
     fa: faTicket,
-    tootip: "Enter the name of the ticket from the official website",
+    tooltip: "Enter the name of the ticket from the official website",
   },
   donations: {
     text: "Donations",
@@ -300,7 +315,7 @@ export const merchantType2data = {
   },
 };
 
-export const list2string = (list) => {
+export const list2string = (list: string[]) => {
   let text;
   if (list.length === 1) {
     text = list[0];
@@ -314,13 +329,13 @@ export const list2string = (list) => {
   return text;
 };
 
-export const getSafe = (object, errorReturn) => {
-  try {
-    return object;
-  } catch (e) {
-    return errorReturn;
-  }
-};
+// export const getSafe = (object, errorReturn) => {
+//   try {
+//     return object;
+//   } catch (e) {
+//     return errorReturn;
+//   }
+// };
 
 export const currencyList = [
   "Select",
@@ -443,7 +458,7 @@ export const countryList = [
   "USA",
 ];
 
-export const euroCountries = {
+export const euroCountries: any = {
   AD: "Andorra",
   AT: "Austria",
   BE: "Belgium",
@@ -471,7 +486,7 @@ export const euroCountries = {
   VA: "Vatican City",
 };
 
-export const abb2full = {
+export const abb2full: any = {
   US: "United States",
   TW: "Taiwan",
   AD: "Euro countries",

@@ -32,20 +32,20 @@ const Home = () => {
       },
       { rootMargin: "-100px" }
     );
-    document.querySelectorAll("div[show='yes']").forEach((el) => observer.observe(el));
+    document.querySelectorAll("div[data-show='yes']").forEach((el) => observer.observe(el));
 
     const observerSlide = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            document.querySelectorAll("div[show='step']").forEach((el) => el.classList.remove("translate-x-[1500px]"));
+            document.querySelectorAll("div[data-show='step']").forEach((el) => el.classList.remove("translate-x-[1500px]"));
             observerSlide.unobserve(entry.target);
           }
         });
       },
       { rootMargin: "-100px" }
     );
-    document.querySelectorAll("div[show='slide']").forEach((el) => observerSlide.observe(el));
+    document.querySelectorAll("div[data-show='slide']").forEach((el) => observerSlide.observe(el));
   }, []);
 
   return (
@@ -63,25 +63,25 @@ const Home = () => {
         </div>
       </div>
 
-      <div id="advantageEl" show="yes" className="opacity-0 bg-cover bg-darkblue w-full flex justify-center transition-all duration-1500">
+      <div id="advantageEl" data-show="yes" className="opacity-0 bg-cover bg-darkblue w-full flex justify-center transition-all duration-1500">
         <div className="w-full xl:max-w-[1440px]">
           <Advantage />
         </div>
       </div>
 
-      {/* <div show="yes" className="bg-cover bg-bggrayone w-full flex justify-center text-lg opacity-0 transition-all duration-2000">
+      {/* <div data-show="yes" className="bg-cover bg-bggrayone w-full flex justify-center text-lg opacity-0 transition-all duration-2000">
         <div className="w-full xl:max-w-[1440px]">
           <Why />
         </div>
       </div>
 
-      <div show="yes" className="bg-white flex w-full justify-center opacity-0 transition-all duration-1000">
+      <div data-show="yes" className="bg-white flex w-full justify-center opacity-0 transition-all duration-1000">
         <div className="w-full xl:max-w-[1440px]">
           <Learn />
         </div>
       </div>
 
-      <div show="yes" className="bg-cover bg-[url('/src/assets/background.svg')] w-full flex justify-center opacity-0 transition-all duration-1000">
+      <div data-show="yes" className="bg-cover bg-[url('/src/assets/background.svg')] w-full flex justify-center opacity-0 transition-all duration-1000">
         <div className="w-full xl:max-w-[1440px]">
           <Contact />
         </div>

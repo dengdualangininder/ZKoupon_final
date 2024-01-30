@@ -6,7 +6,7 @@ import { QRCodeSVG } from "qrcode.react";
 // import components
 import MockUI from "./MockUI";
 // import constants
-import { countryData, CEXdata, activeCountries, merchantType2data } from "../_utils/constants/constants";
+import { countryData, CEXdata, activeCountries, merchantType2data } from "../_utils/constants";
 // import images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,17 +22,17 @@ const Overview = () => {
   const [merchantCountry, setMerchantCountry] = useState("Europe");
   const [merchantWebsite, setMerchantWebsite] = useState("https://www.stablecoinmap.com");
   const [paymentType, setPaymentType] = useState("onsite");
-  const [merchantFields, setMerchantFields] = useState([]);
-  const [merchantNetworks, setMerchantNetworks] = useState(["Polygon", "BNB", "Optimism", "Arbitrum", "Avalanche"]);
-  const [merchantTokens, setMerchantTokens] = useState(["USDC", "USDT"]);
+  const [merchantFields, setMerchantFields] = useState<string[]>([]);
+  const [merchantNetworks, setMerchantNetworks] = useState<string[]>(["Polygon", "BNB", "Optimism", "Arbitrum", "Avalanche"]);
+  const [merchantTokens, setMerchantTokens] = useState<string[]>(["USDC", "USDT"]);
   const [selectedNetwork, setSelectedNetwork] = useState("USDC");
   const [selectedToken, setSelectedToken] = useState("USDC");
 
   const router = useRouter();
 
-  const onChangeCurrency = () => {
-    // dataIndex
-    let countryCurrencyString = document.getElementById("overviewCountryCurrency").value;
+  const onChangeCurrency = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.currentTarget.value);
+    let countryCurrencyString = e.currentTarget.value;
     let merchantCountryTemp = countryCurrencyString.split(" (")[0];
     setMerchantCountry(merchantCountryTemp);
     setMerchantCurrency(countryCurrencyString.split(" (")[1].replace(")", ""));
@@ -43,11 +43,11 @@ const Overview = () => {
     );
   };
 
-  const onClickMerchantType = (e) => {
+  const onClickMerchantType = (e: React.MouseEvent<HTMLElement>) => {
     let merchantTypeTemp = e.currentTarget.id.replace("overview", "");
     setMerchantType(merchantTypeTemp);
     // highlights selected item to blue
-    document.querySelectorAll("div[category='merchantType").forEach((i) => {
+    document.querySelectorAll("div[data-category='merchantType").forEach((i) => {
       if (e.currentTarget.id === i.id) {
         i.classList.add("border-gray-500");
         i.classList.remove("border-transparent");
@@ -71,7 +71,7 @@ const Overview = () => {
   return (
     <div id="overviewEl" className="px-2.5 xs:px-4 lg:px-0 py-8 md:py-12 text-gray-800">
       {/*---TITLE + BUSINESS TYPES---*/}
-      <div show="yes" className="flex flex-col items-center opacity-0 transition-all duration-1000">
+      <div data-show="yes" className="flex flex-col items-center opacity-0 transition-all duration-1000">
         {/*---title---*/}
         <div className="font-extrabold text-3xl xs:text-5xl text-blue-700 xs:mb-1">How It Works</div>
         {/*---your currency + your business type---*/}
@@ -82,7 +82,7 @@ const Overview = () => {
               <select
                 id="overviewCountryCurrency"
                 className="px-1 text-lg lg:text-base border-gray-300 rounded-lg outline-none cursor-pointer border-transparent"
-                onChange={(e) => onChangeCurrency(e)}
+                onChange={onChangeCurrency}
               >
                 {activeCountries.map((i, index) => (
                   <option key={index} className="bg-white">
@@ -95,7 +95,7 @@ const Overview = () => {
               <div
                 onClick={onClickMerchantType}
                 id="overviewinstore"
-                category="merchantType"
+                data-category="merchantType"
                 className={`flex flex-col items-center cursor-pointer rounded-[4px] py-2 px-2 border border-gray-500 lg:hover:border-gray-500 transition-transform duration-300 backface-hidden relative`}
               >
                 <div>
@@ -111,7 +111,7 @@ const Overview = () => {
                 <div
                   onClick={onClickMerchantType}
                   id={`overview${i}`}
-                  category="merchantType"
+                  data-category="merchantType"
                   key={index}
                   className="relative flex flex-col items-center cursor-pointer rounded-[4px] py-2 px-2 border border-transparent lg:hover:border-gray-500 transition-transform duration-300 backface-hidden"
                 >
@@ -130,9 +130,9 @@ const Overview = () => {
       </div>
 
       {/*---PAYMENT FLOW CHART---*/}
-      <div show="slide" className="mt-6 flex flex-col items-center lg:flex-row lg:items-start lg:justify-center space-y-8 lg:space-y-0 lg:space-x-12">
+      <div data-show="slide" className="mt-6 flex flex-col items-center lg:flex-row lg:items-start lg:justify-center space-y-8 lg:space-y-0 lg:space-x-12">
         {/*---step 1---*/}
-        <div show="step" className="w-[356px] lg:w-[198px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out">
+        <div data-show="step" className="w-[356px] lg:w-[198px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out">
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">1</div>
@@ -188,7 +188,7 @@ const Overview = () => {
         </div>
 
         {/*---Step 2---*/}
-        <div show="step" className="w-[356px] lg:w-[260px] flex flex-col items-center relative translate-x-[1500px] transition-all duration-1500 ease-out delay-200">
+        <div data-show="step" className="w-[356px] lg:w-[260px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-200">
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">2</div>
@@ -294,7 +294,7 @@ const Overview = () => {
         </div>
 
         {/*---step 3---*/}
-        <div show="step" className="w-[356px] lg:w-[220px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-400">
+        <div data-show="step" className="w-[356px] lg:w-[220px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-400">
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">3</div>
@@ -354,7 +354,7 @@ const Overview = () => {
         </div>
 
         {/*---step 4---*/}
-        <div show="step" className="w-[354px] lg:w-[320px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-600">
+        <div data-show="step" className="w-[354px] lg:w-[320px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-600">
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">4</div>

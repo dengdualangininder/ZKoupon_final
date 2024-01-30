@@ -7,25 +7,25 @@ import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [isStandaloneiOS, setIsStandaloneiOS] = useState<boolean | undefined>(false); // undefined on desktop
-  const [isStandaloneChrome, setIsStandaloneChrome] = useState<boolean>(false);
+  // const [isStandaloneiOS, setIsStandaloneiOS] = useState<boolean | undefined>(false); // undefined on desktop
+  const [isStandalone, setIsStandalone] = useState<boolean>(false);
   const [isScrollTop, setIsScrollTop] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const ref = useRef<any>();
+  const ref = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
   useEffect(() => {
     // detect mobile or desktop
     setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent));
-    console.log(window.navigator.userAgent);
+    console.log("USERAGENT", window.navigator.userAgent);
 
     // detect standalone or not
-    setIsStandaloneiOS(window.navigator.standalone);
-    setIsStandaloneChrome(window.matchMedia("(display-mode: standalone)").matches);
-    console.log(window.navigator.standalone);
-    console.log(window.matchMedia("(display-mode: standalone)").matches);
+    setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
+    console.log("Is standalone?", window.matchMedia("(display-mode: standalone)").matches);
+    // setIsStandaloneiOS((window.navigator as any).standalone ?? false);
+    // console.log(window.navigator.standalone);
   }, []);
 
   useEffect(() => {
@@ -41,12 +41,12 @@ const Navbar = () => {
 
   useEffect(() => {
     if (isMobile) {
-      const checkClickedOutside = (e: React.SyntheticEvent) => {
-        if (isMenuOpen && !ref.current.contains(e.target)) {
+      const checkClickedOutside = (e: React.MouseEvent) => {
+        if (isMenuOpen && !ref.current?.contains(e.target as HTMLElement)) {
           setIsMenuOpen(false);
         }
       };
-      document.addEventListener("mousedown", checkClickedOutside);
+      document.addEventListener("click", () => checkClickedOutside);
     }
   }, [isMenuOpen]);
 
@@ -104,13 +104,13 @@ const Navbar = () => {
       <div className="absolute left-0 md:left-auto md:relative w-full md:w-auto flex justify-center md:justify-start space-x-1">
         <button
           id="navLogin"
-          onClick={() => (isMobile && !isStandaloneiOS ? router.push("/app") : router.push("/login"))}
+          onClick={() => (isMobile && !isStandalone ? router.push("/app") : router.push("/login"))}
           className="hidden md:block h-[40px] w-[100px] border border-blue-500 text-base font-bold text-blue-500 rounded-[4px] hover:border-blue-600 xs:hover:text-blue-600"
         >
           Log In
         </button>
         <button
-          onClick={() => (isMobile && !isStandaloneiOS ? router.push("/app") : router.push("/signup"))}
+          onClick={() => (isMobile && !isStandalone ? router.push("/app") : router.push("/signup"))}
           className={`${
             isScrollTop ? "scale-125 translate-y-[530px]" : ""
           } flex flex-col justify-center items-center md:translate-y-0 text-white md:transform-none h-[44px] md:h-[40px] w-[132px] md:w-[110px] rounded-full md:rounded-[4px] bg-blue-500 xs:hover:bg-blue-600 transition-transform duration-1000 hover:animate-textTwo`}
@@ -143,7 +143,7 @@ const Navbar = () => {
                   {navLink.title}
                 </div>
               ))}
-              <div onClick={() => (isMobile && !isStandaloneiOS ? router.push("/app") : router.push("/login"))} className="font-bold text-slate-700 cursor-pointer text-2xl">
+              <div onClick={() => (isMobile && !isStandalone ? router.push("/app") : router.push("/login"))} className="font-bold text-slate-700 cursor-pointer text-2xl">
                 Log In
               </div>
             </div>
