@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import Pusher from "pusher-js";
+import { useEffect } from "react";
+// import Pusher from "pusher-js";
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
 import Advantage from "./_components/Advantage";

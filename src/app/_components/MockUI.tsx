@@ -7,7 +7,7 @@ import { merchantType2data } from "../_utils/constants";
 import SpinningCircleGray from "../_utils/components/SpinningCircleGray";
 import circleCheck from "../_utils/lotties/circleCheck.json";
 // import images
-import { polygonSvg, bscSvg, arbSvg, opSvg, gnosisSvg, avaxSvg, usdcSvg, usdtSvg, eurtPng, eurcSvg, baseSvg } from "@/public/index";
+import { polygonSvg, bscSvg, arbSvg, opSvg, avaxSvg, usdcSvg, usdtSvg, baseSvg } from "@/public/index";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
