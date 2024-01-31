@@ -86,6 +86,7 @@ const Navbar = () => {
         <div className={`${isScrollTop ? "w-[120px] lg:w-[160px]" : "w-[80px] lg:w-[80px]"} h-full relative transition-all duration-1000`}>
           <Image src="/logo.svg" alt="navLogo" fill />
         </div>
+        <div>{isStandalone ? "true" : "false"}</div>
       </div>
       {/*---menu links---*/}
       <div className="hidden md:flex space-x-4 lg:space-x-12">
