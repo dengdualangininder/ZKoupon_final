@@ -6,13 +6,11 @@ import { QRCodeSVG } from "qrcode.react";
 // import components
 import MockUI from "./MockUI";
 // import constants
-import { countryData, CEXdata, activeCountries, merchantType2data } from "../_utils/constants";
-// import images
+import { countryData, activeCountries, merchantType2data } from "../_utils/constants";
+// import font awesome
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShop } from "@fortawesome/free-solid-svg-icons";
-// import overviewTrade from "../assets/overviewTrade.png";
-// import { useNavigate } from "react-router-dom";
 
 const Overview = () => {
   const [merchantType, setMerchantType] = useState("instore");
@@ -31,7 +29,6 @@ const Overview = () => {
   const router = useRouter();
 
   const onChangeCurrency = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.currentTarget.value);
     let countryCurrencyString = e.currentTarget.value;
     let merchantCountryTemp = countryCurrencyString.split(" (")[0];
     setMerchantCountry(merchantCountryTemp);
@@ -143,9 +140,9 @@ const Overview = () => {
           {/*---QR Code---*/}
           {paymentType === "onsite" && (
             <div className="mt-1 lg:mt-3 relative">
-              <svg id="placardSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 251 355" width="198" height="280" className="rounded-md">
-                <image href={CEXdata["Coinbase Exchange"].placard.svg} width="251" height="355" />
-              </svg>
+              <div className="relative w-[198px] h-[280px]">
+                <Image src="/placardCoinbaseCashback.svg" alt="placard" fill />
+              </div>
               <QRCodeSVG
                 xmlns="http://www.w3.org/2000/svg"
                 size={100}
@@ -153,7 +150,7 @@ const Overview = () => {
                 fgColor={"#000000"}
                 level={"L"}
                 value={`https://metamask.app.link/dapp/www.lingpay.io/${paymentType}/${merchantCurrency}&&My%20Store%20in%20Europe&&0x585d271CfD119ead6BdfbC0F7d104572E3D3824D&&USDC,USDT&&Polygon,BNB,Optimism,Arbitrum,Avalanche`}
-                className="absolute top-[92px] left-[49px]"
+                className="absolute top-[88px] left-[49px]"
               />
             </div>
           )}

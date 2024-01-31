@@ -7,7 +7,15 @@ import { merchantType2data } from "../_utils/constants";
 import SpinningCircleGray from "../_utils/components/SpinningCircleGray";
 import circleCheck from "../_utils/lotties/circleCheck.json";
 // import images
-import { polygonSvg, bscSvg, arbSvg, opSvg, avaxSvg, usdcSvg, usdtSvg, baseSvg } from "@/public/index";
+import polygonSvg from "@/public/polygon.svg";
+import bscSvg from "@/public/bsc.svg";
+import arbSvg from "@/public/arb.svg";
+import opSvg from "@/public/op.svg";
+import avaxSvg from "@/public/avax.svg";
+import usdcSvg from "@/public/usdc.svg";
+import usdtSvg from "@/public/usdt.svg";
+import baseSvg from "@/public/base.svg";
+// import font awesome icons
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -39,11 +47,7 @@ const MockUI = ({
   selectedToken: string;
   setSelectedToken: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const [u2local, setu2local] = useState<{ [key: string]: number }>({
-    USD: 1,
-    USDC: 1,
-    USDT: 1,
-  });
+  const [u2local, setu2local] = useState<{ [key: string]: number }>({ USD: 1, USDC: 1, USDT: 1 });
   const [payModal, setPayModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | boolean>(false);
@@ -89,15 +93,11 @@ const MockUI = ({
   const handleOnTokenClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     document.querySelectorAll("[data-category = token]").forEach((element) => {
       if (e.currentTarget.id === element.id) {
-        element.classList.remove("opacity-50");
-        element.classList.remove("border-gray-300");
-        element.classList.add("border-blue-500");
-        element.classList.add("bg-blue-100");
+        element.classList.remove("opacity-50", "border-gray-300");
+        element.classList.add("border-blue-500", "bg-blue-100");
       } else {
-        element.classList.remove("border-blue-500");
-        element.classList.remove("bg-blue-100");
-        element.classList.add("opacity-50");
-        element.classList.add("border-gray-300");
+        element.classList.remove("border-blue-500", "bg-blue-100");
+        element.classList.add("opacity-50", "border-gray-300");
       }
     });
     setSelectedToken(e.currentTarget.id);
@@ -147,7 +147,9 @@ const MockUI = ({
 
   return (
     <div className="w-[260px] relative flex justify-center">
-      <Image src="/phone.png" alt="phone" fill />
+      <div className="relative w-full h-[476px]">
+        <Image src="/phone.png" alt="phone" objectFit="contain" fill />
+      </div>
       <div className="absolute left-[17px] top-[40px] w-[226px] h-[420px] px-1 pb-2 flex rounded-b-2xl text-black text-xs font-bold overflow-x-hidden overflow-y-auto thinScroll">
         <div className="w-full flex flex-col my-auto items-center">
           {/*---top fields---*/}
@@ -254,7 +256,9 @@ const MockUI = ({
                       data-category="network"
                       className="h-[40px] w-[42px] flex flex-col justify-center items-center pt-1 pb-0.5 text-[10px] text-center border rounded-[4px] border-slate-300 cursor-pointer"
                     >
-                      <img className="flex-none h-[16px]" src={allNetworksData[network].img} />
+                      <div className="relative flex-none w-[16px] h-[16px] mb-[3px]">
+                        <Image alt={`${allNetworksData[network].id}`} src={allNetworksData[network].img} fill />
+                      </div>
                       <div className="leading-none text-[8px]">{allNetworksData[network].id}</div>
                       <div className="leading-tight text-[8px] font-normal">${allNetworksData[network].gas}</div>
                     </div>
@@ -276,7 +280,9 @@ const MockUI = ({
                     onClick={handleOnTokenClick}
                   >
                     <div className="h-[24px] flex items-center pointer-events-none">
-                      <img src={allTokensData[token].img} className="w-[20px] mr-1" />
+                      <div className="relative flex-none w-[18px] h-[18px] mr-1">
+                        <Image alt={`${allTokensData[token].id}`} src={allTokensData[token].img} fill />
+                      </div>
                       <span className="text-xs">{allTokensData[token].id}</span>
                     </div>
                     <div className="text-xs pointer-events-none">{allTokensData[token].balance}</div>

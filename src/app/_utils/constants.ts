@@ -155,7 +155,23 @@ export const incomplete = {
   },
 };
 
-export const CEXdata = {
+export type CEX = {
+  networkTokens: string[];
+  networks: string[];
+  tokens: string[];
+  tradingFee: number;
+  withdrawalFee: any;
+  USDC?: string[];
+  USDT?: string[];
+  EURC?: string[];
+  EURT?: string[];
+  placard: {
+    component: React.FunctionComponent;
+    svg: SVGElement;
+    fig: string;
+  };
+};
+export const CEXdata: { [key: string]: CEX } = {
   "Coinbase Exchange": {
     networkTokens: ["Polygon-USDC", "Polygon-USDT", "Base-USDC", "Optimism-USDC", "Optimism-USDT", "Arbitrum-USDC", "Arbitrum-USDT", "Avalanche-USDC", "Avalanche-USDT"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"],
@@ -232,7 +248,6 @@ export const CEXdata = {
       fig: "https://drive.google.com/uc?export=download&id=12fJhn-9_08YkLJjkXJxrpQljDX3efUQa",
     },
   },
-  "Coins.ph": { networkTokens: ["Polygon-USDC", "Polygon-USDT", "BNB-USDT", "Arbitrum-USDT"], withdrawalFee: { ACH: 0 }, tradingFee: 0 },
 };
 
 type MerchantType2data = {

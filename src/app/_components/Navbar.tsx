@@ -17,15 +17,8 @@ const Navbar = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // detect mobile or desktop
     setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent));
-    console.log("USERAGENT", window.navigator.userAgent);
-
-    // detect standalone or not
     setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
-    console.log("Is standalone?", window.matchMedia("(display-mode: standalone)").matches);
-    // setIsStandaloneiOS((window.navigator as any).standalone ?? false);
-    // console.log(window.navigator.standalone);
   }, []);
 
   useEffect(() => {
@@ -76,7 +69,6 @@ const Navbar = () => {
 
   return (
     <div
-      id="navbar"
       className={`${
         isScrollTop ? "h-[92px]" : "h-[52px] bg-slate-100/70 border-b"
       } fixed px-4 w-full flex items-center justify-between z-50 backdrop-blur-md transition-all duration-1000`}
@@ -86,7 +78,6 @@ const Navbar = () => {
         <div className={`${isScrollTop ? "w-[120px] lg:w-[160px]" : "w-[80px] lg:w-[80px]"} h-full relative transition-all duration-1000`}>
           <Image src="/logo.svg" alt="navLogo" fill />
         </div>
-        <div>{isStandalone ? "true" : "false"}</div>
       </div>
       {/*---menu links---*/}
       <div className="hidden md:flex space-x-4 lg:space-x-12">
