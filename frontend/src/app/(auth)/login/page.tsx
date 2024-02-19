@@ -19,20 +19,14 @@ export default function Login() {
   const [modalState, setModalState] = useState(""); // initial, sending, sent
   const [show, setShow] = useState(false);
 
-  // const navigate = useNavigate();
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-  }, []);
-
-  const submit = async (e: React.SyntheticEvent) => {
+  const submit = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     setIsWaiting(true);
     await axios
       .post(
-        process.env.ISDEV == "true" ? "http://localhost:8080/login" : "https://server.lingpay.io/login",
+        process.env.ISDEV == "true" ? "http://localhost:8080/api/login" : "https://server.lingpay.io/login",
         { merchantEmail: merchantEmail, password: password },
         { withCredentials: true }
       )

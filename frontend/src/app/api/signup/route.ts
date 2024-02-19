@@ -1,12 +1,12 @@
-// import NextResponse from "next/server";
-// import { User } from "@/db/mongo";
+// import { cookies } from "next/headers";
+// import User from "@/src/app/db/models/user";
 
-// export async function POST(req: any) {
+// export async function POST(req: Request, res: Response) {
 //   console.log("/signup endpoint requested");
-//   const { merchantEmail, password, paymentSettings, cashoutSettings } = req.json();
+//   const { merchantEmail, password, paymentSettings, cashoutSettings } = await req.json();
 //   let userDoc = await User.findOne({ merchantEmail: merchantEmail });
 //   if (userDoc) {
-//     NextResponse.json("user exists");
+//     res.json("user exists");
 //   } else {
 //     const hashedPassword = await bcrypt.hash(password, 10);
 //     await User.create({
@@ -41,11 +41,11 @@
 //           sameSite: "strict", // was "non" when ISDEV=true
 //           secure: true, // if sameSite=none, must have secure:true
 //         });
-//         NextResponse.json("user created");
+//         res.json("user created");
 //         console.log("/signup user created");
 //       })
 //       .catch(() => {
-//         NextResponse.json("user not created");
+//         res.json("user not created");
 //         console.log("/signup user not created");
 //       });
 //   }
