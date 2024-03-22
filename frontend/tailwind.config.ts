@@ -3,7 +3,7 @@ import plugin from "tailwindcss/plugin";
 
 module.exports = {
   mode: "jit",
-  content: ["./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       transitionDuration: {

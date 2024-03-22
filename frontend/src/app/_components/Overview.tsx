@@ -6,45 +6,40 @@ import { QRCodeSVG } from "qrcode.react";
 // import components
 import MockUI from "./MockUI";
 // import constants
-import { countryData, activeCountries, merchantType2data } from "../_utils/constants";
+import { countryData, activeCountries, merchantType2data } from "@/utils/constants";
 // import font awesome
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShop } from "@fortawesome/free-solid-svg-icons";
 
 const Overview = () => {
-  const [merchantType, setMerchantType] = useState("instore");
   const [merchantName, setMerchantName] = useState("A Store in Europe");
   const [merchantCurrency, setMerchantCurrency] = useState("EUR");
-  const [currencyAmount, setCurrencyAmount] = useState(0);
   const [merchantCountry, setMerchantCountry] = useState("Europe");
   const [merchantWebsite, setMerchantWebsite] = useState("https://www.stablecoinmap.com");
-  const [paymentType, setPaymentType] = useState("onsite");
+  const [merchantPaymentType, setMerchantPaymentType] = useState("inperson");
+  const [merchantBusinessType, setMerchantBusinessType] = useState("instore");
   const [merchantFields, setMerchantFields] = useState<string[]>([]);
-  const [merchantNetworks, setMerchantNetworks] = useState<string[]>(["Polygon", "BNB", "Optimism", "Arbitrum", "Avalanche"]);
-  const [merchantTokens, setMerchantTokens] = useState<string[]>(["USDC", "USDT"]);
-  const [selectedNetwork, setSelectedNetwork] = useState("USDC");
-  const [selectedToken, setSelectedToken] = useState("USDC");
 
   const router = useRouter();
 
-  const onChangeCurrency = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onChangeCountryCurrency = (e: React.ChangeEvent<HTMLSelectElement>) => {
     let countryCurrencyString = e.currentTarget.value;
     let merchantCountryTemp = countryCurrencyString.split(" (")[0];
     setMerchantCountry(merchantCountryTemp);
     setMerchantCurrency(countryCurrencyString.split(" (")[1].replace(")", ""));
-    setMerchantTokens(countryData[merchantCountryTemp]["tokens"]);
-    setMerchantNetworks(countryData[merchantCountryTemp]["networks"]);
     setMerchantName(
-      `${paymentType === "onsite" ? "A Store in" : merchantType2data[merchantType]["merchantName"]} ${merchantCountryTemp == "Euro countries" ? "Europe" : merchantCountryTemp}`
+      `${merchantPaymentType === "inperson" ? "A Store in" : merchantType2data[merchantBusinessType]["merchantName"]} ${
+        merchantCountryTemp == "Euro countries" ? "Europe" : merchantCountryTemp
+      }`
     );
   };
 
   const onClickMerchantType = (e: React.MouseEvent<HTMLElement>) => {
-    let merchantTypeTemp = e.currentTarget.id.replace("overview", "");
-    setMerchantType(merchantTypeTemp);
+    let merchantBusinessTypeTemp = e.currentTarget.id.replace("overview", "");
+    setMerchantBusinessType(merchantBusinessTypeTemp);
     // highlights selected item to blue
-    document.querySelectorAll("div[data-category='merchantType").forEach((i) => {
+    document.querySelectorAll("div[data-category='merchantBusinessType").forEach((i) => {
       if (e.currentTarget.id === i.id) {
         i.classList.add("border-gray-500");
         i.classList.remove("border-transparent");
@@ -53,15 +48,15 @@ const Overview = () => {
         i.classList.remove("border-gray-500");
       }
     });
-    // determine paymentType
-    if (merchantTypeTemp === "instore") {
-      setPaymentType("onsite");
+    // determine merchantPaymentType
+    if (merchantBusinessTypeTemp === "instore") {
+      setMerchantPaymentType("inperson");
       setMerchantFields([]);
       setMerchantName(`A Store in ${merchantCountry == "Euro countries" ? "Europe" : merchantCountry}`);
     } else {
-      setPaymentType("online");
-      setMerchantFields(merchantType2data[merchantTypeTemp]["merchantFields"]);
-      setMerchantName(`${merchantType2data[merchantTypeTemp]["merchantName"]} ${merchantCountry == "Euro countries" ? "Europe" : merchantCountry}`);
+      setMerchantPaymentType("online");
+      setMerchantFields(merchantType2data[merchantBusinessTypeTemp]["merchantFields"]);
+      setMerchantName(`${merchantType2data[merchantBusinessTypeTemp]["merchantName"]} ${merchantCountry == "Euro countries" ? "Europe" : merchantCountry}`);
     }
   };
 
@@ -79,7 +74,7 @@ const Overview = () => {
               <select
                 id="overviewCountryCurrency"
                 className="px-1 text-lg lg:text-base border-gray-300 rounded-lg outline-none cursor-pointer border-transparent"
-                onChange={onChangeCurrency}
+                onChange={onChangeCountryCurrency}
               >
                 {activeCountries.map((i, index) => (
                   <option key={index} className="bg-white">
@@ -92,7 +87,7 @@ const Overview = () => {
               <div
                 onClick={onClickMerchantType}
                 id="overviewinstore"
-                data-category="merchantType"
+                data-category="merchantBusinessType"
                 className={`flex flex-col items-center cursor-pointer rounded-[4px] py-2 px-2 border border-gray-500 lg:hover:border-gray-500 transition-transform duration-300 backface-hidden relative`}
               >
                 <div>
@@ -108,7 +103,7 @@ const Overview = () => {
                 <div
                   onClick={onClickMerchantType}
                   id={`overview${i}`}
-                  data-category="merchantType"
+                  data-category="merchantBusinessType"
                   key={index}
                   className="relative flex flex-col items-center cursor-pointer rounded-[4px] py-2 px-2 border border-transparent lg:hover:border-gray-500 transition-transform duration-300 backface-hidden"
                 >
@@ -133,12 +128,12 @@ const Overview = () => {
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">1</div>
-            <div className={`${paymentType === "onsite" ? "lg:w-[116px]" : "lg:w-[116px]"} overviewStepTitle`}>
-              {paymentType === "onsite" ? "You display a QR code" : "You display a payment link"}
+            <div className={`${merchantPaymentType === "inperson" ? "lg:w-[116px]" : "lg:w-[116px]"} overviewStepTitle`}>
+              {merchantPaymentType === "inperson" ? "You display a QR code" : "You display a payment link"}
             </div>
           </div>
           {/*---QR Code---*/}
-          {paymentType === "onsite" && (
+          {merchantPaymentType === "inperson" && (
             <div className="mt-1 lg:mt-3 relative">
               <div className="relative w-[198px] h-[280px]">
                 <Image src="/placardCoinbaseCashback.svg" alt="placard" fill />
@@ -149,7 +144,7 @@ const Overview = () => {
                 bgColor={"#ffffff"}
                 fgColor={"#000000"}
                 level={"L"}
-                value={`https://metamask.app.link/dapp/www.lingpay.io/${paymentType}/${merchantCurrency}&&My%20Store%20in%20Europe&&0x585d271CfD119ead6BdfbC0F7d104572E3D3824D&&USDC,USDT&&Polygon,BNB,Optimism,Arbitrum,Avalanche`}
+                value={`https://metamask.app.link/dapp/www.lingpay.io/${merchantPaymentType}/${merchantCurrency}&&My%20Store%20in%20Europe&&0x585d271CfD119ead6BdfbC0F7d104572E3D3824D&&USDC,USDT&&Polygon,BNB,Optimism,Arbitrum,Avalanche`}
                 className="absolute top-[88px] left-[49px]"
               />
             </div>
@@ -165,7 +160,7 @@ const Overview = () => {
                 in just 5 minutes!
               </div>
             </div>
-            {paymentType === "online" && (
+            {merchantPaymentType === "online" && (
               <div className="space-y-2 lg:space-y-1">
                 <div className="flex">
                   <div className="mr-1">&bull;</div>
@@ -189,8 +184,8 @@ const Overview = () => {
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">2</div>
-            <div className={`${paymentType === "onsite" ? "lg:w-[136px]" : "lg:w-[136px]"} overviewStepTitle`}>
-              {paymentType === "onsite" ? "Customer scans and pays" : "Customer clicks link and pays"}
+            <div className={`${merchantPaymentType === "inperson" ? "lg:w-[136px]" : "lg:w-[136px]"} overviewStepTitle`}>
+              {merchantPaymentType === "inperson" ? "Customer scans and pays" : "Customer clicks link and pays"}
             </div>
           </div>
           {/*---mock UI---*/}
@@ -199,24 +194,16 @@ const Overview = () => {
               {...{
                 merchantName,
                 merchantCurrency,
-                merchantNetworks,
-                merchantTokens,
-                paymentType,
-                merchantType,
+                merchantPaymentType,
+                merchantBusinessType,
                 merchantWebsite,
                 merchantFields,
-                selectedNetwork,
-                setSelectedNetwork,
-                currencyAmount,
-                setCurrencyAmount,
-                selectedToken,
-                setSelectedToken,
               }}
             />
           </div>
           {/*---bullet points---*/}
           <div className="mt-2 overviewStepBody">
-            {["hotels", "taxis", "tours"].includes(merchantType) && (
+            {["hotels", "taxis", "tours"].includes(merchantBusinessType) && (
               <div className="flex">
                 <div className="mr-1">&bull;</div>
                 <div className="">
@@ -225,7 +212,7 @@ const Overview = () => {
                 </div>
               </div>
             )}
-            {["onlinephysical", "onlinedigital", "tickets", "gigs", "creators"].includes(merchantType) && (
+            {["onlinephysical", "onlinedigital", "tickets", "gigs", "creators"].includes(merchantBusinessType) && (
               <div className="flex">
                 <div className="mr-1">&bull;</div>
                 <div className="">
@@ -233,7 +220,7 @@ const Overview = () => {
                 </div>
               </div>
             )}
-            {["donations"].includes(merchantType) && (
+            {["donations"].includes(merchantBusinessType) && (
               <div className="flex">
                 <div className="mr-1">&bull;</div>
                 <div className="">supporter writes a message (optional)</div>
@@ -242,8 +229,8 @@ const Overview = () => {
             <div className="flex">
               <div className="mr-1">&bull;</div>
               <div className="">
-                {merchantType === "donations" ? "supporter" : "customer"} enters <span className="font-bold">amount of {merchantCurrency}</span> for{" "}
-                {merchantType === "donations" ? "donation" : "payment"} and clicks "Send"
+                {merchantBusinessType === "donations" ? "supporter" : "customer"} enters <span className="font-bold">amount of {merchantCurrency}</span> for{" "}
+                {merchantBusinessType === "donations" ? "donation" : "payment"} and clicks "Send"
               </div>
             </div>
             <div className="flex relative">
@@ -262,7 +249,7 @@ const Overview = () => {
                 ) : (
                   <span className="whitespace-nowrap">
                     stablecoins (of equal value
-                    {paymentType === "onsite" && (
+                    {merchantPaymentType === "inperson" && (
                       <span className="group">
                         <span className="link"> minus 2%</span>
                         <div className="invisible group-hover:visible whitespace-normal absolute w-[356px] lg:w-[260px] left-0 bottom-10 lg:text-sm lg:leading-tight px-3 py-2 bg-gray-100 border border-gray-500 rounded-[4px] leading-tight z-10">
@@ -295,11 +282,11 @@ const Overview = () => {
           {/*---title---*/}
           <div className="w-full flex items-center lg:justify-center text-blue-700">
             <div className="overviewNumber">3</div>
-            {paymentType === "onsite" && <div className="lg:w-[136px] overviewStepTitle">You verify and record payment</div>}
-            {paymentType === "online" && <div className="lg:w-[152px] overviewStepTitle">You receive email of purchase order</div>}
+            {merchantPaymentType === "inperson" && <div className="lg:w-[136px] overviewStepTitle">You verify and record payment</div>}
+            {merchantPaymentType === "online" && <div className="lg:w-[152px] overviewStepTitle">You receive email of purchase order</div>}
           </div>
           {/*---image and bullet points---*/}
-          {paymentType === "onsite" && (
+          {merchantPaymentType === "inperson" && (
             <div className="mt-2 overviewStepBody">
               <div className="flex relative">
                 <div className="mr-1">&bull;</div>
@@ -328,7 +315,7 @@ const Overview = () => {
               </div>
             </div>
           )}
-          {paymentType === "online" && (
+          {merchantPaymentType === "online" && (
             <div className="mt-2 overviewStepBody">
               <div className="flex">
                 <div className="mr-1">&bull;</div>
@@ -367,10 +354,8 @@ const Overview = () => {
               )}
             </div>
           </div>
-          <div className="mt-4 lg:mt-3 border border-gray-300 rounded-[6px]">
-            <div className="relative">
-              <Image src="/overviewTrade.png" alt="trade" objectFit="contain" width={500} height={500} />
-            </div>
+          <div className="relative w-[354px] lg:w-[320px] h-[300px] mt-4 lg:mt-3 border rounded-lg overflow-hidden border-gray-300">
+            <Image src="/overviewTrade.png" alt="trade" fill />
           </div>
           {/*---bullet points---*/}
           <div className="mt-2 overviewStepBody">

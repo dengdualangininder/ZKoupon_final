@@ -45,7 +45,7 @@
   }
 
   .learnContainer {
-    @apply py-4 border-b-2 border-slate-300;
+    @apply py-4 border-b-2 border-gray-300;
   }
 
   .learnIcon {
@@ -65,11 +65,11 @@
   }
 
   .learnChip {
-    @apply text-sm xs:text-base leading-tight xs:leading-tight px-4 py-2.5 rounded-md bg-white text-slate-600 border;
+    @apply text-sm xs:text-base leading-tight xs:leading-tight px-4 py-2.5 rounded-md bg-white text-gray-600 border;
   }
 
   .whyCard {
-    @apply relative w-[310px] md:w-[286px] h-[320px] py-3 px-3 md:px-5 text-lg leading-snug bg-white rounded-xl text-slate-600 shadow-[0px_2px_4px_2px_rgba(128,128,128,0.3)] sm:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+    @apply relative w-[310px] md:w-[286px] h-[320px] py-3 px-3 md:px-5 text-lg leading-snug bg-white rounded-xl text-gray-600 shadow-[0px_2px_4px_2px_rgba(128,128,128,0.3)] sm:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
   }
 
   .whyImage {
@@ -81,7 +81,7 @@
   }
 
   .modalContainer {
-    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
+    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-xl border border-gray-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
   }
 
   .modalHeaderContainer {
@@ -109,7 +109,7 @@
   }
 
   .savingsCountry {
-    @apply mt-3 text-slate-600 font-bold text-base leading-none;
+    @apply mt-3 text-gray-600 font-bold text-base leading-none;
   }
 
   .savingsSavings {
@@ -117,7 +117,7 @@
   }
 
   .savingsConversion {
-    @apply leading-tight text-[10px] text-slate-950;
+    @apply leading-tight text-[10px] text-gray-950;
   }
 
   .advantageHeader {
@@ -129,7 +129,7 @@
   }
 
   .advantageBody {
-    @apply leading-tight text-lg sm:text-base text-slate-300 font-normal;
+    @apply leading-tight text-lg sm:text-base text-gray-300 font-normal;
   }
 
   .overviewNumber {
@@ -145,15 +145,15 @@
   }
 
   .labelfont {
-    @apply mt-2 text-lg xs:text-sm font-bold leading-tight;
+    @apply mt-4 text-lg xs:text-sm font-bold leading-tight;
   }
 
   .inputfont {
-    @apply mt-0.5 xs:mt-0 text-lg xs:text-base text-gray-700 px-1 h-[40px] xs:h-[28px] border border-slate-300 rounded-md outline-slate-300 lg:hover:border-blue-400 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply mt-0.5 text-lg xs:text-base text-gray-700 px-1.5 h-[40px] xs:h-[36px] border border-gray-300 rounded-md outline-gray-300 lg:hover:border-blue-400 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .inputfontsmall {
-    @apply mt-0.5 xs:mt-0 text-xs xs:text-sm md:text-xs text-gray-700 px-1 h-[40px] xs:h-[28px] border border-slate-300 rounded-md outline-slate-300 lg:hover:border-blue-400 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply mt-0.5 xs:mt-0 text-xs xs:text-sm md:text-xs text-gray-700 px-1 h-[40px] xs:h-[36px] border border-gray-300 rounded-md outline-gray-300 lg:hover:border-blue-400 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .loginbutton {
@@ -161,11 +161,11 @@
   }
 
   .logininputfont {
-    @apply text-lg xs:text-base mt-0.5 border py-3 xs:py-2 px-2 border-slate-400 rounded-lg outline-slate-300 xs:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms];
+    @apply w-full text-base xs:text-sm border py-1 px-2 border-gray-400 rounded-lg outline-gray-300 xs:hover:bg-gray-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms];
   }
 
   .loginlabelfont {
-    @apply mt-0.5 border py-3 xs:py-2 px-2 border-slate-400 rounded-lg outline-slate-300 xs:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms];
+    @apply text-base xs:text-sm;
   }
 
   .checkboxMobile {
@@ -202,7 +202,19 @@
   }
 
   .cashoutContainer {
-    @apply min-h-[180px] flex flex-col px-4 py-3 rounded-xl bg-white border border-slate-400;
+    @apply min-h-[180px] flex flex-col px-4 py-3 rounded-xl bg-white border border-gray-400;
+  }
+
+  .appSettingsForm {
+    @apply mt-2 flex-none flex flex-col px-2 xs:px-4 w-full xs:w-[420px] md:w-[356px] lg:w-[360px] bg-white border border-gray-500 rounded-xl;
+  }
+
+  .appInstructionsBody {
+    @apply text-lg xs:text-sm leading-tight xs:leading-snug border border-gray-300 rounded-xl p-4 text-gray-600 bg-white;
+  }
+
+  .appButton {
+    @apply h-[56px] xs:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 text-white font-bold rounded-full text-lg;
   }
 }
 

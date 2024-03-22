@@ -3,18 +3,11 @@ import Image from "next/image";
 import axios from "axios";
 import Lottie from "lottie-react";
 // import utils
-import { merchantType2data } from "../_utils/constants";
-import SpinningCircleGray from "../_utils/components/SpinningCircleGray";
-import circleCheck from "../_utils/lotties/circleCheck.json";
+import { merchantType2data } from "@/utils/constants";
+import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
+import circleCheck from "@/utils/lotties/circleCheck.json";
 // import images
-import polygonSvg from "@/public/polygon.svg";
-import bscSvg from "@/public/bsc.svg";
-import arbSvg from "@/public/arb.svg";
-import opSvg from "@/public/op.svg";
-import avaxSvg from "@/public/avax.svg";
-import usdcSvg from "@/public/usdc.svg";
-import usdtSvg from "@/public/usdt.svg";
-import baseSvg from "@/public/base.svg";
+import usdcSvg from "/public/usdc.svg";
 // import font awesome icons
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,106 +16,54 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 const MockUI = ({
   merchantName,
   merchantCurrency,
-  merchantNetworks,
-  merchantTokens,
-  paymentType,
-  merchantType,
+  merchantPaymentType,
+  merchantBusinessType,
   merchantWebsite,
   merchantFields,
-  currencyAmount,
-  setCurrencyAmount,
-  selectedToken,
-  setSelectedToken,
 }: {
   merchantName: string;
   merchantCurrency: string;
-  merchantNetworks: string[];
-  merchantTokens: string[];
-  paymentType: string;
-  merchantType: string;
+  merchantPaymentType: string;
+  merchantBusinessType: string;
   merchantWebsite: string;
   merchantFields: string[];
-  currencyAmount: number;
-  setCurrencyAmount: React.Dispatch<React.SetStateAction<number>>;
-  selectedToken: string;
-  setSelectedToken: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [u2local, setu2local] = useState<{ [key: string]: number }>({ USD: 1, USDC: 1, USDT: 1 });
   const [payModal, setPayModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | boolean>(false);
   const [isSendingComplete, setIsSendingComplete] = useState(false);
+  const [currencyAmount, setCurrencyAmount] = useState(0);
+
+  const selectedToken = "USDC";
+  const usdcBalance = 128.33;
 
   useEffect(() => {
     console.log("USEEFFECT getRates run once");
+    const getRates = async (merchantCurrency: string) => {
+      console.log("requesting rates api");
+      let USDres = await axios.get(
+        `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
+      );
+      let USDTres = await axios.get(
+        `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
+      );
+      let USDCres = await axios.get(
+        `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
+      );
+      let sheetCountryOrder = "twd, jpy, krw, hkd, sgd, php, thb, idr, myr, vnd, eur, gbp, cad, aud, usd".split(", ").map((i) => i.toUpperCase());
+      let sheetIndex = sheetCountryOrder.findIndex((i) => i == merchantCurrency);
+      setu2local({
+        USD: Number(USDres.data.values[0][sheetIndex * 2].toPrecision(4)),
+        USDC: Number(USDCres.data.values[0][sheetIndex * 2].toPrecision(4)),
+        USDT: Number(USDTres.data.values[0][sheetIndex * 2].toPrecision(4)),
+      });
+    };
     getRates(merchantCurrency);
   }, [merchantCurrency]);
 
-  type NetworksData = {
-    [key: string]: {
-      img: any;
-      id: string;
-      gas: number;
-    };
-  };
-  const allNetworksData: NetworksData = {
-    Polygon: { img: polygonSvg, id: "Polygon", gas: 0.01 },
-    Base: { img: baseSvg, id: "Base", gas: 0.25 },
-    BNB: { img: bscSvg, id: "BNB", gas: 0.08 },
-    Optimism: { img: opSvg, id: "Optimism", gas: 0.14 },
-    Arbitrum: { img: arbSvg, id: "Arbitrum", gas: 0.11 },
-    Avalanche: { img: avaxSvg, id: "Avalanche", gas: 0.02 },
-  };
-
-  type TokensData = {
-    [key: string]: {
-      img: any;
-      id: string;
-      balance: number;
-    };
-  };
-  const allTokensData: TokensData = {
-    USDC: { img: usdcSvg, id: "USDC", balance: 124.23 },
-    USDT: { img: usdtSvg, id: "USDT", balance: 23.84 },
-  };
-
-  const onChangeCurrencyAmount = (e: React.FormEvent<HTMLInputElement>) => {
-    setCurrencyAmount(Number(e.currentTarget.value));
-  };
-
-  const handleOnTokenClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    document.querySelectorAll("[data-category = token]").forEach((element) => {
-      if (e.currentTarget.id === element.id) {
-        element.classList.remove("opacity-50", "border-gray-300");
-        element.classList.add("border-blue-500", "bg-blue-100");
-      } else {
-        element.classList.remove("border-blue-500", "bg-blue-100");
-        element.classList.add("opacity-50", "border-gray-300");
-      }
-    });
-    setSelectedToken(e.currentTarget.id);
-  };
-
-  const getRates = async (merchantCurrency: string) => {
-    console.log("requesting rates api");
-    let USDres = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${process.env.GOOGLE_API_KEY}`);
-    let USDTres = await axios.get(
-      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
-    );
-    let USDCres = await axios.get(
-      `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${process.env.GOOGLE_API_KEY}`
-    );
-    let sheetCountryOrder = "twd, jpy, krw, hkd, sgd, php, thb, idr, myr, vnd, eur, gbp, cad, aud, usd".split(", ").map((i) => i.toUpperCase());
-    let sheetIndex = sheetCountryOrder.findIndex((i) => i == merchantCurrency);
-    setu2local({
-      USD: Number(USDres.data.values[0][sheetIndex * 2].toPrecision(4)),
-      USDC: Number(USDCres.data.values[0][sheetIndex * 2].toPrecision(4)),
-      USDT: Number(USDTres.data.values[0][sheetIndex * 2].toPrecision(4)),
-    });
-  };
-
   const send = () => {
-    if (Number((currencyAmount / u2local[selectedToken]).toFixed(2)) > allTokensData[selectedToken]["balance"]) {
+    if (Number((currencyAmount / u2local[selectedToken]).toFixed(2)) > usdcBalance) {
       setErrorModal(true);
       setErrorMsg("Insufficient balance");
     } else if (!currencyAmount) {
@@ -146,20 +87,20 @@ const MockUI = ({
   };
 
   return (
-    <div className="w-[260px] relative flex justify-center">
-      <div className="relative w-full h-[476px]">
+    <div className="relative">
+      <div className="relative w-[220px] h-[414px]">
         <Image src="/phone.png" alt="phone" objectFit="contain" fill />
       </div>
-      <div className="absolute left-[17px] top-[40px] w-[226px] h-[420px] px-1 pb-2 flex rounded-b-2xl text-black text-xs font-bold overflow-x-hidden overflow-y-auto thinScroll">
+      <div className="absolute left-[15px] top-[31px] w-[190px] h-[366px] px-1 pb-2 flex rounded-b-2xl text-black text-xs font-bold overflow-x-hidden overflow-y-auto thinScroll">
         <div className="w-full flex flex-col my-auto items-center">
           {/*---top fields---*/}
           <div className="w-full flex flex-col justify-center">
             {/*---pay to---*/}
-            <div className={`${paymentType === "onsite" ? "flex flex-col mb-2" : "flex"} items-center`}>
-              <div className={`${paymentType === "onsite" ? "mb-2" : "w-[54px] flex-none"}`}>Pay To</div>
+            <div className={`${merchantPaymentType === "inperson" ? "flex flex-col mb-2" : "flex"} items-center`}>
+              <div className={`${merchantPaymentType === "inperson" ? "mb-2" : "w-[54px] flex-none"}`}>Pay To</div>
               <div className="flex items-center">
                 <div className="text-sm font-extrabold leading-none line-clamp-2">{merchantName}</div>
-                {paymentType === "online" && merchantWebsite && (
+                {merchantPaymentType === "online" && merchantWebsite && (
                   <div className="ml-0.5 text-[8px] leading-none w-[37px] text-center link">
                     <a href={merchantWebsite} target="_blank">
                       OFFICIAL WEBSITE
@@ -168,7 +109,7 @@ const MockUI = ({
                 )}
               </div>
             </div>
-            {paymentType === "online" && (
+            {merchantPaymentType === "online" && (
               <div className="w-full">
                 {/*---email---*/}
                 <div className={`${merchantFields.includes("email") ? "" : "hidden"} mt-1 flex items-center`}>
@@ -216,7 +157,7 @@ const MockUI = ({
                 </div>
                 {/*---item name---*/}
                 <div className={`${merchantFields.includes("item") ? "" : "hidden"} mt-1 flex items-center`}>
-                  <div className="w-[54px] flex-none leading-none">{paymentType === "online" ? merchantType2data[merchantType]["itemlabel"] : "Item Name"}</div>
+                  <div className="w-[54px] flex-none leading-none">{merchantPaymentType === "online" ? merchantType2data[merchantBusinessType]["itemlabel"] : "Item Name"}</div>
                   <div className="w-full h-[18px] rounded-[4px] text-sm border border-slate-300"></div>
                 </div>
                 {/*---SKU---*/}
@@ -236,7 +177,7 @@ const MockUI = ({
           <div className="mt-1 flex flex-col items-center justify-center relative">
             {/*---amount + networks + tokens---*/}
             <div className="flex flex-col items-center">
-              {paymentType === "online" ? <div className="text-sm">Payment</div> : null}
+              {merchantPaymentType === "online" ? <div className="text-sm">Payment</div> : null}
               <div className="w-[180px] text-sm border rounded-[4px] border-blue-500 h-[32px] flex items-center relative">
                 <div className="absolute left-[4px] leading-none">{merchantCurrency ? merchantCurrency : "USD"}</div>
                 <input
@@ -244,50 +185,10 @@ const MockUI = ({
                   className="ml-1 leading-none text-black w-full text-center outline-none"
                   placeholder="Enter Amount"
                   type="number"
-                  onChange={onChangeCurrencyAmount}
+                  onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                    setCurrencyAmount(Number(e.currentTarget.value));
+                  }}
                 ></input>
-              </div>
-              {/*---select network 42px * 5 + 4px = 214px---*/}
-              <div className="mt-1 flex justify-center space-x-[1px]">
-                {merchantNetworks.map((network, index) => (
-                  <div key={index} className="flex flex-col items-center">
-                    <div
-                      id={allNetworksData[network].id}
-                      data-category="network"
-                      className="h-[40px] w-[42px] flex flex-col justify-center items-center pt-1 pb-0.5 text-[10px] text-center border rounded-[4px] border-slate-300 cursor-pointer"
-                    >
-                      <div className="relative flex-none w-[16px] h-[16px] mb-[3px]">
-                        <Image alt={`${allNetworksData[network].id}`} src={allNetworksData[network].img} fill />
-                      </div>
-                      <div className="leading-none text-[8px]">{allNetworksData[network].id}</div>
-                      <div className="leading-tight text-[8px] font-normal">${allNetworksData[network].gas}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {/*---select token---*/}
-              <div className="mt-1 w-full flex flex-col items-center space-y-[1px]">
-                <div className="w-[180px] flex justify-between text-[10px] leading-none">
-                  <div>Select Token</div>
-                  <div>Your Balance</div>
-                </div>
-                {merchantTokens.map((token, index) => (
-                  <div
-                    className={`w-[180px] flex justify-between items-center px-2 text-base font-bold border rounded-[4px] border-slate-300 cursor-pointer`}
-                    id={allTokensData[token].id}
-                    key={index}
-                    data-category="token"
-                    onClick={handleOnTokenClick}
-                  >
-                    <div className="h-[24px] flex items-center pointer-events-none">
-                      <div className="relative flex-none w-[18px] h-[18px] mr-1">
-                        <Image alt={`${allTokensData[token].id}`} src={allTokensData[token].img} fill />
-                      </div>
-                      <span className="text-xs">{allTokensData[token].id}</span>
-                    </div>
-                    <div className="text-xs pointer-events-none">{allTokensData[token].balance}</div>
-                  </div>
-                ))}
               </div>
             </div>
             {/*---X tokens will be sent---*/}
@@ -380,7 +281,7 @@ const MockUI = ({
         </div>
       )}
       {/*---paid modal---*/}
-      {payModal && paymentType === "online" && (
+      {payModal && merchantPaymentType === "online" && (
         <div>
           <div className="absolute top-[15px] left-[16px] w-[228px] h-[453px] bg-black opacity-50 z-10 rounded-2xl"></div>
           <div className="absolute top-[92px] left-[30px] w-[200px] h-[300px] py-6 px-2 text-slate-700 bg-white rounded-xl z-[50]">
@@ -398,7 +299,7 @@ const MockUI = ({
                   </div>
                   <div className="text-xs">sent to</div>
                   <div className="text-base font-bold">{merchantName}</div>
-                  {paymentType === "online" ? <div className="mt-4 text-xs">An email with the purchase details has been sent to you.</div> : null}
+                  {merchantPaymentType === "online" ? <div className="mt-4 text-xs">An email with the purchase details has been sent to you.</div> : null}
                 </div>
                 {/*---close---*/}
                 <button
@@ -421,7 +322,7 @@ const MockUI = ({
           </div>
         </div>
       )}
-      {payModal && paymentType === "onsite" && (
+      {payModal && merchantPaymentType === "inperson" && (
         <div className="">
           <div className="absolute top-[15px] left-[16px] w-[228px] h-[453px] bg-black opacity-50 z-10 rounded-2xl"></div>
           <div

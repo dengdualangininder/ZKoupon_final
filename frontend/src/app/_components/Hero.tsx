@@ -16,17 +16,17 @@ export default function Hero() {
       {/*--Subheader---*/}
       <div className="mt-7 text-2xl font-bold text-center">Join the digital revolution!</div>
       {/*--Body---*/}
-      <div className="mt-8 w-[352px] xs:w-[444px] md:w-[550px] flex-none text-lg relative">
-        Ling Pay is currently the only platform that helps businesses set up and streamline{" "}
+      <div className="mt-8 w-[352px] xs:w-[444px] md:w-[690px] flex-none text-2xl relative">
+        Flash is currently the only platform that helps businesses set up{" "}
         <span className="group">
           <span className="link font-bold">true P2P</span>
-          <div className="invisible group-hover:visible md:w-[544px] md:left-[calc(50%-277px)] absolute bottom-[60px] text-base leading-snug px-4 py-2 border bg-white text-gray-600 rounded-xl z-[1]">
-            In true peer-to-peer (P2P) payments, customers pay businesses with <span className="font-bold">zero middlemen</span>. Therefore, it is{" "}
-            <span className="underline underline-offset-4">impossible</span> for 3<sup>rd</sup> parties to take fees, withhold payment, or make profit by giving your customers
-            suboptimal token-to-fiat exchange rates.
+          <div className="invisible group-hover:visible md:w-[690px] md:left-[calc(50%-345px)] absolute bottom-[66px] text-lg leading-snug px-[28px] py-2 border bg-white text-gray-600 rounded-xl z-[1]">
+            True P2P (peer-to-peer) payments mean that customers pay businesses directly with <span className="font-bold">zero middlemen</span>. Therefore, it is{" "}
+            <span className="underline underline-offset-4">impossible</span> for 3<sup>rd</sup> parties to take fees, withhold payment, or profit from giving suboptimal token
+            exchange rates.
           </div>
         </span>{" "}
-        blockchain payments. Set up in 5 minutes starting at $0/month.
+        blockchain payments. Set up in 5 minutes at $0/month.
       </div>
       {/*--mobile, Free Setup button---*/}
       <div className="mt-24 md:hidden"></div>

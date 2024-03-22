@@ -6,19 +6,17 @@ import { useRouter } from "next/navigation";
 // import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  // const [isStandaloneiOS, setIsStandaloneiOS] = useState<boolean | undefined>(false); // undefined on desktop
-  const [isStandalone, setIsStandalone] = useState<boolean>(false);
   const [isScrollTop, setIsScrollTop] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
   useEffect(() => {
-    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent));
-    setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
+    const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    setIsMobile(isMobileTemp);
   }, []);
 
   useEffect(() => {
@@ -32,6 +30,7 @@ const Navbar = () => {
     };
   }, []);
 
+  // TODO: might have to change this to media query
   useEffect(() => {
     if (isMobile) {
       const checkClickedOutside = (e: React.MouseEvent) => {
@@ -73,13 +72,14 @@ const Navbar = () => {
         isScrollTop ? "h-[92px]" : "h-[52px] bg-slate-100/70 border-b"
       } fixed px-4 w-full flex items-center justify-between z-50 backdrop-blur-md transition-all duration-1000`}
     >
-      {/*---logo---*/}
+      {/*---LOGO---*/}
       <div className="w-[160px] h-full flex items-center">
         <div className={`${isScrollTop ? "w-[120px] lg:w-[160px]" : "w-[80px] lg:w-[80px]"} h-full relative transition-all duration-1000`}>
           <Image src="/logo.svg" alt="navLogo" fill />
         </div>
       </div>
-      {/*---menu links---*/}
+
+      {/*---DESKTOP MENU LINKS---*/}
       <div className="hidden md:flex space-x-4 lg:space-x-12">
         {navLinks.map((navLink, index) => (
           <div
@@ -92,26 +92,20 @@ const Navbar = () => {
           </div>
         ))}
       </div>
-      {/*---login + signup button---*/}
+
+      {/*---ENTER APP BUTTON---*/}
       <div className="absolute left-0 md:left-auto md:relative w-full md:w-auto flex justify-center md:justify-start space-x-1">
         <button
-          id="navLogin"
-          onClick={() => (isMobile && !isStandalone ? router.push("/app") : router.push("/login"))}
-          className="hidden md:block h-[40px] w-[100px] border border-blue-500 text-base font-bold text-blue-500 rounded-[4px] hover:border-blue-600 xs:hover:text-blue-600"
-        >
-          Log In
-        </button>
-        <button
-          onClick={() => (isMobile && !isStandalone ? router.push("/app") : router.push("/signup"))}
+          onClick={() => router.push("/app")}
           className={`${
             isScrollTop ? "scale-125 translate-y-[530px]" : ""
-          } flex flex-col justify-center items-center md:translate-y-0 text-white md:transform-none h-[44px] md:h-[40px] w-[132px] md:w-[110px] rounded-full md:rounded-[4px] bg-blue-500 xs:hover:bg-blue-600 transition-transform duration-1000 hover:animate-textTwo`}
+          } h-[44px] md:h-[40px] w-[132px] md:w-[150px] font-bold rounded-full bg-blue-500 xs:hover:border xs:hover:border-blue-700 xs:hover:bg-blue-600 md:translate-y-0 text-white md:transform-none transition-transform duration-1000`}
         >
-          <div className="text-sm font-bold leading-tight pointer-events-none">Get Started</div>
-          <div className="text-xs leading-tight pointer-events-none">at $0/month</div>
+          Enter App
         </button>
       </div>
-      {/*---MOBILE ONLY---*/}
+
+      {/*---MOBILE MENU LINKS---*/}
       <div className="flex items-center justify-end md:hidden mr-6">
         {/*---need to wrap icon and menu into 1 div, for useRef---*/}
         <div ref={ref} className="">
@@ -135,9 +129,6 @@ const Navbar = () => {
                   {navLink.title}
                 </div>
               ))}
-              <div onClick={() => (isMobile && !isStandalone ? router.push("/app") : router.push("/login"))} className="font-bold text-slate-700 cursor-pointer text-2xl">
-                Log In
-              </div>
             </div>
           </div>
         </div>
