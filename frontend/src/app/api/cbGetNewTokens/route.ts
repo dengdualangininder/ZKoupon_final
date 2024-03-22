@@ -12,7 +12,7 @@ export const POST = async (request: Request) => {
       code: code,
       client_id: process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID,
       client_secret: process.env.COINBASE_CLIENT_SECRET,
-      redirect_uri: process.env.NEXT_PUBLIC_ISDEV == "true" ? "http://localhost:3000/app/cbAuth" : "https://www.flashpayments.xyz/app/cbAuth",
+      redirect_uri: `${process.env.DEPLOYED_BASE_URL}/app/cbAuth`,
     });
     console.log("cbGetNewTokens api, res.data=", res.data);
     const { refresh_token, access_token } = res.data;

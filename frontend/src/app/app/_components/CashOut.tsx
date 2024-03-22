@@ -151,7 +151,7 @@ const CashOut = ({
   const onClickSIWC = async () => {
     const cbRandomSecure = uuidv4();
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
-    const redirectUrlEncoded = process.env.NEXT_PUBLIC_ISDEV == "true" ? encodeURI("http://localhost:3000/app/cbAuth") : encodeURI("https://www.flashpayments.xyz/app/cbAuth");
+    const redirectUrlEncoded = encodeURI(`${process.env.DEPLOYED_BASE_URL}/app/cbAuth`);
     router.push(
       `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create`
     );
