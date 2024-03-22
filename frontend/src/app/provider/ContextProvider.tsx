@@ -2,14 +2,14 @@
 // nextjs
 import { useState, useEffect, createContext, useContext } from "react";
 // wagmi
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { WagmiProvider, createConfig, http, type Config } from "wagmi";
 import { Chain } from "wagmi/chains";
 import { polygon } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // web3auth
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Web3AuthNoModal } from "@web3auth/no-modal";
-import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK, WALLET_ADAPTERS } from "@web3auth/base";
+import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK, WALLET_ADAPTERS, ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
 import { OpenloginAdapter, OPENLOGIN_NETWORK } from "@web3auth/openlogin-adapter";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 // import { Chain } from "wagmi/chains";
@@ -54,7 +54,6 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     }, // takes type WhiteLabelData as value
     privateKeyProvider: privateKeyProvider,
   });
-
   // configure social logins
   const openloginAdapterInstance = new OpenloginAdapter({
     // privateKeyProvider,
@@ -89,6 +88,32 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
         loginParams: { loginProvider: "line" },
       }),
     ],
+  });
+
+  // useEffect(() => {
+  //   const init = async () => {
+  //     // call init on web3AuthInstance
+  //     await web3AuthInstance.init();
+
+  //   };
+  //   init();
+  // }, []);
+
+  web3AuthInstance.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
+    console.log("connected to wallet", data);
+    // web3auth.provider will be available here after user is connected
+  });
+  web3AuthInstance.on(ADAPTER_EVENTS.CONNECTING, () => {
+    console.log("connecting");
+  });
+  web3AuthInstance.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+    console.log("disconnected");
+  });
+  web3AuthInstance.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
+    console.log("error", error);
+  });
+  web3AuthInstance.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
+    console.log("error", error);
   });
 
   return (
