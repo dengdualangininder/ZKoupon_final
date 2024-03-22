@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import TradeMAX from "../exchanges/TradeMAX.jsx";
-import TradeKraken from "../exchanges/TradeKraken.jsx";
-import TradeCoinbase from "../exchanges/TradeCoinbase.jsx";
-import TradeBinanceP2P from "../exchanges/TradeBinanceP2P.jsx";
+import TradeMAX from "../frontend/src/app/app/_components/exchanges/TradeMAX.js";
+import TradeKraken from "../frontend/src/app/app/_components/exchanges/TradeKraken.js";
+import TradeCoinbase from "../frontend/src/app/app/_components/exchanges/TradeCoinbase.js";
+import TradeBinanceP2P from "../frontend/src/app/app/_components/exchanges/TradeBinanceP2P.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 

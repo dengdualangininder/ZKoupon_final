@@ -10,9 +10,7 @@ const TradeMAX = () => {
         <div className="modalNumber">1.</div>
         <div className="w-full">
           <div>在MAX 賬戶的上方，點“交易”</div>
-          <div className="flex justify-center">
-            <img src={tradeMAX1} className="mt-1 mb-1 w-[400px] rounded-xl border border-slate-400" />
-          </div>
+          <div className="flex justify-center">{/* <img src={tradeMAX1} className="mt-1 mb-1 w-[400px] rounded-xl border border-slate-400" /> */}</div>
         </div>
       </div>
       {/*---2---*/}
@@ -44,9 +42,7 @@ const TradeMAX = () => {
             </div>
           </div>
           {/*---image---*/}
-          <div className="w-full flex justify-center">
-            <img src={tradeMAX2} className="rounded-xl" />
-          </div>
+          <div className="w-full flex justify-center">{/* <img src={tradeMAX2} className="rounded-xl" /> */}</div>
         </div>
       </div>
       {/*----3--*/}
@@ -54,9 +50,7 @@ const TradeMAX = () => {
         <div className="modalNumber">3.</div>
         <div className="w-full">
           <div>點”錢包”(上方)返回主頁。點”提領”。按照指示進行提領。</div>
-          <div className="flex justify-center">
-            <img src={tradeMAX1} className="mt-1 mb-1 w-[400px] rounded-xl border border-slate-400" />
-          </div>
+          <div className="flex justify-center">{/* <img src={tradeMAX1} className="mt-1 mb-1 w-[400px] rounded-xl border border-slate-400" /> */}</div>
         </div>
       </div>
     </div>

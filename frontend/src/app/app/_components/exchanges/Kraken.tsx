@@ -35,9 +35,7 @@ const signupKraken = () => {
               Kraken's identity verification guide
             </a>
           </div>
-          <div className="flex justify-center">
-            <img src={krakenVerify} className="mt-2 mb-1 w-full rounded-xl border border-slate-300" />
-          </div>
+          <div className="flex justify-center">{/* <img src={krakenVerify} className="mt-2 mb-1 w-full rounded-xl border border-slate-300" /> */}</div>
         </div>
       </div>
     </div>

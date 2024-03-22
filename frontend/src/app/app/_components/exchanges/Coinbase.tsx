@@ -1,10 +1,4 @@
-import React from "react";
-import krakenVerify from "../../assets/krakenVerify.webp";
-import krakenTransfer from "../../assets/krakenTransfer.png";
-import krakenTrade1 from "../../assets/krakenTrade1.png";
-import krakenTrade2 from "../../assets/krakenTrade2.png";
-
-const signupKraken = () => {
+const signupCoinbase = () => {
   return (
     <div>
       {/*---1---*/}
@@ -30,8 +24,7 @@ const signupKraken = () => {
           <iframe
             src="https://fast.wistia.net/embed/iframe/mp9aidxwa2"
             className="absolute h-full w-full top-0 left-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen=""
+            allow="accelerometer; autoplay; fullscreen; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           ></iframe>
         </div>
         <div className="mt-4 text-sm font-bold">MOBILE GUIDE</div>
@@ -39,8 +32,7 @@ const signupKraken = () => {
           <iframe
             src="https://fast.wistia.net/embed/iframe/xng5llmex6"
             className="absolute h-full w-full top-0 left-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen=""
+            allow="accelerometer; autoplay; fullscreen; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           ></iframe>
         </div>
       </div>
@@ -48,4 +40,4 @@ const signupKraken = () => {
   );
 };
 
-export default signupKraken;
+export default signupCoinbase;
