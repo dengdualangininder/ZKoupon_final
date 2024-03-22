@@ -184,15 +184,18 @@ const Settings = ({
       if (missingInfo() === false) {
         const PlacardComponent = CEXdata[cashoutSettingsState.CEX].placard.component;
         let el = document.getElementById("qrsvg");
-        const blob = await pdf(
+        var blob = await pdf(
           <Document>
             <Page size="A5" style={{ position: "relative" }}>
               <View>
                 <PlacardComponent />
               </View>
               <View style={{ position: "absolute", transform: "translate(105, 186)" }}>
+                {/* @ts-ignore */}
                 <Svg width="215" height="215" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {/* @ts-ignore */}
                   <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+                  {/* @ts-ignore */}
                   <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
                 </Svg>
               </View>
