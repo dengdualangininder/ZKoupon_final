@@ -34,36 +34,9 @@ const Payments = ({ transactionsState, isMobile }: { transactionsState: any; isM
       <div>Payments</div>
       <div>products here:</div>
       <button
-        onClick={async () => {
-          const res = await fetch("/api/line", { method: "POST", headers: {}, body: "" });
-          // const lineAccessToken =
-          //   "rI25D9JZ2IiEf1vZm+t3iS+tXVCbR7r3+25fGgCS1LRGmeAQ2ZJWYSbwuYWVrkXw6kkXAZzPQRgkHTLS11F2MA30aNrXxz5wtgwmJMHu4MaSYSOjsTXSU/R4VlBFk0rDZv90hRgSBz+0wjCzPnHdAwdB04t89/1O/w1cDnyilFU=";
-          // try {
-          //   await axios.post(
-          //     "https://api.line.me/v2/bot/message/push",
-          //     {
-          //       to: "U34665e2abd196a0da01a3fb6d25c9195",
-          //       messages: [
-          //         {
-          //           type: "text",
-          //           text: "Hello",
-          //         },
-          //       ],
-          //     },
-          //     {
-          //       headers: {
-          //         "Content-Type": "application/json",
-          //         Authorization: `Bearer ${lineAccessToken}`,
-          //         "Access-Control-Allow-Origin": "*",
-          //         "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
-          //         "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
-          //       },
-          //     }
-          //   );
-          // } catch (err) {
-          //   console.log(err);
-          // }
-        }}
+      // onClick={async () => {
+      //   const res = await fetch("/api/line", { method: "POST", headers: {}, body: "" });
+      // }}
       >
         send line message
       </button>

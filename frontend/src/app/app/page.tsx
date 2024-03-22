@@ -126,10 +126,11 @@ const User = () => {
       }
       // get publicKey
       try {
-        const privateKey = await walletClient?.request({
+        const privateKey = (await walletClient?.request({
+          // @ts-ignore
           method: "eth_private_key", // it somehow works even if not typed
-        });
-        var publicKey = getPublicCompressed(Buffer.from(privateKey.padStart(64, "0"), "hex")).toString("hex");
+        })) as string;
+        var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
       } catch (e) {
         var publicKey = "";
         console.log("Cannot get publicKey");

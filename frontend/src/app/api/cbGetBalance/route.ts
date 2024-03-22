@@ -2,7 +2,7 @@ import axios from "axios";
 import dbConnect from "@/db/dbConnect";
 import UserModel from "@/db/models/UserModel";
 
-const getCbBalance = async (cbAccessToken) => {
+const getCbBalance = async (cbAccessToken: string) => {
   // call coinbase api
 };
 
