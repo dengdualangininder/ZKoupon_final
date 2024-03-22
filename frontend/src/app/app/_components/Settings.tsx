@@ -14,7 +14,6 @@ import { useDisconnect } from "wagmi";
 import MockUI from "@/app/_components/MockUI";
 // components - modals
 import FigmaModal from "./modals/FigmaModal";
-import ScanModal from "./modals/ScanModal";
 import ExchangeModal from "./modals/ExchangeModal";
 // import APIModal from "./modals/ApiKeyModal";
 import RefundModal from "./modals/RefundModal";
@@ -59,7 +58,6 @@ const Settings = ({
   const [url, setUrl] = useState("");
   // modal states
   const [figmaModal, setFigmaModal] = useState(false);
-  const [scanModal, setScanModal] = useState(false);
   const [exchangeModal, setExchangeModal] = useState(false);
   const [apiModal, setApiModal] = useState(false);
   const [merchantBusinessTypeModal, setMerchantBusinessTypeModal] = useState(false);
@@ -372,7 +370,6 @@ const Settings = ({
         </div>
       )}
       {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} />}
-      {scanModal && <ScanModal setScanModal={setScanModal} merchantCountry={paymentSettingsState.merchantCountry} />}
       {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.CEX} />}
       {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
       {refundModal && <RefundModal setRefundModal={setRefundModal} />}
