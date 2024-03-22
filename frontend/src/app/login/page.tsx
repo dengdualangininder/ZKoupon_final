@@ -2,16 +2,9 @@
 // nextjs
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 // wagmi
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { Connector } from "@wagmi/base";
-
-// import other
-import axios from "axios";
-// constants
-import { abb2full, countryData } from "@/utils/constants";
+import { useAccount, useConnect } from "wagmi";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,8 +13,8 @@ import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 
 const Login = () => {
-  const [email, setEmail] = useState(""); // employee login email
-  const [employeePass, setEmployeePass] = useState(""); // employee login password
+  const [merchantEmail, setMerchantEmail] = useState("");
+  const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
@@ -34,8 +27,7 @@ const Login = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [browser, setBrowser] = useState<string>("Safari");
 
-  let { connectAsync, connect, connectors } = useConnect();
-  const { disconnectAsync } = useDisconnect();
+  let { connectAsync, connectors } = useConnect();
   const router = useRouter();
   const account = useAccount();
 
@@ -205,7 +197,7 @@ const Login = () => {
               {/*--email---*/}
               <div className="w-full flex items-center">
                 <label className="loginlabelfont w-[75px] flex-none">Email</label>
-                <input type="email" className="logininputfont" onChange={(e) => setEmail(e.target.value)}></input>
+                <input type="email" className="logininputfont" onChange={(e) => setMerchantEmail(e.target.value)}></input>
               </div>
               {/*--password---*/}
               <div className="mt-2 flex items-center">
@@ -216,7 +208,7 @@ const Login = () => {
                     autoComplete="none"
                     autoCapitalize="none"
                     className="logininputfont w-full"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setEmployeePass(e.target.value)}
                   ></input>
                   <div
                     className="absolute right-[12px] top-[17px] xs:top-[6px] cursor-pointer text-xl xs:text-sm text-slate-700"
