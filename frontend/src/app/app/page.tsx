@@ -67,13 +67,13 @@ const User = () => {
   useEffect(() => {
     console.log("/app, useEffect run once");
     console.log("/app, useEffect, address:", account.address);
+    console.log("/app, useEffect, account.isConnected:", account.isConnected);
 
     // if not connected to web3Auth, then redirect to /login (account.address returns undefined sometimes, account.isConnected seems more stable)
-    console.log("account.isConnected", account.isConnected);
     if (account.address) {
       setIsAdmin(true);
     } else {
-      router.push("/login"); // TODO: need to check if employee login
+      // router.push("/login"); // TODO: need to check if employee login
       return;
     }
 
