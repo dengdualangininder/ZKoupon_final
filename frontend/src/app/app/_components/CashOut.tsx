@@ -9,8 +9,6 @@ import { readContract, writeContract } from "@wagmi/core";
 import { parseUnits, formatUnits } from "viem";
 // other
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
-import { Buffer } from "buffer";
 // constants
 import { tokenAddresses } from "@/utils/web3Constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
