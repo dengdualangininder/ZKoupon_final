@@ -1,7 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useWeb3Auth } from "@/app/provider/ContextProvider";
 
 const Payments = ({ transactionsState, isMobile }: { transactionsState: any; isMobile: boolean }) => {
   // console.log(txns);
@@ -33,13 +31,7 @@ const Payments = ({ transactionsState, isMobile }: { transactionsState: any; isM
     <div>
       <div>Payments</div>
       <div>products here:</div>
-      <button
-      // onClick={async () => {
-      //   const res = await fetch("/api/line", { method: "POST", headers: {}, body: "" });
-      // }}
-      >
-        send line message
-      </button>
+      <button>send line message</button>
       <div>{products}</div>
     </div>
   );
