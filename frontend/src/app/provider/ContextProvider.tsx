@@ -25,6 +25,7 @@ export const useWeb3Auth = () => useContext(Web3AuthContext);
 // useEffect(() => {}, []);
 
 export const ContextProvider = ({ children }: { children: React.ReactNode }) => {
+  console.log("ContextProvider rendered once");
   // create web3Auth instance
   console.log("new web3Auth instance");
   const chainConfig = {
