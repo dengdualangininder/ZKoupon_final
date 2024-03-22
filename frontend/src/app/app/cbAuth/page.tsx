@@ -2,7 +2,6 @@
 "use client";
 import React, { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
 
 const cbAuth = () => {
   const router = useRouter();

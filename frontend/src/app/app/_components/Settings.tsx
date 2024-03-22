@@ -10,8 +10,6 @@ import { saveAs } from "file-saver";
 import { Buffer } from "buffer";
 // wagmi
 import { useDisconnect } from "wagmi";
-// others
-import axios from "axios";
 // components
 import MockUI from "@/app/_components/MockUI";
 // components - modals
