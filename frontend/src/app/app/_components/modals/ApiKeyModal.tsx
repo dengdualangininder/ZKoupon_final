@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const ApiKeyModal = ({ setApiModal }) => {
+const ApiKeyModal = ({ setApiModal }: { setApiModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
   return (
     <div className="">
       <div className="modalContainer">

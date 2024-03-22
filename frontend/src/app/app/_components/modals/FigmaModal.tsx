@@ -5,7 +5,7 @@ import figmaModalThree from "../../assets/figmaModalThree.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const FigmaModal = ({ setFigmaModal }) => {
+const FigmaModal = ({ setFigmaModal }: { setFigmaModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
   return (
     <div>
       <div className="modalContainer">

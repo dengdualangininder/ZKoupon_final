@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const RefundModal = ({ setRefundModal }) => {
+const RefundModal = ({ setRefundModal }: { setRefundModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
   return (
     <div className="">
       <div className="modalContainer">

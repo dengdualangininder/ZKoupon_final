@@ -16,7 +16,7 @@ import MockUI from "@/app/_components/MockUI";
 import FigmaModal from "./modals/FigmaModal";
 import ScanModal from "./modals/ScanModal";
 import ExchangeModal from "./modals/ExchangeModal";
-import APIModal from "./modals/ApiKeyModal";
+// import APIModal from "./modals/ApiKeyModal";
 import RefundModal from "./modals/RefundModal";
 import DepositAddressModal from "./modals/DepositAddressModal";
 // constants
@@ -374,7 +374,7 @@ const Settings = ({
       {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} />}
       {scanModal && <ScanModal setScanModal={setScanModal} merchantCountry={paymentSettingsState.merchantCountry} />}
       {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.CEX} />}
-      {apiModal && <APIModal setApiModal={setApiModal} />}
+      {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
       {refundModal && <RefundModal setRefundModal={setRefundModal} />}
       {depositAddressModal && <DepositAddressModal setDepositAddressModal={setDepositAddressModal} />}
 

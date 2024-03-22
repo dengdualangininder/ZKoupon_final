@@ -1,24 +1,13 @@
 "use client";
-import MAX from "../exchanges/MAX";
-import Kraken from "../exchanges/Kraken";
-import Coinbase from "../exchanges/Coinbase";
-import BinanceP2P from "../exchanges/BinanceP2P";
-import { countryData } from "@/utils/constants";
+// import MAX from "../exchanges/MAX";
+// import Kraken from "../exchanges/Kraken";
+// import Coinbase from "../exchanges/Coinbase";
+// import BinanceP2P from "../exchanges/BinanceP2P";
+// import { countryData } from "@/utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const ExchangeModal = ({ setExchangeModal, CEX }) => {
-  const handleSelectCurrency = (e) => {
-    if (e.target.value === "select") {
-      setCurrency(false);
-    } else {
-      let selectString = e.target.value;
-      let tempCurrency = selectString.split("(")[1].replace(")", "");
-      let tempIndex = data.findIndex((i) => i.currency == tempCurrency);
-      setModalIndex(tempIndex);
-    }
-  };
-
+const ExchangeModal = ({ setExchangeModal, CEX }: { setExchangeModal: React.Dispatch<React.SetStateAction<boolean>>; CEX: string }) => {
   return (
     <div>
       <div className="modalContainer">

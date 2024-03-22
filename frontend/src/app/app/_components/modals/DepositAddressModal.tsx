@@ -1,7 +1,8 @@
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const DepositAddressModal = ({ setDepositAddressModal }) => {
+const DepositAddressModal = ({ setDepositAddressModal }: { setDepositAddressModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
   return (
     <div className="">
       <div className="modalContainer">
