@@ -70,7 +70,7 @@ const User = () => {
 
     // if not connected to web3Auth, then redirect to /login (account.address returns undefined sometimes, account.isConnected seems more stable)
     console.log("account.isConnected", account.isConnected);
-    if (account.isConnected) {
+    if (account.address) {
       setIsAdmin(true);
     } else {
       router.push("/login"); // TODO: need to check if employee login
