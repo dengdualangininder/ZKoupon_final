@@ -1,9 +1,6 @@
 "use client";
 // next
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-// wagmi
-import { useAccount, useConnect, useDisconnect } from "wagmi";
 // others
 import Pusher from "pusher-js";
 // components
@@ -14,16 +11,8 @@ import Overview from "./_components/Overview";
 // import Why from "../components/Why.jsx";
 // import Learn from "../components/Learn.jsx";
 // import Contact from "../components/Contact.jsx";
-// import Footer from "../components/Footer.jsx";
 
 const Home = () => {
-  // contexts
-  const router = useRouter();
-  const account = useAccount();
-  console.log("root page, account", account.address);
-  // if (account.address) {
-  //   router.push("/app");
-  // }
   // useEffect(() => {
   //   const pusher = new Pusher("a29a22e46d485f5f2038", { cluster: "ap3" });
   //   const channel = pusher.subscribe("my-channel");
