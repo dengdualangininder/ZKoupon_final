@@ -7,7 +7,7 @@ import axios from "axios";
 // wagmi
 import { useAccount, useConfig, useWalletClient, useDisconnect } from "wagmi";
 // web3Auth
-import { useWeb3Auth } from "./layout";
+import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 // components

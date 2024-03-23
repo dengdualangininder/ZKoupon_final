@@ -12,20 +12,17 @@ import { Web3AuthNoModal } from "@web3auth/no-modal";
 import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK, WALLET_ADAPTERS, ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
 import { OpenloginAdapter, OPENLOGIN_NETWORK } from "@web3auth/openlogin-adapter";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
-// import { Chain } from "wagmi/chains";
-// import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin";
 
 const queryClient = new QueryClient();
-
 const chains = [polygon];
 
 export const Web3AuthContext = createContext<Web3AuthNoModal | null>(null);
 export const useWeb3Auth = () => useContext(Web3AuthContext);
 
-export const ContextProvider = ({ children }: { children: React.ReactNode }) => {
-  console.log("ContextProvider rendered once");
+export default function ContextProvider({ children }: { children: React.ReactNode }) {
+  console.log("/app Layout rendered once");
+
   // create web3Auth instance
-  console.log("new web3Auth instance");
   const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: "0x" + chains[0].id.toString(16),
@@ -115,13 +112,13 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     console.log("error", error);
   });
 
+  const [web3Auth, setWeb3Auth] = useState(web3AuthInstance);
+
   return (
-    <Web3AuthContext.Provider value={web3AuthInstance}>
+    <Web3AuthContext.Provider value={web3Auth}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </WagmiProvider>
     </Web3AuthContext.Provider>
   );
-};
-
-export default ContextProvider;
+}
