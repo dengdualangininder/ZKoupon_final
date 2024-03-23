@@ -1,7 +1,6 @@
 import { Inter, Nunito_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
-import ContextProvider from "./provider/ContextProvider";
 
 // const inter = Inter({ subsets: ["latin"], variable: "--font-inter" }); // inter is variable font so no "weight" needed, recommended
 const nunito = Nunito_Sans({ weight: ["300", "400", "500", "600", "700", "800", "900"], subsets: ["latin"] }); // inter is variable font so no "weight" needed, recommended
@@ -22,9 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${nunito}`}>
-        <ContextProvider>
-          <main className="relative overflow-hidden">{children}</main>
-        </ContextProvider>
+        <main className="relative overflow-hidden">{children}</main>
       </body>
     </html>
   );
