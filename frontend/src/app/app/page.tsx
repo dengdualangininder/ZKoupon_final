@@ -1,6 +1,6 @@
 "use client";
 // nextjs
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -47,6 +47,7 @@ const User = () => {
   let web3Auth = useWeb3Auth();
   let config = useConfig();
   const { disconnectAsync } = useDisconnect();
+  const initialized = useRef(false); //makes it so API runs once
 
   // in case if someone needs to redirect to /app page with specific menu tab
   const searchParams = useSearchParams();
@@ -102,99 +103,100 @@ const User = () => {
       return;
     }
 
-    // if already logged in
-    const test = Object.keys(paymentSettingsState).length != 0 ? "true" : "false";
-    console.log("paymentSettingsState", test);
-    if (Object.keys(paymentSettingsState).length != 0) {
-      setPage("app");
-      return;
-    }
+    // // if already logged in
+    // const test = Object.keys(paymentSettingsState).length != 0 ? "true" : "false";
+    // console.log("paymentSettingsState", test);
+    // if (Object.keys(paymentSettingsState).length != 0) {
+    //   setPage("app");
+    //   return;
+    // }
 
-    // if not connected to web3Auth, then redirect to /login (account.address returns undefined sometimes, account.isConnected seems more stable)
     console.log("/app, useEffect, address:", account.address);
-    console.log("/app, useEffect, account.isConnected:", account.isConnected);
-    if (account.address) {
-      setIsAdmin(true);
+    // if not connected to web3Auth, then redirect to /login (account.address or account.isConnected doesn't indicate final state)
+    if (walletClient) {
+      console.log("walletClient detected");
       setPage("app");
+      setIsAdmin(true);
     } else {
+      console.log("walletClient not detected");
       setPage("login");
       return;
     }
 
-    // exit useEffect if walletClient not detected (account.address will be detected first, then walletClient)
-    if (walletClient) {
-      console.log("walletClient detected");
-    } else {
-      console.log("walletClient not detected");
-      return;
-    }
-
     // get user doc (w/ verification) || create new user
-    const verifyAndGetData = async () => {
-      console.log("/app, verifyAndGetData() run once");
-      // get idToken
-      try {
-        console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
-        const userInfo = await web3Auth?.getUserInfo();
-        console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
-        var idToken = userInfo?.idToken;
-        // var idToken = (await web3Auth?.getUserInfo())?.idToken;
-      } catch (e) {
-        console.log("verifyAndGetData, Cannot get idToken, likely web3Auth not fully updated");
-      }
-      // get publicKey
-      try {
-        const privateKey = (await walletClient?.request({
-          // @ts-ignore
-          method: "eth_private_key", // it somehow works even if not typed
-        })) as string;
-        var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
-      } catch (e) {
-        var publicKey = "";
-        console.log("Cannot get publicKey");
-      }
-      // get user doc (with verification)
-      if (idToken && publicKey) {
-        console.log("fetching doc...");
+    if (!initialized.current) {
+      initialized.current = true;
+      const verifyAndGetData = async () => {
+        console.log("/app, verifyAndGetData() run once");
+        // get idToken
         try {
-          const res = await fetch("/api/getUserDoc", {
-            method: "POST",
-            body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idToken, publicKey: publicKey }),
-            headers: { "content-type": "application/json" },
-          });
-          const data = await res.json();
-
-          if (data.status === "success") {
-            console.log("/app, successfully fetched doc:", data.doc);
-            setPaymentSettingsState(data.doc.paymentSettings);
-            setCashoutSettingsState(data.doc.cashoutSettings);
-            setTransactionsState(data.doc.transactions);
-            // show intro modal
-            if (data.doc.intro) {
-              setIntroModal(true);
-              setMenu("appSettings");
-            }
-          }
-
-          if (data === "create new user") {
-            await createNewUser();
-          }
-
-          if (data.status === "error") {
-            console.log("/app, something in getUserDoc api failed");
-            await disconnectAsync();
-            router.push("/login");
-          }
-
-          setIsAppLoading(false);
-        } catch (err) {
-          console.log("/app, verify failed");
-          await disconnectAsync();
-          router.push("/login");
+          console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
+          const userInfo = await web3Auth?.getUserInfo();
+          console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
+          var idToken = userInfo?.idToken;
+          // var idToken = (await web3Auth?.getUserInfo())?.idToken;
+        } catch (e) {
+          console.log("verifyAndGetData, Cannot get idToken, likely web3Auth not fully updated");
         }
-      }
-    };
-    verifyAndGetData();
+        // get publicKey
+        try {
+          const privateKey = (await walletClient?.request({
+            // @ts-ignore
+            method: "eth_private_key", // it somehow works even if not typed
+          })) as string;
+          var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
+        } catch (e) {
+          var publicKey = "";
+          console.log("Cannot get publicKey");
+        }
+        // get user doc (with verification)
+        if (idToken && publicKey) {
+          console.log("fetching doc...");
+          try {
+            const res = await fetch("/api/getUserDoc", {
+              method: "POST",
+              body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idToken, publicKey: publicKey }),
+              headers: { "content-type": "application/json" },
+            });
+            const data = await res.json();
+
+            if (data.status === "success") {
+              console.log("/app, successfully fetched doc:", data.doc);
+              setPaymentSettingsState(data.doc.paymentSettings);
+              setCashoutSettingsState(data.doc.cashoutSettings);
+              setTransactionsState(data.doc.transactions);
+              // show intro modal
+              if (data.doc.intro) {
+                setIntroModal(true);
+                setMenu("appSettings");
+              }
+            }
+
+            if (data === "create new user") {
+              await createNewUser();
+            }
+
+            if (data.status === "error") {
+              console.log("/app, something in getUserDoc api failed");
+              await disconnectAsync();
+              router.push("/app");
+            }
+
+            setIsAppLoading(false);
+          } catch (err) {
+            console.log("/app, verify failed");
+            await disconnectAsync();
+            router.push("/app");
+          }
+        }
+      };
+      verifyAndGetData();
+    }
+    // setTimeout(() => {
+    //   if (menu === "loading") {
+    //     setPage("login");
+    //   }
+    // }, 1000);
   }, [walletClient]);
 
   const createNewUser = async () => {
