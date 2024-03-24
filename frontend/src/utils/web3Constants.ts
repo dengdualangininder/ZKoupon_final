@@ -10,7 +10,10 @@ const public_RPC_URLs = {
   Base: "https://mainnet.base.org",
 };
 
-const tokenAddresses = {
+type TokenAddresses = {
+  [key: string]: { [key: string]: { address: string; decimals: number } };
+};
+const tokenAddresses: TokenAddresses = {
   Polygon: {
     USDC: { address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", decimals: 6 },
     USDT: { address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", decimals: 6 },
@@ -46,7 +49,10 @@ const tokenAddresses = {
   },
 };
 
-const chainIds = {
+type ChainIds = {
+  [key: string]: string;
+};
+const chainIds: ChainIds = {
   Gnosis: "0x64",
   Polygon: "0x89",
   Thunder: "0x6c",
@@ -57,7 +63,10 @@ const chainIds = {
   Base: "0x2105",
 };
 
-const addChainParams = {
+type AddChainParams = {
+  [key: string]: { chainId: string; chainName: string; rpcUrls: string[]; nativeCurrency: { name: string; symbol: string; decimals: number }; blockExplorerUrls: string[] };
+};
+const addChainParams: AddChainParams = {
   Polygon: {
     chainId: "0x89",
     chainName: "Polygon",

@@ -115,13 +115,13 @@ const Login = ({ isMobile }: { isMobile: boolean }) => {
 
   return (
     <div className="h-screen flex flex-col items-center xs:justify-center font-nunito">
-      <div className="px-7 w-[356px] h-[80%] xs:h-[480px] flex flex-col items-center justify-evenly xs:rounded-2xl border-slate-300 xs:border-4">
+      <div className="px-7 w-[356px] h-full xs:h-[480px] flex flex-col items-center justify-evenly xs:rounded-2xl border-slate-300 xs:border-4">
         {/*--heading---*/}
-        <div className="flex items-center">
-          <div className="font-bold text-3xl xs:text-[23px] leading-none text-center">Sign in to Flash Business</div>
-          {/* <div className="ml-3 relative w-[80px] h-[60px]">
+        <div className="flex flex-col xs:flex-row items-center">
+          <div className="hidden xs:block font-bold text-xl xs:text-[23px] w-[230px] leading-none text-center">Sign in to</div>
+          <div className="relative w-[200px] h-[80px]">
             <Image src="/logo.svg" alt="logo" fill />
-          </div> */}
+          </div>
         </div>
 
         {/*--FOR OWNERS---*/}
@@ -168,19 +168,24 @@ const Login = ({ isMobile }: { isMobile: boolean }) => {
                   onChange={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
-                  className="absolute right-[12px] top-[17px] xs:top-[6px] cursor-pointer text-xl xs:text-sm text-slate-700"
+                  className="absolute right-[16px] top-[6px] xs:top-[6px] cursor-pointer text-base xs:text-sm text-gray-700"
                   onClick={() => {
                     show ? setShow(false) : setShow(true);
                   }}
                 >
-                  {show ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+                  <FontAwesomeIcon icon={faEye} />
+                  <div
+                    className={`${show ? "" : "hidden"} absolute top-[0px] xs:top-[-1px] left-[8px] xs:left-[7px] rotate-[-45deg] h-[24px] xs:h-[20px] w-[1.5px] bg-gray-700`}
+                  ></div>
                 </div>
               </div>
             </div>
             {/*--sign in button---*/}
-            <button type="submit" className="mt-2 ml-[75px] grow rounded-lg py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
-              {isWaiting ? <SpinningCircleWhite /> : <div>Sign in</div>}
-            </button>
+            <div className="flex justify-center mt-2 ml-[75px]">
+              <button type="submit" className="w-[160px] rounded-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
+                {isWaiting ? <SpinningCircleWhite /> : <div>Sign in</div>}
+              </button>
+            </div>
           </form>
 
           {/*--forgot password---*/}

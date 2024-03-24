@@ -86,7 +86,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
       blockRate: Number,
       cashRate: Number,
       savings: String,
-      merchantAddress: String,
+      merchantEvmAddress: String,
       refund: Boolean,
       archive: Boolean,
       // online params

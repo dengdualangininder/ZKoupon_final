@@ -20,7 +20,7 @@ export const Web3AuthContext = createContext<Web3AuthNoModal | null>(null);
 export const useWeb3Auth = () => useContext(Web3AuthContext);
 
 export default function ContextProvider({ children }: { children: React.ReactNode }) {
-  console.log("/app Layout rendered once");
+  console.log("ContextProvider rendered once");
 
   // create web3Auth instance
   const chainConfig = {

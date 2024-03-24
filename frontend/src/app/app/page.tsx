@@ -8,6 +8,7 @@ import axios from "axios";
 import { useAccount, useConfig, useWalletClient, useDisconnect } from "wagmi";
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
+import { ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
 // others
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 // components
@@ -28,10 +29,16 @@ import { faList, faFileInvoiceDollar, faGear, faPlus, faRightFromBracket, faSync
 
 const User = () => {
   console.log("/app, page rendered once");
+
+  // in case if someone needs to redirect to /app page with specific menu tab
+  const searchParams = useSearchParams();
+  const menuTemp = searchParams.get("menu");
+
+  // states
   const [paymentSettingsState, setPaymentSettingsState] = useState({});
   const [cashoutSettingsState, setCashoutSettingsState] = useState({});
   const [transactionsState, setTransactionsState] = useState([]);
-  const [menu, setMenu] = useState("payments"); // "payments" | "cashOut" | "settings"
+  const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "app"
   const [reload, setReload] = useState(true);
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
@@ -49,14 +56,6 @@ const User = () => {
   const { disconnectAsync } = useDisconnect();
   const initialized = useRef(false); //makes it so API runs once
 
-  // in case if someone needs to redirect to /app page with specific menu tab
-  const searchParams = useSearchParams();
-  const menuTemp = searchParams.get("menu");
-  if (menuTemp) {
-    console.log("searchParam detected, menuTemp:", menuTemp);
-    setMenu(menuTemp);
-  }
-
   // if (isStandalone) {
   //   PullToRefresh.init({
   //     mainElement: "body",
@@ -68,6 +67,11 @@ const User = () => {
   //     iconRefreshing: ReactDOMServer.renderToString(<FontAwesomeIcon icon={faSyncAlt} spin={true} />),
   //   });
   // }
+
+  // web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
+  //   console.log("/app, connected to wallet", data);
+  //   verifyAndGetData();
+  // });
 
   useEffect(() => {
     console.log("/app, useEffect run once");
@@ -103,15 +107,12 @@ const User = () => {
       return;
     }
 
-    // // if already logged in
-    // const test = Object.keys(paymentSettingsState).length != 0 ? "true" : "false";
-    // console.log("paymentSettingsState", test);
-    // if (Object.keys(paymentSettingsState).length != 0) {
-    //   setPage("app");
-    //   return;
-    // }
-
+    // because walletClient will mutate after account.address, use account.address to switch from Loading Page to Login Page
     console.log("/app, useEffect, address:", account.address);
+    if (!account.address) {
+      // setPage("login");
+    }
+
     // if not connected to web3Auth, then redirect to /login (account.address or account.isConnected doesn't indicate final state)
     if (walletClient) {
       console.log("walletClient detected");
@@ -126,70 +127,6 @@ const User = () => {
     // get user doc (w/ verification) || create new user
     if (!initialized.current) {
       initialized.current = true;
-      const verifyAndGetData = async () => {
-        console.log("/app, verifyAndGetData() run once");
-        // get idToken
-        try {
-          console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
-          const userInfo = await web3Auth?.getUserInfo();
-          console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
-          var idToken = userInfo?.idToken;
-          // var idToken = (await web3Auth?.getUserInfo())?.idToken;
-        } catch (e) {
-          console.log("verifyAndGetData, Cannot get idToken, likely web3Auth not fully updated");
-        }
-        // get publicKey
-        try {
-          const privateKey = (await walletClient?.request({
-            // @ts-ignore
-            method: "eth_private_key", // it somehow works even if not typed
-          })) as string;
-          var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
-        } catch (e) {
-          var publicKey = "";
-          console.log("Cannot get publicKey");
-        }
-        // get user doc (with verification)
-        if (idToken && publicKey) {
-          console.log("fetching doc...");
-          try {
-            const res = await fetch("/api/getUserDoc", {
-              method: "POST",
-              body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idToken, publicKey: publicKey }),
-              headers: { "content-type": "application/json" },
-            });
-            const data = await res.json();
-
-            if (data.status === "success") {
-              console.log("/app, successfully fetched doc:", data.doc);
-              setPaymentSettingsState(data.doc.paymentSettings);
-              setCashoutSettingsState(data.doc.cashoutSettings);
-              setTransactionsState(data.doc.transactions);
-              // show intro modal
-              if (data.doc.intro) {
-                setIntroModal(true);
-                setMenu("appSettings");
-              }
-            }
-
-            if (data === "create new user") {
-              await createNewUser();
-            }
-
-            if (data.status === "error") {
-              console.log("/app, something in getUserDoc api failed");
-              await disconnectAsync();
-              router.push("/app");
-            }
-
-            setIsAppLoading(false);
-          } catch (err) {
-            console.log("/app, verify failed");
-            await disconnectAsync();
-            router.push("/app");
-          }
-        }
-      };
       verifyAndGetData();
     }
     // setTimeout(() => {
@@ -197,7 +134,72 @@ const User = () => {
     //     setPage("login");
     //   }
     // }, 1000);
-  }, [walletClient]);
+  }, [walletClient, web3Auth]);
+
+  const verifyAndGetData = async () => {
+    console.log("/app, verifyAndGetData() run once");
+    // get idToken
+    try {
+      console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
+      const userInfo = await web3Auth?.getUserInfo();
+      console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
+      var idToken = userInfo?.idToken;
+      // var idToken = (await web3Auth?.getUserInfo())?.idToken;
+    } catch (e) {
+      console.log("verifyAndGetData, Cannot get idToken, likely web3Auth not fully updated");
+    }
+    // get publicKey
+    try {
+      const privateKey = (await walletClient?.request({
+        // @ts-ignore
+        method: "eth_private_key", // it somehow works even if not typed
+      })) as string;
+      var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
+    } catch (e) {
+      var publicKey = "";
+      console.log("Cannot get publicKey");
+    }
+    // get user doc (with verification)
+    if (idToken && publicKey) {
+      console.log("fetching doc...");
+      try {
+        const res = await fetch("/api/getUserDoc", {
+          method: "POST",
+          body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idToken, publicKey: publicKey }),
+          headers: { "content-type": "application/json" },
+        });
+        const data = await res.json();
+
+        if (data.status === "success") {
+          console.log("/app, successfully fetched doc:", data.doc);
+          setPaymentSettingsState(data.doc.paymentSettings);
+          setCashoutSettingsState(data.doc.cashoutSettings);
+          setTransactionsState(data.doc.transactions);
+          // show intro modal
+          if (data.doc.intro) {
+            setIntroModal(true);
+            setMenu("appSettings");
+          }
+        }
+
+        if (data === "create new user") {
+          await createNewUser();
+        }
+
+        if (data.status === "error") {
+          console.log("/app, something in getUserDoc api failed");
+          await disconnectAsync();
+          router.push("/app");
+        }
+
+        setIsAppLoading(false);
+      } catch (err) {
+        console.log("/app, verify failed");
+        await disconnectAsync();
+        router.push("/app");
+      }
+    }
+  };
 
   const createNewUser = async () => {
     console.log("creating new user");
@@ -238,14 +240,14 @@ const User = () => {
       }
     } catch (err) {
       console.log(err);
-      router.push("/login");
+      setPage("login");
     }
   };
 
   const menuArray = [
-    { id: "appPayments", title: "Payments", fa: faList },
-    { id: "appCashOut", title: "Cash Out", fa: faFileInvoiceDollar },
-    { id: "appSettings", title: "Settings", fa: faGear },
+    { id: "payments", title: "Payments", fa: faList },
+    { id: "cashOut", title: "Cash Out", fa: faFileInvoiceDollar },
+    { id: "settings", title: "Settings", fa: faGear },
   ];
 
   return (
@@ -279,18 +281,15 @@ const User = () => {
                 {/*---menu items---*/}
                 {isAdmin ? (
                   <div className="flex md:block text-lg font-bold space-x-2 xs:space-x-4 md:space-x-0 md:space-y-4">
-                    {menuArray.map((i, index) => (
+                    {menuArray.map((i) => (
                       <div
                         id={i.id}
-                        key={index}
-                        data-category="appMenu"
+                        key={i.id}
                         className={`${
                           menu === i.id ? "bg-white" : ""
                         } cursor-pointer xs:hover:bg-white px-4 py-3 flex flex-col xs:flex-row justify-center xs:justify-start items-center rounded-3xl`}
                         onClick={(e) => {
                           setMenu(e.currentTarget.id);
-                          // so if user activates automation, when they switch to payments, they won't see blocking modal
-                          e.currentTarget.id === "appPayments" ? setReload(!reload) : null;
                         }}
                       >
                         <div className="w-[36px] flex justify-center pointer-events-none">

@@ -78,14 +78,9 @@ const Settings = ({
   // listens to changes in paymentSettingsState and sets the url
   useEffect(() => {
     console.log("url useEffect run once");
-    let tempUrl =
-      paymentSettingsState.merchantPaymentType +
-      "&&" +
-      encodeURIComponent(paymentSettingsState.merchantName) +
-      "&&" +
-      paymentSettingsState.merchantCurrency +
-      "&&" +
-      paymentSettingsState.merchantEvmAddress;
+    const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
+    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
+    console.log(tempUrl);
     if (paymentSettingsState.merchantPaymentType === "online") {
       tempUrl =
         tempUrl +
@@ -1214,8 +1209,8 @@ const Settings = ({
           {/*---form---*/}
           <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
             <label className="labelfont">My EVM Address</label>
-            <div className="flex items-center h-[40px] xs:h-[36px] border border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer px-1 rounded-md">
-              <div className="mr-2 text-xs xs:text-sm md:text-xs text-gray-700">{paymentSettingsState.merchantEvmAddress}</div>
+            <div className="flex items-center h-[40px] xs:h-[36px] border border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer xs:px-1 rounded-md">
+              <div className="mr-1 xs:mr-2 text-[13px] xs:text-sm md:text-xs text-gray-700">{paymentSettingsState.merchantEvmAddress}</div>
               <div className="relative w-[16px] h-[16px]">
                 <Image src="/copySvg.svg" alt="copy icon" fill />
               </div>
