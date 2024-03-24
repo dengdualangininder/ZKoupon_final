@@ -112,10 +112,10 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     console.log("error", error);
   });
 
-  const [web3Auth, setWeb3Auth] = useState(web3AuthInstance);
+  // const [web3Auth, setWeb3Auth] = useState(web3AuthInstance);
 
   return (
-    <Web3AuthContext.Provider value={web3Auth}>
+    <Web3AuthContext.Provider value={web3AuthInstance}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </WagmiProvider>
