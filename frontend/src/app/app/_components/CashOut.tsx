@@ -164,6 +164,8 @@ const CashOut = ({
     console.log(txHashTemp);
     setCashOutModalText("sent");
     setTxHash(txHashTemp);
+
+    //
   };
 
   const onClickSIWC = async () => {
