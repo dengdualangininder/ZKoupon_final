@@ -134,7 +134,7 @@ const User = () => {
     //     setPage("login");
     //   }
     // }, 1000);
-  }, [walletClient, web3Auth]);
+  }, [walletClient]);
 
   const verifyAndGetData = async () => {
     console.log("/app, verifyAndGetData() run once");
