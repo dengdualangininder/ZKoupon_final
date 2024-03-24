@@ -115,10 +115,10 @@ const Login = ({ isMobile }: { isMobile: boolean }) => {
 
   return (
     <div className="h-screen flex flex-col items-center xs:justify-center font-nunito">
-      <div className="px-7 w-[356px] h-full xs:h-[480px] flex flex-col items-center justify-evenly xs:rounded-2xl border-slate-300 xs:border-4">
+      <div className="px-7 w-[356px] h-full xs:h-[520px] flex flex-col items-center justify-evenly xs:rounded-2xl border-slate-300 xs:border-4">
         {/*--heading---*/}
         <div className="flex flex-col xs:flex-row items-center">
-          <div className="hidden xs:block font-bold text-xl xs:text-[23px] w-[230px] leading-none text-center">Sign in to</div>
+          {/* <div className="hidden xs:block font-bold text-xl xs:text-[23px] w-[230px] leading-none text-center">Sign in to</div> */}
           <div className="relative w-[200px] h-[80px]">
             <Image src="/logo.svg" alt="logo" fill />
           </div>
