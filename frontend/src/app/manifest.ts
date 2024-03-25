@@ -13,6 +13,11 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: "any",
         type: "image/svg+xml",
       },
+      {
+        src: "/logoBlackBgNoText.png",
+        type: "image/png",
+        sizes: "any",
+      },
     ],
   };
 }
