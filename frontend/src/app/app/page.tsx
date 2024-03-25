@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 // wagmi
-import { useAccount, useConfig, useWalletClient, useDisconnect } from "wagmi";
+import { useAccount, useConfig, useWalletClient, useDisconnect, useConnect, useAccountEffect } from "wagmi";
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 import { ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
@@ -54,6 +54,7 @@ const User = () => {
   let web3Auth = useWeb3Auth();
   let config = useConfig();
   const { disconnectAsync } = useDisconnect();
+  const { connect, connectors } = useConnect();
   const initialized = useRef(false); //makes it so API runs once
 
   // if (isStandalone) {
@@ -73,96 +74,133 @@ const User = () => {
   //   verifyAndGetData();
   // });
 
+  // useAccountEffect({
+  //   onConnect(data) {
+  //     console.log("Connected!", data);
+  //   },
+  //   onDisconnect() {
+  //     console.log("Disconnected!");
+  //   },
+  // });
+
+  // web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
+  //   console.log("connected to wallet", data);
+  //   console.log(walletClient ? "in event listener, no walletClient" : "in event listener, walletClient detected"); // will always return true
+  // });
+  // web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
+  //   console.log("connecting");
+  // });
+
   useEffect(() => {
-    console.log("/app, useEffect run once");
+    (async () => {
+      console.log("/app, useEffect run once");
 
-    // if mobile & not standalone, then redirect to "Save To Homescreen"
-    const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
-    console.log("/app, useEffect, isMobileTemp", isMobileTemp);
-    setIsMobile(isMobileTemp);
-    if (isMobileAndNotStandaloneTemp) {
-      console.log("detected mobile & not standalone");
-      // detect browser and redirect to "Save To Homescreen"
-      const userAgent = navigator.userAgent;
-      if (userAgent.match(/chrome|chromium|crios/i)) {
-        setBrowser("Chrome");
-      } else if (userAgent.match(/firefox|fxios/i)) {
-        setBrowser("Firefox");
-      } else if (userAgent.match(/safari/i)) {
-        setBrowser("Safari");
-      } else if (userAgent.match(/opr\//i)) {
-        setBrowser("Opera");
-      } else if (userAgent.match(/edg/i)) {
-        setBrowser("Edge");
-      } else if (userAgent.match(/samsungbrowser/i)) {
-        setBrowser("Samsung");
-      } else if (userAgent.match(/ucbrowser/i)) {
-        setBrowser("UC");
-      } else {
-        setBrowser("");
+      // if mobile & not standalone, then redirect to "Save To Homescreen"
+      const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
+      const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+      const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
+      console.log("/app, useEffect, isMobileTemp", isMobileTemp);
+      setIsMobile(isMobileTemp);
+      if (isMobileAndNotStandaloneTemp) {
+        console.log("detected mobile & not standalone");
+        // detect browser and redirect to "Save To Homescreen"
+        const userAgent = navigator.userAgent;
+        if (userAgent.match(/chrome|chromium|crios/i)) {
+          setBrowser("Chrome");
+        } else if (userAgent.match(/firefox|fxios/i)) {
+          setBrowser("Firefox");
+        } else if (userAgent.match(/safari/i)) {
+          setBrowser("Safari");
+        } else if (userAgent.match(/opr\//i)) {
+          setBrowser("Opera");
+        } else if (userAgent.match(/edg/i)) {
+          setBrowser("Edge");
+        } else if (userAgent.match(/samsungbrowser/i)) {
+          setBrowser("Samsung");
+        } else if (userAgent.match(/ucbrowser/i)) {
+          setBrowser("UC");
+        } else {
+          setBrowser("");
+        }
+        setPage("saveToHome");
+        return;
       }
-      setPage("saveToHome");
-      return;
-    }
 
-    // because walletClient will mutate after account.address, use account.address to switch from Loading Page to Login Page
-    console.log("/app, useEffect, address:", account.address);
-    if (!account.address) {
-      // setPage("login");
-    }
+      // query localStorage to determine if to proceed or show Login component
+      const sessionIdObject = window.localStorage.getItem("openlogin_store");
+      if (sessionIdObject) {
+        const sessionId = JSON.parse(sessionIdObject).sessionId;
+        if (sessionId) {
+          console.log("already logged into web3Auth");
+        } else {
+          setPage("login");
+          return;
+        }
+      } else {
+        setPage("login");
+        return;
+      }
 
-    // if not connected to web3Auth, then redirect to /login (account.address or account.isConnected doesn't indicate final state)
-    if (walletClient) {
-      console.log("walletClient detected");
-      setPage("app");
-      setIsAdmin(true);
-    } else {
-      console.log("walletClient not detected");
-      setPage("login");
-      return;
-    }
+      console.log("/app, useEffect, web3Auth.status", web3Auth ? web3Auth.status : "web3Auth is null");
+      console.log("/app, useEffect, web3Auth.connected", web3Auth ? web3Auth.connected : "web3Auth is null");
+      console.log("/app, useEffect, account.address", account.address);
+      // In general, all the above will show "undefined" in 1st useEffect run (thus, we query localStorage to determine if web3Auth
+      // already connected). In 2nd run, web3Auth.status will show "connected" and account.address will show. In 3rd run, walletClient will be detected
 
-    // get user doc (w/ verification) || create new user
-    if (!initialized.current) {
-      initialized.current = true;
-      verifyAndGetData();
-    }
-    // setTimeout(() => {
-    //   if (menu === "loading") {
-    //     setPage("login");
-    //   }
-    // }, 1000);
+      // prevent further work from being done if walletClient not loaded
+      if (walletClient) {
+        console.log("walletClient detected");
+      } else {
+        console.log("walletClient not detected");
+        return;
+      }
+
+      // get user doc (w/ verification) || create new user
+      if (!initialized.current) {
+        initialized.current = true;
+        verifyAndGetData();
+      }
+    })();
   }, [walletClient]);
+  // if you use web3Auth in dependency array, web3Auth.status will show "connected" but walletClient will still be undefined
+  // if you use wagmi's "account" in dependency array, will achieve workable results, but too many rerenders, as account changes more frequently than walletClient
 
   const verifyAndGetData = async () => {
     console.log("/app, verifyAndGetData() run once");
+    setPage("loading");
+
     // get idToken
     try {
-      console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
       const userInfo = await web3Auth?.getUserInfo();
-      console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
       var idToken = userInfo?.idToken;
-      // var idToken = (await web3Auth?.getUserInfo())?.idToken;
+      console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
+      console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
     } catch (e) {
-      console.log("verifyAndGetData, Cannot get idToken, likely web3Auth not fully updated");
+      console.log("verifyAndGetData, Cannot get userInfo or idToken, likely web3Auth not fully updated");
+      setPage("login");
     }
+
     // get publicKey
     try {
+      if (!walletClient) {
+        console.log("veryifyandGetData function, no walletClient");
+        return;
+      }
       const privateKey = (await walletClient?.request({
         // @ts-ignore
         method: "eth_private_key", // it somehow works even if not typed
       })) as string;
       var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
-      var publicKey = "";
+      var publicKey = ""; // must declare
       console.log("Cannot get publicKey");
+      setPage("login");
     }
+
     // get user doc (with verification)
     if (idToken && publicKey) {
-      console.log("fetching doc...");
       try {
+        console.log("fetching doc...");
         const res = await fetch("/api/getUserDoc", {
           method: "POST",
           body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idToken, publicKey: publicKey }),
@@ -175,11 +213,13 @@ const User = () => {
           setPaymentSettingsState(data.doc.paymentSettings);
           setCashoutSettingsState(data.doc.cashoutSettings);
           setTransactionsState(data.doc.transactions);
+          setIsAdmin(true);
           // show intro modal
           if (data.doc.intro) {
             setIntroModal(true);
-            setMenu("appSettings");
+            setMenu("settings");
           }
+          setPage("app");
         }
 
         if (data === "create new user") {
@@ -189,14 +229,12 @@ const User = () => {
         if (data.status === "error") {
           console.log("/app, something in getUserDoc api failed");
           await disconnectAsync();
-          router.push("/app");
+          setPage("login");
         }
-
-        setIsAppLoading(false);
       } catch (err) {
         console.log("/app, verify failed");
         await disconnectAsync();
-        router.push("/app");
+        setPage("login");
       }
     }
   };
@@ -233,13 +271,14 @@ const User = () => {
       console.log("new user created, doc:", docTemp);
       setPaymentSettingsState(docTemp.paymentSettings);
       setCashoutSettingsState(docTemp.cashoutSettings);
+      setPage("app");
       // show intro modal
       if (docTemp.intro) {
         setIntroModal(true);
-        setMenu("appSettings");
+        setMenu("settings");
       }
     } catch (err) {
-      console.log(err);
+      console.log("could not create new user", err);
       setPage("login");
     }
   };

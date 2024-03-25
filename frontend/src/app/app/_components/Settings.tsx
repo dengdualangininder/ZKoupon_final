@@ -1272,7 +1272,7 @@ const Settings = ({
           <button
             onClick={async () => {
               await disconnectAsync();
-              router.push("/login");
+              router.push("/app");
             }}
             className="mt-6 xs:mt-3 mb-20 xs:ml-[28px] sm:ml-[41px] w-[120px] appButton"
           >

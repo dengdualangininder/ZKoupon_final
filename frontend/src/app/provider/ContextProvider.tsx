@@ -87,12 +87,13 @@ export default function ContextProvider({ children }: { children: React.ReactNod
   });
 
   // useEffect(() => {
+  //   console.log("ContextProvider useEffect run once");
   //   const init = async () => {
   //     // call init on web3AuthInstance
   //     await web3AuthInstance.init();
-
   //   };
   //   init();
+
   // }, []);
 
   web3AuthInstance.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
