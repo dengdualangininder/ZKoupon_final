@@ -28,7 +28,7 @@ import { faList, faFileInvoiceDollar, faGear, faPlus, faRightFromBracket, faSync
 // import PullToRefresh from "pulltorefreshjs";
 
 const User = () => {
-  console.log("/app, page rendered once");
+  console.log("/app, page.tsx rendered once");
 
   // in case if someone needs to redirect to /app page with specific menu tab
   const searchParams = useSearchParams();
@@ -40,6 +40,7 @@ const User = () => {
   const [transactionsState, setTransactionsState] = useState([]);
   const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "app"
+  const [isGettingDoc, setIsGettingDoc] = useState(true);
   const [reload, setReload] = useState(true);
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [introModal, setIntroModal] = useState(false);
@@ -87,98 +88,94 @@ const User = () => {
   // });
 
   useEffect(() => {
-    (async () => {
-      console.log("/app, useEffect run once");
+    console.log("/app, page.tsx, useEffect run once");
 
-      // if mobile & not standalone, then redirect to "Save To Homescreen"
-      const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
-      const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-      const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
-      console.log("/app, useEffect, isMobileTemp", isMobileTemp);
-      setIsMobile(isMobileTemp);
-      if (isMobileAndNotStandaloneTemp) {
-        console.log("detected mobile & not standalone");
-        // detect browser and redirect to "Save To Homescreen"
-        const userAgent = navigator.userAgent;
-        if (userAgent.match(/chrome|chromium|crios/i)) {
-          setBrowser("Chrome");
-        } else if (userAgent.match(/firefox|fxios/i)) {
-          setBrowser("Firefox");
-        } else if (userAgent.match(/safari/i)) {
-          setBrowser("Safari");
-        } else if (userAgent.match(/opr\//i)) {
-          setBrowser("Opera");
-        } else if (userAgent.match(/edg/i)) {
-          setBrowser("Edge");
-        } else if (userAgent.match(/samsungbrowser/i)) {
-          setBrowser("Samsung");
-        } else if (userAgent.match(/ucbrowser/i)) {
-          setBrowser("UC");
-        } else {
-          setBrowser("");
-        }
-        setPage("saveToHome");
-        console.log("page set to saveToHome");
-        return;
+    // if mobile & not standalone, then redirect to "Save To Homescreen"
+    const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
+    console.log("useEffect, isMobileTemp:", isMobileTemp);
+    setIsMobile(isMobileTemp);
+    if (isMobileAndNotStandaloneTemp) {
+      console.log("detected mobile & not standalone");
+      // detect browser and redirect to "Save To Homescreen"
+      const userAgent = navigator.userAgent;
+      if (userAgent.match(/chrome|chromium|crios/i)) {
+        setBrowser("Chrome");
+      } else if (userAgent.match(/firefox|fxios/i)) {
+        setBrowser("Firefox");
+      } else if (userAgent.match(/safari/i)) {
+        setBrowser("Safari");
+      } else if (userAgent.match(/opr\//i)) {
+        setBrowser("Opera");
+      } else if (userAgent.match(/edg/i)) {
+        setBrowser("Edge");
+      } else if (userAgent.match(/samsungbrowser/i)) {
+        setBrowser("Samsung");
+      } else if (userAgent.match(/ucbrowser/i)) {
+        setBrowser("UC");
+      } else {
+        setBrowser("");
       }
+      setPage("saveToHome");
+      console.log("page set to saveToHome");
+      return;
+    }
 
-      // query localStorage to determine if to proceed or show Login component
-      const sessionIdObject = window.localStorage.getItem("openlogin_store");
-      console.log("sessionIdObject", sessionIdObject);
-      if (sessionIdObject) {
-        const sessionId = JSON.parse(sessionIdObject).sessionId;
-        if (sessionId) {
-          console.log("sessionId exists, already logged into web3Auth");
-        } else {
-          setPage("login");
-          console.log("no sessionId, page set to Login");
-          return;
-        }
+    // query localStorage to determine if to proceed or show Login component
+    const sessionIdObject = window.localStorage.getItem("openlogin_store");
+    console.log("sessionIdObject", sessionIdObject);
+    if (sessionIdObject) {
+      const sessionId = JSON.parse(sessionIdObject).sessionId;
+      if (sessionId) {
+        console.log("sessionId exists, already logged into web3Auth");
       } else {
         setPage("login");
         console.log("no sessionId, page set to Login");
         return;
       }
+    } else {
+      setPage("login");
+      console.log("no sessionId, page set to Login");
+      return;
+    }
 
-      console.log("/app, useEffect, web3Auth.status", web3Auth ? web3Auth.status : "web3Auth is null");
-      console.log("/app, useEffect, web3Auth.connected", web3Auth ? web3Auth.connected : "web3Auth is null");
-      console.log("/app, useEffect, account.address", account.address);
-      // In general, all the above will show "undefined" in 1st useEffect run (thus, we query localStorage to determine if web3Auth
-      // already connected). In 2nd run, web3Auth.status will show "connected" and account.address will show. In 3rd run, walletClient will be detected
+    console.log("web3Auth.status:", web3Auth?.status ?? "web3Auth is null", "| web3Auth.connected:", web3Auth?.connected ?? "web3Auth is null");
+    console.log("account.address:", account.address);
+    // In general, all the above will show "undefined" in 1st useEffect run (thus, we query localStorage to determine if web3Auth
+    // already connected). In 2nd run, web3Auth.status will show "connected", while account.address and walletClient will be undefined.
+    // Web3Auth event listener will then show connecting and connected. /App page will then be rendered twice in a row (why???) but the useEffect
+    // is only run once. In this 3rd run, account.address and walletClient will be detected.
 
-      // prevent further work from being done if walletClient not loaded
-      if (walletClient) {
-        console.log("walletClient detected");
-      } else {
-        console.log("walletClient not detected");
-        return;
-      }
+    // prevent further work from being done if walletClient not loaded
+    if (walletClient) {
+      console.log("walletClient detected");
+    } else {
+      console.log("walletClient not detected");
+      return;
+    }
 
-      // get user doc (w/ verification) || create new user
-      if (!initialized.current) {
-        initialized.current = true;
-        verifyAndGetData();
-      }
-    })();
+    // get user doc (w/ verification) || create new user
+    if (!initialized.current) {
+      initialized.current = true;
+      verifyAndGetData();
+    }
+    console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);
   // if you use web3Auth in dependency array, web3Auth.status will show "connected" but walletClient will still be undefined
   // if you use wagmi's "account" in dependency array, will achieve workable results, but too many rerenders, as account changes more frequently than walletClient
 
   const verifyAndGetData = async () => {
     console.log("/app, verifyAndGetData() run once");
-    setPage("loading");
-    console.log("page set to Loading");
 
     // get idToken
     try {
       const userInfo = await web3Auth?.getUserInfo();
       var idToken = userInfo?.idToken;
-      console.log("/app, useEffect, verifyAndGetData, web3Auth", web3Auth);
       console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
     } catch (e) {
-      console.log("verifyAndGetData, Cannot get userInfo or idToken, likely web3Auth not fully updated");
+      console.log("cannot get web3Auth.userInfo, page set to Login");
       setPage("login");
-      console.log("page set to Login");
     }
 
     // get publicKey
@@ -193,13 +190,12 @@ const User = () => {
       })) as string;
       var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
-      var publicKey = ""; // must declare
-      console.log("Cannot get publicKey");
+      console.log("Cannot get publicKey, page set to Login");
       setPage("login");
-      console.log("page set to Login");
+      return;
     }
 
-    // get user doc (with verification)
+    // get user doc (idToken and publicKey needed for verification)
     if (idToken && publicKey) {
       try {
         console.log("fetching doc...");
@@ -211,7 +207,7 @@ const User = () => {
         const data = await res.json();
 
         if (data.status === "success") {
-          console.log("/app, successfully fetched doc:", data.doc);
+          console.log("set page to App, successfully fetched doc:", data.doc);
           setPaymentSettingsState(data.doc.paymentSettings);
           setCashoutSettingsState(data.doc.cashoutSettings);
           setTransactionsState(data.doc.transactions);
@@ -222,7 +218,6 @@ const User = () => {
             setMenu("settings");
           }
           setPage("app");
-          console.log("page set to App");
         }
 
         if (data === "create new user") {
@@ -230,16 +225,14 @@ const User = () => {
         }
 
         if (data.status === "error") {
-          console.log("/app, something in getUserDoc api failed");
-          await disconnectAsync();
+          console.log("/app, something in getUserDoc api failed, page set to Login");
           setPage("login");
-          console.log("page set to Login");
+          await disconnectAsync();
         }
       } catch (err) {
-        console.log("/app, verify failed");
+        console.log("/app, verify failed, page set to Login");
         await disconnectAsync();
         setPage("login");
-        console.log("page set to Login");
       }
     }
   };
@@ -273,20 +266,18 @@ const User = () => {
         body: JSON.stringify({ merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex }),
       });
       const docTemp = await res.json();
-      console.log("new user created, doc:", docTemp);
+      console.log("page set to App, new user created, doc:", docTemp);
       setPaymentSettingsState(docTemp.paymentSettings);
       setCashoutSettingsState(docTemp.cashoutSettings);
-      setPage("app");
-      console.log("page set to App");
       // show intro modal
       if (docTemp.intro) {
         setIntroModal(true);
         setMenu("settings");
       }
+      setPage("app");
     } catch (err) {
-      console.log("could not create new user", err);
+      console.log("page set to Login, could not create new user", err);
       setPage("login");
-      console.log("page set to Login");
     }
   };
 
@@ -297,7 +288,7 @@ const User = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="pl-[calc(100vw-100%)] min-h-screen bg-gray-100">
       {page === "loading" && (
         <div className="w-full h-screen flex flex-col justify-center items-center">
           <SpinningCircleGrayLarge />
