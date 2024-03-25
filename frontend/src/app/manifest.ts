@@ -2,9 +2,9 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Flash Pay Business",
-    short_name: "Flash Pay",
-    description: "Zero fee payments",
+    name: "Flash Payments Business",
+    short_name: "Flash Business",
+    description: "fast global payments with zero fees",
     start_url: "/app",
     display: "standalone",
     icons: [

@@ -20,21 +20,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShare, faClockRotateLeft, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
-const CashOut = ({
-  paymentSettingsState,
-  setPaymentSettingsState,
-  cashoutSettingsState,
-  setCashoutSettingsState,
-  isMobile,
-}: {
-  paymentSettingsState: any;
-  setPaymentSettingsState: any;
-  cashoutSettingsState: any;
-  setCashoutSettingsState: any;
-  isMobile: boolean;
-}) => {
+const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { paymentSettingsState: any; cashoutSettingsState: any; isMobile: boolean }) => {
   console.log("CashOut component rendered");
-  const [flashAccountBalance, setFlashAccountBalance] = useState(""); // use string
+  const [flashBalance, setFlashBalance] = useState(""); // use string
   const [cexBalance, setCexBalance] = useState<string | undefined>("");
   // modal states
   const [cashOutModal, setCashOutModal] = useState(false);
@@ -115,25 +103,25 @@ const CashOut = ({
     })();
   }, []);
 
-  // get flashAccountBalance, runs only once
+  // get flashBalance, runs only once
   useEffect(() => {
     // if (!getFlashBalanceRef.current) {
     //   return;
     // }
     // getFlashBalanceRef.current = true;
     // get flash account balance
-    const getFlashAccountBalance = async () => {
-      const flashAccountBalanceBigInt: bigint = (await readContract(config, {
+    const getFlashBalance = async () => {
+      const flashBalanceBigInt: bigint = (await readContract(config, {
         address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
         abi: ERC20ABI,
         functionName: "balanceOf",
         args: [account.address],
       })) as bigint;
-      const flashAccountBalanceTemp = formatUnits(flashAccountBalanceBigInt, 6);
-      setFlashAccountBalance(flashAccountBalanceTemp);
-      console.log("flashAccountBalanceTemp", flashAccountBalanceTemp);
+      const flashBalanceTemp = formatUnits(flashBalanceBigInt, 6);
+      setFlashBalance(flashBalanceTemp);
+      console.log("flashBalanceTemp", flashBalanceTemp);
     };
-    getFlashAccountBalance();
+    getFlashBalance();
   }, []);
 
   const onClickCashOutConfirm = async () => {
@@ -187,7 +175,7 @@ const CashOut = ({
 
   console.log("last render");
   console.log("cexBalance", cexBalance);
-  console.log("flashAccountBalance", flashAccountBalance);
+  console.log("flashBalance", flashBalance);
   console.log("isCexAccessible", isCexAccessible);
   return (
     // 96px is height of mobile top menu bar + 14px mt
@@ -202,13 +190,13 @@ const CashOut = ({
           </div>
           {/*---body---*/}
           <div>
-            {flashAccountBalance ? (
+            {flashBalance ? (
               <div className="flex items-center">
                 <div className="relative w-[24px] h-[24px] lg:w-[20px] lg:h-[20px]">
                   <Image src="/usdc.svg" alt="USDC" fill />
                 </div>
                 <div className="ml-1 w-[60px] text-xl lg:text-lg">USDC</div>
-                <div className="ml-2 font-bold text-xl lg:text-lg">{Number(flashAccountBalance).toFixed(2)}</div>
+                <div className="ml-2 font-bold text-xl lg:text-lg">{Number(flashBalance).toFixed(2)}</div>
               </div>
             ) : (
               <div className="mt-4 flex flex-col items-center text-center">

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 // wagmi
-import { useAccount, useConfig, useWalletClient, useDisconnect, useConnect, useAccountEffect } from "wagmi";
+import { useAccount, useConfig, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
@@ -114,9 +114,9 @@ const User = () => {
       } else {
         setBrowser("");
       }
-      setPage("saveToHome");
-      console.log("page set to saveToHome");
-      return;
+      // setPage("saveToHome");
+      // console.log("page set to saveToHome");
+      // return;
     }
 
     // query localStorage to determine if to proceed or show Login component
@@ -279,95 +279,86 @@ const User = () => {
   };
 
   const menuArray = [
-    { id: "payments", title: "Payments", fa: faList },
-    { id: "cashOut", title: "Cash Out", fa: faFileInvoiceDollar },
-    { id: "settings", title: "Settings", fa: faGear },
+    { id: "payments", title: "Payments", img: "/payments.svg" },
+    { id: "cashOut", title: "Cash Out", img: "/cashout.svg" },
+    { id: "settings", title: "Settings", img: "/settings.svg" },
   ];
 
   return (
-    <div className="pl-[calc(100vw-100%)] min-h-screen bg-gray-100">
+    <div className="pl-[calc(100vw-100%)]">
       {page === "loading" && (
         <div className="w-full h-screen flex flex-col justify-center items-center">
           <SpinningCircleGrayLarge />
-          <div className="mt-1">Loading...</div>
+          <div className="mt-2">Loading...</div>
         </div>
       )}
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "app" && (
-        <div className="flex flex-col md:flex-row">
-          {/*---LEFT/TOP MENU---*/}
-          <div className="h-[96px] flex justify-center items-center sm:px-4 md:block md:justify-start md:items-start md:h-auto md:w-[210px] md:flex-none md:border-r-[2px] text-blue-700">
-            <div className="flex items-center md:flex-col md:h-screen">
-              {/*---LOGO + CREDITS---*/}
+        <div className="flex flex-col-reverse md:flex-row">
+          {/*---MENU: LEFT (desktop) or BOTTOM (mobile) ---*/}
+          <div className="w-full h-[88px] flex justify-center items-center sm:px-4 md:block md:justify-start md:items-start md:w-[210px] md:h-auto md:flex-none md:border-r-[2px]">
+            <div className="w-full h-full flex items-center md:w-auto md:flex-col md:h-screen">
+              {/*--- logo + username ---*/}
               <div className="hidden md:flex flex-col items-center w-full">
                 {/*---logo---*/}
                 <div className="relative w-[96px] h-[48px]">
                   <Image src={"/logo.svg"} alt="logo" fill />
                 </div>
-                {/*---credits---*/}
+                {/*---user name---*/}
                 <div className="mt-4 px-2 text-base font-bold bg-white rounded-lg py-3">
                   <div className="line-clamp-1 break-all">user info</div>
                 </div>
               </div>
-              {/*---MENU + SIGNOUT---*/}
-              <div className="w-full h-[80px] md:h-full flex md:w-auto md:flex-col justify-center">
-                {/*---menu items---*/}
-                {isAdmin ? (
-                  <div className="flex md:block text-lg font-bold space-x-2 xs:space-x-4 md:space-x-0 md:space-y-4">
-                    {menuArray.map((i) => (
-                      <div
-                        id={i.id}
-                        key={i.id}
-                        className={`${
-                          menu === i.id ? "bg-white" : ""
-                        } cursor-pointer xs:hover:bg-white px-4 py-3 flex flex-col xs:flex-row justify-center xs:justify-start items-center rounded-3xl`}
-                        onClick={(e) => {
-                          setMenu(e.currentTarget.id);
-                        }}
-                      >
-                        <div className="w-[36px] flex justify-center pointer-events-none">
-                          <FontAwesomeIcon icon={i.fa} className="text-2xl mr-1 pointer-events-none" />
-                        </div>
-                        <div className="mt-1 pointer-events-none leading-none">{i.title}</div>
+              {/*---menu---*/}
+              {isAdmin ? (
+                <div className="fixed bottom-0 w-full h-[88px] pt-4 flex justify-evenly border-t border-gray-300 md:border-none md:static md:block md:w-auto md:h-full md:justify-start xs:space-x-4 md:space-x-0 md:space-y-4">
+                  {menuArray.map((i) => (
+                    <div
+                      id={i.id}
+                      key={i.id}
+                      className={`${
+                        menu === i.id ? "opacity-100" : "opacity-50"
+                      } cursor-pointer xs:hover:opacity-100 w-[100px] flex flex-col xs:flex-row xs:justify-start items-center`}
+                      onClick={(e) => {
+                        setMenu(e.currentTarget.id);
+                      }}
+                    >
+                      <div className={`relative w-[32px] h-[18px] point-events-none`}>
+                        <Image src={i.img} alt={i.title} fill />
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex md:block text-lg font-bold space-x-3 xs:space-x-4 md:space-x-0 md:space-y-4">
-                    <div id="appPayments" className="cursor-pointer hover:bg-white px-4 py-3 flex flex-col xs:flex-row items-center rounded-3xl">
-                      <div className="w-[36px] flex justify-center pointer-events-none">
-                        <FontAwesomeIcon icon={faList} className="text-2xl mr-1 pointer-events-none" />
-                      </div>
-                      <div className="pointer-events-none">Payments</div>
+                      <div className="mt-1 pointer-events-none leading-none">{i.title}</div>
                     </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex md:block text-lg font-bold space-x-3 xs:space-x-4 md:space-x-0 md:space-y-4">
+                  <div id="appPayments" className="cursor-pointer hover:bg-white px-4 py-3 flex flex-col xs:flex-row items-center rounded-3xl">
+                    <div className="w-[36px] flex justify-center pointer-events-none">
+                      <FontAwesomeIcon icon={faList} className="text-2xl mr-1 pointer-events-none" />
+                    </div>
+                    <div className="pointer-events-none">Payments</div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
           {/*---menu pages---*/}
-          {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} />}
-          {menu === "cashOut" && isAdmin && (
-            <CashOut
-              paymentSettingsState={paymentSettingsState}
-              setPaymentSettingsState={setPaymentSettingsState}
-              cashoutSettingsState={cashoutSettingsState}
-              setCashoutSettingsState={setCashoutSettingsState}
-              isMobile={isMobile}
-            />
-          )}
-          {menu === "settings" && isAdmin && (
-            <Settings
-              paymentSettingsState={paymentSettingsState}
-              setPaymentSettingsState={setPaymentSettingsState}
-              cashoutSettingsState={cashoutSettingsState}
-              setCashoutSettingsState={setCashoutSettingsState}
-              isMobile={isMobile}
-              introModal={introModal}
-              setIntroModal={setIntroModal}
-            />
-          )}
+          <div className="h-[calc(100vh-88px)] md:h-auto md:w-auto">
+            {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} />}
+            {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
+            {menu === "settings" && isAdmin && (
+              <Settings
+                paymentSettingsState={paymentSettingsState}
+                setPaymentSettingsState={setPaymentSettingsState}
+                cashoutSettingsState={cashoutSettingsState}
+                setCashoutSettingsState={setCashoutSettingsState}
+                isMobile={isMobile}
+                introModal={introModal}
+                setIntroModal={setIntroModal}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>
