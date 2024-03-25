@@ -112,13 +112,13 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
       {/*--- container (with borders for desktop) ---*/}
       <div className="w-full h-screen px-6 py-8 xs:px-8 xs:w-[440px] xs:h-[600px] flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4">
         {/*--- heading ---*/}
-        <div className="relative w-[300px] h-[100px]">
+        <div className="relative w-[330px] h-[140px]">
           <Image src="/logo.svg" alt="logo" fill />
         </div>
-        <div className="mt-3 xs:mt-2 font-bold text-gray-600">Fast global payments with near-zero fees</div>
+        <div className="mt-3 xs:mt-2 text-base font-bold text-gray-600">Fast global payments with near-zero fees</div>
 
         {/*--- OWNERS or EMPLOYEES ---*/}
-        <div className="mt-10 space-x-12 flex text-lg xs:text-base font-bold">
+        <div className="mt-12 space-x-12 flex text-lg xs:text-base font-bold">
           <div className={`${role == "owners" ? "text-gray-800 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
             FOR OWNERS
           </div>
@@ -129,12 +129,12 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
 
         {/*--- FOR OWNERS ---*/}
         {role == "owners" && (
-          <div className="mt-12 w-full px-[calc((100%-360px)/2)] flex flex-col items-center space-y-4">
+          <div className="mt-14 w-full px-[calc((100%-360px)/2)] flex flex-col items-center space-y-4">
             {/*--- connectors: google, apple, line, phantom, metamask ---*/}
             {myConnectors.map<any>((i: any) => (
               <div
                 key={i.name}
-                className="w-full px-6 flex items-center bg-white rounded-full pl-8 py-4 font-bold text-gray-600 hover:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
+                className="w-full px-6 flex items-center bg-white rounded-full pl-8 py-4 font-bold text-gray-600 lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
                 onClick={async () => {
                   console.log("login page, clicked connect, set page to Loading");
                   setPage("loading");
@@ -156,37 +156,33 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
           <div className="mt-8 w-full">
             <form id="loginForm" className="w-full mt-2 flex flex-col">
               {/*--email---*/}
-              <div className="w-full flex items-center">
-                <label className="loginlabelfont w-[75px] flex-none">Email</label>
-                <input type="email" className="logininputfont" onChange={(e) => setMerchantEmail(e.target.value)}></input>
-              </div>
+              <label className="labelfont w-[75px] flex-none">Email</label>
+              <input type="email" className="inputfont" onChange={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
-              <div className="mt-2 flex items-center">
-                <label className="loginlabelfont w-[75px] flex-none">Password</label>
-                <div className="w-full relative">
-                  <input
-                    type={show ? "text" : "password"}
-                    autoComplete="none"
-                    autoCapitalize="none"
-                    className="logininputfont w-full"
-                    onChange={(e) => setEmployeePass(e.target.value)}
-                  ></input>
+              <label className="labelfont w-[75px] flex-none">Password</label>
+              <div className="w-full relative">
+                <input
+                  type={show ? "text" : "password"}
+                  autoComplete="none"
+                  autoCapitalize="none"
+                  className="inputfont w-full"
+                  onChange={(e) => setEmployeePass(e.target.value)}
+                ></input>
+                <div
+                  className="absolute right-[16px] top-[10px] xs:top-[6px] cursor-pointer text-xl xs:text-sm text-gray-800"
+                  onClick={() => {
+                    show ? setShow(false) : setShow(true);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faEye} />
                   <div
-                    className="absolute right-[16px] top-[6px] xs:top-[6px] cursor-pointer text-base xs:text-sm text-gray-700"
-                    onClick={() => {
-                      show ? setShow(false) : setShow(true);
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faEye} />
-                    <div
-                      className={`${show ? "" : "hidden"} absolute top-[0px] xs:top-[-1px] left-[8px] xs:left-[7px] rotate-[-45deg] h-[24px] xs:h-[20px] w-[1.5px] bg-gray-700`}
-                    ></div>
-                  </div>
+                    className={`${show ? "" : "hidden"} absolute top-[1px] xs:top-[-1px] left-[10px] xs:left-[7px] rotate-[-45deg] h-[28px] xs:h-[20px] w-[1.5px] bg-gray-800`}
+                  ></div>
                 </div>
               </div>
               {/*--sign in button---*/}
-              <div className="flex justify-center mt-2 ml-[75px]">
-                <button type="submit" className="w-[160px] rounded-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
+              <div className="mt-8 flex justify-center">
+                <button type="submit" className="w-full text-xl rounded-full py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
                   Sign in
                 </button>
               </div>
@@ -194,7 +190,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
 
             {/*--forgot password---*/}
             <div
-              className="text-xs ml-[75px] mt-4 xs:mt-2 text-end link"
+              className="text-lg mt-12 xs:mt-8 text-center link"
               onClick={() => {
                 setForgotModal(true);
                 setModalState("initial");

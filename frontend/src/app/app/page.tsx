@@ -297,7 +297,7 @@ const User = () => {
       {page === "app" && (
         <div className="flex flex-col-reverse md:flex-row">
           {/*---MENU: LEFT (desktop) or BOTTOM (mobile) ---*/}
-          <div className="w-full h-[88px] flex justify-center items-center sm:px-4 md:block md:justify-start md:items-start md:w-[210px] md:h-auto md:flex-none md:border-r-[2px]">
+          <div className="w-full h-[84px] flex justify-center items-center sm:px-4 md:block md:justify-start md:items-start md:w-[210px] md:h-auto md:flex-none md:border-r-[2px]">
             <div className="w-full h-full flex items-center md:w-auto md:flex-col md:h-screen">
               {/*--- logo + username ---*/}
               <div className="hidden md:flex flex-col items-center w-full">
@@ -312,7 +312,7 @@ const User = () => {
               </div>
               {/*---menu---*/}
               {isAdmin ? (
-                <div className="fixed bottom-0 w-full h-[88px] pt-4 flex justify-evenly border-t border-gray-300 md:border-none md:static md:block md:w-auto md:h-full md:justify-start xs:space-x-4 md:space-x-0 md:space-y-4">
+                <div className="fixed bottom-0 w-full h-[84px] pt-3 flex justify-evenly border-t border-gray-300 md:border-none md:static md:block md:w-auto md:h-full md:justify-start xs:space-x-4 md:space-x-0 md:space-y-4">
                   {menuArray.map((i) => (
                     <div
                       id={i.id}
@@ -344,7 +344,7 @@ const User = () => {
             </div>
           </div>
           {/*---menu pages---*/}
-          <div className="h-[calc(100vh-88px)] md:h-auto md:w-auto">
+          <div className="h-[calc(100vh-84px)] md:h-auto md:w-auto">
             {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} />}
             {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
             {menu === "settings" && isAdmin && (

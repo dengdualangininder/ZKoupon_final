@@ -381,7 +381,7 @@ const Settings = ({
           <div className="mt-10 flex items-center relative">
             <div className="hidden xs:block w-[20px] h-[20px] rounded-full bg-orange-500 flex-none"></div>
             <div className="hidden xs:block absolute w-[2px] h-[1000px] bg-orange-500 top-[12px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-6 text-3xl xs:text-2xl font-extrabold text-blue-700">Payment Settings</div>
+            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-6 text-3xl xs:text-2xl font-bold text-blue-700">Payment Settings</div>
           </div>
           {/*---form + placard/UI container---*/}
           <div className="xs:ml-[28px] sm:ml-[41px] flex flex-col lg:flex-row">
@@ -500,7 +500,7 @@ const Settings = ({
                 <div className="mt-6 mb-4 xs:mt-4 xs:mb-2 flex items-center xs:justify-start relative">
                   <div className="w-[218px] xs:w-auto md:w-[172px] text-lg xs:text-sm font-bold leading-tight">
                     <span className="group cursor-pointer">
-                      <span>
+                      <span className="labelfont">
                         Give Customers 2% Instant Cashback? <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
                       </span>
                       <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
@@ -740,8 +740,11 @@ const Settings = ({
                 </div>
                 {/*---download button or payment link---*/}
                 {paymentSettingsState.merchantPaymentType == "inperson" && (
-                  <button className="mt-1 w-[200px] h-[56px] xs:h-[44px] text-base font-bold text-white bg-blue-500 lg:hover:bg-blue-600 rounded-full" onClick={downloadPlacardPdf}>
-                    Download Placard
+                  <button
+                    className="mt-1 w-[200px] h-[56px] xs:h-[44px] text-lg xs:text-base font-bold text-white bg-blue-500 lg:hover:bg-blue-600 rounded-full"
+                    onClick={downloadPlacardPdf}
+                  >
+                    Download
                   </button>
                 )}
                 {paymentSettingsState.merchantPaymentType == "online" && (
@@ -800,7 +803,7 @@ const Settings = ({
           <div className="mt-10 flex items-center relative">
             <div className="hidden xs:block w-[20px] h-[20px] rounded-full py-2 bg-orange-500 flex-none"></div>
             <div className="hidden xs:block absolute w-[2px] h-[400px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-extrabold text-blue-700">Cash Out Settings</div>
+            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-bold text-blue-700">Cash Out Settings</div>
           </div>
           {/*---form---*/}
           <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
@@ -828,15 +831,16 @@ const Settings = ({
               </span>
               )
             </div>
-            <input
-              className="w-full inputfontsmall"
+            <textarea
+              className="w-full inputfont break-all text-wrap"
               onChange={(e: any) => {
                 setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
                 setSavingState("savechanges");
               }}
+              type="text"
               value={cashoutSettingsState.cexEvmAddress}
               autoComplete="none"
-            ></input>
+            ></textarea>
             {/*---cexApiKey---*/}
             {/* <div className="mt-3 text-lg xs:text-sm font-bold leading-tight xs:leading-tight">
                     Your Exchange's API Key{" "}
@@ -904,15 +908,17 @@ const Settings = ({
           <div className="mt-10 flex items-center relative">
             <div className="hidden xs:block w-[20px] h-[20px] rounded-full text-center py-2 bg-orange-500 flex-none z-1"></div>
             <div className="hidden xs:block absolute w-[2px] h-[600px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-extrabold text-blue-700">Account Settings</div>
+            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-bold text-blue-700">Account Settings</div>
           </div>
           {/*---form---*/}
           <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
             <label className="labelfont">My EVM Address</label>
-            <div className="flex items-center h-[40px] xs:h-[36px] border border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer xs:px-1 rounded-md">
-              <div className="mr-1 xs:mr-2 text-[13px] xs:text-sm md:text-xs text-gray-700">{paymentSettingsState.merchantEvmAddress}</div>
-              <div className="relative w-[16px] h-[16px]">
-                <Image src="/copySvg.svg" alt="copy icon" fill />
+            <div className="text-lg font-bold xs:text-base py-0.5 px-1 text-gray-800 border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer rounded-md">
+              <div className="break-all">
+                {paymentSettingsState.merchantEvmAddress}
+                <div className="ml-2 inline-block align-middle pb-0.5">
+                  <Image src="/copySvg.svg" alt="copy icon" height={24} width={24} />
+                </div>
               </div>
             </div>
             {/*---email---*/}
@@ -964,20 +970,22 @@ const Settings = ({
         <div>
           {/*---title---*/}
           <div className="mt-10 flex items-center relative">
-            <div className="hidden xs:block w-[20px] h-[20px] rounded-full text-center py-2 bg-orange-500 text-white font-extrabold z-1"></div>
+            <div className="hidden xs:block w-[20px] h-[20px] rounded-full text-center py-2 bg-orange-500 text-white font-bold z-1"></div>
             <div className="hidden xs:block absolute w-[2px] h-[500px] bg-orange-500 bottom-[10px] left-[9px]"></div>
             <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-extrabold text-blue-700">Sign Out</div>
           </div>
           {/*---button---*/}
-          <button
-            onClick={async () => {
-              await disconnectAsync();
-              router.push("/app");
-            }}
-            className="mt-6 xs:mt-3 mb-20 xs:ml-[28px] sm:ml-[41px] w-[120px] appButton"
-          >
-            Sign Out
-          </button>
+          <div className="w-full flex justify-center">
+            <button
+              onClick={async () => {
+                await disconnectAsync();
+                router.push("/app");
+              }}
+              className="mt-6 xs:mt-3 text-lg xs:text-base mb-20 xs:ml-[28px] sm:ml-[41px] w-[140px] appButton"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
       </div>
     </section>
