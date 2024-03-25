@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Flash Pay Business",
     short_name: "Flash Pay",
     description: "Zero fee payments",
-    start_url: "/",
+    start_url: "/app",
     display: "standalone",
     icons: [
       {
