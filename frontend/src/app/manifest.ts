@@ -9,14 +9,14 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     icons: [
       {
-        src: "/logoBlackBgNoText.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-      },
-      {
         src: "/logoBlackBgNoText.png",
         type: "image/png",
         sizes: "any",
+      },
+      {
+        src: "/logoBlackBgNoText.svg",
+        sizes: "any",
+        type: "image/svg+xml",
       },
     ],
   };
