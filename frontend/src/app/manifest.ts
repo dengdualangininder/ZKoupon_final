@@ -9,12 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     icons: [
       {
-        src: "/logonotextPNG.png",
-        sizes: "any",
-        type: "image/png",
-      },
-      {
-        src: "/logonotext.svg",
+        src: "/logoBlackBgNoText.svg",
         sizes: "any",
         type: "image/svg+xml",
       },

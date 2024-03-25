@@ -12,7 +12,7 @@ const nunito = Nunito_Sans({ weight: ["300", "400", "500", "600", "700", "800", 
 export const metadata: Metadata = {
   title: "Flash Pay",
   description: "Zero Fee Payments",
-  icons: "/logonotext.svg",
+  icons: "/logoBlackBgNoText.svg",
 };
 
 // inter.className to inter.variable
