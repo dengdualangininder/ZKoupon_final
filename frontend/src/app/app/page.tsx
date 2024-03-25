@@ -8,7 +8,6 @@ import axios from "axios";
 import { useAccount, useConfig, useWalletClient, useDisconnect, useConnect, useAccountEffect } from "wagmi";
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
-import { ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
 // others
 import { getPublicCompressed } from "@toruslabs/eccrypto";
 // components
@@ -23,8 +22,7 @@ import { abb2full, countryData } from "@/utils/constants";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faFileInvoiceDollar, faGear, faPlus, faRightFromBracket, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
-// import { logo } from "../assets/index.js";
+import { faList, faFileInvoiceDollar, faGear } from "@fortawesome/free-solid-svg-icons";
 // import PullToRefresh from "pulltorefreshjs";
 
 const User = () => {
@@ -55,7 +53,6 @@ const User = () => {
   let web3Auth = useWeb3Auth();
   let config = useConfig();
   const { disconnectAsync } = useDisconnect();
-  const { connect, connectors } = useConnect();
   const initialized = useRef(false); //makes it so API runs once
 
   // if (isStandalone) {
@@ -296,7 +293,7 @@ const User = () => {
         </div>
       )}
       {page === "saveToHome" && <PWA browser={browser} />}
-      {page === "login" && <Login isMobile={isMobile} />}
+      {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "app" && (
         <div className="flex flex-col md:flex-row">
           {/*---LEFT/TOP MENU---*/}

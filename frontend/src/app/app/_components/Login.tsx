@@ -12,7 +12,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 
-const Login = ({ isMobile }: { isMobile: boolean }) => {
+const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
@@ -133,7 +133,8 @@ const Login = ({ isMobile }: { isMobile: boolean }) => {
               <div
                 className="flex items-center bg-white rounded-full pl-8 py-3 font-bold text-gray-600 hover:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
                 onClick={async () => {
-                  console.log("login page, clicked connect");
+                  console.log("login page, clicked connect, set page to Loading");
+                  setPage("loading");
                   await connectAsync({ connector: connectors[i.connectorIndex] });
                   console.log("login page, finished connecting");
                 }}
