@@ -16,7 +16,7 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 const queryClient = new QueryClient();
 const chains = [polygon];
 
-export const Web3AuthContext = createContext<Web3AuthNoModal | null>(null);
+const Web3AuthContext = createContext<Web3AuthNoModal | null>(null); // always starts with null
 export const useWeb3Auth = () => useContext(Web3AuthContext);
 
 export default function ContextProvider({ children }: { children: React.ReactNode }) {
@@ -86,14 +86,11 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     ],
   });
 
+  // // calling init() on web3Auth removes the ability of walletClient in Page.tsx useEffect's dependency array to detect appropriate changes
   // useEffect(() => {
-  //   console.log("ContextProvider useEffect run once");
-  //   const init = async () => {
-  //     // call init on web3AuthInstance
+  //   (async () => {
   //     await web3AuthInstance.init();
-  //   };
-  //   init();
-
+  //   })();
   // }, []);
 
   web3AuthInstance.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {

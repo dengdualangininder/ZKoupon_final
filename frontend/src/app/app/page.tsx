@@ -69,19 +69,14 @@ const User = () => {
   //   });
   // }
 
-  // web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-  //   console.log("/app, connected to wallet", data);
-  //   verifyAndGetData();
-  // });
-
-  // useAccountEffect({
-  //   onConnect(data) {
-  //     console.log("Connected!", data);
-  //   },
-  //   onDisconnect() {
-  //     console.log("Disconnected!");
-  //   },
-  // });
+  useAccountEffect({
+    onConnect(data) {
+      console.log("WAGMI Connected!", data);
+    },
+    onDisconnect() {
+      console.log("WAGMI Disconnected!");
+    },
+  });
 
   // web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
   //   console.log("connected to wallet", data);
@@ -123,21 +118,25 @@ const User = () => {
           setBrowser("");
         }
         setPage("saveToHome");
+        console.log("page set to saveToHome");
         return;
       }
 
       // query localStorage to determine if to proceed or show Login component
       const sessionIdObject = window.localStorage.getItem("openlogin_store");
+      console.log("sessionIdObject", sessionIdObject);
       if (sessionIdObject) {
         const sessionId = JSON.parse(sessionIdObject).sessionId;
         if (sessionId) {
-          console.log("already logged into web3Auth");
+          console.log("sessionId exists, already logged into web3Auth");
         } else {
           setPage("login");
+          console.log("no sessionId, page set to Login");
           return;
         }
       } else {
         setPage("login");
+        console.log("no sessionId, page set to Login");
         return;
       }
 
@@ -168,6 +167,7 @@ const User = () => {
   const verifyAndGetData = async () => {
     console.log("/app, verifyAndGetData() run once");
     setPage("loading");
+    console.log("page set to Loading");
 
     // get idToken
     try {
@@ -178,6 +178,7 @@ const User = () => {
     } catch (e) {
       console.log("verifyAndGetData, Cannot get userInfo or idToken, likely web3Auth not fully updated");
       setPage("login");
+      console.log("page set to Login");
     }
 
     // get publicKey
@@ -195,6 +196,7 @@ const User = () => {
       var publicKey = ""; // must declare
       console.log("Cannot get publicKey");
       setPage("login");
+      console.log("page set to Login");
     }
 
     // get user doc (with verification)
@@ -220,6 +222,7 @@ const User = () => {
             setMenu("settings");
           }
           setPage("app");
+          console.log("page set to App");
         }
 
         if (data === "create new user") {
@@ -230,11 +233,13 @@ const User = () => {
           console.log("/app, something in getUserDoc api failed");
           await disconnectAsync();
           setPage("login");
+          console.log("page set to Login");
         }
       } catch (err) {
         console.log("/app, verify failed");
         await disconnectAsync();
         setPage("login");
+        console.log("page set to Login");
       }
     }
   };
@@ -272,6 +277,7 @@ const User = () => {
       setPaymentSettingsState(docTemp.paymentSettings);
       setCashoutSettingsState(docTemp.cashoutSettings);
       setPage("app");
+      console.log("page set to App");
       // show intro modal
       if (docTemp.intro) {
         setIntroModal(true);
@@ -280,6 +286,7 @@ const User = () => {
     } catch (err) {
       console.log("could not create new user", err);
       setPage("login");
+      console.log("page set to Login");
     }
   };
 
