@@ -1,5 +1,5 @@
 import { Inter, Nunito_Sans } from "next/font/google";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 // const inter = Inter({ subsets: ["latin"], variable: "--font-inter" }); // inter is variable font so no "weight" needed, recommended
@@ -13,6 +13,13 @@ export const metadata: Metadata = {
   title: "Flash Pay",
   description: "Zero Fee Payments",
   icons: "/logoBlackBgNoText.svg",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  // userScalable: false,
 };
 
 // inter.className to inter.variable
