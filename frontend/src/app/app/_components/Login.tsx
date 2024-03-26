@@ -108,22 +108,22 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center xs:py-4 overflow-y-scroll">
+    <div className="h-screen flex flex-col items-center justify-center xs:py-4 overflow-y-auto text-gray-800">
       {/*--- container (with borders for desktop) ---*/}
       <div
-        className={`w-full h-screen px-6 xs:px-8 xs:w-[90%] sm:w-[500px] xs:py-[calc((h-screen-750px)/2)] xs:h-[750px] ${
-          isMobile ? "" : "lg:h-[500px] w-[250px]"
-        } flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4`}
+        className={`w-full h-screen xs:h-[800px] px-6 xs:w-[90%] sm:w-[540px] ${
+          isMobile ? "" : ""
+        } flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4  overflow-y-auto`}
       >
         {/*--- spacer ---*/}
-        <div className="w-full h-[5%]"></div>
+        <div className="w-full h-[5%] xs:h-[3%]"></div>
 
         {/*--- HEADER ---*/}
         <div className="w-full pb-2 flex flex-col items-center">
           <div className={`mt-2 relative w-[220px] h-[88px] mr-1 ${isMobile ? "" : ""}`}>
             <Image src="/logo.svg" alt="logo" fill />
           </div>
-          <div className="mt-2 tracking-tight font-medium text-base text-center">Fast global payments with 0% fees</div>
+          <div className="mt-2 tracking-tight font-medium text-base xs:text-lg text-center">Fast global payments with 0% fees</div>
         </div>
 
         {/*--- spacer ---*/}
@@ -132,26 +132,26 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
         {/*--- OWNERS or EMPLOYEES ---*/}
         <div className="w-full flex justify-center text-lg xs:text-xl font-bold">
           <div className="flex space-x-12">
-            <div className={`${role == "owners" ? "text-gray-700 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
+            <div className={`${role == "owners" ? "underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
               FOR OWNERS
             </div>
-            <div className={`${role == "employees" ? "text-gray-700 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
+            <div className={`${role == "employees" ? "underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
               FOR EMPLOYEES
             </div>
           </div>
         </div>
 
         {/*--- spacer ---*/}
-        <div className="w-full h-[3%]"></div>
+        <div className="w-full h-[3%] xs:h-[5%]"></div>
 
         {/*--- FOR OWNERS ---*/}
         {role == "owners" && (
-          <div className="pt-3 w-full pb-10 px-[calc((100%-360px)/2)] flex flex-col space-y-4 xs:min-space-y-5">
+          <div className="pt-3 pb-10 w-full px-[calc((100%-360px)/2)] xs:w-[380px] xs:px-0 flex flex-col space-y-4 xs:space-y-5">
             {/*--- connectors: google, apple, line, phantom, metamask ---*/}
             {myConnectors.map<any>((i: any) => (
               <div
                 key={i.name}
-                className="w-full xs:w-[400px] py-4 flex items-center bg-white rounded-full font-bold text-gray-700 lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
+                className="w-full py-4 xs:py-5 flex items-center text-gray-500 bg-white rounded-full font-bold lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
                 onClick={async () => {
                   console.log("login page, clicked connect, set page to Loading");
                   setPage("loading");
@@ -165,29 +165,33 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 <div className="xs:text-xl">Sign in with {i.name}</div>
               </div>
             ))}
-            <div className="pt-2 link text-center font-bold">More options</div>
+            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold">More options</div>
           </div>
         )}
 
         {/*--FOR EMPLOYEES---*/}
         {role == "employees" && (
-          <div className="w-full h-[38%] xs:h-[50%] py-2 flex flex-col items-center">
-            <form className="w-[300px] xs:w-[280px] px-[calc((100%-360px)/2)] flex flex-col">
+          <div className="w-full py-2 xs:px-0 flex flex-col items-center">
+            <form className="w-[320px] xs:w-[360px] flex flex-col">
               {/*--email---*/}
-              <label className="text-lg leading-snug font-medium text-gray-700">Email</label>
-              <input type="email" className="inputfontlogin" onChange={(e) => setMerchantEmail(e.target.value)}></input>
+              <label className="text-lg xs:text-xl leading-snug font-medium">Email</label>
+              <input
+                type="email"
+                className="mt-0.5 text-lg xs:text-xl font-bold px-1.5 py-2 xs:py-3 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms]"
+                onChange={(e) => setMerchantEmail(e.target.value)}
+              ></input>
               {/*--password---*/}
-              <label className="mt-4 text-lg leading-snug font-medium text-gray-700">Password</label>
+              <label className="mt-4 text-lg xs:text-xl leading-snug font-medium">Password</label>
               <div className="w-full relative">
                 <input
                   type={show ? "text" : "password"}
                   autoComplete="none"
                   autoCapitalize="none"
-                  className="inputfontlogin w-full"
+                  className="w-full mt-0.5 text-lg xs:text-xl font-bold px-1.5 py-2 xs:py-3 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms]"
                   onChange={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
-                  className="absolute right-[16px] top-[10px] xs:top-[6px] cursor-pointer text-xl xs:text-sm text-gray-800"
+                  className="absolute right-[16px] xs:right-[18px] top-[10px] xs:top-[12px] cursor-pointer text-xl xs:text-2xl"
                   onClick={() => {
                     show ? setShow(false) : setShow(true);
                   }}
@@ -196,7 +200,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                   <div
                     className={`${
                       show ? "hidden" : ""
-                    } absolute top-[0px] xs:top-[-2px] left-[10px] xs:left-[7px] rotate-[-45deg] h-[30px] xs:h-[20px] w-[2px] rounded-full bg-gray-800`}
+                    } absolute top-[0px] xs:top-[-1px] left-[10px] xs:left-[11px] rotate-[-45deg] h-[30px] xs:h-[34px] w-[2px] xs:w-[3px] rounded-full bg-gray-800`}
                   ></div>
                 </div>
               </div>
@@ -204,7 +208,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
               <div className="mt-8 flex justify-center">
                 <button
                   type="submit"
-                  className="w-[260px] text-xl rounded-full py-4 bg-blue-500 hover:bg-blue-600 active:bg-blue-400 text-white font-bold"
+                  className="w-[260px] xs:w-[280px] text-xl rounded-full py-4 xs:py-5 bg-blue-500 hover:bg-blue-600 active:bg-blue-400 text-white font-bold"
                   onClick={employeeSubmit}
                 >
                   Sign in
@@ -212,7 +216,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
               </div>
             </form>
             <div
-              className="mt-10 pb-10 text-lg text-center link"
+              className="mt-12 pb-10 text-base xs:text-xl text-center link"
               onClick={() => {
                 setForgotModal(true);
                 setModalState("initial");
