@@ -837,7 +837,6 @@ const Settings = ({
                 setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
                 setSavingState("savechanges");
               }}
-              type="text"
               value={cashoutSettingsState.cexEvmAddress}
               autoComplete="none"
             ></textarea>
