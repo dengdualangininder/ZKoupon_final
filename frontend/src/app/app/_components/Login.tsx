@@ -108,33 +108,50 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center xs:py-4">
+    <div className="h-screen flex flex-col items-center justify-center xs:py-4 overflow-y-scroll">
       {/*--- container (with borders for desktop) ---*/}
-      <div className="w-full h-screen px-6 py-8 xs:px-8 xs:w-[440px] xs:h-[600px] flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4">
-        {/*--- heading ---*/}
-        <div className="relative w-[330px] h-[100px]">
-          <Image src="/logo.svg" alt="logo" fill />
+      <div
+        className={`w-full h-screen px-6 xs:px-8 xs:w-[90%] sm:w-[500px] xs:py-[calc((h-screen-750px)/2)] xs:h-[750px] ${
+          isMobile ? "" : "lg:h-[500px] w-[250px]"
+        } flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4`}
+      >
+        {/*--- spacer ---*/}
+        <div className="w-full h-[5%]"></div>
+
+        {/*--- HEADER ---*/}
+        <div className="w-full pb-2 flex flex-col items-center">
+          <div className={`mt-2 relative w-[220px] h-[88px] mr-1 ${isMobile ? "" : ""}`}>
+            <Image src="/logo.svg" alt="logo" fill />
+          </div>
+          <div className="mt-2 tracking-tight font-medium text-base text-center">Fast global payments with 0% fees</div>
         </div>
-        <div className="mt-3 xs:mt-2 text-base font-bold text-gray-600">Fast global payments with near-zero fees</div>
+
+        {/*--- spacer ---*/}
+        <div className="w-full h-[5%]"></div>
 
         {/*--- OWNERS or EMPLOYEES ---*/}
-        <div className="mt-12 space-x-12 flex text-lg xs:text-base font-bold">
-          <div className={`${role == "owners" ? "text-gray-800 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
-            FOR OWNERS
-          </div>
-          <div className={`${role == "employees" ? "text-gray-800 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
-            FOR EMPLOYEES
+        <div className="w-full flex justify-center text-lg xs:text-xl font-bold">
+          <div className="flex space-x-12">
+            <div className={`${role == "owners" ? "text-gray-700 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
+              FOR OWNERS
+            </div>
+            <div className={`${role == "employees" ? "text-gray-700 underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
+              FOR EMPLOYEES
+            </div>
           </div>
         </div>
+
+        {/*--- spacer ---*/}
+        <div className="w-full h-[3%]"></div>
 
         {/*--- FOR OWNERS ---*/}
         {role == "owners" && (
-          <div className="mt-12 w-full px-[calc((100%-360px)/2)] flex flex-col items-center space-y-4">
+          <div className="pt-3 w-full pb-10 px-[calc((100%-360px)/2)] flex flex-col space-y-4 xs:min-space-y-5">
             {/*--- connectors: google, apple, line, phantom, metamask ---*/}
             {myConnectors.map<any>((i: any) => (
               <div
                 key={i.name}
-                className="w-full px-6 flex items-center bg-white rounded-full pl-8 py-4 font-bold text-gray-600 lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
+                className="w-full xs:w-[400px] py-4 flex items-center bg-white rounded-full font-bold text-gray-700 lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
                 onClick={async () => {
                   console.log("login page, clicked connect, set page to Loading");
                   setPage("loading");
@@ -142,30 +159,31 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                   console.log("login page, finished connecting");
                 }}
               >
-                <div className="relative w-[40px] h-[36px]">
+                <div className="relative ml-7 mr-4 w-[40px] h-[36px]">
                   <Image src={i.img} alt={i.name} fill />
                 </div>
-                <div className="ml-4">Sign in with {i.name}</div>
+                <div className="xs:text-xl">Sign in with {i.name}</div>
               </div>
             ))}
+            <div className="pt-2 link text-center font-bold">More options</div>
           </div>
         )}
 
         {/*--FOR EMPLOYEES---*/}
         {role == "employees" && (
-          <div className="w-full mt-2">
-            <form id="loginForm" className="mt-0 flex flex-col w-full">
+          <div className="w-full h-[38%] xs:h-[50%] py-2 flex flex-col items-center">
+            <form className="w-[300px] xs:w-[280px] px-[calc((100%-360px)/2)] flex flex-col">
               {/*--email---*/}
-              <label className="labelfont w-[75px] flex-none">Email</label>
-              <input type="email" className="inputfont" onChange={(e) => setMerchantEmail(e.target.value)}></input>
+              <label className="text-lg leading-snug font-medium text-gray-700">Email</label>
+              <input type="email" className="inputfontlogin" onChange={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
-              <label className="labelfont w-[75px] flex-none">Password</label>
+              <label className="mt-4 text-lg leading-snug font-medium text-gray-700">Password</label>
               <div className="w-full relative">
                 <input
                   type={show ? "text" : "password"}
                   autoComplete="none"
                   autoCapitalize="none"
-                  className="inputfont w-full"
+                  className="inputfontlogin w-full"
                   onChange={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
@@ -176,29 +194,31 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 >
                   <FontAwesomeIcon icon={faEye} />
                   <div
-                    className={`${show ? "" : "hidden"} absolute top-[1px] xs:top-[-1px] left-[10px] xs:left-[7px] rotate-[-45deg] h-[28px] xs:h-[20px] w-[1.5px] bg-gray-800`}
+                    className={`${
+                      show ? "hidden" : ""
+                    } absolute top-[0px] xs:top-[-2px] left-[10px] xs:left-[7px] rotate-[-45deg] h-[30px] xs:h-[20px] w-[2px] rounded-full bg-gray-800`}
                   ></div>
                 </div>
               </div>
               {/*--sign in button---*/}
-              <div className="mt-9 flex justify-center">
-                <button type="submit" className="w-[260px] text-xl rounded-full py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
+              <div className="mt-8 flex justify-center">
+                <button
+                  type="submit"
+                  className="w-[260px] text-xl rounded-full py-4 bg-blue-500 hover:bg-blue-600 active:bg-blue-400 text-white font-bold"
+                  onClick={employeeSubmit}
+                >
                   Sign in
                 </button>
               </div>
             </form>
-
-            {/*--forgot password---*/}
-            <div className="flex justify-center">
-              <div
-                className="text-lg mt-16 xs:mt-8 text-center link"
-                onClick={() => {
-                  setForgotModal(true);
-                  setModalState("initial");
-                }}
-              >
-                Forgot password?
-              </div>
+            <div
+              className="mt-10 pb-10 text-lg text-center link"
+              onClick={() => {
+                setForgotModal(true);
+                setModalState("initial");
+              }}
+            >
+              Forgot password?
             </div>
           </div>
         )}

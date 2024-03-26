@@ -156,8 +156,8 @@
     @apply h-[60px] xs:h-[48px] bg-blue-500 text-2xl xs:text-lg font-bold text-white rounded-lg lg:hover:bg-blue-600;
   }
 
-  .logininputfont {
-    @apply w-full text-base xs:text-sm border py-1 px-2 border-gray-400 rounded-lg outline-gray-300 xs:hover:bg-gray-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms];
+  .inputfontlogin {
+    @apply mt-0.5 text-lg font-bold xs:text-base text-gray-800 px-1.5 py-2 xs:py-2 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .loginlabelfont {
