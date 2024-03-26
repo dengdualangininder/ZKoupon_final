@@ -112,7 +112,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
       {/*--- container (with borders for desktop) ---*/}
       <div className="w-full h-screen px-6 py-8 xs:px-8 xs:w-[440px] xs:h-[600px] flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4">
         {/*--- heading ---*/}
-        <div className="relative w-[330px] h-[140px]">
+        <div className="relative w-[330px] h-[100px]">
           <Image src="/logo.svg" alt="logo" fill />
         </div>
         <div className="mt-3 xs:mt-2 text-base font-bold text-gray-600">Fast global payments with near-zero fees</div>
@@ -129,7 +129,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
 
         {/*--- FOR OWNERS ---*/}
         {role == "owners" && (
-          <div className="mt-14 w-full px-[calc((100%-360px)/2)] flex flex-col items-center space-y-4">
+          <div className="mt-12 w-full px-[calc((100%-360px)/2)] flex flex-col items-center space-y-4">
             {/*--- connectors: google, apple, line, phantom, metamask ---*/}
             {myConnectors.map<any>((i: any) => (
               <div
@@ -153,8 +153,8 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
 
         {/*--FOR EMPLOYEES---*/}
         {role == "employees" && (
-          <div className="mt-8 w-full">
-            <form id="loginForm" className="w-full mt-2 flex flex-col">
+          <div className="w-full mt-2">
+            <form id="loginForm" className="mt-0 flex flex-col w-full">
               {/*--email---*/}
               <label className="labelfont w-[75px] flex-none">Email</label>
               <input type="email" className="inputfont" onChange={(e) => setMerchantEmail(e.target.value)}></input>
@@ -181,22 +181,24 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 </div>
               </div>
               {/*--sign in button---*/}
-              <div className="mt-8 flex justify-center">
-                <button type="submit" className="w-full text-xl rounded-full py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
+              <div className="mt-9 flex justify-center">
+                <button type="submit" className="w-[260px] text-xl rounded-full py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold" onClick={employeeSubmit}>
                   Sign in
                 </button>
               </div>
             </form>
 
             {/*--forgot password---*/}
-            <div
-              className="text-lg mt-12 xs:mt-8 text-center link"
-              onClick={() => {
-                setForgotModal(true);
-                setModalState("initial");
-              }}
-            >
-              Forgot password?
+            <div className="flex justify-center">
+              <div
+                className="text-lg mt-16 xs:mt-8 text-center link"
+                onClick={() => {
+                  setForgotModal(true);
+                  setModalState("initial");
+                }}
+              >
+                Forgot password?
+              </div>
             </div>
           </div>
         )}
