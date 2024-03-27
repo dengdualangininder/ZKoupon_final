@@ -335,7 +335,7 @@ const User = () => {
             )}
           </div>
           {/*---menu pages---*/}
-          {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} />}
+          {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState} />}
           {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
           {menu === "settings" && isAdmin && (
             <Settings

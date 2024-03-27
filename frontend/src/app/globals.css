@@ -212,6 +212,10 @@
   .appButton {
     @apply h-[56px] xs:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 text-white font-bold rounded-full text-lg;
   }
+
+  .buttonWhiteTextLg {
+    @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
+  }
 }
 
 @layer utilities {

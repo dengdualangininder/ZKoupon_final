@@ -66,7 +66,7 @@ const Settings = ({
   useEffect(() => {
     console.log("url useEffect run once");
     const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
-    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
+    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
     console.log(tempUrl);
     if (paymentSettingsState.merchantPaymentType === "online") {
       tempUrl =
