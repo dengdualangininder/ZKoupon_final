@@ -135,7 +135,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
             <div className={`${role == "owners" ? "underline underline-offset-4 decoration-2" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
               FOR OWNERS
             </div>
-            <div className={`${role == "employees" ? "underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
+            <div className={`${role == "employees" ? "underline underline-offset-4 decoration-2" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
               FOR EMPLOYEES
             </div>
           </div>

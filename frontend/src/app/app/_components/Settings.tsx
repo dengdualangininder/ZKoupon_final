@@ -270,7 +270,7 @@ const Settings = ({
   console.log("last render, paymentSettingsState:", paymentSettingsState);
   console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
-    <section id="accountEl" className="h-[calc(100vh-88px)] w-full pt-6 flex flex-col overflow-y-scroll">
+    <section id="accountEl" className="h-[calc(100vh-84px)] sm:h-[calc(100vh-110px)] md:h-auto w-full pt-6 flex flex-col overflow-y-scroll">
       {/*---8 MODALS---*/}
       {errorModal && (
         <div>

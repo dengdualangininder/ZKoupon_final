@@ -45,7 +45,6 @@ const User = () => {
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [browser, setBrowser] = useState<string>("Safari");
-  const [userAgent, setUserAgent] = useState("none");
 
   // hooks
   const router = useRouter();
@@ -90,7 +89,6 @@ const User = () => {
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
     const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
-    setUserAgent(navigator.userAgent);
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
     console.log("useEffect, isMobileTemp:", isMobileTemp);
@@ -297,70 +295,59 @@ const User = () => {
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "app" && (
-        <div className="flex flex-col-reverse md:flex-row">
-          {/*---MENU: LEFT (desktop) or BOTTOM (mobile) ---*/}
-          <div className="w-full h-[84px] flex justify-center items-center sm:px-4 md:block md:justify-start md:items-start md:w-[210px] md:h-auto md:flex-none md:border-r-[2px]">
-            <div className="w-full h-full flex items-center md:w-auto md:flex-col md:h-screen">
-              {/*--- logo + username ---*/}
-              <div className="hidden md:flex flex-col items-center w-full">
-                {/*---logo---*/}
-                <div className="relative w-[96px] h-[48px]">
-                  <Image src={"/logo.svg"} alt="logo" fill />
-                </div>
-                {/*---user name---*/}
-                <div className="mt-4 px-2 text-base font-bold bg-white rounded-lg py-3">
-                  <div className="line-clamp-1 break-all">user info</div>
+        <div className="w-full md:w-auto h-screen flex flex-col-reverse md:flex-row">
+          {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
+          <div className="w-full md:w-[120px] lg:w-[190px] h-[84px] sm:h-[110px] md:h-screen flex-none flex flex-col justify-center items-center border-t md:border-r border-gray-300 relative">
+            {/*--- logo ---*/}
+            <div className="hidden md:block md:absolute top-6 lg:top-8 left-[9px] lg:left-[19px]">
+              <div className="relative w-[100px] h-[55px] lg:w-[150px] lg:h-[60px]">
+                <Image src={"/logo.svg"} alt="logo" fill />
+              </div>
+            </div>
+            {/*---menu---*/}
+            {isAdmin ? (
+              <div className="fixed md:static bottom-0 w-full md:w-auto h-[84px] sm:h-[110px] md:h-[50%] pb-3 flex md:flex-col items-center justify-evenly md:justify-between">
+                {menuArray.map((i) => (
+                  <div
+                    id={i.id}
+                    key={i.id}
+                    className={`${menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 w-[100px] lg:w-auto flex flex-col items-center`}
+                    onClick={(e) => {
+                      setMenu(e.currentTarget.id);
+                    }}
+                  >
+                    <div className={`relative w-[66px] h-[18px] sm:h-[28px] lg:h-[36px] point-events-none`}>
+                      <Image src={i.img} alt={i.title} fill />
+                    </div>
+                    <div className="mt-1 sm:mt-0.5 pointer-events-none leading-none sm:text-xl lg:text-2xl font-medium">{i.title}</div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex md:block text-lg font-bold space-x-3 xs:space-x-4 md:space-x-0 md:space-y-4">
+                <div id="appPayments" className="cursor-pointer hover:bg-white px-4 py-3 flex flex-col xs:flex-row items-center rounded-3xl">
+                  <div className="w-[36px] flex justify-center pointer-events-none">
+                    <FontAwesomeIcon icon={faList} className="text-2xl mr-1 pointer-events-none" />
+                  </div>
+                  <div className="pointer-events-none">Payments</div>
                 </div>
               </div>
-              {/*---menu---*/}
-              {isAdmin ? (
-                <div className="fixed bottom-0 w-full h-[84px] pt-3 flex justify-evenly border-t border-gray-300 md:border-none md:static md:block md:w-auto md:h-full md:justify-start xs:space-x-4 md:space-x-0 md:space-y-4">
-                  {menuArray.map((i) => (
-                    <div
-                      id={i.id}
-                      key={i.id}
-                      className={`${
-                        menu === i.id ? "opacity-100" : "opacity-50"
-                      } cursor-pointer xs:hover:opacity-100 w-[100px] flex flex-col xs:flex-row xs:justify-start items-center`}
-                      onClick={(e) => {
-                        setMenu(e.currentTarget.id);
-                      }}
-                    >
-                      <div className={`relative w-[32px] h-[18px] point-events-none`}>
-                        <Image src={i.img} alt={i.title} fill />
-                      </div>
-                      <div className="mt-1 pointer-events-none leading-none">{i.title}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex md:block text-lg font-bold space-x-3 xs:space-x-4 md:space-x-0 md:space-y-4">
-                  <div id="appPayments" className="cursor-pointer hover:bg-white px-4 py-3 flex flex-col xs:flex-row items-center rounded-3xl">
-                    <div className="w-[36px] flex justify-center pointer-events-none">
-                      <FontAwesomeIcon icon={faList} className="text-2xl mr-1 pointer-events-none" />
-                    </div>
-                    <div className="pointer-events-none">Payments</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          {/*---menu pages---*/}
-          <div className="h-[calc(100vh-84px)] md:h-auto md:w-auto">
-            {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} userAgent={userAgent} />}
-            {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
-            {menu === "settings" && isAdmin && (
-              <Settings
-                paymentSettingsState={paymentSettingsState}
-                setPaymentSettingsState={setPaymentSettingsState}
-                cashoutSettingsState={cashoutSettingsState}
-                setCashoutSettingsState={setCashoutSettingsState}
-                isMobile={isMobile}
-                introModal={introModal}
-                setIntroModal={setIntroModal}
-              />
             )}
           </div>
+          {/*---menu pages---*/}
+          {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} />}
+          {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
+          {menu === "settings" && isAdmin && (
+            <Settings
+              paymentSettingsState={paymentSettingsState}
+              setPaymentSettingsState={setPaymentSettingsState}
+              cashoutSettingsState={cashoutSettingsState}
+              setCashoutSettingsState={setCashoutSettingsState}
+              isMobile={isMobile}
+              introModal={introModal}
+              setIntroModal={setIntroModal}
+            />
+          )}
         </div>
       )}
     </div>
