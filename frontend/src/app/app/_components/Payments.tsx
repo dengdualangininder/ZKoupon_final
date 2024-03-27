@@ -31,8 +31,7 @@ const Payments = ({ transactionsState, isMobile }: { transactionsState: any; isM
     <div>
       <div>Payments</div>
       <div>products here:</div>
-      <button>send line message</button>
-      <div>{products}</div>
+      <div>{isMobile ? "mobile" : "notmobile"}</div>
     </div>
   );
 };

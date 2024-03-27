@@ -165,7 +165,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 <div className="xs:text-xl">Sign in with {i.name}</div>
               </div>
             ))}
-            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold">More options{isMobile}</div>
+            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold">More options {isMobile ? "mobile" : "notmobile"}</div>
           </div>
         )}
 

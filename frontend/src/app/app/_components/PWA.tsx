@@ -15,7 +15,7 @@ const PWA = ({ browser }: { browser: string }) => {
   }
 
   return (
-    <div className="absolute inset-0 overflow-hidden text-lg font-nunito">
+    <div className="h-screen text-lg">
       <div className="h-full flex flex-col items-center px-0">
         <div className="h-[57%] flex items-center">
           <div className="relative h-[300px] w-[150px] drop-shadow-[0px_6px_10px_rgba(0,0,0,0.5)]">
