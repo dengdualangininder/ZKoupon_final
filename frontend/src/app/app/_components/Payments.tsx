@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const Payments = ({ transactionsState, isMobile }: { transactionsState: any; isMobile: boolean }) => {
+const Payments = ({ transactionsState, isMobile, userAgent }: { transactionsState: any; isMobile: boolean; userAgent: string }) => {
   // console.log(txns);
   // console.log(paymentSettings);
   // console.log(isMobile);
@@ -31,6 +31,8 @@ const Payments = ({ transactionsState, isMobile }: { transactionsState: any; isM
     <div>
       <div>Payments</div>
       <div>products here:</div>
+      <div>{userAgent}</div>
+
       <div>{isMobile ? "mobile" : "notmobile"}</div>
     </div>
   );

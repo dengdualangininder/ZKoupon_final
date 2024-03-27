@@ -45,6 +45,7 @@ const User = () => {
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [browser, setBrowser] = useState<string>("Safari");
+  const [userAgent, setUserAgent] = useState("none");
 
   // hooks
   const router = useRouter();
@@ -89,6 +90,7 @@ const User = () => {
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
     const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
+    setUserAgent(navigator.userAgent);
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
     console.log("useEffect, isMobileTemp:", isMobileTemp);
@@ -345,7 +347,7 @@ const User = () => {
           </div>
           {/*---menu pages---*/}
           <div className="h-[calc(100vh-84px)] md:h-auto md:w-auto">
-            {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} />}
+            {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} userAgent={userAgent} />}
             {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
             {menu === "settings" && isAdmin && (
               <Settings
