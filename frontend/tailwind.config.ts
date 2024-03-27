@@ -6,6 +6,9 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      height: {
+        screendvh: "100dvh",
+      },
       transitionDuration: {
         1500: "1500ms",
         2000: "2000ms",
