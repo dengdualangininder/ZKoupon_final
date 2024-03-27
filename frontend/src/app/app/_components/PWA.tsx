@@ -15,18 +15,16 @@ const PWA = ({ browser }: { browser: string }) => {
   }
 
   return (
-    <div className="h-screendvh text-lg">
+    <div className="h-[100dvh] text-lg text-gray-700 flex flex-col items-center justify-center">
       {/*---image---*/}
-      <div className="h-[50%] py-4 flex items-center">
-        <div className="relative h-[300px] w-[150px] drop-shadow-[0px_6px_10px_rgba(0,0,0,0.5)]">
-          <Image src="/PWA.png" alt="phone" fill />
-        </div>
+      <div className="relative h-[300px] w-[150px] drop-shadow-lg p-2">
+        <Image src="/PWA.png" alt="phone" fill />
       </div>
       {/*---text---*/}
-      <div className="h-[50%] py-4 flex flex-col items-center">
+      <div className="mt-10 flex flex-col items-center">
         <div className="text-center text-3xl font-bold">Add To Home Screen</div>
         <div className="text-lg w-[330px] px-2">
-          <div className="mt-2">To install the App, you need to add this website to your home screen.</div>
+          <div className="mt-3">To install the App, you need to add this website to your home screen.</div>
           <div className="mt-2">
             In your browser{browser === "Safari" ? " menu" : ""}, tap the{" "}
             {os === "ios" ? (

@@ -116,9 +116,9 @@ const User = () => {
       } else {
         setBrowser("");
       }
-      setPage("saveToHome");
-      console.log("page set to saveToHome");
-      return;
+      // setPage("saveToHome");
+      // console.log("page set to saveToHome");
+      // return;
     }
 
     // query localStorage to determine if to proceed or show Login component

@@ -111,7 +111,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
     <div className="h-screen flex flex-col items-center justify-center xs:py-4 overflow-y-auto text-gray-800">
       {/*--- container (with borders for desktop) ---*/}
       <div
-        className={`w-full h-screen xs:h-[800px] px-6 xs:w-[90%] sm:w-[540px] ${
+        className={`w-full h-screen xs:h-[800px] px-8 xs:w-[90%] sm:w-[540px] ${
           isMobile ? "" : ""
         } flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4  overflow-y-auto`}
       >
@@ -130,9 +130,9 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
         <div className="w-full h-[5%]"></div>
 
         {/*--- OWNERS or EMPLOYEES ---*/}
-        <div className="w-full flex justify-center text-lg xs:text-xl font-bold">
+        <div className="w-full flex justify-center text-base xs:text-xl font-bold">
           <div className="flex space-x-12">
-            <div className={`${role == "owners" ? "underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
+            <div className={`${role == "owners" ? "underline underline-offset-4 decoration-2" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
               FOR OWNERS
             </div>
             <div className={`${role == "employees" ? "underline underline-offset-4" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
@@ -151,7 +151,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
             {myConnectors.map<any>((i: any) => (
               <div
                 key={i.name}
-                className="w-full py-4 xs:py-5 flex items-center text-gray-500 bg-white rounded-full font-bold lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-300 drop-shadow-md"
+                className="w-full py-4 xs:py-5 flex items-center text-gray-500 bg-white rounded-full font-bold lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-200 drop-shadow-md"
                 onClick={async () => {
                   console.log("login page, clicked connect, set page to Loading");
                   setPage("loading");
@@ -165,7 +165,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 <div className="xs:text-xl">Sign in with {i.name}</div>
               </div>
             ))}
-            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold">More options {isMobile ? "mobile" : "notmobile"}</div>
+            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold">More options</div>
           </div>
         )}
 
