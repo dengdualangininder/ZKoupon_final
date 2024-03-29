@@ -1,39 +1,52 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
-import { ethers } from "ethers";
-import detectEthereumProvider from "@metamask/detect-provider";
-import { Buffer } from "buffer";
 import { Parser } from "@json2csv/plainjs"; // switch to papaparse or manually do it
+//wagim
+import { useConfig } from "wagmi";
+import { writeContract } from "@wagmi/core";
+import { parseUnits } from "viem";
 // constants
-import { tokenAddresses, chainIds, addChainParams, blockExplorer } from "@/utils/web3Constants.js";
-import erc20ABI from "@/utils/abis/ERC20ABI.json";
+import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 import { merchantType2data } from "@/utils/constants";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
-import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown, faArrowsRotate, faXmark, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-const Payments = ({ transactionsState, isMobile, paymentSettingsState }: { transactionsState: any; isMobile: boolean; paymentSettingsState: any }) => {
+const Payments = ({
+  transactionsState,
+  setTransactionsState,
+  isMobile,
+  paymentSettingsState,
+}: {
+  transactionsState: any;
+  setTransactionsState: any;
+  isMobile: boolean;
+  paymentSettingsState: any;
+}) => {
   console.log("Payments component rendered");
+
+  // constants
   if (transactionsState) {
     var maxPage = Math.ceil(transactionsState.length / 10);
   }
-  const isMetaMaskBrowser = navigator.userAgent.match(/MetaMaskMobile/i);
 
+  // states
   const [clickedTxn, setClickedTxn] = useState<null | any>();
-  const [refundStatus, setRefundStatus] = useState("initial"); // other states are "refunding" and "refunded"
+  const [clickedTxnIndex, setClickedTxnIndex] = useState<null | number>();
+  const [refundStatus, setRefundStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
+  const [refundNoteStatus, setRefundNoteStatus] = useState("processing"); // "false" | "processing" | "true"
   const [page, setPage] = useState(1);
-  const [token, setToken] = useState();
-  // modals
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [msg, setMsg] = useState("");
   const [detailsModal, setDetailsModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
   const [downloadDates, setDownloadDates] = useState<string[]>([]);
 
+  // hooks
+  const config = useConfig();
+
+  // functions
   const getLocalTime = (mongoDate: string) => {
     let time = new Date(mongoDate).toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
     return time;
@@ -44,115 +57,99 @@ const Payments = ({ transactionsState, isMobile, paymentSettingsState }: { trans
     return `${date[2]}-${date[1]}-${date[0]}`;
   };
 
-  // const refunding = async () => {
-  //   //@ts-ignore
-  //   let provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   let signer = await provider.getSigner();
+  const onClickTxn = async (e: any) => {
+    const txnHash = e.currentTarget.id;
+    const clickedTxnIndexTemp = transactionsState.findIndex((i: any) => i.txnHash === txnHash);
+    if (!clickedTxnIndexTemp) {
+      return;
+    }
+    const clickedTxnTemp = transactionsState[clickedTxnIndexTemp];
+    setDetailsModal(true);
+    setClickedTxnIndex(clickedTxnIndexTemp);
+    setClickedTxn(clickedTxnTemp);
+    setRefundNoteStatus(clickedTxnTemp.refundNote ? "true" : "false");
+  };
 
-  //   // clickedTxn should exist but need this if statement for typescript
-  //   if (clickedTxn) {
-  //     const contract = new ethers.Contract(tokenAddresses[clickedTxn.network][clickedTxn.token]["address"], erc20ABI, signer);
-  //     setRefundStatus("refunding");
-  //     setMsg("Waiting on MetaMask...");
-  //     contract
-  //       .transfer(clickedTxn.customerAddress, ethers.parseUnits(clickedTxn.tokenAmount.toString(), tokenAddresses[clickedTxn.network][clickedTxn.token]["decimals"]))
-  //       .then((tx) => {
-  //         //action before txn is mined
-  //         setMsg("Sending transaction...");
-  //         provider.waitForTransaction(tx.hash).then(() => {
-  //           //actions after txn is mined
-  //           setMsg("Verifying transaction...");
-  //           axios
-  //             .post(
-  //               import.meta.env.VITE_ISDEV == "true" ? "http://localhost:8080/refund" : "https://server.lingpay.io/refund",
-  //               { txnHash: clickedTxn.txnHash },
-  //               { withCredentials: true }
-  //             )
-  //             .then((res) => {
-  //               if (res.data === "saved") {
-  //                 setRefundStatus("refunded");
-  //               } else {
-  //                 setErrorModal(true);
-  //                 setErrorMsg(
-  //                   "Refund successful! But, the refund status was not saved due to an internal server error. Please email contact@lingpay.io. We apologize for the inconvenience."
-  //                 );
-  //                 setRefundStatus("refunded");
-  //                 setDetailsModal(false);
-  //               }
-  //             })
-  //             .catch(() => {
-  //               setErrorModal(true);
-  //               setErrorMsg(
-  //                 "Refund successful! But, the refund status was not saved due to a server request error. Please email contact@lingpay.io. We apologize for the inconvenience."
-  //               );
-  //               setRefundStatus("refunded");
-  //               setDetailsModal(false);
-  //             });
-  //         });
-  //       })
-  //       .catch((e) => {
-  //         setErrorModal(true);
-  //         setErrorMsg(e.reason);
-  //         setRefundStatus("initial");
-  //         setDetailsModal(false);
-  //       });
-  //   }
-  // };
+  const onClickRefund = async () => {
+    console.log("onClickRefund, clickedTxn", clickedTxn);
+    setRefundStatus("processing");
 
-  // const onClickRefund = () => {
-  //   if (isMobile && !isMetaMaskBrowser) {
-  //     console.log(clickedTxn);
-  //     console.log(token);
-  //     let url =
-  //       `${import.meta.env.VITE_ISDEV == "true" ? "http://localhost:5173/refund/" : "https://metamask.app.link/dapp/www.lingpay.io/refund/"}` +
-  //       Buffer.from(clickedTxn.currencyAmount.toString(), "utf8").toString("base64") +
-  //       "&&" +
-  //       clickedTxn.merchantCurrency +
-  //       "&&" +
-  //       Buffer.from(clickedTxn.tokenAmount.toString(), "utf8").toString("base64") +
-  //       "&&" +
-  //       clickedTxn.token +
-  //       "&&" +
-  //       clickedTxn.network +
-  //       "&&" +
-  //       clickedTxn.customerAddress +
-  //       "&&" +
-  //       clickedTxn.txnHash +
-  //       "&&" +
-  //       Buffer.from(token, "utf8").toString("base64");
-  //     let element = document.createElement("a");
-  //     element.href = url;
-  //     element.target = "_self";
-  //     element.click();
-  //     setDetailsModal(false);
-  //   } else {
-  //     const desktopRefund = async () => {
-  //       let ethereum = await detectEthereumProvider();
-  //       try {
-  //         await ethereum.request({
-  //           method: "wallet_switchEthereumChain",
-  //           params: [{ chainId: chainIds[clickedTxn.network] }],
-  //         });
-  //         refunding();
-  //       } catch (error) {
-  //         if (error.message === "User rejected the request.") {
-  //           console.log("user rejected chain switch request", error);
-  //         } else {
-  //           try {
-  //             await ethereum.request({
-  //               method: "wallet_addEthereumChain",
-  //               params: [addChainParams[clickedTxn.network]],
-  //             });
-  //             refunding();
-  //           } catch (error) {
-  //             console.log("User rejected add chain or MetaMask not installed", error);
-  //           }
-  //         }
-  //       }
-  //     };
-  //     desktopRefund();
-  //   }
-  // };
+    // send tokens on blockchain
+    let refundHash = "";
+    try {
+      refundHash = await writeContract(config, {
+        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
+        abi: ERC20ABI,
+        functionName: "transfer",
+        args: [clickedTxn.customerAddress, parseUnits(clickedTxn.tokenAmount.toString(), 6)],
+      });
+      console.log("refundHash", refundHash);
+    } catch (err) {
+      console.log(err);
+      setRefundStatus("initial");
+      setDetailsModal(false);
+      setErrorMsg("Payment was not refunded");
+      setErrorModal(true);
+      return;
+    }
+
+    //save to db
+    try {
+      const res = await fetch("/api/refund", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ merchantEvmAddress: paymentSettingsState.merchantEvmAddress, refundHash: refundHash, txnHash: clickedTxn.txnHash }),
+      });
+      var data = await res.json();
+      console.log("refund api response:", data);
+    } catch (e) {
+      console.log(e);
+    }
+
+    // success or fail
+    if (data == "saved") {
+      setRefundStatus("processed");
+      let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
+      transactionsStateTemp[clickedTxnIndex!].refund = true;
+      setTransactionsState(transactionsStateTemp);
+    } else if (data != "saved") {
+      if (data.status == "error") {
+        setErrorMsg(data.message);
+      } else {
+        setErrorMsg("Refund was successful. But, the status was not saved to the database.");
+      }
+      setErrorModal(true);
+      setRefundStatus("initial");
+    }
+  };
+
+  const onClickRefundNote = async () => {
+    console.log("onClickRefundNote, clickedTxn:", clickedTxn);
+    setRefundNoteStatus("processing");
+    // save to db
+    const res = await fetch("/api/refundNote", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ merchantEvmAddress: paymentSettingsState.merchantEvmAddress, txnHash: clickedTxn.txnHash, refundNote: clickedTxn.refundNote }),
+    });
+    const data = await res.json();
+    console.log("refundNote api response:", data);
+    // success or error
+    if (data == "saved") {
+      setRefundNoteStatus(clickedTxn.refundNote ? "false" : "true");
+      let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
+      transactionsStateTemp[clickedTxnIndex!].refundNote = !clickedTxn.refundNote;
+      setTransactionsState(transactionsStateTemp);
+    } else {
+      if (data.status == "error") {
+        setErrorMsg(data.message);
+      } else {
+        setErrorMsg("Refund status was not saved to database");
+      }
+      setRefundNoteStatus(clickedTxn.refundNote ? "true" : "false");
+      setErrorModal(true);
+    }
+  };
 
   const onClickDownload = () => {
     const yearMonth = (document.getElementById("paymentsYearMonth") as HTMLInputElement).value;
@@ -241,10 +238,10 @@ const Payments = ({ transactionsState, isMobile, paymentSettingsState }: { trans
   };
 
   return (
-    <section id="appPaymentsEl" className="w-full flex flex-col items-center relative">
+    <section className="w-full flex flex-col items-center relative">
       {/*---Header---*/}
       <div className="hidden md:h-[60px] md:flex justify-center items-center font-extrabold text-3xl text-blue-700">Payment History</div>
-      {/*---Table + Buttons---*/}
+      {/*---Table + Navigation Arrows ---*/}
       {transactionsState && paymentSettingsState ? (
         <div className="w-full">
           {/*---Table---*/}
@@ -277,18 +274,11 @@ const Payments = ({ transactionsState, isMobile, paymentSettingsState }: { trans
                     .map((txn: any, index: number) => (
                       <tr
                         id={txn.txnHash}
+                        key={index}
                         className={`${
                           txn.refund ? "text-gray-400" : ""
                         } h-[calc((100vh-84px-40px-72px-4px)/8)] md:h-[calc((100vh-60px-40px-72px-4px)/10)] border-b lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer bg-white`}
-                        // txn={JSON.stringify(txn)}
-                        // test="test"
-                        onClick={(e) => {
-                          setDetailsModal(true);
-                          setClickedTxn(e.currentTarget.id);
-                          // setClickedTxn(JSON.parse(e.target.closest("tr").getAttribute("txn")));
-                          // getToken();
-                        }}
-                        // id={`paymentsTxn${index}`}
+                        onClick={onClickTxn}
                       >
                         <td className="whitespace-nowrap">
                           <div className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "text-xl leading-none" : "text-sm leading-tight"}`}>
@@ -341,23 +331,20 @@ const Payments = ({ transactionsState, isMobile, paymentSettingsState }: { trans
             )}
           </div>
 
-          {/*---buttons, 72px height---*/}
-          <div className="h-[72px] flex items-center justify-evenly text-gray-800">
-            {/*---arrows---*/}
-            <div className="flex items-center justify-center w-1/3">
-              <div
+          {/*---navigation arrows, 72px height---*/}
+          <div className="h-[72px] flex items-center justify-center">
+            <div className="flex items-center justify-center">
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                className="text-xl bg-white border-2 border-gray-400 text-gray-400 rounded-lg p-2.5 lg:hover:opacity-40 active:opacity-40 cursor-pointer"
                 onClick={() => (page === 1 ? "" : setPage(page - 1))}
-                className="w-[58px] h-[58px] xs:hover:bg-white active:text-blue-300 flex justify-center items-center rounded-xl cursor-pointer"
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className="text-3xl pointer-events-none" />
-              </div>
-              <div className="text-xl font-bold w-[20px] text-center select-none">{page}</div>
-              <div
+              />
+              <div className="text-2xl font-medium w-[20px] text-center select-none mx-4">{page}</div>
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="text-xl bg-white border-2 border-gray-400 text-gray-400 rounded-lg p-2.5 lg:hover:opacity-40 active:opacity-40 cursor-pointer"
                 onClick={() => (page === maxPage ? "" : setPage(page + 1))}
-                className="w-[58px] h-[58px] xs:hover:bg-white active:text-blue-300 flex justify-center items-center rounded-xl cursor-pointer"
-              >
-                <FontAwesomeIcon icon={faArrowRight} className="text-3xl pointer-events-none" />
-              </div>
+              />
             </div>
             {/*---download---*/}
             {/* <button
@@ -385,55 +372,89 @@ const Payments = ({ transactionsState, isMobile, paymentSettingsState }: { trans
       {/*---modals---*/}
 
       {detailsModal && (
-        <div>
-          <div className="px-5 py-8 flex flex-col bg-white w-[348px] h-[360px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-50">
+        <div className="">
+          <div className="px-8 flex flex-col justify-center space-y-6 w-[348px] h-[440px] bg-white rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-50">
             {/*---CLOSE BUTTON---*/}
-            <button
-              onClick={() => {
-                setDetailsModal(false);
-                if (refundStatus === "refunded") {
-                  location.reload();
-                }
-              }}
+            {/* <button
+              onClick={() => setDetailsModal(false)}
               className="absolute top-[calc(100%-28px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] text-3xl rounded-full h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 lg:hover:bg-red-500 active:bg-red-300"
             >
               <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-            </button>
+            </button> */}
             {/*---content---*/}
-            <div className="h-full flex flex-col justify-center text-lg lg:text-base">
-              <div>
-                <span className="font-bold">Time:</span> {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date)}
-              </div>
-              <div className="mt-2">
-                <span className="font-bold">Payment:</span> {clickedTxn.currencyAmount} {clickedTxn.merchantCurrency}
-              </div>
-              <div className="mt-2">
-                <span className="font-bold">Tokens sent:</span> {clickedTxn.tokenAmount} {clickedTxn.token} ({clickedTxn.network})
-              </div>
-              <div className="mt-2">
-                <span className="font-bold">Customer:</span> <span className="break-all">{clickedTxn.customerAddress}</span>
-              </div>
+            <div className="flex flex-col text-lg lg:text-base space-y-1 font-medium">
+              <p>
+                <span className="text-gray-400 mr-1">Time</span> {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date)}
+              </p>
+              <p>
+                <span className="text-gray-400 mr-1">Payment Value</span> {clickedTxn.currencyAmount} {clickedTxn.merchantCurrency}
+              </p>
+              <p>
+                <span className="text-gray-400 mr-1">Tokens Received</span> {clickedTxn.tokenAmount} USDC
+              </p>
+              <p>
+                <span className="text-gray-400 mr-1">Rate</span> {clickedTxn.blockRate}
+              </p>
+              <p>
+                <span className="text-gray-400 mr-1">Network</span> {clickedTxn.network}
+              </p>
+              <p>
+                <span className="text-gray-400 mr-1">Customer</span> <span className="break-all">{clickedTxn.customerAddress}</span>
+              </p>
             </div>
-            <div className="mt-6 mb-6 sm:mb-0 flex justify-center">
-              <button
-                id="paymentsRefundButton"
-                className={`${
-                  clickedTxn.refund || refundStatus === "refunded" ? "bg-gray-300 pointer-events-none" : " bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 cursor-pointer"
-                } w-full h-[56px] flex justify-center items-center text-white font-bold text-lg rounded-[4px]`}
-                // onClick={onClickRefund}
-              >
-                {refundStatus === "initial" && clickedTxn.refund == false && "Refund"}
-                {refundStatus === "refunding" && (
-                  <div className="flex items-center">
-                    <SpinningCircleWhite />
-                    <div className="ml-2">{msg}</div>
-                  </div>
-                )}
-                {(refundStatus === "refunded" || clickedTxn.refund == true) && "Refunded"}
-              </button>
-            </div>
+            {/*---actions---*/}
+            {clickedTxn.refund || refundStatus === "refunded" ? (
+              <div className="text-center text-lg font-bold text-gray-400 pt-8">Payment has been refunded</div>
+            ) : (
+              <div className="flex justify-center space-x-10 font-medium text-base">
+                {/*---refund now---*/}
+                <button
+                  id="paymentsRefundButton"
+                  className={`${
+                    clickedTxn.refund || refundStatus === "refunded" ? "hidden" : " bg-white lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer"
+                  } w-[110px] h-[110px] flex justify-center items-center rounded-full border border-gray-200 drop-shadow-lg`}
+                  onClick={onClickRefund}
+                >
+                  {refundStatus === "initial" && clickedTxn.refund == false && (
+                    <div>
+                      Refund
+                      <br />
+                      Now
+                    </div>
+                  )}
+                  {refundStatus === "processing" && (
+                    <div className="flex items-center justify-center">
+                      <SpinningCircleGray />
+                    </div>
+                  )}
+                  {(refundStatus === "processed" || clickedTxn.refund == true) && "Refunded"}
+                </button>
+                {/*---mark "to be refunded"---*/}
+                <button
+                  className={`${
+                    clickedTxn.refund || refundStatus === "refunded" ? "hidden" : " bg-white lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer"
+                  } w-[110px] h-[110px] flex justify-center items-center rounded-full border border-gray-200 drop-shadow-lg`}
+                  onClick={onClickRefundNote}
+                >
+                  {refundNoteStatus == "processing" && (
+                    <div className="flex items-center justify-center">
+                      <SpinningCircleGray />
+                    </div>
+                  )}
+                  {refundNoteStatus != "processing" && (
+                    <div>
+                      {refundNoteStatus == "true" ? "Remove" : "Add"}
+                      <br />
+                      <span className="text-sm tracking-tighter">TO BE REFUNDED</span>
+                      <br />
+                      Note
+                    </div>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
+          <div className=" opacity-60 fixed inset-0 z-10 bg-black" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
       {downloadModal && (

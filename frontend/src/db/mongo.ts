@@ -64,6 +64,7 @@ const userSchema = new mongoose.Schema({
       savings: String,
       merchantAddress: String,
       refund: Boolean,
+      refundNote: Boolean,
       archive: Boolean,
       // online params
       customerEmail: String,

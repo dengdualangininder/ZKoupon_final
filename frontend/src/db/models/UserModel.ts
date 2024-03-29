@@ -35,6 +35,7 @@ export interface IUser extends Document {
     cashRate: number;
     savings: string;
     refund: boolean;
+    refundNote: boolean;
     archive: boolean;
     // online params
     customerEmail: string;
@@ -88,6 +89,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
       savings: String,
       merchantEvmAddress: String,
       refund: Boolean,
+      refundNote: Boolean,
       archive: Boolean,
       // online params
       customerEmail: String,

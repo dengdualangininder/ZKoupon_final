@@ -912,7 +912,7 @@ const Settings = ({
           {/*---form---*/}
           <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
             <label className="labelfont">My EVM Address</label>
-            <div className="text-lg font-bold xs:text-base py-0.5 px-1 text-gray-800 border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer rounded-md">
+            <div className="text-lg font-bold xs:text-base py-0.5 px-1 border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer rounded-md">
               <div className="break-all">
                 {paymentSettingsState.merchantEvmAddress}
                 <div className="ml-2 inline-block align-middle pb-0.5">

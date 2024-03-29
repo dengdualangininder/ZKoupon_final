@@ -285,7 +285,7 @@ const User = () => {
   ];
 
   return (
-    <div className="pl-[calc(100vw-100%)]">
+    <div className="pl-[calc(100vw-100%)] text-gray-800">
       {page === "loading" && (
         <div className="w-full h-screen flex flex-col justify-center items-center">
           <SpinningCircleGrayLarge />
@@ -335,7 +335,9 @@ const User = () => {
             )}
           </div>
           {/*---menu pages---*/}
-          {menu === "payments" && <Payments transactionsState={transactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState} />}
+          {menu === "payments" && (
+            <Payments transactionsState={transactionsState} setTransactionsState={setTransactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState} />
+          )}
           {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
           {menu === "settings" && isAdmin && (
             <Settings
