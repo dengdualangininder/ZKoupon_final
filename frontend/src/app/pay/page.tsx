@@ -18,9 +18,7 @@ import Online from "./_components/Online";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
 
-export type U2local = {
-  [key: string]: number;
-};
+export type U2local = { [key: string]: number };
 
 const Pay = () => {
   console.log("/pay rendered once");
@@ -37,11 +35,7 @@ const Pay = () => {
   const [currencyAmount, setCurrencyAmount] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("");
   const [selectedToken, setSelectedToken] = useState("USDC");
-  const [u2local, setu2local] = useState<U2local>({
-    USD: 31.96,
-    USDC: 32.13,
-    USDT: 32.09,
-  });
+  const [u2local, setu2local] = useState<U2local>({ USD: 31.96, USDC: 32.13 });
   // modals and other states
   const [payModal, setPayModal] = useState(false);
   const [msg, setMsg] = useState("Please confirm transaction on MetaMask...");
@@ -76,31 +70,33 @@ const Pay = () => {
   const merchantTokens = [{ img: "/usdc.svg", name: "USDC", balance: USDCBalance }];
 
   //makes it so getPrices runs once
-  // const initialized = useRef(false);
-  // if (!initialized.current) {
-  //   initialized.current = true;
-  //   const getPrices = async () => {
-  //     let USDres = await axios.get(
-  //       `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-  //     );
-  //     let USDTres = await axios.get(
-  //       `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-  //     );
-  //     let USDCres = await axios.get(
-  //       `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-  //     );
-  //     let sheetCountryOrder = "twd, jpy, krw, hkd, sgd, php, thb, idr, myr, vnd, eur, gbp, cad, aud, usd".split(", ").map((i) => i.toUpperCase());
-  //     let sheetIndex = sheetCountryOrder.findIndex((i) => i == merchantCurrency);
-  //     setu2local({
-  //       USD: Number(USDres.data.values[0][sheetIndex * 2]).toPrecision(4),
-  //       USDC: Number(USDCres.data.values[0][sheetIndex * 2]).toPrecision(4),
-  //       USDT: Number(USDTres.data.values[0][sheetIndex * 2]).toPrecision(4),
-  //       EURC: 1,
-  //       EURT: 1,
-  //     });
-  //   };
-  //   getPrices();
-  // }
+  const initialized = useRef(false);
+  if (!initialized.current) {
+    initialized.current = true;
+    const getPrices = async () => {
+      // let USDres = await axios.get(
+      //   `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+      // );
+      // let USDTres = await axios.get(
+      //   `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+      // );
+      // let USDCres = await axios.get(
+      //   `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+      // );
+      // let sheetCountryOrder = "twd, jpy, krw, hkd, sgd, php, thb, idr, myr, vnd, eur, gbp, cad, aud, usd".split(", ").map((i) => i.toUpperCase());
+      // let sheetIndex = sheetCountryOrder.findIndex((i) => i == merchantCurrency);
+      // setu2local({
+      //   USD: Number(USDres.data.values[0][sheetIndex * 2]).toPrecision(4),
+      //   USDC: Number(USDCres.data.values[0][sheetIndex * 2]).toPrecision(4),
+      // });
+      const u2localAll: { [key: string]: U2local } = {
+        TWD: { USD: 31.96, USDC: 32.13 },
+        USD: { USD: 1, USDC: 1 },
+      };
+      setu2local(u2localAll[merchantCurrency!]);
+    };
+    getPrices();
+  }
 
   const getBalance = async (network: string) => {
     setIsGettingBalance(true);

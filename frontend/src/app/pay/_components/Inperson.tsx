@@ -93,38 +93,43 @@ const Inperson = ({
         </div>
       </div>
 
-      {/*---AMOUNT SENT + FXRATES---*/}
+      {/*---AMOUNT SENT + SAVINGS---*/}
       <div className={`${selectedNetwork ? "" : "invisible"} flex flex-col items-center w-[352px]`}>
-        {/*---amount sent---*/}
+        {/*--- AMOUNT SENT ---*/}
         <div className="flex text-2xl leading-none font-bold text-center">
           {((Number(currencyAmount) * 0.98) / u2local[selectedToken]).toFixed(2)} {selectedToken} will be sent
         </div>
-
+        {/*--- SAVINGS ---*/}
         <div className="mt-4 w-[340px] flex justify-between text-sm text-gray-400 font-medium leading-tight tracking-tighter">
-          <div className="flex items-center group relative">
-            <div className="flex flex-col items-center text-center mr-1">
-              <div>FX Savings</div>
-              {Number(u2local[selectedToken]) >= Number(u2local.USD) ? (
-                <div className="font-bold text-green-500">+{((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%</div>
-              ) : (
-                <div className="font-bold text-red-500">{((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%</div>
-              )}
-              {/*--- tooltip: fx rates ---*/}
-              <div className="invisible group-hover:visible absolute bottom-[calc(100%+2px)] left-0 w-[236px] bg-white border border-gray-300 drop-shadow-sm px-3 py-2 rounded-md text-start">
-                {urlParams.merchantCurrency === "USD" ? null : (
-                  <div className="text-base leading-snug text-gray-800">
-                    <p>
-                      Your Rate: 1 {selectedToken} &#8652; {u2local[selectedToken]} {urlParams.merchantCurrency}
-                    </p>
-                    <p>
-                      Bank Rate: 1 USD &#8652; {u2local.USD} {urlParams.merchantCurrency}
-                    </p>
-                  </div>
+          {/*--- FX Savings ---*/}
+          {urlParams.merchantCurrency != "USD" ? (
+            <div className="flex items-center group relative">
+              <div className="flex flex-col items-center text-center mr-1">
+                <div>FX Savings</div>
+                {Number(u2local[selectedToken]) >= Number(u2local.USD) ? (
+                  <div className="font-bold text-green-500">+{((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%</div>
+                ) : (
+                  <div className="font-bold text-red-500">{((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%</div>
                 )}
+                {/*--- tooltip: fx rates ---*/}
+                <div className="invisible group-hover:visible absolute bottom-[calc(100%+2px)] left-0 w-[236px] bg-white border border-gray-300 drop-shadow-sm px-3 py-2 rounded-md text-start">
+                  {urlParams.merchantCurrency === "USD" ? null : (
+                    <div className="text-base leading-snug text-gray-800">
+                      <p>
+                        Your Rate: 1 {selectedToken} &#8652; {u2local[selectedToken]} {urlParams.merchantCurrency}
+                      </p>
+                      <p>
+                        Bank Rate: 1 USD &#8652; {u2local.USD} {urlParams.merchantCurrency}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
+              <div className="italic bg-gray-300 rounded-full flex-none w-[16px] h-[16px] text-white flex justify-center items-center pb-[1px] pr-[1px]">i</div>
             </div>
-            <div className="italic bg-gray-300 rounded-full flex-none w-[16px] h-[16px] text-white flex justify-center items-center pb-[1px] pr-[1px]">i</div>
-          </div>
+          ) : (
+            <div></div>
+          )}
 
           {/*--- instant cashback ---*/}
           <div className="flex items-center group relative">
@@ -132,7 +137,7 @@ const Inperson = ({
               <p>Instant Cashback</p>
               <p className="font-bold text-green-500">+2%</p>
               {/*--- tooltip: instant cashback ---*/}
-              <div className="invisible group-hover:visible absolute bottom-[calc(100%+2px)] left-[30px] w-[188px] text-base leading-snug text-gray-800 bg-white border border-gray-300 px-3 py-2 rounded-md text-start">
+              <div className="invisible group-hover:visible absolute bottom-[calc(100%+2px)] left-[12px] w-[194px] text-base leading-snug text-gray-800 bg-gray-100 border border-gray-300 px-4 py-2 rounded-md text-start">
                 The value of USDC sent is 2% less than the value of the payment amount
               </div>
             </div>
@@ -140,16 +145,20 @@ const Inperson = ({
           </div>
 
           {/*--- total savings ---*/}
-          <div className="flex flex-col items-center text-center">
-            <p>You Save</p>
-            <div>
-              {Number(u2local[selectedToken]) >= Number(u2local.USD) ? (
-                <div className="font-bold text-green-500">+{Number(((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)) + 2}%</div>
-              ) : (
-                <div className="font-bold text-red-500">{Number(((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)) + 2}%</div>
-              )}
+          {urlParams.merchantCurrency != "USD" ? (
+            <div className="flex flex-col items-center text-center">
+              <p>You Save</p>
+              <div>
+                {Number(u2local[selectedToken]) >= Number(u2local.USD) ? (
+                  <div className="font-bold text-green-500">+{Number(((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)) + 2}%</div>
+                ) : (
+                  <div className="font-bold text-red-500">{Number(((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)) + 2}%</div>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
 
