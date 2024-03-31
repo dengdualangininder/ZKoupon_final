@@ -216,6 +216,10 @@
   .buttonWhiteTextLg {
     @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
   }
+
+  .modalBlackout {
+    @apply opacity-60 fixed inset-0 z-10 bg-black;
+  }
 }
 
 @layer utilities {

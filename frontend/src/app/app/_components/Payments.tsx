@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { Parser } from "@json2csv/plainjs"; // switch to papaparse or manually do it
-//wagim
+//wagmi
 import { useConfig } from "wagmi";
 import { writeContract } from "@wagmi/core";
 import { parseUnits } from "viem";
+// components
+import ErrorModal from "./modals/ErrorModal";
 // constants
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 import { merchantType2data } from "@/utils/constants";
@@ -374,8 +376,8 @@ const Payments = ({
           <SpinningCircleGray />
         </div>
       )}
-      {/*---modals---*/}
 
+      {/*--- MODALS ---*/}
       {detailsModal && (
         <div className="">
           <div className="px-8 flex flex-col justify-center space-y-6 w-[348px] h-[440px] bg-white rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-50">
@@ -459,7 +461,7 @@ const Payments = ({
               </div>
             )}
           </div>
-          <div className=" opacity-60 fixed inset-0 z-10 bg-black" onClick={() => setDetailsModal(false)}></div>
+          <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
       {downloadModal && (
@@ -490,28 +492,10 @@ const Payments = ({
               </button>
             </div>
           </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
+          <div className="modalBlackout"></div>
         </div>
       )}
-      {errorModal && (
-        <div>
-          <div className="flex justify-center bg-white w-[270px] h-[270px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
-            {/*---content---*/}
-            <div className="h-full flex flex-col justify-between items-center text-lg leading-tight md:text-base md:leading-snug px-6 py-6">
-              {/*---msg---*/}
-              <div className="mt-8 text-center">{errorMsg}</div>
-              {/*---close button---*/}
-              <button
-                onClick={() => setErrorModal(false)}
-                className="w-[160px] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-[4px] text-white text-lg tracking-wide font-bold"
-              >
-                DISMISS
-              </button>
-            </div>
-          </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
-        </div>
-      )}
+      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );
 };

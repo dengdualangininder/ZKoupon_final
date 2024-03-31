@@ -34,6 +34,7 @@ export const POST = async (request: Request) => {
         "cashoutSettings.cexEvmAddress": "",
         "cashoutSettings.cexApiKey": "",
         "cashoutSettings.cexApiSecret": "",
+        "cashoutSettings.cexAccountName": "",
         transactions: [],
         intro: true,
       });

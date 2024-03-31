@@ -14,6 +14,7 @@ import { useDisconnect } from "wagmi";
 import MockUI from "@/app/_components/MockUI";
 import Instructions from "./Instructions";
 // components - modals
+import ErrorModal from "./modals/ErrorModal";
 import FigmaModal from "./modals/FigmaModal";
 import ExchangeModal from "./modals/ExchangeModal";
 // import APIModal from "./modals/ApiKeyModal";
@@ -35,6 +36,8 @@ const Settings = ({
   isMobile,
   introModal,
   setIntroModal,
+  idToken,
+  publicKey,
 }: {
   paymentSettingsState: any;
   setPaymentSettingsState: any;
@@ -43,6 +46,8 @@ const Settings = ({
   isMobile: boolean;
   introModal: boolean;
   setIntroModal: any;
+  idToken: string;
+  publicKey: string;
 }) => {
   console.log("Settings, rendered once");
   const [url, setUrl] = useState("");
@@ -225,7 +230,7 @@ const Settings = ({
       const res = await fetch("/api/saveSettings", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: cashoutSettingsState }),
+        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
       });
       const data = await res.json();
 
@@ -272,24 +277,7 @@ const Settings = ({
   return (
     <section id="accountEl" className="h-[calc(100vh-84px)] sm:h-[calc(100vh-110px)] md:h-auto w-full pt-6 flex flex-col overflow-y-scroll">
       {/*---8 MODALS---*/}
-      {errorModal && (
-        <div>
-          <div className="flex flex-col items-center bg-white w-[300px] h-[300px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[20]">
-            {/*---content---*/}
-            <div className="w-full h-full px-6 flex flex-col justify-center text-lg leading-tight md:text-base md:leading-snug">
-              <div className="text-center">{errorMsg}</div>
-            </div>
-            {/*---close button---*/}
-            <button
-              onClick={() => setErrorModal(false)}
-              className="mb-8 w-[230px] h-[56px] xs:h-[44px] flex-none bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-[4px] text-white text-lg tracking-wide font-bold"
-            >
-              DISMISS
-            </button>
-          </div>
-          <div className="opacity-60 fixed inset-0 z-10 bg-black"></div>
-        </div>
-      )}
+
       {introModal && (
         <div>
           <div className="flex flex-col justify-evenly items-center w-[348px] h-[450px] bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
@@ -352,6 +340,7 @@ const Settings = ({
           <div className=" opacity-60 fixed inset-0 z-10 bg-black"></div>
         </div>
       )}
+      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
       {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} />}
       {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.CEX} />}
       {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
@@ -808,38 +797,42 @@ const Settings = ({
           {/*---form---*/}
           <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
             {/*---cex---*/}
-            <div className="labelfont">Your Cryptocurrency Exchange</div>
-            <select
-              onChange={(e) => {
-                const cexTemp = e.currentTarget.value;
-                setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
-                setSavingState("savechanges");
-              }}
-              className="inputfont bg-white"
-            >
-              {countryData[paymentSettingsState.merchantCountry]["CEXes"].map((i, index) => (
-                <option key={index} selected={cashoutSettingsState.cex === i}>
-                  {i}
-                </option>
-              ))}
-            </select>
-            {/*---cexEvmAddress---*/}
-            <div className="labelfont">
-              Your Exchange's USDC deposit address on the Polygon network (
-              <span className="link" onClick={() => setDepositAddressModal(true)}>
-                instructions
-              </span>
-              )
+            <div>
+              <div className="labelfont">Your Cryptocurrency Exchange</div>
+              <select
+                className="inputfont bg-white w-full"
+                onChange={(e) => {
+                  const cexTemp = e.currentTarget.value;
+                  setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
+                  setSavingState("savechanges");
+                }}
+              >
+                {countryData[paymentSettingsState.merchantCountry]["CEXes"].map((i, index) => (
+                  <option key={index} selected={cashoutSettingsState.cex === i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
             </div>
-            <textarea
-              className="w-full inputfont break-all text-wrap"
-              onChange={(e: any) => {
-                setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
-                setSavingState("savechanges");
-              }}
-              value={cashoutSettingsState.cexEvmAddress}
-              autoComplete="none"
-            ></textarea>
+            {/*---cexEvmAddress---*/}
+            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "hidden" : ""}`}>
+              <div className="labelfont">
+                Your Exchange's USDC deposit address on the Polygon network (
+                <span className="link" onClick={() => setDepositAddressModal(true)}>
+                  instructions
+                </span>
+                )
+              </div>
+              <textarea
+                className="w-full inputfont break-all text-wrap"
+                onChange={(e: any) => {
+                  setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
+                  setSavingState("savechanges");
+                }}
+                value={cashoutSettingsState.cexEvmAddress}
+                autoComplete="none"
+              ></textarea>
+            </div>
             {/*---cexApiKey---*/}
             {/* <div className="mt-3 text-lg xs:text-sm font-bold leading-tight xs:leading-tight">
                     Your Exchange's API Key{" "}
@@ -877,7 +870,7 @@ const Settings = ({
                     className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg xs:text-base text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
                   ></input> */}
             {/*---save button---*/}
-            <div className="my-6 flex justify-center">
+            <div className="my-8 flex justify-center">
               <button
                 className={`${
                   savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
@@ -941,7 +934,7 @@ const Settings = ({
               value={paymentSettingsState.employeePass}
             ></input>
             {/*---save button---*/}
-            <div className="my-6 flex justify-center items-center">
+            <div className="my-8 flex justify-center items-center">
               <button
                 className={`${
                   savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"

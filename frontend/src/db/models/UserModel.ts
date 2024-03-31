@@ -21,6 +21,7 @@ export interface IUser extends Document {
     cexEvmAddress: string;
     cexApiKey: string;
     cexApiSecret: string;
+    cexAccountName: string;
   };
   transactions: {
     date: any;
@@ -74,6 +75,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     cexEvmAddress: String,
     cexApiKey: String,
     cexApiSecret: String,
+    cexAccountName: String,
   },
   transactions: [
     {

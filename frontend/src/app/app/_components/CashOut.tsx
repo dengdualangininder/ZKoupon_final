@@ -14,23 +14,43 @@ import axios from "axios";
 import { tokenAddresses } from "@/utils/web3Constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 // components
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
+import ErrorModal from "./modals/ErrorModal";
 // images
+import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShare, faClockRotateLeft, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
-const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { paymentSettingsState: any; cashoutSettingsState: any; isMobile: boolean }) => {
+const CashOut = ({
+  paymentSettingsState,
+  cashoutSettingsState,
+  setCashoutSettingsState,
+  isMobile,
+  idToken,
+  publicKey,
+}: {
+  paymentSettingsState: any;
+  cashoutSettingsState: any;
+  setCashoutSettingsState: any;
+  isMobile: boolean;
+  idToken: string;
+  publicKey: string;
+}) => {
   console.log("CashOut component rendered");
   const [flashBalance, setFlashBalance] = useState(""); // use string
   const [cexBalance, setCexBalance] = useState<string | undefined>("");
+  const [isCexAccessible, setIsCexAccessible] = useState(true);
+  const [txnHash, setTxnHash] = useState("");
+  const [usdcTransferToCex, setUsdcTransferToCex] = useState("");
+  const [usdcTransferToBank, setUsdcTransferToBank] = useState("");
+  const [cbBankAccountName, setCbBankAccountName] = useState<any>("");
   // modal states
+  const [transferToCexModal, setTransferToCexModal] = useState(false);
+  const [transferToBankModal, setTransferToBankModal] = useState(false);
   const [cashOutModal, setCashOutModal] = useState(false);
   const [cashOutModalText, setCashOutModalText] = useState("initial"); // "initial" | "sending" | "sent"
   const [errorModal, setErrorModal] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [isCexAccessible, setIsCexAccessible] = useState(true);
-  const [txHash, setTxHash] = useState("");
+  const [errorMsg, setErrorMsg] = useState<any>();
 
   // hooks
   const router = useRouter();
@@ -50,42 +70,52 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
 
   // get CEX balance
   useEffect(() => {
+    console.log("/app, Cashout, getCexBalance useEffect run once");
     // if (!getCexBalanceRef.current) {
     //   return;
     // }
-    console.log("getting CEX balances");
     // getCexBalanceRef.current = true;
-    (async () => {
+    const getCexBalance = async () => {
       // if coinbase
       if (cashoutSettingsState.cex == "Coinbase Exchange") {
         console.log("getting Coinbase balance");
+        // get access or refresh tokens
         const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
         const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
-        console.log("found cbRefreshToken or cbAccessToken in local storage", cbRefreshToken, cbAccessToken);
+        console.log("cbRefreshToken & cbAccessToken", cbRefreshToken, cbAccessToken);
+        // if one exists, call cbGetBalance
         if (cbAccessToken || cbRefreshToken) {
           console.log("calling cbGetBalance API...");
           const res = await fetch("/api/cbGetBalance", {
             method: "POST",
-            body: JSON.stringify({ cbAccessToken, cbRefreshToken }),
+            body: JSON.stringify({ cbAccessToken, cbRefreshToken, idToken, publicKey }),
             headers: { "content-type": "application/json" },
           });
-          const data = await res.json();
+          const data = await res.json(); // if success, data.status | data.cbAccessToken | data.cbRefreshToken
           console.log(data);
+          // if successful
           if (data.status === "success") {
+            // set cexBalance
             setCexBalance(data.balance);
+            // save new tokens to browser storage
             if (data.cbAccessToken && data.cbRefreshToken) {
               console.log("storing new tokens");
               window.sessionStorage.setItem("cbAccessToken", data.cbAccessToken);
               window.localStorage.setItem("cbRefreshToken", data.cbRefreshToken);
             }
+            // change cexEvmAddress state
+            setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: data.cexEvmAddress, cexAccountName: data.cexAccountName });
           } else if (data.status === "error") {
             setIsCexAccessible(false);
           }
         } else {
-          console.log("/app, CashOut, useEffect, no cbAccessToken or cbRefreshToken");
+          console.log("no cbAccessToken or cbRefreshToken");
           setIsCexAccessible(false);
         }
-      } else {
+      }
+
+      // if not Coinbase
+      if (cashoutSettingsState.cex != "Coinbase Exchange") {
         console.log("getting non-Coinbase balance");
         // if other cex, set cexBalance to undefined only if no API keys
         if (cashoutSettingsState.cexApiKey && cashoutSettingsState.cexSecretKey) {
@@ -100,11 +130,16 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
           setIsCexAccessible(false);
         }
       }
-    })();
+    };
+    getCexBalance();
+    // setCexBalance("1231.32"); // for testing purposes
+    // setIsCexAccessible(true); // for testing purposes
+    console.log("/app, Cashout, getCexBalance useEffect ended");
   }, []);
 
   // get flashBalance, runs only once
   useEffect(() => {
+    console.log("/app, Cashout, getFlashBalance useEffect run once");
     // if (!getFlashBalanceRef.current) {
     //   return;
     // }
@@ -122,36 +157,40 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
       console.log("flashBalanceTemp", flashBalanceTemp);
     };
     getFlashBalance();
+    // setFlashBalance("1231.32"); // for testing purposes
+
+    console.log("/app, Cashout, getFlashBalance useEffect ended");
   }, []);
 
   const onClickCashOutConfirm = async () => {
     setCashOutModalText("sending");
 
-    // account id
+    // get USDC account ID
     const resAccounts = await axios.get("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${window.sessionStorage.getItem("cbAccessToken")}` } });
     const accounts = resAccounts.data.data; // accounts = array of accounts
     const usdcAccount = accounts.find((i: any) => i.name === "USDC Wallet");
     const usdcAccountId = usdcAccount.id; // returns string with 6 decimals
+    console.log(usdcAccountId);
 
     // get cexEvmAddress
     const resCexAddresses = await axios.get(`https://api.coinbase.com/v2/accounts/${usdcAccountId}/addresses`, {
       headers: { Authorization: `Bearer ${window.sessionStorage.getItem("cbAccessToken")}` },
     });
-    const cexAddressObjects = resCexAddresses.data.data; // array of USDC accounts on different networks
-    const usdcAddressObject = cexAddressObjects.find((i: any) => i.network === "ethereum");
-    const cexEvmAddress = usdcAddressObject.address;
-    console.log("cexEvmAddress", cexEvmAddress);
+    const cexAddressObjects = resCexAddresses.data.data; // returns Solana and Ethereum address objects
+    const usdcAddressObject = cexAddressObjects.find((i: any) => i.network === "ethereum"); // find the Ethereum account
+    const cexEvmAddress = usdcAddressObject.address; // get address
+    console.log(cexEvmAddress);
 
     // send USDC
-    const txHashTemp = await writeContract(config, {
+    const txnHashTemp = await writeContract(config, {
       address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
       abi: ERC20ABI,
       functionName: "transfer",
-      args: [cexEvmAddress, parseUnits("0.1", 6)],
+      args: [cexEvmAddress, parseUnits(usdcTransferToCex, 6)],
     });
-    console.log(txHashTemp);
+    console.log(txnHashTemp);
+    setTxnHash(txnHashTemp);
     setCashOutModalText("sent");
-    setTxHash(txHashTemp);
 
     //
   };
@@ -161,16 +200,110 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
     router.push(
-      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create`
+      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read`
     );
   };
 
   const onClickTransferToCex = async () => {
-    //logic
+    if (cashoutSettingsState.cexEvmAddress && cashoutSettingsState.cexAccountName) {
+      setTransferToCexModal(true);
+    } else {
+      if (cashoutSettingsState.cex == "Coinbase Exchange") {
+        setErrorMsg(
+          <div>
+            <p>Please first link your Coinbase account</p>
+            <p className="my-3">or</p>
+            <p>Add your Coinbase account's USDC deposit address on the Polygon network</p>
+          </div>
+        );
+      } else {
+        setErrorMsg("Please first add your CEX's USDC deposit address on the Polygon network in Settings > Cash Out Settings");
+      }
+      setErrorModal(true);
+    }
+  };
+
+  const onClickTransferToCexSubmit = async () => {
+    setCashOutModalText("sending");
+    try {
+      const txnHashTemp = await writeContract(config, {
+        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
+        abi: ERC20ABI,
+        functionName: "transfer",
+        args: [cashoutSettingsState.cexEvmAddress, parseUnits(usdcTransferToCex, 6)],
+      });
+      console.log(txnHashTemp);
+      setTxnHash(txnHashTemp);
+      setCashOutModalText("sent");
+    } catch (err) {
+      console.log(err);
+      console.log("transfer not sent");
+      setCashOutModalText("inital");
+    }
   };
 
   const onClickTransferToBank = async () => {
-    //logic
+    // coinbase
+    if (cashoutSettingsState.cex == "Coinbase Exchange") {
+      // get access or refresh tokens
+      const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
+      const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
+      console.log("cbRefreshToken & cbAccessToken", cbRefreshToken, cbAccessToken);
+      // if one exists, start withdraw
+      if ((cbAccessToken || cbRefreshToken) && cexBalance) {
+        console.log("getting bank info...");
+        setTransferToBankModal(true);
+        const res = await fetch("/api/cbGetBankInfo", {
+          method: "POST",
+          body: JSON.stringify({ cbRefreshToken, cbAccessToken }),
+          headers: { "content-type": "application/json" },
+        });
+        const data = await res.json(); // if success, data.status | data.cbAccessToken | data.cbRefreshToken
+        console.log(data);
+        // if successful
+        if (data.status === "success") {
+          setCbBankAccountName(data.cbBankAccountName);
+          if (data.cbAccessToken && data.cbRefreshToken) {
+            console.log("storing new tokens");
+            window.sessionStorage.setItem("cbAccessToken", data.cbAccessToken);
+            window.localStorage.setItem("cbRefreshToken", data.cbRefreshToken);
+          }
+        } else if (data.status === "error") {
+          console.log("could not get bank info");
+        }
+      } else {
+        setErrorMsg(<div>Please first link your Coinbase account</div>);
+        setErrorModal(true);
+      }
+    }
+    // not coinbase
+    if (cashoutSettingsState.cex != "Coinbase Exchange") {
+      if (cashoutSettingsState.cexApiKey && cashoutSettingsState.cexApiSecret) {
+        // connect to exchange and make withdrawal
+      } else {
+        setTransferToBankModal(false);
+        setErrorMsg("Please first add your CEX's USDC deposit address on the Polygon network in Settings > Cash Out Settings");
+        setErrorModal(true);
+      }
+    }
+  };
+
+  const onClickTransferToBankSubmit = async () => {
+    setCashOutModalText("sending");
+    try {
+      const txnHashTemp = await writeContract(config, {
+        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
+        abi: ERC20ABI,
+        functionName: "transfer",
+        args: [cashoutSettingsState.cexEvmAddress, parseUnits(usdcTransferToCex, 6)],
+      });
+      console.log(txnHashTemp);
+      setTxnHash(txnHashTemp);
+      setCashOutModalText("sent");
+    } catch (err) {
+      console.log("transfer not sent");
+      setCashOutModalText("inital");
+    }
   };
 
   console.log("last render");
@@ -250,7 +383,7 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
         </div>
 
         {/*---Cash Out Button---*/}
-        <div className="mt-8 flex-none flex flex-col items-center justify-center relative">
+        {/* <div className="mt-8 flex-none flex flex-col items-center justify-center relative">
           <button
             className="w-[176px] h-[64px] text-2xl bg-blue-500 text-white font-bold rounded-full lg:hover:bg-blue-600 active:bg-blue-300 relative"
             onClick={() => {
@@ -274,14 +407,13 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
           >
             Cash Out
           </button>
-          {/*--- info ---*/}
           <div className="absolute bottom-[44px] md:bottom-[40px] left-[calc(100%+24px)] group">
             <FontAwesomeIcon icon={faCircleQuestion} className=" text-gray-400 text-xl" />
             <div className="invisible group-hover:visible absolute w-[138px] xs:w-[124px] right-[28px] bottom-[4px] text-base leading-tight xs:text-sm xs:leading-tight px-2 py-1.5 pointer-events-none bg-white text-slate-700 border-blue-500 border rounded-lg z-10">
               Cash out to your bank with 1 click
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/*---HISTORY---*/}
         <div className="my-8 flex items-center justify-center space-x-2 text-blue-800">
@@ -299,6 +431,7 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
       </div>
 
       {/*---cashOut Modal---*/}
+
       {cashOutModal && (
         <div>
           <div className="w-[348px] h-[430px] lg:h-[400px] bg-white px-6 py-6 rounded-xl fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-20">
@@ -339,7 +472,7 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
                 <div className="">
                   <div className="text-2xl font-bold text-center">Transfer complete!</div>
                   <div className="mt-8 text-lg text-center link">
-                    <a href={`https://polygonscan.com/tx/${txHash}`} target="_blank">
+                    <a href={`https://polygonscan.com/tx/${txnHash}`} target="_blank">
                       View transaction
                     </a>
                   </div>
@@ -353,28 +486,176 @@ const CashOut = ({ paymentSettingsState, cashoutSettingsState, isMobile }: { pay
               </div>
             )}
           </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
+          <div className="modalBlackout"></div>
         </div>
       )}
-      {errorModal && (
+      {transferToCexModal && (
         <div>
-          <div className="flex justify-center bg-white w-[300px] h-[250px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
-            {/*---content---*/}
-            <div className="h-full flex flex-col justify-between items-center text-lg leading-tight md:text-base md:leading-snug px-6 py-8">
-              {/*---msg---*/}
-              <div className="mt-6 text-center">{errorMsg}</div>
-              {/*---close button---*/}
-              <button
-                onClick={() => setErrorModal(false)}
-                className="w-full h-[56px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-[4px] text-white text-lg tracking-wide font-bold"
-              >
-                DISMISS
-              </button>
-            </div>
+          <div className="w-[340px] min-h-[300px] px-6 py-10 flex flex-col items-center text-gray-700 bg-white rounded-3xl border border-gray-500 fixed left-[50%] translate-x-[-50%] top-[50%] translate-y-[-55%] z-[90]">
+            {/*---content, 3 conditions---*/}
+            {cashOutModalText == "initial" && (
+              <div className="w-full flex flex-col items-center">
+                <div className="w-[250px] text-2xl font-bold text-center">Transfer USDC from Flash to {cashoutSettingsState.cex.replace(" Exchange", "")}</div>
+                {cashoutSettingsState.cex == "Coinbase Exchange" && (
+                  <div className="mt-6 w-full">
+                    <div className="font-bold underline underline-offset-2">{cashoutSettingsState.cex.replace(" Exchange", "")} Account Details</div>
+                    {/*---cex account info---*/}
+                    <div className="font-bold text-gray-400">
+                      <div className="mt-3 w-full">
+                        Name <span className="ml-1 text-gray-700">{cashoutSettingsState.cexAccountName}</span>
+                      </div>
+                      <div className="mt-2 w-full">
+                        Address <span className="ml-1 text-gray-700 break-all">{cashoutSettingsState.cexEvmAddress}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {cashoutSettingsState.cex != "Coinbase Exchange" && (
+                  <div className="mt-2 w-full ont-bold text-gray-400">
+                    Your {cashoutSettingsState.cex.replace(" Exchange", "")} USDC Deposit Address
+                    <div className="ml-1 text-gray-700 break-all">{cashoutSettingsState.cexEvmAddress}</div>
+                  </div>
+                )}
+
+                {/*---balance---*/}
+                <div className="mt-5 w-full text-base font-medium text-gray-400 text-end">
+                  balance <span className={`${flashBalance ? "" : "invisible"} text-blue-600`}>{flashBalance}</span>
+                </div>
+                {/*---input---*/}
+                <div className="w-full flex items-center justify-between border border-gray-400 rounded-2xl">
+                  <div className="ml-3 relative w-[32px] h-[32px]">
+                    <Image src="/usdc.svg" alt="USDC" fill />
+                  </div>
+                  <input
+                    className="py-3 w-[50%] text-center font-bold text-3xl outline-none focus:border-blue-500 duration-300 focus:placeholder:invisible"
+                    type="number"
+                    inputMode="decimal"
+                    onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
+                    value={usdcTransferToCex}
+                    placeholder="0 USDC"
+                  ></input>
+                  <div className="mr-3 px-2 py-1 bg-gray-100 font-bold text-blue-500" onClick={() => setUsdcTransferToCex(flashBalance)}>
+                    max
+                  </div>
+                </div>
+                {/*---buttons---*/}
+                <button
+                  onClick={onClickTransferToCexSubmit}
+                  className="mt-10 w-[200px] py-3 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:bg-gray-100 active:bg-gray-100 rounded-full border border-gray-200 drop-shadow-md"
+                >
+                  Transfer
+                </button>
+                <button
+                  onClick={() => setTransferToCexModal(false)}
+                  className="w-[200px] mt-12 px-5 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:text-gray-800 active:text-gray-800"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            {cashOutModalText == "sending" && (
+              <div className="w-full grow flex flex-col justify-center items-center">
+                <SpinningCircleGray />
+                <p className="mt-1">Sending...</p>
+                <p className="mt-4">Please do not close window</p>
+              </div>
+            )}
+            {cashOutModalText == "sent" && (
+              <div className="w-full grow flex flex-col justify-center items-center">
+                <div>
+                  {usdcTransferToCex} USDC successfully sent to your {cashoutSettingsState.cex}!
+                </div>
+                <button
+                  onClick={() => {
+                    setTransferToCexModal(false);
+                    setCashOutModalText("initial");
+                  }}
+                  className="mt-10 w-[200px] py-3 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:bg-gray-100 active:bg-gray-100 rounded-full border border-gray-200 drop-shadow-md"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
           </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
+          <div className="modalBlackout"></div>
         </div>
       )}
+      {transferToBankModal && (
+        <div>
+          <div className="w-[340px] h-[4800px] px-6 py-10 flex flex-col items-center text-gray-700 bg-white rounded-3xl border border-gray-500 fixed left-[50%] translate-x-[-50%] top-[50%] translate-y-[-55%] z-[90]">
+            {/*---content, 3 conditions---*/}
+            {cashOutModalText == "initial" && (
+              <div className="flex flex-col items-center">
+                <div className="text-xl font-bold text-center">Convert USDC to {paymentSettingsState.merchantCurrency} and Deposit to Bank</div>
+                {cashoutSettingsState.cex == "Coinbase Exchange" && (
+                  <div className="w-full">
+                    <div className="mt-6 font-bold text-gray-700 underline underline-offset-2">Your Bank Account</div>
+                    <div className="mt-6 font-bold">{cbBankAccountName}</div>
+                  </div>
+                )}
+                {cashoutSettingsState.cex != "Coinbase Exchange" && <div className="mt-2 w-full font-bold text-gray-400">Under Construction</div>}
+
+                {/*---balance---*/}
+                <div className="mt-5 w-full text-base font-medium text-gray-400 text-end">
+                  balance <span className={`${cexBalance ? "" : "invisible"} text-blue-600`}>{cexBalance}</span>
+                </div>
+                {/*---input---*/}
+                <div className="relative">
+                  <input
+                    className="px-2 w-full py-3 font-medium text-center text-3xl border rounded-xl bg-white border-gray-300 outline-none focus:border-blue-500 duration-300 focus:placeholder:invisible"
+                    type="number"
+                    inputMode="decimal"
+                    onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
+                    value={usdcTransferToCex}
+                    placeholder="0 USDC"
+                  ></input>
+                  <div className="absolute top-[15px] right-[12px] px-2 py-1 bg-gray-100 font-bold text-blue-500" onClick={() => setUsdcTransferToBank(cexBalance!)}>
+                    max
+                  </div>
+                </div>
+                {/*---buttons---*/}
+                <button
+                  onClick={onClickTransferToBankSubmit}
+                  className="mt-10 w-[200px] py-3 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:bg-gray-100 active:bg-gray-100 rounded-full border border-gray-200 drop-shadow-md"
+                >
+                  Transfer
+                </button>
+                <button
+                  onClick={() => setTransferToBankModal(false)}
+                  className="w-[200px] mt-12 px-5 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:text-gray-800 active:text-gray-800"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            {cashOutModalText == "sending" && (
+              <div className="w-full grow flex flex-col justify-center items-center">
+                <SpinningCircleGray />
+                <p className="mt-1">Sending...</p>
+                <p className="mt-4">Please do not close window</p>
+              </div>
+            )}
+            {cashOutModalText == "sent" && (
+              <div className="w-full grow flex flex-col justify-center items-center">
+                <div>
+                  {usdcTransferToCex} USDC successfully sent to your {cashoutSettingsState.cex}!
+                </div>
+                <button
+                  onClick={() => {
+                    setTransferToBankModal(false);
+                    setCashOutModalText("initial");
+                  }}
+                  className="mt-10 w-[200px] py-3 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:bg-gray-100 active:bg-gray-100 rounded-full border border-gray-200 drop-shadow-md"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="modalBlackout"></div>
+        </div>
+      )}
+      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );
 };

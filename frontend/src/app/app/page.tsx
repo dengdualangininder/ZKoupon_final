@@ -9,7 +9,7 @@ import { useAccount, useConfig, useWalletClient, useDisconnect, useAccountEffect
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
-import { getPublicCompressed } from "@toruslabs/eccrypto";
+import { getPublic } from "@toruslabs/eccrypto";
 // components
 import Login from "./_components/Login";
 import Payments from "./_components/Payments";
@@ -45,6 +45,8 @@ const User = () => {
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [browser, setBrowser] = useState<string>("Safari");
+  const [idToken, setIdToken] = useState("");
+  const [publicKey, setPublicKey] = useState("");
 
   // hooks
   const router = useRouter();
@@ -168,7 +170,7 @@ const User = () => {
     // get idToken
     try {
       const userInfo = await web3Auth?.getUserInfo();
-      var idToken = userInfo?.idToken;
+      var idTokenTemp = userInfo?.idToken;
       console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
     } catch (e) {
       console.log("cannot get web3Auth.userInfo, page set to Login");
@@ -185,7 +187,7 @@ const User = () => {
         // @ts-ignore
         method: "eth_private_key", // it somehow works even if not typed
       })) as string;
-      var publicKey = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
+      var publicKeyTemp = getPublic(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
       console.log("Cannot get publicKey, page set to Login");
       setPage("login");
@@ -193,12 +195,15 @@ const User = () => {
     }
 
     // get user doc (idToken and publicKey needed for verification)
-    if (idToken && publicKey) {
+    if (idTokenTemp && publicKeyTemp) {
+      setIdToken(idTokenTemp);
+      setPublicKey(publicKeyTemp);
+
       try {
         console.log("fetching doc...");
         const res = await fetch("/api/getUserDoc", {
           method: "POST",
-          body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idToken, publicKey: publicKey }),
+          body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idTokenTemp, publicKey: publicKeyTemp }),
           headers: { "content-type": "application/json" },
         });
         const data = await res.json();
@@ -338,7 +343,16 @@ const User = () => {
           {menu === "payments" && (
             <Payments transactionsState={transactionsState} setTransactionsState={setTransactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState} />
           )}
-          {menu === "cashOut" && isAdmin && <CashOut paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} isMobile={isMobile} />}
+          {menu === "cashOut" && isAdmin && (
+            <CashOut
+              paymentSettingsState={paymentSettingsState}
+              cashoutSettingsState={cashoutSettingsState}
+              setCashoutSettingsState={setCashoutSettingsState}
+              isMobile={isMobile}
+              idToken={idToken}
+              publicKey={publicKey}
+            />
+          )}
           {menu === "settings" && isAdmin && (
             <Settings
               paymentSettingsState={paymentSettingsState}
@@ -348,6 +362,8 @@ const User = () => {
               isMobile={isMobile}
               introModal={introModal}
               setIntroModal={setIntroModal}
+              idToken={idToken}
+              publicKey={publicKey}
             />
           )}
         </div>
