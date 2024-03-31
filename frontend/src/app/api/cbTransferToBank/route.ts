@@ -15,20 +15,15 @@ export const POST = async (request: Request) => {
   // 3. If no cbRefreshToken, then return "no cbRefreshToken"
   if (cbAccessToken) {
     console.log("cbAccessToken exists, getting balance...");
-    const { balance, cexEvmAddress } = await getCbBalance(cbAccessToken);
-    if (balance == "error") {
-      console.log({ status: "error", message: "failed to get balance, likely invalid cbAccessToken" });
-      return Response.json({ status: "error", message: "failed to get balance, likely invalid cbAccessToken" });
+    const isSuccess = await cbWithdraw(cbAccessToken);
+    if (isSuccess) {
+      return Response.json("success");
+    } else {
+      return Response.json("failed");
     }
-    // save to db
-    const isSaved = await saveToDb(publicKey, idToken, cexEvmAddress);
-    console.log("isSaved", isSaved);
-    // return success
-    console.log({ status: "success", balance: balance, cexEvmAddress: cexEvmAddress });
-    return Response.json({ status: "success", balance: balance, cexEvmAddress: cexEvmAddress });
   } else {
     if (cbRefreshToken) {
-      console.log("no cbAccessToken, but cbRefreshToken exists. Getting new tokens from Coinbase...");
+      console.log("Getting new tokens from Coinbase...");
       try {
         const res = await axios.post("https://api.coinbase.com/oauth/token", {
           grant_type: "refresh_token",
@@ -36,33 +31,20 @@ export const POST = async (request: Request) => {
           client_secret: process.env.COINBASE_CLIENT_SECRET,
           refresh_token: cbRefreshToken,
         });
-        console.log(res.data);
-        const { balance, cexEvmAddress } = await getCbBalance(res.data.access_token);
-        if (balance == "error") {
-          console.log({ status: "error", message: "failed to get balance, likely invalid cbAccessToken" });
-          return Response.json({ status: "error", message: "failed to get balance, likely invalid cbAccessToken" });
+        console.log("new tokens", res.data);
+        const isSuccess = await cbWithdraw(res.data.access_token);
+        if (isSuccess) {
+          return Response.json({ status: "success" });
+        } else {
+          return Response.json({ status: "error", message: "failed to withdraw" });
         }
-        // save to db
-        const isSaved = saveToDb(publicKey, idToken, cexEvmAddress);
-        console.log("isSaved", isSaved);
-        // return success
-        console.log({ status: "success", balance: balance });
-        return Response.json({
-          status: "success",
-          balance: balance,
-          cexEvmAddress: cexEvmAddress,
-          cbAccessToken: res.data.access_token,
-          cbRefreshToken: res.data.refresh_token,
-        });
       } catch (err) {
-        const error = { status: "error", message: "failed to get new tokens from Coinbase" };
-        console.log(error, err);
-        return Response.json(error);
+        console.log({ status: "error", message: "failed to get new tokens from Coinbase" });
+        return Response.json({ status: "error", message: "failed to get new tokens from Coinbase" });
       }
     } else {
-      const error = { status: "error", message: "no cbAccessTokens or cbRefreshTokens" };
-      console.log(error);
-      return Response.json(error);
+      console.log({ status: "error", message: "no cbAccessTokens or cbRefreshTokens" });
+      return Response.json({ status: "error", message: "no cbAccessTokens or cbRefreshTokens" });
     }
   }
 };
@@ -83,10 +65,10 @@ const cbWithdraw = async (cbAccessToken: string) => {
     const cexAddressObjects = resCexAddresses.data.data; // returns Solana and Ethereum address objects
     const usdcAddressObject = cexAddressObjects.find((i: any) => i.network === "ethereum"); // find the Ethereum account
     const cexEvmAddress = usdcAddressObject.address; // get address
-
-    return { balance, cexEvmAddress };
+    const isSuccess = true;
+    return isSuccess;
   } catch (err: any) {
-    console.log("getCbBalance function error", err.response.status, err.response.statusText);
-    return { balance: "error", cexEvmAddress: "error" };
+    console.log("cdWithdraw function error", err.response.status, err.response.statusText);
+    return false;
   }
 };
