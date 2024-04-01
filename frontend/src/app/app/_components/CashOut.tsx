@@ -68,17 +68,26 @@ const CashOut = ({
     "MAX Exchange": { img: "max", shortName: "MAX Exchange" },
   };
 
-  // get CEX balance
   useEffect(() => {
-    console.log("/app, Cashout, getCexBalance useEffect run once");
+    console.log("/app, Cashout, get balances useEffect run once");
     // if (!getCexBalanceRef.current) {
     //   return;
     // }
     // getCexBalanceRef.current = true;
     const getCexBalance = async () => {
-      // if coinbase
+      // get flashBalance
+      const flashBalanceBigInt: bigint = (await readContract(config, {
+        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        abi: ERC20ABI,
+        functionName: "balanceOf",
+        args: [account.address],
+      })) as bigint;
+      const flashBalanceTemp = formatUnits(flashBalanceBigInt, 6);
+      setFlashBalance(flashBalanceTemp);
+      console.log("flashBalanceTemp", flashBalanceTemp);
+
+      // get cexBalance (Coinbase)
       if (cashoutSettingsState.cex == "Coinbase Exchange") {
-        console.log("getting Coinbase balance");
         // get access or refresh tokens
         const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
         const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
@@ -97,13 +106,13 @@ const CashOut = ({
           if (data.status === "success") {
             // set cexBalance
             setCexBalance(data.balance);
-            // save new tokens to browser storage
-            if (data.cbAccessToken && data.cbRefreshToken) {
+            // save new tokens to browser
+            if (data.newAccessToken && data.newRefreshToken) {
               console.log("storing new tokens");
-              window.sessionStorage.setItem("cbAccessToken", data.cbAccessToken);
-              window.localStorage.setItem("cbRefreshToken", data.cbRefreshToken);
+              window.sessionStorage.setItem("cbAccessToken", data.newAccessToken);
+              window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
             }
-            // change cexEvmAddress state
+            // update state
             setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: data.cexEvmAddress, cexAccountName: data.cexAccountName });
           } else if (data.status === "error") {
             setIsCexAccessible(false);
@@ -114,7 +123,7 @@ const CashOut = ({
         }
       }
 
-      // if not Coinbase
+      // get cexBalance (not Coinbase)
       if (cashoutSettingsState.cex != "Coinbase Exchange") {
         console.log("getting non-Coinbase balance");
         // if other cex, set cexBalance to undefined only if no API keys
@@ -135,31 +144,6 @@ const CashOut = ({
     // setCexBalance("1231.32"); // for testing purposes
     // setIsCexAccessible(true); // for testing purposes
     console.log("/app, Cashout, getCexBalance useEffect ended");
-  }, []);
-
-  // get flashBalance, runs only once
-  useEffect(() => {
-    console.log("/app, Cashout, getFlashBalance useEffect run once");
-    // if (!getFlashBalanceRef.current) {
-    //   return;
-    // }
-    // getFlashBalanceRef.current = true;
-    // get flash account balance
-    const getFlashBalance = async () => {
-      const flashBalanceBigInt: bigint = (await readContract(config, {
-        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-        abi: ERC20ABI,
-        functionName: "balanceOf",
-        args: [account.address],
-      })) as bigint;
-      const flashBalanceTemp = formatUnits(flashBalanceBigInt, 6);
-      setFlashBalance(flashBalanceTemp);
-      console.log("flashBalanceTemp", flashBalanceTemp);
-    };
-    getFlashBalance();
-    // setFlashBalance("1231.32"); // for testing purposes
-
-    console.log("/app, Cashout, getFlashBalance useEffect ended");
   }, []);
 
   const onClickCashOutConfirm = async () => {
@@ -200,7 +184,7 @@ const CashOut = ({
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
     router.push(
-      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read`
+      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:buys:create,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read`
     );
   };
 
@@ -263,10 +247,10 @@ const CashOut = ({
         // if successful
         if (data.status === "success") {
           setCbBankAccountName(data.cbBankAccountName);
-          if (data.cbAccessToken && data.cbRefreshToken) {
+          if (data.newAccessToken && data.newRefreshToken) {
             console.log("storing new tokens");
-            window.sessionStorage.setItem("cbAccessToken", data.cbAccessToken);
-            window.localStorage.setItem("cbRefreshToken", data.cbRefreshToken);
+            window.sessionStorage.setItem("cbAccessToken", data.newAccessToken);
+            window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
           }
         } else if (data.status === "error") {
           console.log("could not get bank info");
@@ -289,27 +273,20 @@ const CashOut = ({
   };
 
   const onClickTransferToBankSubmit = async () => {
-    setCashOutModalText("sending");
-    try {
-      const txnHashTemp = await writeContract(config, {
-        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
-        abi: ERC20ABI,
-        functionName: "transfer",
-        args: [cashoutSettingsState.cexEvmAddress, parseUnits(usdcTransferToCex, 6)],
-      });
-      console.log(txnHashTemp);
-      setTxnHash(txnHashTemp);
-      setCashOutModalText("sent");
-    } catch (err) {
-      console.log("transfer not sent");
-      setCashOutModalText("inital");
-    }
+    // setCashOutModalText("sending");
+
+    // const clientOrderId = uuidv4();
+
+    const res = await fetch("/api/cbWithdraw", {
+      method: "POST",
+      body: JSON.stringify({ cbAccessToken: window.sessionStorage.getItem("cbAccessToken"), amount: usdcTransferToBank }),
+      headers: { "content-type": "application/json" },
+    });
+    const data = await res.json();
+    console.log(data);
   };
 
-  console.log("last render");
-  console.log("cexBalance", cexBalance);
-  console.log("flashBalance", flashBalance);
-  console.log("isCexAccessible", isCexAccessible);
+  console.log("before render", "\ncexBalance:", cexBalance, "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible);
   return (
     // 96px is height of mobile top menu bar + 14px mt
     <section className="mt-[14px] min-h-[calc(100vh-110px)] w-full flex flex-col items-center">
@@ -582,21 +559,21 @@ const CashOut = ({
       )}
       {transferToBankModal && (
         <div>
-          <div className="w-[340px] h-[4800px] px-6 py-10 flex flex-col items-center text-gray-700 bg-white rounded-3xl border border-gray-500 fixed left-[50%] translate-x-[-50%] top-[50%] translate-y-[-55%] z-[90]">
+          <div className="w-[340px] h-[500px] px-6 py-6 flex flex-col items-center text-gray-700 bg-white rounded-3xl border border-gray-500 fixed left-[50%] translate-x-[-50%] top-[50%] translate-y-[-55%] z-[90]">
             {/*---content, 3 conditions---*/}
             {cashOutModalText == "initial" && (
               <div className="flex flex-col items-center">
-                <div className="text-xl font-bold text-center">Convert USDC to {paymentSettingsState.merchantCurrency} and Deposit to Bank</div>
+                <div className="text-xl font-bold text-center">Convert USDC to {paymentSettingsState.merchantCurrency} & Deposit to Bank</div>
                 {cashoutSettingsState.cex == "Coinbase Exchange" && (
                   <div className="w-full">
-                    <div className="mt-6 font-bold text-gray-700 underline underline-offset-2">Your Bank Account</div>
-                    <div className="mt-6 font-bold">{cbBankAccountName}</div>
+                    <div className="mt-8 font-bold text-gray-400">BANK DETAILS</div>
+                    <div className="mt-0 font-bold">{cbBankAccountName}</div>
                   </div>
                 )}
                 {cashoutSettingsState.cex != "Coinbase Exchange" && <div className="mt-2 w-full font-bold text-gray-400">Under Construction</div>}
 
                 {/*---balance---*/}
-                <div className="mt-5 w-full text-base font-medium text-gray-400 text-end">
+                <div className="mt-8 w-full text-base font-medium text-gray-400 text-end">
                   balance <span className={`${cexBalance ? "" : "invisible"} text-blue-600`}>{cexBalance}</span>
                 </div>
                 {/*---input---*/}
@@ -606,7 +583,7 @@ const CashOut = ({
                     type="number"
                     inputMode="decimal"
                     onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
-                    value={usdcTransferToCex}
+                    value={usdcTransferToBank}
                     placeholder="0 USDC"
                   ></input>
                   <div className="absolute top-[15px] right-[12px] px-2 py-1 bg-gray-100 font-bold text-blue-500" onClick={() => setUsdcTransferToBank(cexBalance!)}>
@@ -622,7 +599,7 @@ const CashOut = ({
                 </button>
                 <button
                   onClick={() => setTransferToBankModal(false)}
-                  className="w-[200px] mt-12 px-5 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:text-gray-800 active:text-gray-800"
+                  className="w-[200px] mt-8 px-5 text-gray-400 text-lg font-bold tracking-wide bg-white lg:hover:text-gray-800 active:text-gray-800"
                 >
                   Cancel
                 </button>

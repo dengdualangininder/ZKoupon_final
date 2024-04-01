@@ -493,11 +493,10 @@ const Settings = ({
                         Give Customers 2% Instant Cashback? <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
                       </span>
                       <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                        Our journey towards revolutionizing payments is a difficult one. For one, credit cards charge merchants 3% and give 1% to the customer, so customers have
-                        few incentives to use other payment methods. Therefore, we are asking merchants (who use "In-person Payments") to give customers an instant 2% cashback.
-                        Businesses will still save ~1% compared to most payment platforms. Furthermore, the cashback program should bring new customers to your business. Finally,
-                        we believe most businesses would rather give 2% to their customers than give 3% to big corporations. When blockchain payments become more popular, we will
-                        make this cashback optional. Flash Pay takes zero fees and all savings are given to the customer.
+                        Because credit cards charge businesses ~3% and give 1% to the customer, customers have few incentives to use other payment methods. Therefore, we are
+                        temporarily requiring businesses give a 2% discount to customers. Because Flash charges 0% fees to the business, businesses will still save ~1% when
+                        compared to a credit card payment. Furthermore, the cashback program can potentially bring new sales to your business. When blockchain payments become more
+                        popular, we will make this 2% cashback optional.
                       </div>
                     </span>
                   </div>
@@ -712,7 +711,7 @@ const Settings = ({
                 {/*---header---*/}
                 <div className="text-lg text-gray-700 font-bold">Your QR code placard</div>
                 {/*---placard svg---*/}
-                <div className="mt-2 relative">
+                <div className="mt-1 relative">
                   <div className="w-[210px] h-[308px]">
                     <Image src="/placardCoinbaseUSDCCashback.svg" alt="placard" fill />
                   </div>
@@ -729,12 +728,17 @@ const Settings = ({
                 </div>
                 {/*---download button or payment link---*/}
                 {paymentSettingsState.merchantPaymentType == "inperson" && (
-                  <button
-                    className="mt-1 w-[200px] h-[56px] xs:h-[44px] text-lg xs:text-base font-bold text-white bg-blue-500 lg:hover:bg-blue-600 rounded-full"
-                    onClick={downloadPlacardPdf}
-                  >
-                    Download
-                  </button>
+                  <div className="flex flex-col items-center">
+                    <button
+                      className="mt-0 w-[200px] h-[56px] xs:h-[44px] text-lg xs:text-base font-bold text-white bg-blue-500 lg:hover:bg-blue-600 rounded-full"
+                      onClick={downloadPlacardPdf}
+                    >
+                      Download
+                    </button>
+                    <div className="mt-2 link" onClick={() => setFigmaModal(true)}>
+                      Customize your placard
+                    </div>
+                  </div>
                 )}
                 {paymentSettingsState.merchantPaymentType == "online" && (
                   <button

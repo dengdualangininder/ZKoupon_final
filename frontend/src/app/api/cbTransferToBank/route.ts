@@ -67,8 +67,8 @@ const cbWithdraw = async (cbAccessToken: string) => {
     const cexEvmAddress = usdcAddressObject.address; // get address
     const isSuccess = true;
     return isSuccess;
-  } catch (err: any) {
-    console.log("cdWithdraw function error", err.response.status, err.response.statusText);
+  } catch (err) {
+    console.log("cdWithdraw function error", err);
     return false;
   }
 };

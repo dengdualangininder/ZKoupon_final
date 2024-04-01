@@ -170,52 +170,46 @@ const Instructions = ({
               setExpandThree(false);
             }}
           >
-            <div className="text-xl xs:text-lg font-bold">2. Confirm payment</div>
+            <div className="text-xl xs:text-lg font-bold">2. How customers pay</div>
             <div className="relative mt-[5px] ml-2 w-[20px] h-[20px] rounded-full">
               <div className={`${expandTwo ? "rotate-[90deg]" : ""} absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600 transition-all duration-500`}></div>
               <div className={`rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600`}></div>
             </div>
           </div>
         </div>
-        <div className={`${expandTwo ? "max-h-[820px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
+        <div className={`${expandTwo ? "max-h-[800px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
           <div className="appInstructionsBody">
             {paymentSettingsState.merchantPaymentType === "inperson" ? (
               <div className="">
-                <div className="font-bold">How does the customer pay?</div>
+                <div className="font-bold">How do customers pay?</div>
                 <div className="mt-1 relative">
-                  Customers who have a{" "}
+                  Customers need to have USDC tokens in a{" "}
                   <span className="group">
-                    <span className="link">Web3 wallet</span>
-                    <div className="invisible group-hover:visible absolute top-[24px] left-0 w-[346px] px-3 py-2 rounded-md border border-gray-500 bg-gray-100 z-1">
-                      A Web3 Wallet is an App that can hold USDC tokens. MetaMask, imToken, and Coinbase Wallet are some examples.
+                    <span className="link">Web3 Wallet</span>
+                    <div className="invisible group-hover:visible absolute bottom--0 left-0 w-[346px] px-3 py-2 rounded-md border border-gray-500 bg-gray-100 z-1">
+                      A <span className="font-bold">Web3 Wallet</span> is an App that can hold USDC tokens. Currently, MetaMask is the most popular Web3 Wallet.
                     </div>
                   </span>{" "}
-                  can pay by scanning your QR code and entering the amount of {paymentSettingsState.merchantCurrency} for payment.
-                  {paymentSettingsState.merchantCurrency == "USD" ? "" : ` USDC tokens with the same value will be sent from the customer to your Flash Pay account.`}
+                  to pay. To pay, the customer scans your QR code with their camera, enters the amount of {paymentSettingsState.merchantCurrency} for payment, and clicks "Send".
+                  {paymentSettingsState.merchantCurrency == "USD" ? "" : ` USDC tokens equal to the payment value will be sent from the customer to your Flash account.`}
                 </div>
                 <div className="mt-4 font-bold">How do I confirm payment?</div>
                 <div className="mt-1 relative">
-                  If the customer's payment is successful, your Flash App will receive a push notification. In addition, the payment will show in{" "}
+                  Several seconds after payment, your (or your employee's) Flash App will receive a push notification and display the payment in{" "}
                   <span className="text-blue-700 whitespace-nowrap font-bold">
                     <FontAwesomeIcon icon={faList} className="pr-0.5" />
                     Payments
-                  </span>{" "}
-                  within several seconds.{" "}
-                  <span className="group">
-                    <span className="link">What if the cashier does not have access to an electronic device?</span>
-                    <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%-17px)] w-full px-3 py-2 font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                      If you check the customer's phone, it should show an animated "Payment Completed" page. For a preview, click "Send" in the phone interface below.
-                    </div>
                   </span>
+                  .
                 </div>
                 <div className="mt-4 font-bold">How should I log the payment?</div>
                 <div className="mt-1">
-                  Payment history can be downloaded in{" "}
+                  All payment details can be downloaded in{" "}
                   <span className="text-blue-700 font-bold whitespace-nowrap">
                     <FontAwesomeIcon icon={faList} className="px-0.5" />
                     Payments
                   </span>
-                  . But, we recommend you log the payment as a cash payment in your PoS device to maintain a single system for all payments.
+                  . But, we recommend you log the payment as a cash payment in your PoS device to maintain a single system.
                 </div>
               </div>
             ) : (
@@ -240,19 +234,19 @@ const Instructions = ({
                 </div>
               </div>
             )}
-            <div className="mt-4 font-bold">How do I refund a customer's payment?</div>
+            <div className="mt-4 font-bold">How do I make refunds?</div>
             <div className="mt-1 relative">
               You (or an employee) can mark a payment in{" "}
               <span className="text-blue-700 font-bold whitespace-nowrap">
                 <FontAwesomeIcon icon={faList} className="px-0.5" />
                 Payments
               </span>{" "}
-              as "To Be Refunded". At the end of the day, open your Flash Pay App &gt; go to{" "}
+              as "To Be Refunded". At any time, you (the owner) can go to{" "}
               <span className="text-blue-700 font-bold whitespace-nowrap">
                 <FontAwesomeIcon icon={faList} className="px-0.5" />
                 Payments
               </span>{" "}
-              &gt; click "Refund all payments marked as To Be Refunded". Or, you can click the individual payments and refund each payment one-by-one.{" "}
+              and click "Refund all payments marked as 'To Be Refunded'". Or, you can click the individual payments and refund each payment one by one.{" "}
               <span className="link" onClick={() => setRefundModal(true)}>
                 More about refunds
               </span>
@@ -280,76 +274,105 @@ const Instructions = ({
           </div>
         </div>
 
-        <div className={`${expandThree ? "max-h-[500px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
-          <div className="appInstructionsBody space-y-4">
-            {/*--- cash out step 1 ---*/}
-            <div className="flex">
-              <div className="mr-1">1.</div>
-              <div>
-                Sign up for an account on {cashoutSettingsState.cex} (
-                <span className="link" onClick={() => setExchangeModal(true)}>
-                  instructions
-                </span>
-                )
-              </div>
-            </div>
-            {/*--- cash out step 2 ---*/}
-            <div className="flex">
-              <div className="mr-1">2.</div>
-              <div>
-                {/*--- not Coinbase Exchange ---*/}
-                {cashoutSettingsState.cex != "Coinbase Exchange" && (
-                  <div>In your {cashoutSettingsState.cex}, copy your USDC deposit address on the Polygon network (instructions) and paste it in the Cash Out Settings below</div>
-                )}
-                {/*--- Coinbase Exchange ---*/}
-                {cashoutSettingsState.cex == "Coinbase Exchange" && (
+        <div className={`${expandThree ? "max-h-[650px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
+          <div className="appInstructionsBody">
+            {cashoutSettingsState.cex == "Coinbase Exchange" && (
+              <div className="space-y-4">
+                {/*--- cash out step 1 ---*/}
+                <div className="flex">
+                  <div className="mr-1">1.</div>
                   <div>
-                    In the Cash Out menu tab, link your Coinbase account. Then, click "Cash Out" and confirm the withdrawal. The USDC tokens in your Flash Pay account will be
-                    converted to {paymentSettingsState.merchantCurrency} at{" "}
-                    {paymentSettingsState.merchantCurrency == "USD" ? "a 1:1 rate (no fees)" : "on the Coinbase orderbooks (including 0.01% fees)"}, and then deposited into your
-                    bank within 1-2 days ({fees[cashoutSettingsState.cex][paymentSettingsState.merchantCountry] ?? "no"} fee).
+                    Sign up for a Coinbase account (
+                    <span className="link" onClick={() => setExchangeModal(true)}>
+                      instructions
+                    </span>
+                    )
                   </div>
-                )}
-              </div>
-            </div>
-            {/*--- cash out step 3 ---*/}
-            {cashoutSettingsState.cex != "Coinbase Exchange" && (
-              <div className="flex">
-                <div className="mr-1">3.</div>
-                <div>
-                  {cashoutSettingsState.cex != "Coinbase Exchange" && (
-                    <div className="">
-                      To cash out, go to the{" "}
-                      <span className="text-blue-700 font-bold whitespace-nowrap">
-                        <FontAwesomeIcon icon={faFileInvoiceDollar} className="pr-0.5" />
-                        Cash Out
-                      </span>{" "}
-                      menu tab and click the <span className="bg-blue-700 text-white font-bold text-xs px-1.5 py-0.5 xs:py-0 rounded-full whitespace-nowrap">Cash Out</span> button.
-                      This will send all USDC from your Flash App to your {cashoutSettingsState.cex}. Then, in your exchange, convert USDC to{" "}
-                      {paymentSettingsState.merchantCurrency}, and withdraw the money to your bank.
-                    </div>
-                  )}
-                  {cashoutSettingsState.cex == "Coinbase Exchange" && (
-                    <div className="">
-                      Fill in the "Cash Out Settings" below. When you are ready to cash out, go to the{" "}
-                      <span className="text-blue-700 font-bold whitespace-nowrap">
-                        <FontAwesomeIcon icon={faFileInvoiceDollar} className="pr-0.5" />
-                        Cash Out
-                      </span>{" "}
-                      menu tab and click the <span className="bg-blue-700 text-white font-bold text-xs px-1.5 py-0.5 xs:py-0 rounded-full whitespace-nowrap">Cash Out</span> button.
-                      Deposits should arrive in your bank after 1-2 days.
-                    </div>
-                  )}
+                </div>
+                {/*--- cash out step 2 ---*/}
+                <div className="flex">
+                  <div className="mr-1">2.</div>
+                  <div>In Cash Out, click "Link your Coinbase account"</div>
+                </div>
+                {/*--- cash out step 3 ---*/}
+                <div className="flex">
+                  <div className="mr-1">3.</div>
+                  <div>Click "Transfer to Coinbase"</div>
+                </div>
+                {/*--- cash out step 4 ---*/}
+                <div className="flex">
+                  <div className="mr-1">4.</div>
+                  <div>
+                    After 1-5 minutes, when your Coinbase Balance reflects the new balance, click "Transfer to Bank". USDC will be converted to{" "}
+                    {paymentSettingsState.merchantCurrency}, and the money transferred to your bank within 1-2 days.
+                  </div>
                 </div>
               </div>
             )}
-            <div className="relative">
+            {cashoutSettingsState.cex != "Coinbase Exchange" && (
+              <div className="space-y-4">
+                {/*--- cash out step 1 ---*/}
+                <div className="flex">
+                  <div className="mr-1">1.</div>
+                  <div>
+                    Sign up for an account on {cashoutSettingsState.cex} (
+                    <span className="link" onClick={() => setExchangeModal(true)}>
+                      instructions
+                    </span>
+                    )
+                  </div>
+                </div>
+                {/*--- cash out step 2 ---*/}
+                <div className="flex">
+                  <div className="mr-1">2.</div>
+                  <div>In your {cashoutSettingsState.cex}, copy your USDC deposit address on the Polygon network (instructions) and paste it in the Cash Out Settings below</div>
+                </div>
+                {/*--- cash out step 3 ---*/}
+                <div className="flex">
+                  <div className="mr-1">3.</div>
+                  <div>
+                    To cash out, go to the{" "}
+                    <span className="text-blue-700 font-bold whitespace-nowrap">
+                      <FontAwesomeIcon icon={faFileInvoiceDollar} className="pr-0.5" />
+                      Cash Out
+                    </span>{" "}
+                    menu tab and click the <span className="bg-blue-700 text-white font-bold text-xs px-1.5 py-0.5 xs:py-0 rounded-full whitespace-nowrap">Cash Out</span> button.
+                    This will send all USDC from your Flash App to your {cashoutSettingsState.cex}. Then, in your exchange, convert USDC to {paymentSettingsState.merchantCurrency},
+                    and withdraw the money to your bank.
+                  </div>
+                </div>
+              </div>
+            )}
+            {/*--- question 1 ---*/}
+            <div className="mt-4 relative">
               <span className="group">
-                <span className="link">Will I lose money from fluctuating exchange rates?</span>
+                <span className="link">What are the fees?</span>
                 {/*---tooltip---*/}
                 <div className="invisible group-hover:visible absolute bottom-[calc(100%+6px)] px-3 py-2 pointer-events-none bg-gray-100 border-gray-500 border rounded-lg z-10">
-                  During payment, our interface adds 0.3~0.5% to the stablecoin-to-fiat exchange rate in favor of the business. Therefore, on average, you should not lose money
-                  from fluctuating rates if you convert frequently (e.g., once a week).
+                  Fees for transferring funds are near zero. It costs ~0.10 USDC to transfer USDC from Flash to Coinbase. There is no transfer fee from Coinbase to your bank.
+                </div>
+              </span>
+            </div>
+            {/*--- question 2 ---*/}
+            <div className="mt-4 relative">
+              <span className="group">
+                <span className="link">What is the USDC to {paymentSettingsState.merchantCurrency} rate?</span>
+                {/*---tooltip---*/}
+                <div className="invisible group-hover:visible absolute bottom-[calc(100%+6px)] px-3 py-2 pointer-events-none bg-gray-100 border-gray-500 border rounded-lg z-10">
+                  {paymentSettingsState.merchantCurrency == "USD"
+                    ? "USDC is converted to USD at a 1:1 rate with no fees."
+                    : `USDC is converted to ${paymentSettingsState.merchantCurrency} on the Coinbase orderbooks, which are highly liquid and usually offers a better rate than the USD to ${paymentSettingsState.merchantCurrency} rate at any bank, including Wise. The trading fee is negligible (0.01%).`}
+                </div>
+              </span>
+            </div>
+            {/*--- question 3 ---*/}
+            <div className="mt-4 relative">
+              <span className="group">
+                <span className="link">Will I lose money from fluctuating rates?</span>
+                {/*---tooltip---*/}
+                <div className="invisible group-hover:visible absolute bottom-[calc(100%+6px)] px-3 py-2 pointer-events-none bg-gray-100 border-gray-500 border rounded-lg z-10">
+                  During payment, our interface adds 0.2% to the stablecoin-to-fiat rate on {cashoutSettingsState.cex} in favor of the business. Therefore, on average, you should
+                  not lose money from fluctuating rates if you cash out regularly (e.g., once a week).
                 </div>
               </span>
             </div>

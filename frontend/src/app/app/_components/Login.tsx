@@ -19,6 +19,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
   const [modalState, setModalState] = useState("");
   const [show, setShow] = useState(false);
   const [role, setRole] = useState("owners");
+  const [moreOptionsModal, setMoreOptionsModal] = useState(false);
 
   let { connectAsync, connectors } = useConnect();
 
@@ -26,17 +27,22 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
   if (isMobile) {
     var myConnectors = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
-      { name: "Apple", img: "/apple.svg", connectorIndex: 1 },
-      { name: "Line", img: "/line.svg", connectorIndex: 2 },
-      { name: "MetaMask", img: "/metamask.svg", connectorIndex: 3 },
+      { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
+      { name: "Apple", img: "/apple.svg", connectorIndex: 2 },
+      { name: "MetaMask", img: "/metamask.svg", connectorIndex: 6 },
     ];
   } else {
     var myConnectors = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
-      { name: "Line", img: "/line.svg", connectorIndex: 2 },
-      { name: "MetaMask", img: "/metamask.svg", connectorIndex: 3 },
+      { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
+      { name: "MetaMask", img: "/metamask.svg", connectorIndex: 6 },
     ];
   }
+  const myConnectorsMore = [
+    { name: "Discord", img: "/discord.svg", connectorIndex: 3 },
+    { name: "Telegram", img: "/telegram.svg", connectorIndex: 4 },
+    { name: "Line", img: "/line.svg", connectorIndex: 4 },
+  ];
 
   const employeeSubmit = async () => {
     // e.preventDefault();
@@ -165,7 +171,9 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 <div className="xs:text-xl">Sign in with {i.name}</div>
               </div>
             ))}
-            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold">More options</div>
+            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold" onClick={() => setMoreOptionsModal(true)}>
+              More options
+            </div>
           </div>
         )}
 
@@ -280,6 +288,42 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
             </button>
           </div>
           <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
+        </div>
+      )}
+      {moreOptionsModal && (
+        <div className="">
+          <div className="w-[340px] h-[360px] flex flex-col items-center justify-between px-6 py-10 bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
+            {/*---title---*/}
+            <div className="text-xl font-bold">Choose A Sign In Method</div>
+            {/*---grid options---*/}
+            <div className="w-full mt-8 grid grid-cols-3 gap-2">
+              {myConnectorsMore.map<any>((i: any) => (
+                <div
+                  key={i.name}
+                  className="flex flex-col items-center"
+                  onClick={async () => {
+                    console.log("login page, clicked connect, set page to Loading");
+                    setPage("loading");
+                    await connectAsync({ connector: connectors[i.connectorIndex] });
+                    console.log("login page, finished connecting");
+                  }}
+                >
+                  <div className="relative w-[40px] h-[36px]">
+                    <Image src={i.img} alt={i.name} fill />
+                  </div>
+                  <div className="xs:text-xl font-medium">{i.name}</div>
+                </div>
+              ))}
+            </div>
+            {/*---close button---*/}
+            <button
+              onClick={() => setMoreOptionsModal(false)}
+              className="mt-8 text-xl font-bold w-[160px] py-3 bg-white border border-gray-200 rounded-full tracking-wide drop-shadow-md"
+            >
+              CLOSE
+            </button>
+          </div>
+          <div className="modalBlackout"></div>
         </div>
       )}
     </div>

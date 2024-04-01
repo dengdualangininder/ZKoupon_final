@@ -92,6 +92,7 @@ const Pay = () => {
       const u2localAll: { [key: string]: U2local } = {
         TWD: { USD: 31.96, USDC: 32.13 },
         USD: { USD: 1, USDC: 1 },
+        EUR: { USD: 0.931, USDC: 0.932 },
       };
       setu2local(u2localAll[merchantCurrency!]);
     };

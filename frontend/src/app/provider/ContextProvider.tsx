@@ -77,7 +77,19 @@ export default function ContextProvider({ children }: { children: React.ReactNod
       }),
       Web3AuthConnector({
         web3AuthInstance: web3AuthInstance,
+        loginParams: { loginProvider: "facebook" },
+      }),
+      Web3AuthConnector({
+        web3AuthInstance: web3AuthInstance,
         loginParams: { loginProvider: "apple" },
+      }),
+      Web3AuthConnector({
+        web3AuthInstance: web3AuthInstance,
+        loginParams: { loginProvider: "discord" },
+      }),
+      Web3AuthConnector({
+        web3AuthInstance: web3AuthInstance,
+        loginParams: { loginProvider: "telegram" },
       }),
       Web3AuthConnector({
         web3AuthInstance: web3AuthInstance,

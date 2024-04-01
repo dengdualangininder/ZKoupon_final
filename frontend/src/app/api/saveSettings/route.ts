@@ -6,11 +6,10 @@ import { keccak256, getAddress } from "viem";
 export const POST = async (request: Request) => {
   console.log("saveSettings api");
   const { paymentSettings, cashoutSettings, idToken, publicKey } = await request.json();
-
   await dbConnect();
 
   // compute publicKeyCompressed and merchantEvmAddress from publicKey
-  const prefix = publicKey.slice(-1) % 2 == 0 ? "02" : "03";
+  const prefix = ["0", "2", "4", "6", "8", "a", "c", "e"].includes(publicKey.slice(-1)) ? "02" : "03"; // if y is even, then prefix is 02
   const publicKeyCompressed = prefix + publicKey.substring(2).slice(0, -64); // substring(2) removes first 2 chars, slice(0, -64) removes last 64 chars
   const merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
 

@@ -206,7 +206,7 @@
   }
 
   .appInstructionsBody {
-    @apply text-lg xs:text-sm leading-tight xs:leading-snug border border-gray-300 rounded-xl p-4 text-gray-600 bg-white;
+    @apply text-lg leading-snug xs:text-sm xs:leading-snug border border-gray-300 rounded-xl p-4 text-gray-600 bg-white;
   }
 
   .appButton {

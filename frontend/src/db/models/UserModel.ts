@@ -59,7 +59,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
   web3AuthSessionId: String,
   paymentSettings: {
     merchantEvmAddress: String,
-    merchantEmail: { type: String, unique: true, lowercase: true },
+    merchantEmail: String,
     merchantName: String,
     merchantCountry: String,
     merchantCurrency: String,
