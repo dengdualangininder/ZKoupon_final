@@ -93,6 +93,7 @@ const Pay = () => {
         TWD: { USD: 31.96, USDC: 32.13 },
         USD: { USD: 1, USDC: 1 },
         EUR: { USD: 0.931, USDC: 0.932 },
+        GBP: { USD: 0.7971, USDC: 0.7968 },
       };
       setu2local(u2localAll[merchantCurrency!]);
     };

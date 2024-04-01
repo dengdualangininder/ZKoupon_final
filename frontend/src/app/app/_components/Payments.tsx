@@ -62,7 +62,8 @@ const Payments = ({
   const onClickTxn = async (e: any) => {
     const txnHash = e.currentTarget.id;
     const clickedTxnIndexTemp = transactionsState.findIndex((i: any) => i.txnHash === txnHash);
-    if (!clickedTxnIndexTemp) {
+    console.log(clickedTxnIndexTemp);
+    if (clickedTxnIndexTemp == undefined) {
       return;
     }
     const clickedTxnTemp = transactionsState[clickedTxnIndexTemp];
