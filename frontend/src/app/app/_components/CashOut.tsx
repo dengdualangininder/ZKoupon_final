@@ -19,7 +19,7 @@ import ErrorModal from "./modals/ErrorModal";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShare, faClockRotateLeft, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faClockRotateLeft, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
 const CashOut = ({
   paymentSettingsState,
@@ -37,6 +37,14 @@ const CashOut = ({
   publicKey: string;
 }) => {
   console.log("CashOut component rendered");
+
+  const defaultRates: any = {
+    USD: { usdcToLocal: 1, usdToLocal: 1 },
+    EUR: { usdcToLocal: 0.9315, usdToLocal: 0.9321 },
+    GBP: { usdcToLocal: 0.7965, usdToLocal: 0.797 },
+    TWD: { usdcToLocal: 31.7, usdToLocal: 31.5 },
+  };
+
   const [flashBalance, setFlashBalance] = useState(""); // use string
   const [cexBalance, setCexBalance] = useState<string | undefined>("");
   const [isCexAccessible, setIsCexAccessible] = useState(true);
@@ -44,6 +52,11 @@ const CashOut = ({
   const [usdcTransferToCex, setUsdcTransferToCex] = useState("");
   const [usdcTransferToBank, setUsdcTransferToBank] = useState("");
   const [cbBankAccountName, setCbBankAccountName] = useState<any>("");
+  const [rates, setRates] = useState<any>(defaultRates[paymentSettingsState.merchantCurrency]);
+  // accordion states
+  const [flashDetails, setFlashDetails] = useState(false);
+  const [cexDetails, setCexDetails] = useState(false);
+
   // modal states
   const [transferToCexModal, setTransferToCexModal] = useState(false);
   const [transferToBankModal, setTransferToBankModal] = useState(false);
@@ -51,6 +64,8 @@ const CashOut = ({
   const [cashOutModalText, setCashOutModalText] = useState("initial"); // "initial" | "sending" | "sent"
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<any>();
+
+  const [stats, setStats] = useState<any>({});
 
   // hooks
   const router = useRouter();
@@ -74,7 +89,19 @@ const CashOut = ({
     //   return;
     // }
     // getCexBalanceRef.current = true;
-    const getCexBalance = async () => {
+    const getBalances = async () => {
+      // get rates
+      const ratesRes = await fetch("/api/getRates", {
+        method: "POST",
+        body: JSON.stringify({ merchantCurrency: paymentSettingsState.merchantCurrency }),
+        headers: { "content-type": "application/json" },
+      });
+      const ratesData = await ratesRes.json();
+      console.log("ratesData", ratesData);
+      if (ratesData.status == "success") {
+        setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
+      }
+
       // get flashBalance
       const flashBalanceBigInt: bigint = (await readContract(config, {
         address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
@@ -140,7 +167,7 @@ const CashOut = ({
         }
       }
     };
-    getCexBalance();
+    getBalances();
     // setCexBalance("1231.32"); // for testing purposes
     // setIsCexAccessible(true); // for testing purposes
     console.log("/app, Cashout, getCexBalance useEffect ended");
@@ -193,13 +220,7 @@ const CashOut = ({
       setTransferToCexModal(true);
     } else {
       if (cashoutSettingsState.cex == "Coinbase Exchange") {
-        setErrorMsg(
-          <div>
-            <p>Please first link your Coinbase account</p>
-            <p className="my-3">or</p>
-            <p>Add your Coinbase account's USDC deposit address on the Polygon network</p>
-          </div>
-        );
+        setErrorMsg("Please first link your Coinbase account");
       } else {
         setErrorMsg("Please first add your CEX's USDC deposit address on the Polygon network in Settings > Cash Out Settings");
       }
@@ -293,32 +314,51 @@ const CashOut = ({
       {/*---Flash Account + CEX + History---*/}
       <div className="w-[95%] sm:w-[80%] md:w-[70%] lg:w-[60%] flex flex-col text-gray-700">
         {/*---Flash Account---*/}
-        <div className="cashoutContainer relative">
+        <div className="cashoutContainer">
           {/*---title---*/}
           <div className="flex items-center space-x-2">
-            <div className="text-xl leading-none text-center font-bold">Your Flash Pay Balance</div>
+            <div className="text-xl leading-none text-center font-bold">Flash Account</div>
           </div>
           {/*---body---*/}
-          <div>
-            {flashBalance ? (
+          <div className="">
+            {/*---balance + transfer to CEX---*/}
+            <div className="mt-4 flex items-center justify-between">
+              {/*---balance---*/}
               <div className="flex items-center">
-                <div className="relative w-[24px] h-[24px] lg:w-[20px] lg:h-[20px]">
-                  <Image src="/usdc.svg" alt="USDC" fill />
+                <div className="text-3xl font-bold">&euro; {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}</div>
+                <div className="ml-3 group relative">
+                  <FontAwesomeIcon icon={faCircleInfo} className="px-1 text-gray-400 text-sm" />
+                  <div className="invisible group-hover:visible leading-snug absolute top-8 left-[calc(-180px/2)] w-[180px] px-2 py-1 bg-gray-100 rounded-lg border border-gray-500 z-[2]">
+                    This value is based on the current USDC to {paymentSettingsState.merchantCurrency} rate of {rates.usdcToLocal}
+                  </div>
                 </div>
-                <div className="ml-1 w-[60px] text-xl lg:text-lg">USDC</div>
-                <div className="ml-2 font-bold text-xl lg:text-lg">{Number(flashBalance).toFixed(2)}</div>
               </div>
-            ) : (
-              <div className="mt-4 flex flex-col items-center text-center">
-                <SpinningCircleGray />
+              {/*---transfer to CEX ---*/}
+              <div className="text-sm xs:text-xs link" onClick={onClickTransferToCex}>
+                Transfer to {cashoutSettingsState.cex?.replace(" Exchange", "")}
               </div>
-            )}
-          </div>
-          {/*---transfer from Flash to CEX ---*/}
-          <div className="flex justify-end">
-            <button className="text-sm xs:text-xs px-3 py-2 text-blue-600 hover:bg-gray-100 rounded-md" onClick={onClickTransferToCex}>
-              Transfer to {cashoutSettingsState.cex?.replace(" Exchange", "")}
-            </button>
+            </div>
+            {/*---details---*/}
+            <div className="mt-4 link" onClick={() => setFlashDetails(!flashDetails)}>
+              {flashDetails ? "hide" : "show"} details
+            </div>
+            <div className={`${flashDetails ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-500`}>
+              <div className="px-3 py-2 border border-gray-300 rounded-xl">
+                <div className="font-bold">Account Holdings</div>
+
+                <div className="mt-1 flex items-center">
+                  <div className="relative w-[20px] h-[20px] lg:w-[20px] lg:h-[20px]">
+                    <Image src="/usdc.svg" alt="USDC" fill />
+                  </div>
+                  <div className="ml-0.5 text-base lg:text-lg font-bold">USDC</div>
+                  <div className="ml-2 text-base lg:text-lg">{Number(flashBalance).toFixed(2)}</div>
+                </div>
+                <div className="mt-4 text-sm text-gray-400 font-bold">USDC ON NETWORKS</div>
+                <div className="mt-1">
+                  <span className="font-bold">Polygon</span> {Number(flashBalance).toFixed(2)}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -327,18 +367,50 @@ const CashOut = ({
           {" "}
           {/*---title---*/}
           <div className="flex items-center space-x-2">
-            <div className="text-xl leading-none text-center font-bold">Your {cashoutSettingsState.cex?.replace(" Exchange", "")} Balance</div>
+            <div className="text-xl leading-none text-center font-bold">{cashoutSettingsState.cex?.replace(" Exchange", "")} Account</div>
           </div>
           {/*---body---*/}
           <div>
             {isCexAccessible ? (
-              <div className="flex items-center">
-                <div className="relative w-[24px] h-[24px] lg:w-[20px] lg:h-[20px]">
-                  <Image src="/usdc.svg" alt="USDC" fill />
+              <div>
+                {/*---balance + transfer to CEX---*/}
+                <div className="mt-4 flex items-center justify-between">
+                  {/*---balance---*/}
+                  <div className="flex items-center">
+                    <div className="text-3xl font-bold">&euro; {(Number(cexBalance) * rates.usdcToLocal).toFixed(2)}</div>
+                    <div className="ml-3 group relative">
+                      <FontAwesomeIcon icon={faCircleInfo} className="px-1 text-gray-400 text-sm" />
+                      <div className="invisible group-hover:visible leading-snug absolute top-8 left-[calc(-180px/2)] w-[180px] px-2 py-1 bg-gray-100 rounded-lg border border-gray-500 z-[2]">
+                        This value is based on the current USDC to {paymentSettingsState.merchantCurrency} rate of {rates.usdcToLocal}
+                      </div>
+                    </div>
+                  </div>
+                  {/*---transfer to CEX ---*/}
+                  <div className="text-sm xs:text-xs link" onClick={onClickTransferToBank}>
+                    Transfer to Bank
+                  </div>
                 </div>
-                <div className="ml-1 w-[60px] text-xl lg:text-lg">USDC</div>
-                <div className="ml-2 font-bold text-xl lg:text-lg">{cexBalance ? Number(cexBalance).toFixed(2) : <SpinningCircleGray />}</div>
-                <div className="ml-4 text-[10px] w-[40px] text-center text-gray-400 leading-[13px]">{cashoutSettingsState.cex == "Coinbase Exchange" ? "Earning 5% APR!" : ""}</div>
+
+                {/*---details---*/}
+                <div className="mt-4 link" onClick={() => setCexDetails(!cexDetails)}>
+                  {cexDetails ? "hide" : "show"} details
+                </div>
+                <div className={`${cexDetails ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-500`}>
+                  <div className="px-3 py-2 border border-gray-300 rounded-xl">
+                    <div className="font-bold">Account Holdings</div>
+
+                    <div className="mt-1">
+                      <div className="flex items-center">
+                        <div className="relative w-[20px] h-[20px] lg:w-[20px] lg:h-[20px]">
+                          <Image src="/usdc.svg" alt="USDC" fill />
+                        </div>
+                        <div className="ml-0.5 text-base lg:text-lg font-bold">USDC</div>
+                        <div className="ml-2 text-base lg:text-lg">{Number(cexBalance).toFixed(2)}</div>
+                        <div className="ml-4 text-sm text-gray-400">Earning 5.1%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div>
@@ -351,11 +423,17 @@ const CashOut = ({
               </div>
             )}
           </div>
-          {/*---transfer from Flash to CEX ---*/}
-          <div className="flex justify-end">
-            <button className="text-sm xs:text-xs px-3 py-2 text-blue-600 hover:bg-gray-100 rounded-md" onClick={onClickTransferToBank}>
-              Transfer to Bank
-            </button>
+        </div>
+
+        {/*---FX IMPACT---*/}
+        <div className="mt-4 cashoutContainer">
+          {/*---title---*/}
+          <div className="flex items-center space-x-2">
+            <div className="text-xl leading-none text-center font-bold">Statistics</div>
+          </div>
+          {/*---body---*/}
+          <div>
+            {stats.avgRatePayment} {stats.avgRateWithdraw}
           </div>
         </div>
 

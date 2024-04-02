@@ -198,7 +198,7 @@
   }
 
   .cashoutContainer {
-    @apply min-h-[180px] flex flex-col justify-between px-6 py-4 rounded-xl bg-white border border-gray-400;
+    @apply min-h-[140px] px-6 py-4 rounded-xl bg-white border border-gray-400;
   }
 
   .appSettingsForm {
