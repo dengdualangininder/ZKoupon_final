@@ -307,6 +307,8 @@ const CashOut = ({
     console.log(data);
   };
 
+  const currencySymbol: any = { USD: "$", EUR: <span>&euro;</span>, TWD: "TWD" };
+
   console.log("before render", "\ncexBalance:", cexBalance, "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible);
   return (
     // 96px is height of mobile top menu bar + 14px mt
@@ -325,7 +327,9 @@ const CashOut = ({
             <div className="mt-4 flex items-center justify-between">
               {/*---balance---*/}
               <div className="flex items-center">
-                <div className="text-3xl font-bold">&euro; {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}</div>
+                <div className="text-3xl font-bold">
+                  {currencySymbol[paymentSettingsState.merchantCurrency]} {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}
+                </div>
                 <div className="ml-3 group relative">
                   <FontAwesomeIcon icon={faCircleInfo} className="px-1 text-gray-400 text-sm" />
                   <div className="invisible group-hover:visible leading-snug absolute top-8 left-[calc(-180px/2)] w-[180px] px-2 py-1 bg-gray-100 rounded-lg border border-gray-500 z-[2]">
