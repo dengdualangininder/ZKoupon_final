@@ -230,7 +230,7 @@ const Settings = ({
       const res = await fetch("/api/saveSettings", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
+        body: JSON.stringify({ paymentSettings: { ...paymentSettingsState, qrCodeUrl: url }, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
       });
       const data = await res.json();
 
@@ -493,10 +493,10 @@ const Settings = ({
                         Give Customers 2% Instant Cashback? <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
                       </span>
                       <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                        Because credit cards charge businesses ~3% and give 1% to the customer, customers have few incentives to use other payment methods. Therefore, we are
-                        temporarily requiring businesses give a 2% discount to customers. Because Flash charges 0% fees to the business, businesses will still save ~1% when
-                        compared to a credit card payment. Furthermore, the cashback program can potentially bring new sales to your business. When blockchain payments become more
-                        popular, we will make this 2% cashback optional.
+                        Because credit cards charge businesses ~3% and give ~1% to the customer, customers have few incentives to use other payment methods. Therefore, we are
+                        temporarily requiring businesses give a 2% discount to customers. Because Flash charges 0% fees to the business, businesses will still save ~1% compared to
+                        credit cards. Furthermore, the discount can potentially attract new customers to your business. When blockchain payments become more popular, we will make
+                        this cashback optional.
                       </div>
                     </span>
                   </div>

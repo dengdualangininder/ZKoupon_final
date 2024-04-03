@@ -215,6 +215,11 @@ const CashOut = ({
     );
   };
 
+  const onClickSOWC = async () => {
+    window.sessionStorage.removeItem("cbAccessToken");
+    window.localStorage.removeItem("cbRefreshToken");
+  };
+
   const onClickTransferToCex = async () => {
     if (cashoutSettingsState.cexEvmAddress && cashoutSettingsState.cexAccountName) {
       setTransferToCexModal(true);
@@ -312,15 +317,13 @@ const CashOut = ({
   console.log("before render", "\ncexBalance:", cexBalance, "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="mt-[14px] min-h-[calc(100vh-110px)] w-full flex flex-col items-center">
-      {/*---Flash Account + CEX + History---*/}
-      <div className="w-[95%] sm:w-[80%] md:w-[70%] lg:w-[60%] flex flex-col text-gray-700">
+    <section className="pt-4 min-h-[calc(100vh-84px)] w-full flex flex-col items-center">
+      {/*---Flash Account + CEX + Statistics ---*/}
+      <div className="w-[95%] sm:w-[80%] md:w-[70%] lg:w-[60%] flex flex-col space-y-4 text-gray-700">
         {/*---Flash Account---*/}
         <div className="cashoutContainer">
           {/*---title---*/}
-          <div className="flex items-center space-x-2">
-            <div className="text-xl leading-none text-center font-bold">Flash Account</div>
-          </div>
+          <div className="text-xl font-bold">Flash Account</div>
           {/*---body---*/}
           <div className="">
             {/*---balance + transfer to CEX---*/}
@@ -367,12 +370,9 @@ const CashOut = ({
         </div>
 
         {/*---CEX---*/}
-        <div className="mt-4 cashoutContainer">
-          {" "}
+        <div className="cashoutContainer">
           {/*---title---*/}
-          <div className="flex items-center space-x-2">
-            <div className="text-xl leading-none text-center font-bold">{cashoutSettingsState.cex?.replace(" Exchange", "")} Account</div>
-          </div>
+          <div className="text-xl font-bold">{cashoutSettingsState.cex?.replace(" Exchange", "")} Account</div>
           {/*---body---*/}
           <div>
             {isCexAccessible ? (
@@ -419,7 +419,7 @@ const CashOut = ({
             ) : (
               <div>
                 {cashoutSettingsState.cex == "Coinbase Exchange" && (
-                  <div className="link" onClick={onClickSIWC}>
+                  <div className="mt-6 link" onClick={onClickSIWC}>
                     Link Your Coinbase Account
                   </div>
                 )}
@@ -429,8 +429,8 @@ const CashOut = ({
           </div>
         </div>
 
-        {/*---FX IMPACT---*/}
-        <div className="mt-4 cashoutContainer">
+        {/*--- Statistics ---*/}
+        <div className="cashoutContainer">
           {/*---title---*/}
           <div className="flex items-center space-x-2">
             <div className="text-xl leading-none text-center font-bold">Statistics</div>
@@ -475,7 +475,7 @@ const CashOut = ({
         </div> */}
 
         {/*---HISTORY---*/}
-        <div className="my-8 flex items-center justify-center space-x-2 text-blue-800">
+        {/* <div className="my-8 flex items-center justify-center space-x-2 text-blue-800">
           <FontAwesomeIcon icon={faClockRotateLeft} className="h-[20px]" />
           <div
             className="text-lg leading-none font-bold lg:hover:underline active:underline cursor-pointer"
@@ -486,7 +486,7 @@ const CashOut = ({
           >
             Cashout History
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/*---cashOut Modal---*/}

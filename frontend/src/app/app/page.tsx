@@ -300,31 +300,33 @@ const User = () => {
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "app" && (
-        <div className="w-full md:w-auto h-screen flex flex-col-reverse md:flex-row">
+        <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
-          <div className="w-full md:w-[120px] lg:w-[190px] h-[84px] sm:h-[110px] md:h-screen flex-none flex flex-col justify-center items-center border-t md:border-r border-gray-300 relative">
+          <div className="portrait:w-full portrait:h-[84px] sm:portrait:h-[140px] landscape:w-[120px] md:landscape:w-[160px] landscape:h-screen flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 relative">
             {/*--- logo ---*/}
-            <div className="hidden md:block md:absolute top-6 lg:top-8 left-[9px] lg:left-[19px]">
-              <div className="relative w-[100px] h-[55px] lg:w-[150px] lg:h-[60px]">
+            <div className="portrait:hidden landscape:block absolute top-6 lg:top-8 right-[calc(w-[100%]/2)]">
+              <div className="relative w-[100px] h-[55px]">
                 <Image src={"/logo.svg"} alt="logo" fill />
               </div>
             </div>
             {/*---menu---*/}
             {isAdmin ? (
-              <div className="fixed md:static bottom-0 w-full md:w-auto h-[84px] sm:h-[110px] md:h-[50%] pb-3 flex md:flex-col items-center justify-evenly md:justify-between">
+              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] sm:portrait:h-[140px] landscape:h-[56%] lg:landscape:h-[50%] landscape:space-y-8 flex landscape:flex-col items-center portrait:justify-evenly landscape:justify-between portrait:pb-3">
                 {menuArray.map((i) => (
                   <div
                     id={i.id}
                     key={i.id}
-                    className={`${menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 w-[100px] lg:w-auto flex flex-col items-center`}
+                    className={`${menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
                     onClick={(e) => {
                       setMenu(e.currentTarget.id);
                     }}
                   >
-                    <div className={`relative w-[66px] h-[18px] sm:h-[28px] lg:h-[36px] point-events-none`}>
+                    <div className={`relative w-[66px] h-[18px] sm:h-[36px] point-events-none`}>
                       <Image src={i.img} alt={i.title} fill />
                     </div>
-                    <div className="mt-1 sm:mt-0.5 pointer-events-none leading-none sm:text-xl lg:text-2xl font-medium">{i.title}</div>
+                    <div className="mt-[2px] landscape:text-[15px] portrait:text-[15px] landscape:sm:text-lg portrait:sm:text-2xl landscape:md:text-2xl portrait:md:text-2xl  font-medium pointer-events-none">
+                      {i.title}
+                    </div>
                   </div>
                 ))}
               </div>

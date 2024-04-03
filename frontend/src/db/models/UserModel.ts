@@ -15,6 +15,7 @@ export interface IUser extends Document {
     merchantFields: string[];
     merchantGoogleId: string;
     employeePass: string;
+    qrCodeUrl: string;
   };
   cashoutSettings: {
     cex: string;
@@ -69,6 +70,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     merchantFields: [String], // dates, count, sku, shipping, custom, <custom>,
     merchantGoogleId: String,
     employeePass: String,
+    qrCodeUrl: String,
   },
   cashoutSettings: {
     cex: String,

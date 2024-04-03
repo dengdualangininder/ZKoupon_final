@@ -1,10 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Parser } from "@json2csv/plainjs"; // switch to papaparse or manually do it
 //wagmi
 import { useConfig } from "wagmi";
 import { writeContract } from "@wagmi/core";
 import { parseUnits } from "viem";
+// others
+import { QRCodeSVG } from "qrcode.react";
 // components
 import ErrorModal from "./modals/ErrorModal";
 // constants
@@ -13,7 +16,7 @@ import { merchantType2data } from "@/utils/constants";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileArrowDown, faArrowsRotate, faXmark, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowDown, faArrowsRotate, faXmark, faArrowLeft, faArrowRight, faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Payments = ({
   transactionsState,
@@ -28,32 +31,43 @@ const Payments = ({
 }) => {
   console.log("Payments component rendered");
 
-  // constants
-  if (transactionsState) {
-    var maxPage = Math.ceil(transactionsState.length / 8);
-  }
-
   // states
   const [clickedTxn, setClickedTxn] = useState<null | any>();
   const [clickedTxnIndex, setClickedTxnIndex] = useState<null | number>();
   const [refundStatus, setRefundStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
   const [refundNoteStatus, setRefundNoteStatus] = useState("processing"); // "false" | "processing" | "true"
   const [page, setPage] = useState(1);
+  const [selectedStartMonth, setSelectedStartMonth] = useState("select");
+  const [selectedEndMonth, setSelectedEndMonth] = useState("select");
+  // modal states
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [detailsModal, setDetailsModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
   const [downloadDates, setDownloadDates] = useState<string[]>([]);
+  const [refundAllModal, setRefundAllModal] = useState(false);
+  const [showToolsModal, setShowToolsModal] = useState(false);
+  const [showQr, setShowQr] = useState(false);
+
+  const maxPage = Math.ceil(transactionsState.length / 6);
 
   // hooks
   const config = useConfig();
 
   // functions
   const getLocalTime = (mongoDate: string) => {
-    let time = new Date(mongoDate).toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-    return time;
+    const time = new Date(mongoDate).toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
+    const timeObject = { time: time.split(" ")[0], ampm: time.split(" ")[1] };
+    return timeObject;
   };
 
+  // return format: April 2
+  const getLocalDateWords = (mongoDate: string) => {
+    let date = new Date(mongoDate).toLocaleDateString(undefined, { dateStyle: "long" }).split(",");
+    return date[0];
+  };
+
+  // return format: 2024-04-02
   const getLocalDate = (mongoDate: string) => {
     let date = new Date(mongoDate).toLocaleString("en-GB").split(", ")[0].split("/");
     return `${date[2]}-${date[1]}-${date[0]}`;
@@ -155,13 +169,20 @@ const Payments = ({
   };
 
   const onClickDownload = () => {
-    const yearMonth = (document.getElementById("paymentsYearMonth") as HTMLInputElement).value;
+    // FINISH BELOW LOGIC
+
+    const startDate = new Date(Number(selectedStartMonth.split("-")[0]), Number(selectedStartMonth.split("-")[1]) - 1, 1); // takes in year, monthIndex, day
+    const endDate = new Date(Number(selectedEndMonth.split("-")[0]), Number(selectedEndMonth.split("-")[1]), 0); // day=0 returns last day of the previous month
+
     let selectedTxns = [];
-    for (let i = 0; i < transactionsState.length; i++) {
-      if (yearMonth === transactionsState[i].date.split("-").slice(0, 2).join("-")) {
-        selectedTxns.push(transactionsState[i]);
+    for (const txn of transactionsState) {
+      if (txn.date > startDate && txn.date < endDate) {
+        selectedTxns.push(txn);
       }
     }
+
+    setDownloadModal(false);
+    return;
 
     const fields = [
       { label: "Date", value: "date" },
@@ -240,143 +261,158 @@ const Payments = ({
     setDownloadDates(yearmonthArray);
   };
 
-  return (
-    <section className="w-full flex flex-col items-center relative">
-      {/*---Header---*/}
-      <div className="hidden md:h-[60px] md:flex justify-center items-center font-extrabold text-3xl text-blue-700">Payment History</div>
-      {/*---Table + Navigation Arrows ---*/}
-      {transactionsState && paymentSettingsState ? (
-        <div className="w-full">
-          {/*---Table---*/}
-          <div className="px-6 h-[calc(100vh-84px-72px-2px)] md:h-[calc(100vh-60px-72px-2px)] overflow-y-auto">
-            {transactionsState.length > 1 ? (
-              <table className="table-auto text-left w-full">
-                <thead className="text-lg md:text-lg leading-none md:leading-none top-0 sticky">
-                  {/*---headers, 40px---*/}
-                  <tr className="h-[40px]">
-                    <th className="align-bottom w-[90px]">Time</th>
-                    <th className="align-bottom w-[90px]">Customer</th>
-                    {paymentSettingsState.merchantFields.includes("daterange") && <th className="xs:px-2 align-bottom">Dates</th>}
-                    {paymentSettingsState.merchantFields.includes("date") && <th className="xs:px-2 align-bottom">Date</th>}
-                    {paymentSettingsState.merchantFields.includes("time") && <th className="xs:px-2 align-bottom">Time</th>}
-                    {paymentSettingsState.merchantFields.includes("item") && <th className="align-bottom">{merchantType2data[paymentSettingsState.merchantType]["itemlabel"]}</th>}
-                    {paymentSettingsState.merchantFields.includes("count") && (
-                      <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""} align-bottom`}>Guests</th>
-                    )}
-                    {paymentSettingsState.merchantFields.includes("sku") && <th className="align-bottom">SKU#</th>}
-                    <th className="align-bottom w-[90px]">{paymentSettingsState.merchantCurrency}</th>
-                  </tr>
-                </thead>
-                <tbody className="">
-                  {/*---transactions---*/}
-                  {transactionsState
-                    .toReversed()
-                    .slice((page - 1) * 8, (page - 1) * 8 + 8)
-                    .map((txn: any, index: number) => (
-                      <tr
-                        id={txn.txnHash}
-                        key={index}
-                        className={`${
-                          txn.refund ? "text-gray-400" : ""
-                        } h-[calc((100vh-84px-40px-72px-4px)/8)] md:h-[calc((100vh-60px-40px-72px-4px)/8)] border-b lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer bg-white`}
-                        onClick={onClickTxn}
-                      >
-                        {/*---Time---*/}
-                        <td className="whitespace-nowrap">
-                          <div className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "text-xl leading-none" : "text-sm leading-tight"}`}>
-                            {getLocalTime(txn.date)}
-                          </div>
-                          <div className="text-sm leading-none">{getLocalDate(txn.date)}</div>
-                        </td>
-                        {/*---Customer---*/}
-                        <td className="">
-                          {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
-                            <div className="text-sm leading-tight">
-                              <div>{txn.customerEmail.split("@")[0]}</div>
-                              <div>@{txn.customerEmail.split("@")[1]}</div>
-                            </div>
-                          )}
-                          {paymentSettingsState.merchantPaymentType === "inperson" && (
-                            <div className="text-xl">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</div>
-                          )}
-                        </td>
-                        {/*---Online Options---*/}
-                        {paymentSettingsState.merchantFields.includes("daterange") && (
-                          <td className="xs:px-2">
-                            <div className="text-sm leading-tight whitespace-nowrap">
-                              <div>{txn.startDate}</div>
-                              <div>{txn.endDate}</div>
-                            </div>
-                          </td>
-                        )}
-                        {paymentSettingsState.merchantFields.includes("date") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.singledate}</td>}
-                        {paymentSettingsState.merchantFields.includes("time") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.time}</td>}
-                        {paymentSettingsState.merchantFields.includes("item") && <td className="xs:px-2 text-sm leading-tight">{txn.item}</td>}
-                        {paymentSettingsState.merchantFields.includes("count") && (
-                          <td className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""} xs:px-2`}>
-                            {txn.countString && (
-                              <div className="text-sm leading-tight">
-                                <div>{txn.countString.split(", ")[0]}</div>
-                                <div>{txn.countString.split(", ")[1]}</div>
-                              </div>
-                            )}
-                          </td>
-                        )}
-                        {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>}
-                        {/*---currencyAmount---*/}
-                        <td className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "text-xl" : "text-xl"} relative`}>
-                          {txn.currencyAmount}
-                          <div className={`${txn.refundNote && !txn.refund ? "" : "hidden"} absolute bottom-[6px] left-0 text-xs text-gray-400`}>To Be Refunded</div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            ) : (
-              <div className="h-full w-full flex items-center justify-center">
-                <div className="text-xl">No payments so far</div>
-              </div>
-            )}
-          </div>
+  const onClickRefundAll = async () => {
+    //logic here
+    setRefundAllModal(false);
+  };
 
-          {/*---navigation arrows, 72px height---*/}
-          <div className="h-[72px] flex items-center justify-center">
-            <div className="flex items-center justify-center">
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                className="text-xl bg-white border-2 border-gray-400 text-gray-400 rounded-lg p-2.5 lg:hover:opacity-40 active:opacity-40 cursor-pointer"
-                onClick={() => (page === 1 ? "" : setPage(page - 1))}
-              />
-              <div className="text-2xl font-medium w-[20px] text-center select-none mx-4">{page}</div>
-              <FontAwesomeIcon
-                icon={faArrowRight}
-                className="text-xl bg-white border-2 border-gray-400 text-gray-400 rounded-lg p-2.5 lg:hover:opacity-40 active:opacity-40 cursor-pointer"
-                onClick={() => (page === maxPage ? "" : setPage(page + 1))}
-              />
+  return (
+    <section className="w-full flex justify-center">
+      <div className={`flex flex-col items-center ${paymentSettingsState.merchantPaymentType == "inperson" ? "px-6 w-full sm:landscape:max-w-[75%] sm:portrait:max-w-[85%]" : ""}`}>
+        {/*--- Table or "no payments" ---*/}
+        {transactionsState.length > 1 ? (
+          <div className="h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] landscape:h-[calc(100vh-74px-2px)] md:landscape:h-[calc(100vh-120px-2px)] flex justify-center select-none overflow-y-auto">
+            <table className={`table-fixed text-left w-full select-none`}>
+              <thead className="text-base sm:portrait:text-2xl md:landscape:text-2xl border-b">
+                {/*---headers, 40px---*/}
+                <tr className="h-[50px] sm:portrait:h-[70px] md:landscape:h-[70px]">
+                  <th className="">Time</th>
+                  <th className="text-center">Customer</th>
+                  {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
+                  {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
+                  {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
+                  {paymentSettingsState.merchantFields.includes("item") && <th className="">{merchantType2data[paymentSettingsState.merchantType]["itemlabel"]}</th>}
+                  {paymentSettingsState.merchantFields.includes("count") && (
+                    <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""}`}>Guests</th>
+                  )}
+                  {paymentSettingsState.merchantFields.includes("sku") && <th className="">SKU#</th>}
+                  <th className="text-right pr-2">{paymentSettingsState.merchantCurrency}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/*---transactions---*/}
+                {transactionsState
+                  .toReversed()
+                  .slice((page - 1) * 6, (page - 1) * 6 + 6)
+                  .map((txn: any, index: number) => (
+                    <tr
+                      id={txn.txnHash}
+                      key={index}
+                      className={`${
+                        txn.refund ? "text-gray-400" : ""
+                      } h-[calc((100vh-84px-50px-74px-4px)/6)] sm:portrait:h-[calc((100vh-140px-70px-120px-4px)/6)] md:landscape:h-[calc((100vh-70px-120px-4px)/6)] flex-none border-b lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer overflow-y-auto`}
+                      onClick={onClickTxn}
+                    >
+                      {/*---Time---*/}
+                      <td className=" whitespace-nowrap">
+                        <div className="">
+                          <span className="text-3xl sm:portrait:text-5xl md:landscape:text-5xl">{getLocalTime(txn.date).time}</span>
+                          <span className="ml-1 font-medium text-sm sm:portrait:text-xl md:landscape:text-xl">{getLocalTime(txn.date).ampm}</span>
+                        </div>
+                        <div className="ml-0.5 text-sm sm:portrait:text-xl md:landscape:text-xl leading-none font-medium text-gray-400">{getLocalDateWords(txn.date)}</div>
+                      </td>
+                      {/*---Customer---*/}
+                      <td className=" text-center">
+                        {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
+                          <div className="text-sm leading-tight">
+                            <div>{txn.customerEmail.split("@")[0]}</div>
+                            <div>@{txn.customerEmail.split("@")[1]}</div>
+                          </div>
+                        )}
+                        {paymentSettingsState.merchantPaymentType === "inperson" && (
+                          <div className="text-lg sm:portrait:text-3xl md:landscape:text-3xl pt-2 pr-1">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</div>
+                        )}
+                      </td>
+                      {/*---Online Options---*/}
+                      {paymentSettingsState.merchantFields.includes("daterange") && (
+                        <td className="xs:px-2">
+                          <div className="text-sm leading-tight whitespace-nowrap">
+                            <div>{txn.startDate}</div>
+                            <div>{txn.endDate}</div>
+                          </div>
+                        </td>
+                      )}
+                      {paymentSettingsState.merchantFields.includes("date") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.singledate}</td>}
+                      {paymentSettingsState.merchantFields.includes("time") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.time}</td>}
+                      {paymentSettingsState.merchantFields.includes("item") && <td className="xs:px-2 text-sm leading-tight">{txn.item}</td>}
+                      {paymentSettingsState.merchantFields.includes("count") && (
+                        <td className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""} xs:px-2`}>
+                          {txn.countString && (
+                            <div className="text-sm leading-tight">
+                              <div>{txn.countString.split(", ")[0]}</div>
+                              <div>{txn.countString.split(", ")[1]}</div>
+                            </div>
+                          )}
+                        </td>
+                      )}
+                      {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>}
+                      {/*---currencyAmount---*/}
+                      <td
+                        className={`${
+                          paymentSettingsState.merchantPaymentType === "inperson" ? "text-3xl sm:portrait:text-5xl md:landscape:text-5xl" : "text-xl"
+                        } pr-2 text-right relative`}
+                      >
+                        {txn.currencyAmount}
+                        <div className={`${txn.refundNote && !txn.refund ? "" : "hidden"} absolute bottom-[6px] left-0 text-xs text-gray-400`}>To Be Refunded</div>
+                      </td>
+                    </tr>
+                  ))}
+                {page == maxPage &&
+                  Array.from(Array(6 - (transactionsState.length % 6)).keys()).map((i) => (
+                    <tr
+                      className={`h-[calc((100vh-84px-50px-74px-4px)/6)] sm:portrait:h-[calc((100vh-140px-70px-120px-4px)/6)] md:landscape:h-[calc((100vh-70px-120px-4px)/6)]`}
+                    ></tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="text-xl">No payments so far</div>
+          </div>
+        )}
+
+        {/*--- tools & navigation , 74pw-full x height---*/}
+        <div className="w-full h-[74px] sm:portrait:h-[120px] md:landscape:h-[120px] flex items-center">
+          <div className="w-full h-[44px] flex items-center justify-between">
+            {/*--- tools ---*/}
+            <div onClick={() => setShowToolsModal(true)} className="w-[44px] h-full border border-gray-300 rounded-md relative">
+              <div className="text-lg text-center font-bold">...</div>
             </div>
-            {/*---download---*/}
-            {/* <button
+            {/*--- navigation ---*/}
+            <div className="h-full flex items-center justify-center">
+              <div
+                className="text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer"
+                onClick={() => (page === 1 ? "" : setPage(page - 1))}
+              >
+                <div className="pb-0.5">{"\u2039"}</div>
+              </div>
+              <div className="text-xl sm:portrait:text-3xl md:landscape:text-3xl w-[20px] text-center select-none mx-2">{page}</div>
+
+              <div
+                className="text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer"
+                onClick={() => (page == maxPage ? "" : setPage(page + 1))}
+              >
+                <div className="pb-0.5">{"\u203A"}</div>
+              </div>
+            </div>
+            {/*--- qr code ---*/}
+            <div
               onClick={() => {
-                setDownloadModal(true);
-                createDownloadDates();
+                if (paymentSettingsState.qrCodeUrl) {
+                  setShowQr(true);
+                } else {
+                  setErrorModal(true);
+                  setErrorMsg("Please first fill out your Payment Settings in the Settings menu tab.");
+                }
               }}
-              className="w-[90px] py-1 lg:hover:bg-white rounded-xl leading-none bg-blue-300"
+              className="relative w-[44px] h-full border border-gray-300 rounded-md"
             >
-              Download History
-            </button> */}
-            {/*---refresh---*/}
-            {/* <div className="flex justify-center w-1/3">
-              <button onClick={() => location.reload()} className="h-[58px] w-[70px] xs:w-[100px] lg:hover:bg-white rounded-xl">
-                <FontAwesomeIcon icon={faArrowsRotate} className="text-3xl active:text-blue-300" />
-              </button>
-            </div> */}
+              <Image src="/qr.svg" alt="QR" fill />
+            </div>
           </div>
         </div>
-      ) : (
-        <div className="mt-8">
-          <SpinningCircleGray />
-        </div>
-      )}
+      </div>
 
       {/*--- MODALS ---*/}
       {detailsModal && (
@@ -392,7 +428,7 @@ const Payments = ({
             {/*---content---*/}
             <div className="flex flex-col text-lg lg:text-base space-y-1 font-medium">
               <p>
-                <span className="text-gray-400 mr-1">Time</span> {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date)}
+                <span className="text-gray-400 mr-1">Time</span> {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date).time} {getLocalTime(clickedTxn.date).ampm}
               </p>
               <p>
                 <span className="text-gray-400 mr-1">Payment Value</span> {clickedTxn.currencyAmount} {clickedTxn.merchantCurrency}
@@ -465,37 +501,118 @@ const Payments = ({
           <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
+
       {downloadModal && (
         <div>
-          <div className="w-[330px] h-[280px] px-6 rounded-xl bg-white border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-50">
-            {/*---close button---*/}
+          <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
+            {/*---content---*/}
+            <div className="w-full grow flex flex-col justify-center">
+              {/*---start---*/}
+              <div className="w-full flex items-center justify-between">
+                <div className="text-xl lg:text-lg">Start Month</div>
+                <div className="px-4 py-2 border border-slate-300 rounded-lg">
+                  <select className="text-xl lg:text-lg outline:none focus:outline-none" value={selectedStartMonth} onChange={(e) => setSelectedStartMonth(e.target.value)}>
+                    {downloadDates.map((i) => (
+                      <option>{i}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {/*---end---*/}
+              <div className="mt-2 w-full flex items-center justify-between">
+                <div className="text-xl lg:text-lg">End Month</div>
+                <div className="px-4 py-2 border border-slate-300 rounded-lg">
+                  <select className="text-xl lg:text-lg outline:none focus:outline-none" value={selectedEndMonth} onChange={(e) => setSelectedEndMonth(e.target.value)}>
+                    {downloadDates.map((i) => (
+                      <option>{i}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
             <button
+              className="w-[70%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
+              onClick={onClickDownload}
+            >
+              Download
+            </button>
+            {/*---close button---*/}
+            {/* <button
               onClick={() => setDownloadModal(false)}
               className="absolute top-[calc(100%-28px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] text-3xl rounded-full h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 lg:hover:bg-red-500 active:bg-red-300"
             >
               <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-            </button>
-            {/*---content---*/}
-            <div className="w-full h-full flex flex-col items-center justify-center">
-              <div className="text-center text-xl lg:text-lg">Select Year - Month</div>
-              <div className="mt-2 px-4 py-2 border border-slate-300 rounded-lg">
-                <select id="paymentsYearMonth" className="text-xl lg:text-lg outline:none focus:outline-none">
-                  {downloadDates.map((i) => (
-                    <option>{i}</option>
-                  ))}
-                </select>
-              </div>
-              <button
-                className="mt-10 mb-6 w-full h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-[4px] text-white text-lg font-bold tracking-wide"
-                onClick={onClickDownload}
-              >
-                Download
-              </button>
-            </div>
+            </button> */}
           </div>
-          <div className="modalBlackout"></div>
+          <div className="modalBlackout" onClick={() => setDownloadModal(false)}></div>
         </div>
       )}
+
+      {refundAllModal && (
+        <div>
+          <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
+            {/*---content---*/}
+            <div className="w-full grow text-xl text-center flex items-center">Refund all payments marked as "To Be Refunded"?</div>
+            <button
+              className="mt-10 w-[70%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
+              onClick={onClickRefundAll}
+            >
+              Confirm
+            </button>
+          </div>
+          <div className="modalBlackout" onClick={() => setRefundAllModal(false)}></div>
+        </div>
+      )}
+
+      {showToolsModal && (
+        <div>
+          <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center justify-evenly rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
+            <button
+              className="w-[85%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
+              onClick={() => {
+                setShowToolsModal(false);
+                setRefundAllModal(true);
+              }}
+            >
+              Refund All
+            </button>
+            <button
+              className="w-[85%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
+              onClick={() => {
+                createDownloadDates();
+                setShowToolsModal(false);
+                setDownloadModal(true);
+              }}
+            >
+              Download History
+            </button>
+          </div>
+          <div className="modalBlackout" onClick={() => setShowToolsModal(false)}></div>
+        </div>
+      )}
+
+      {showQr && (
+        <div onClick={() => setShowQr(false)}>
+          <div className="fixed inset-0 z-10 bg-black"></div>
+          <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-[20]">
+            <div className="w-full h-full relative">
+              <Image src="/placard.svg" alt="placard" fill />
+            </div>
+          </div>
+          <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[30]">
+            <QRCodeSVG
+              id="qrsvg"
+              xmlns="http://www.w3.org/2000/svg"
+              size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (220 / 424.26)) : Math.round(window.innerWidth * (220 / 424.26))}
+              bgColor={"#ffffff"}
+              fgColor={"#000000"}
+              level={"L"}
+              value={paymentSettingsState.qrCodeUrl}
+            />
+          </div>
+        </div>
+      )}
+
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );
