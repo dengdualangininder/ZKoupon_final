@@ -34,8 +34,6 @@ const Settings = ({
   cashoutSettingsState,
   setCashoutSettingsState,
   isMobile,
-  introModal,
-  setIntroModal,
   idToken,
   publicKey,
   exchangeModal,
@@ -46,26 +44,24 @@ const Settings = ({
   cashoutSettingsState: any;
   setCashoutSettingsState: any;
   isMobile: boolean;
-  introModal: boolean;
-  setIntroModal: any;
   idToken: string;
   publicKey: string;
   exchangeModal: boolean;
   setExchangeModal: any;
 }) => {
   console.log("Settings, rendered once");
+  // states
   const [url, setUrl] = useState("");
+  const [savingState, setSavingState] = useState("saved"); // saved | savechanges | saving
+  const [popup, setPopup] = useState("");
   // modal states
   const [figmaModal, setFigmaModal] = useState(false);
-  const [apiModal, setApiModal] = useState(false);
   const [merchantBusinessTypeModal, setMerchantBusinessTypeModal] = useState(false);
-  const [refundModal, setRefundModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<any>("");
   const [errorModal, setErrorModal] = useState(false);
+  // consider removing
+  const [apiModal, setApiModal] = useState(false);
   const [depositAddressModal, setDepositAddressModal] = useState(false);
-  const [popup, setPopup] = useState("");
-  // Boolean states
-  const [savingState, setSavingState] = useState("saved"); // saved | savechanges | saving
 
   const router = useRouter();
   const { disconnectAsync } = useDisconnect();
@@ -253,28 +249,6 @@ const Settings = ({
     }
   };
 
-  const onClickIntroModal = async () => {
-    setIntroModal(false);
-    try {
-      const res = await fetch("/api/intro", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ merchantEvmAddress: paymentSettingsState.merchantEvmAddress }),
-      });
-      const data = await res.json();
-
-      if (data === "saved") {
-        console.log("intro set to false");
-      } else {
-        setErrorMsg("Internal server error. Data was not saved.");
-        setErrorModal(true);
-      }
-    } catch (e) {
-      setErrorMsg("Server request error. Data was not saved.");
-      setErrorModal(true);
-    }
-  };
-
   const settingsMenu = [
     { name: "My QR Code", page: "myQr" },
     { name: "FAQ", page: "faq" },
@@ -285,31 +259,6 @@ const Settings = ({
   return (
     <section id="accountEl" className="h-[calc(100vh-84px)] sm:h-[calc(100vh-110px)] md:h-auto w-full pt-6 flex flex-col overflow-y-scroll">
       {/*---8 MODALS---*/}
-
-      {introModal && (
-        <div>
-          <div className="flex flex-col justify-evenly items-center w-[348px] h-[450px] bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
-            <div className="w-[242px] text-xl leading-relaxed">
-              To get started, read the <span className="font-bold">Instructions</span> section that appears in front of you after you close this popup.
-            </div>
-            <div>
-              <div className="text-center text-xl font-bold">Real humans helping you</div>
-              <div className="mt-0.5 w-[290px] border border-slate-500 px-2 py-1.5 rounded-[4px] text-base leading-tight xs:leading-tight">
-                If you are having any difficulty setting up, email contact@lingpay.io and one of our advisors will contact you within 24 hours to help you get started.
-              </div>
-            </div>
-
-            {/*---close button---*/}
-            <button
-              onClick={onClickIntroModal}
-              className="w-[290px] h-[56px] xs:h-[48px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-[4px] text-white text-xl xs:text-lg font-bold tracking-wide"
-            >
-              CLOSE
-            </button>
-          </div>
-          <div className="opacity-60 fixed inset-0 z-10 bg-black"></div>
-        </div>
-      )}
       {merchantBusinessTypeModal && (
         <div>
           <div className="flex flex-col items-center justify-between bg-white w-[350px] xs:w-[400px] h-[420px] py-[28px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-20">
@@ -352,8 +301,7 @@ const Settings = ({
       {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} />}
       {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.CEX} />}
       {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
-      {refundModal && <RefundModal setRefundModal={setRefundModal} />}
-      {depositAddressModal && <DepositAddressModal setDepositAddressModal={setDepositAddressModal} />}
+      {/* {depositAddressModal && <DepositAddressModal setDepositAddressModal={setDepositAddressModal} />} */}
 
       {/*---Page Title---*/}
       <div className="hidden md:block w-full font-extrabold text-2xl sm:text-3xl text-blue-700 text-center">Settings</div>
