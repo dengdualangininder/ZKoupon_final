@@ -366,278 +366,268 @@ const Settings = ({
             </div>
           ))}
         </div>
-        {/*---Payment Settings---*/}
-        <div>
-          {/*---title---*/}
-          <div className="mt-6 flex items-center relative">
-            <div className="hidden xs:block w-[20px] h-[20px] rounded-full bg-orange-500 flex-none"></div>
-            <div className="hidden xs:block absolute w-[2px] h-[1000px] bg-orange-500 top-[12px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-6 text-2xl font-bold text-blue-700">Payment Settings</div>
+
+        {/*---form---*/}
+        <form className="">
+          <div className="ml-1 mt-8 text-base font-bold text-blue-600">PAYMENT SETTINGS</div>
+
+          {/*---merchantName---*/}
+          <div className="fieldContainer">
+            <label className="labelfont">Business Name</label>
+            <input
+              className="inputfont"
+              onChange={(e: any) => {
+                setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value });
+                setSavingState("savechanges");
+              }}
+              value={paymentSettingsState.merchantName}
+            ></input>
           </div>
-          {/*---form + placard/UI container---*/}
-          <div className="xs:ml-[28px] sm:ml-[41px] flex flex-col lg:flex-row">
-            {/*---form---*/}
-            <form className="mt-2 appSettingsForm">
-              {/*---merchantName---*/}
-              <div className="flex flex-col">
-                <label className="labelfont">Business Name</label>
-                <input
-                  className="px-1 inputfont"
-                  onChange={(e: any) => {
-                    setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value });
-                    setSavingState("savechanges");
-                  }}
-                  value={paymentSettingsState.merchantName}
-                ></input>
-              </div>
 
-              {/*---merchantCountry & merchantCurrency---*/}
-              <div className="mt-2 flex flex-col">
-                <div>
-                  <label className="labelfont">Country / Currency</label>
-                </div>
-                <div>
-                  <select
-                    className="selectfont"
-                    onChange={(e) => {
-                      const merchantCountryTemp = e.target.value.split(" (")[0];
-                      const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
-                      const cexTemp = countryData[merchantCountryTemp].CEXes[0];
-                      setPaymentSettingsState({
-                        ...paymentSettingsState,
-                        merchantCountry: merchantCountryTemp,
-                        merchantCurrency: merchantCurrencyTemp,
-                      });
-                      setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
-                      setSavingState("savechanges");
-                    }}
-                  >
-                    {activeCountries.map((i, index) => (
-                      <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
-                        {i}
-                      </option>
-                    ))}
-                  </select>
+          {/*---merchantCountry & merchantCurrency---*/}
+          <div className="fieldContainer">
+            <div>
+              <label className="labelfont">Country / Currency</label>
+            </div>
+            <div>
+              <select
+                className="selectfont"
+                onChange={(e) => {
+                  const merchantCountryTemp = e.target.value.split(" (")[0];
+                  const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
+                  const cexTemp = countryData[merchantCountryTemp].CEXes[0];
+                  setPaymentSettingsState({
+                    ...paymentSettingsState,
+                    merchantCountry: merchantCountryTemp,
+                    merchantCurrency: merchantCurrencyTemp,
+                  });
+                  setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
+                  setSavingState("savechanges");
+                }}
+              >
+                {activeCountries.map((i, index) => (
+                  <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
+                    {i}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/*---merchantPaymentType---*/}
+          <div className="fieldContainer">
+            <div className="flex">
+              <div className="group cursor-pointer relative">
+                <label className="labelfont">Payment Type</label>
+                <FontAwesomeIcon icon={faCircleInfo} className="ml-1.5 xs:text-sm text-gray-300" />
+                <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] w-[236px] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
+                  Select "In-person" for physical stores and "online" for online stores
                 </div>
               </div>
+            </div>
+            <div>
+              <select
+                className="selectfont"
+                onChange={(e) => {
+                  let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
+                  if (merchantPaymentTypeTemp === "inperson") {
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantPaymentType: merchantPaymentTypeTemp,
+                      merchantBusinessType: "",
+                      merchantWebsite: "",
+                      merchantFields: [],
+                    });
+                  } else if (merchantPaymentTypeTemp === "online") {
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantPaymentType: merchantPaymentTypeTemp,
+                      merchantBusinessType: "onlinephysical",
+                      merchantWebsite: "",
+                      merchantFields: ["email", "item", "shipping"],
+                    });
+                  }
+                  setSavingState("savechanges");
+                }}
+              >
+                <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
+                <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online</option>
+              </select>
+            </div>
+          </div>
 
-              {/*---merchantPaymentType---*/}
-              <div className="mt-2 flex flex-col">
-                <div className="flex">
-                  <div className="group cursor-pointer relative">
-                    <label className="labelfont">Payment Type</label>
-                    <FontAwesomeIcon icon={faCircleInfo} className="ml-1.5 xs:text-sm text-gray-300" />
-                    <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] w-[236px] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                      Select "In-person" for physical stores and "online" for online stores
-                    </div>
+          {/*---2% off---*/}
+          {paymentSettingsState.merchantPaymentType === "inperson" && (
+            <div className="fieldContainer border-b-transparent relative">
+              <div className="flex relative">
+                <div className="group cursor-pointer">
+                  <label className="labelfont">Give 2% Instant Cashback?</label>
+                  <FontAwesomeIcon icon={faCircleInfo} className="ml-1.5 xs:text-sm text-gray-300" />
+                  <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] w-full px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
+                    Because credit cards charge businesses ~3% and give ~1% to the customer, customers have few incentives to use other payment methods. Therefore, we are
+                    temporarily requiring businesses give a 2% discount to customers. Because Flash charges 0% fees to the business, businesses will still save ~1% compared to
+                    credit cards. Furthermore, the discount can potentially attract new customers to your business. When blockchain payments become more popular, we will make this
+                    cashback optional.
                   </div>
-                </div>
-                <div>
-                  <select
-                    className="selectfont"
-                    onChange={(e) => {
-                      let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
-                      if (merchantPaymentTypeTemp === "inperson") {
-                        setPaymentSettingsState({
-                          ...paymentSettingsState,
-                          merchantPaymentType: merchantPaymentTypeTemp,
-                          merchantBusinessType: "",
-                          merchantWebsite: "",
-                          merchantFields: [],
-                        });
-                      } else if (merchantPaymentTypeTemp === "online") {
-                        setPaymentSettingsState({
-                          ...paymentSettingsState,
-                          merchantPaymentType: merchantPaymentTypeTemp,
-                          merchantBusinessType: "onlinephysical",
-                          merchantWebsite: "",
-                          merchantFields: ["email", "item", "shipping"],
-                        });
-                      }
-                      setSavingState("savechanges");
-                    }}
-                  >
-                    <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
-                    <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online</option>
-                  </select>
                 </div>
               </div>
 
-              {/*---2% off---*/}
-              {paymentSettingsState.merchantPaymentType === "inperson" && (
-                <div className="mt-2 flex items-center xs:justify-start relative">
-                  <div className="w-[218px] xs:w-auto md:w-[172px] text-lg xs:text-sm font-bold leading-tight">
-                    <span className="group cursor-pointer">
-                      <span className="labelfont">
-                        2% Instant Cashback? <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
-                      </span>
-                      <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                        Because credit cards charge businesses ~3% and give ~1% to the customer, customers have few incentives to use other payment methods. Therefore, we are
-                        temporarily requiring businesses give a 2% discount to customers. Because Flash charges 0% fees to the business, businesses will still save ~1% compared to
-                        credit cards. Furthermore, the discount can potentially attract new customers to your business. When blockchain payments become more popular, we will make
-                        this cashback optional.
-                      </div>
-                    </span>
-                  </div>
-                  <div className="grow flex justify-center">
-                    <div className="relative flex items-center cursor-pointer">
-                      <input id="autoCheckbox" type="checkbox" className="pointer-events-none sr-only peer" checked readOnly></input>
-                      <div className="hidden xs:block pointer-events-none w-[44px] h-[24px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500"></div>
-                      <div className="xs:hidden pointer-events-none w-[68px] h-[36px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[32px] after:w-[32px] after:transition-all dark:border-gray-600 peer-checked:bg-blue-500"></div>
-                      <span className="ml-1 xs:ml-2 w-[22px] text-lg xs:text-sm">On</span>
-                    </div>
-                  </div>
+              <div className="ml-1 mb-0.5 relative flex items-center cursor-pointer">
+                <input id="autoCheckbox" type="checkbox" className="sr-only pointer-events-none peer" checked readOnly></input>
+                <div className="pointer-events-none w-[44px] h-[24px] bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500"></div>
+                <span className="ml-2 xs:ml-2 w-[22px] text-lg xs:text-sm">On</span>
+              </div>
+            </div>
+          )}
+
+          {/*---merchantWebsite---*/}
+          <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"} flex flex-col relative`}>
+            <div className="labelfont">
+              <span className="group">
+                <label className="">
+                  Your Website <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline xs:text-sm text-slate-300" />
+                </label>
+                <div className="invisible group-hover:visible pointer-events-none absolute bottom-[calc(100%-6px)] w-[330px] px-3 py-1 text-base font-normal xs:text-sm leading-tight bg-slate-100 border border-slate-300 rounded-lg z-[1]">
+                  <p>- start with "http(s)"</p>
+                  <p>- this website is where customers look up item names & prices</p>
+                </div>
+              </span>
+            </div>
+            <input
+              className="inputfont"
+              onChange={(e: any) => {
+                setPaymentSettingsState({ ...paymentSettingsState, merchantWebsite: e.target.value });
+                setSavingState("savechanges");
+              }}
+              value={paymentSettingsState.merchantWebsite}
+            ></input>
+          </div>
+
+          {/*---merchantBusinessType---*/}
+          <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"}`}>
+            <div className="flex">
+              <label className="labelfont">Your Business Type</label>
+            </div>
+            <div onClick={() => setMerchantBusinessTypeModal(true)} className="w-full flex items-center inputfont cursor-pointer hover:bg-blue-100">
+              {paymentSettingsState.merchantBusinessType && (
+                <div>
+                  <FontAwesomeIcon icon={merchantType2data[paymentSettingsState.merchantBusinessType].fa} className="text-blue-500 mr-1.5" />{" "}
+                  {merchantType2data[paymentSettingsState.merchantBusinessType].text}
                 </div>
               )}
+            </div>
+          </div>
 
-              {/*---merchantWebsite---*/}
-              <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"} flex flex-col relative`}>
+          {/*---merchantFields---*/}
+          <div className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "hidden" : ""}`}>
+            {/*---label---*/}
+            <div className="flex">
+              {/*---container with width matching text width---*/}
+              <div className="flex group relative">
                 <div className="labelfont">
-                  <span className="group">
-                    <label className="">
-                      Your Website <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline xs:text-sm text-slate-300" />
-                    </label>
-                    <div className="invisible group-hover:visible pointer-events-none absolute bottom-[calc(100%-6px)] w-[330px] px-3 py-1 text-base font-normal xs:text-sm leading-tight bg-slate-100 border border-slate-300 rounded-lg z-[1]">
-                      <p>- start with "http(s)"</p>
-                      <p>- this website is where customers look up item names & prices</p>
-                    </div>
-                  </span>
+                  Fields <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline xs:text-sm text-slate-300" />
                 </div>
+                {/*---tooltip---*/}
+                <div className="invisible group-hover:visible pointer-events-none absolute bottom-6 w-[306px] px-3 py-1 text-base xs:text-sm leading-tight bg-slate-100 border border-blue-500 rounded-lg z-[1]">
+                  Fields are fields the customer will have to fill out during payment. When you select a <span className="font-bold">Business Type</span>, we will pre-select
+                  recommended fields for you. You can check/uncheck fields for customization.
+                </div>
+              </div>
+            </div>
+            {/*---fields checkboxes---*/}
+            <div className="mt-2 xs:mt-1 grid grid-cols-3 gap-y-4 xs:gap-y-1">
+              <div className="flex items-center">
                 <input
-                  className="inputfont"
-                  onChange={(e: any) => {
-                    setPaymentSettingsState({ ...paymentSettingsState, merchantWebsite: e.target.value });
-                    setSavingState("savechanges");
-                  }}
-                  value={paymentSettingsState.merchantWebsite}
+                  data-category="settingsMerchantFields"
+                  name="email"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("email") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
                 ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none">email</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="item"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("item") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none">
+                  {paymentSettingsState.merchantType ? merchantType2data[paymentSettingsState.merchantType].itemlabel.toLowerCase() : "item name"}
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="count"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("count") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none"># of guests</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="daterange"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("daterange") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none">date range</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="date"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("date") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none">single date</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="time"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("time") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none">time</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="shipping"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("shipping") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile flex-none"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none xs:leading-none">shipping address</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  data-category="settingsMerchantFields"
+                  name="sku"
+                  type="checkbox"
+                  checked={paymentSettingsState.merchantFields.includes("sku") ? true : false}
+                  onChange={onChangeMerchantFields}
+                  className="checkboxMobile"
+                ></input>
+                <label className="ml-1 text-base xs:text-sm leading-none">SKU#</label>
               </div>
 
-              {/*---merchantBusinessType---*/}
-              <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"}`}>
-                <div className="flex">
-                  <label className="labelfont">Your Business Type</label>
-                </div>
-                <div onClick={() => setMerchantBusinessTypeModal(true)} className="w-full flex items-center inputfont cursor-pointer hover:bg-blue-100">
-                  {paymentSettingsState.merchantBusinessType && (
-                    <div>
-                      <FontAwesomeIcon icon={merchantType2data[paymentSettingsState.merchantBusinessType].fa} className="text-blue-500 mr-1.5" />{" "}
-                      {merchantType2data[paymentSettingsState.merchantBusinessType].text}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/*---merchantFields---*/}
-              <div className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "hidden" : ""}`}>
-                {/*---label---*/}
-                <div className="flex">
-                  {/*---container with width matching text width---*/}
-                  <div className="flex group relative">
-                    <div className="labelfont">
-                      Fields <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline xs:text-sm text-slate-300" />
-                    </div>
-                    {/*---tooltip---*/}
-                    <div className="invisible group-hover:visible pointer-events-none absolute bottom-6 w-[306px] px-3 py-1 text-base xs:text-sm leading-tight bg-slate-100 border border-blue-500 rounded-lg z-[1]">
-                      Fields are fields the customer will have to fill out during payment. When you select a <span className="font-bold">Business Type</span>, we will pre-select
-                      recommended fields for you. You can check/uncheck fields for customization.
-                    </div>
-                  </div>
-                </div>
-                {/*---fields checkboxes---*/}
-                <div className="mt-2 xs:mt-1 grid grid-cols-3 gap-y-4 xs:gap-y-1">
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="email"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("email") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none">email</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="item"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("item") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none">
-                      {paymentSettingsState.merchantType ? merchantType2data[paymentSettingsState.merchantType].itemlabel.toLowerCase() : "item name"}
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="count"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("count") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none"># of guests</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="daterange"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("daterange") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none">date range</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="date"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("date") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none">single date</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="time"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("time") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none">time</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="shipping"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("shipping") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile flex-none"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none xs:leading-none">shipping address</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      data-category="settingsMerchantFields"
-                      name="sku"
-                      type="checkbox"
-                      checked={paymentSettingsState.merchantFields.includes("sku") ? true : false}
-                      onChange={onChangeMerchantFields}
-                      className="checkboxMobile"
-                    ></input>
-                    <label className="ml-1 text-base xs:text-sm leading-none">SKU#</label>
-                  </div>
-
-                  {/* <div className="md:ml-6">
+              {/* <div className="md:ml-6">
                             <div>
                               <input
                                 category="field"
@@ -656,51 +646,19 @@ const Settings = ({
                               ) : null}
                             </div>
                           </div> */}
-                </div>
-              </div>
-
-              {/*--- save button, form padding is 4---*/}
-              <div className="pt-8 pb-4 flex justify-center items-center">
-                <button
-                  className={`${
-                    savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
-                  } text-lg xs:text-base font-bold w-[200px] xs:w-[160px] text-center h-[56px] xs:h-[44px] rounded-full text-white cursor-pointer relative`}
-                  onClick={saveSettings}
-                >
-                  {savingState === "saved" && <div>Saved</div>}
-                  {savingState === "savechanges" && <div>Save Changes</div>}
-                  {savingState === "saving" && (
-                    <div className="w-full flex justify-center items-center">
-                      <SpinningCircleWhite />
-                    </div>
-                  )}
-                  {popup === "saved" && (
-                    <div className="flex items-center absolute top-[-20px] left-[calc(50%-36px)] text-slate-700 font-normal z-10">
-                      <FontAwesomeIcon icon={faCircleCheck} className="text-green-500 mr-1.5" />
-                      <div className="leading-none">saved</div>
-                    </div>
-                  )}
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
 
-        {/*---Cash Out Settings---*/}
-        <div>
-          {/*---title---*/}
-          <div className="mt-6 flex items-center relative">
-            <div className="hidden xs:block w-[20px] h-[20px] rounded-full py-2 bg-orange-500 flex-none"></div>
-            <div className="hidden xs:block absolute w-[2px] h-[400px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-2xl font-bold text-blue-700">Cash Out Settings</div>
-          </div>
-          {/*---form---*/}
-          <form className="mt-2 xs:ml-[28px] sm:ml-[41px] appSettingsForm">
-            {/*---cex---*/}
+          <div className="ml-1 mt-8 font-bold text-blue-600">CASH OUT SETTINGS</div>
+
+          {/*---cex---*/}
+          <div className="fieldContainer border-b-transparent">
             <div>
-              <div className="labelfont">Your Cryptocurrency Exchange</div>
+              <label className="labelfont">Cryptocurrency Exchange</label>
+            </div>
+            <div>
               <select
-                className="inputfont bg-white w-full"
+                className="selectfont"
                 onChange={(e) => {
                   const cexTemp = e.currentTarget.value;
                   setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
@@ -714,27 +672,30 @@ const Settings = ({
                 ))}
               </select>
             </div>
-            {/*---cexEvmAddress---*/}
-            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "hidden" : ""}`}>
-              <div className="labelfont">
-                Your Exchange's USDC deposit address on the Polygon network (
-                <span className="link" onClick={() => setDepositAddressModal(true)}>
-                  instructions
-                </span>
-                )
-              </div>
-              <textarea
-                className="w-full inputfont break-all text-wrap"
-                onChange={(e: any) => {
-                  setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
-                  setSavingState("savechanges");
-                }}
-                value={cashoutSettingsState.cexEvmAddress}
-                autoComplete="none"
-              ></textarea>
+          </div>
+
+          {/*---cexEvmAddress---*/}
+          <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "hidden" : ""}`}>
+            <div className="labelfont">
+              Your Exchange's USDC deposit address on the Polygon network (
+              <span className="link" onClick={() => setDepositAddressModal(true)}>
+                instructions
+              </span>
+              )
             </div>
-            {/*---cexApiKey---*/}
-            {/* <div className="mt-3 text-lg xs:text-sm font-bold leading-tight xs:leading-tight">
+            <textarea
+              className="w-full inputfont break-all text-wrap"
+              onChange={(e: any) => {
+                setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
+                setSavingState("savechanges");
+              }}
+              value={cashoutSettingsState.cexEvmAddress}
+              autoComplete="none"
+            ></textarea>
+          </div>
+
+          {/*---cexApiKey---*/}
+          {/* <div className="mt-3 text-lg xs:text-sm font-bold leading-tight xs:leading-tight">
                     Your Exchange's API Key{" "}
                     <span className="link" onClick={() => setApiModal(true)}>
                       instructions
@@ -751,8 +712,9 @@ const Settings = ({
                     defaultValue={cashoutSettingsState.cexSecretKey}
                     className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg xs:text-base text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
                   ></input> */}
-            {/*---cexSecretKey---*/}
-            {/* <div className="mt-3 text-lg xs:text-sm font-bold leading-tight xs:leading-tight">
+
+          {/*---cexSecretKey---*/}
+          {/* <div className="mt-3 text-lg xs:text-sm font-bold leading-tight xs:leading-tight">
                     Your Exchange's Key{" "}
                     <span className="link" onClick={() => setApiModal(true)}>
                       instructions
@@ -770,45 +732,12 @@ const Settings = ({
                     className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg xs:text-base text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
                   ></input> */}
 
-            {/*---save button, form padding is 4 ---*/}
-            <div className="pt-8 pb-4 flex justify-center">
-              <button
-                className={`${
-                  savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
-                } text-lg xs:text-base font-bold w-[200px] xs:w-[160px] h-[56px] xs:h-[44px] rounded-full text-white`}
-                onClick={saveSettings}
-              >
-                {savingState === "saved" && <div>Saved</div>}
-                {savingState === "savechanges" && <div>Save Changes</div>}
-                {savingState === "saving" && (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinningCircleWhite />
-                  </div>
-                )}
-                {popup === "saved" && (
-                  <div className="flex items-center absolute top-[-24px] left-[calc(50%-36px)] text-slate-700 font-normal z-10">
-                    <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" /> saved
-                  </div>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div className="ml-1 mt-8 font-bold text-blue-600">ACCOUNT SETTINGS</div>
 
-        {/*---Account Settings---*/}
-        <div>
-          {/*---title---*/}
-          <div className="mt-6 flex items-center relative">
-            <div className="hidden xs:block w-[20px] h-[20px] rounded-full text-center py-2 bg-orange-500 flex-none z-1"></div>
-            <div className="hidden xs:block absolute w-[2px] h-[600px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-2xl font-bold text-blue-700">Account Settings</div>
-          </div>
-          {/*---form---*/}
-          <form className="mt-2 xs:ml-[28px] sm:ml-[41px] appSettingsForm">
-            {/*---EVM Address---*/}
-
+          {/*---EVM Address---*/}
+          <div className="fieldContainer">
             <label className="labelfont">My EVM Address</label>
-            <div className="px-1 inputfont">
+            <div className="inputfont">
               <div className="break-all">
                 {paymentSettingsState.merchantEvmAddress}
                 <div className="ml-2 inline-block align-middle pb-0.5">
@@ -816,29 +745,38 @@ const Settings = ({
                 </div>
               </div>
             </div>
-            {/*---email---*/}
-            <label className="mt-2 labelfont">Email</label>
+          </div>
+
+          {/*---email---*/}
+          <div className="fieldContainer">
+            <label className="labelfont">Email</label>
             <input
-              className="px-1 inputfont"
+              className="inputfont"
               onChange={(e: any) => {
                 setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value });
                 setSavingState("savechanges");
               }}
               value={paymentSettingsState.merchantEmail}
             ></input>
-            {/*---employee password---*/}
-            <label className="mt-2 labelfont">Employee Password</label>
+          </div>
+
+          {/*---employee password---*/}
+          <div className="fieldContainer">
+            <label className="labelfont">Employee Password</label>
             <input
-              className={`px-1 inputfont ${paymentSettingsState.employeePass ? "" : "border border-gray-300"}`}
+              className={`inputfont placeholder:font-normal placeholder:italic`}
               onChange={(e: any) => {
                 setPaymentSettingsState({ ...paymentSettingsState, employeePass: e.currentTarget.value });
                 setSavingState("savechanges");
               }}
               value={paymentSettingsState.employeePass}
+              placeholder="empty"
             ></input>
+          </div>
 
-            {/*---merchantGoogleId---*/}
-            <div className="mt-2 flex relative">
+          {/*---merchantGoogleId---*/}
+          <div className="fieldContainer border-b-transparent">
+            <div className="flex relative">
               <div className="group cursor-pointer">
                 <label className="labelfont">Google Place ID</label>
                 <FontAwesomeIcon icon={faCircleInfo} className="ml-1.5 xs:text-sm text-gray-300" />
@@ -849,46 +787,44 @@ const Settings = ({
               </div>
             </div>
             <input
-              className={`px-1 inputfont placeholder:text-gray-400 ${paymentSettingsState.merchantGoogleId ? "" : "border border-gray-300"}`}
+              className={`inputfont placeholder:font-normal placeholder:italic`}
               onChange={(e: any) => {
                 setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value });
                 setSavingState("savechanges");
               }}
               value={paymentSettingsState.merchantGoogleId}
+              placeholder="empty"
             ></input>
-            {/*---save button, form padding is 4---*/}
-            <div className="pt-8 pb-4 flex justify-center items-center">
-              <button
-                className={`${
-                  savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
-                } text-lg xs:text-base font-bold w-[200px] xs:w-[160px] h-[56px] xs:h-[44px] rounded-full text-white`}
-                onClick={saveSettings}
-              >
-                {savingState === "saved" && <div>Saved</div>}
-                {savingState === "savechanges" && <div>Save Changes</div>}
-                {savingState === "saving" && (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinningCircleWhite />
-                  </div>
-                )}
-                {popup === "saved" && (
-                  <div className="flex items-center absolute top-[-24px] left-[calc(50%-36px)] text-slate-700 font-normal z-10">
-                    <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" /> saved
-                  </div>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+
+          {/*---save button---*/}
+          <div className="pt-8 pb-4 flex justify-center items-center">
+            <button
+              className={`${
+                savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
+              } text-lg xs:text-base font-bold w-[200px] xs:w-[160px] h-[56px] xs:h-[44px] rounded-full text-white`}
+              onClick={saveSettings}
+            >
+              {savingState === "saved" && <div>Saved</div>}
+              {savingState === "savechanges" && <div>Save Changes</div>}
+              {savingState === "saving" && (
+                <div className="w-full flex justify-center items-center">
+                  <SpinningCircleWhite />
+                </div>
+              )}
+              {popup === "saved" && (
+                <div className="flex items-center absolute top-[-24px] left-[calc(50%-36px)] text-slate-700 font-normal z-10">
+                  <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" /> saved
+                </div>
+              )}
+            </button>
+          </div>
+        </form>
 
         {/*---Sign Out---*/}
         <div>
           {/*---title---*/}
-          <div className="mt-10 flex items-center relative">
-            <div className="hidden xs:block w-[20px] h-[20px] rounded-full text-center py-2 bg-orange-500 text-white font-bold z-1"></div>
-            <div className="hidden xs:block absolute w-[2px] h-[500px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-extrabold text-blue-700">Sign Out</div>
-          </div>
+          <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-extrabold text-blue-700">Sign Out</div>
           {/*---button---*/}
           <div className="w-full flex justify-center">
             <button

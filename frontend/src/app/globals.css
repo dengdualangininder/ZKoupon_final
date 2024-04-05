@@ -145,15 +145,15 @@
   }
 
   .labelfont {
-    @apply text-lg xs:text-sm text-gray-400 font-semibold leading-snug;
+    @apply ml-1 text-lg xs:text-sm text-gray-400 font-medium leading-none;
   }
 
   .inputfont {
-    @apply text-lg xs:text-base py-1 font-bold text-gray-800 rounded-md border border-transparent outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply pl-1 text-lg xs:text-base font-medium text-gray-800 rounded-md border border-transparent outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .selectfont {
-    @apply text-lg xs:text-base py-1.5 font-bold text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply text-lg xs:text-base py-[1px] font-medium text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .loginbutton {
@@ -206,11 +206,15 @@
   }
 
   .appSettingsForm {
-    @apply flex-none flex flex-col px-3 xs:px-4 py-4 w-full xs:w-[420px] md:w-[356px] lg:w-[360px] border border-gray-500 rounded-xl;
+    @apply flex-none flex flex-col px-3 xs:px-4 py-4 w-full xs:w-[420px] md:w-[356px] lg:w-[360px];
   }
 
   .appInstructionsBody {
     @apply text-lg leading-snug xs:text-sm xs:leading-snug border border-gray-300 rounded-xl p-4 text-gray-600 bg-white;
+  }
+
+  .fieldContainer {
+    @apply flex flex-col py-2 border-b;
   }
 
   .appButton {
