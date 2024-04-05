@@ -6,16 +6,24 @@
   html {
     -webkit-tap-highlight-color: transparent;
   }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
+
   select:-webkit-autofill,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active,
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px rgb(255, 255, 255) inset !important;
+  }
+
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 0px 4px;
   }
 }
 
@@ -149,11 +157,11 @@
   }
 
   .inputfont {
-    @apply pl-1 text-lg xs:text-base font-medium text-gray-800 rounded-md border border-transparent outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply pl-1 text-xl xs:text-base py-[2px] font-medium text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .selectfont {
-    @apply text-lg xs:text-base py-[1px] font-medium text-gray-800 bg-white rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply text-xl xs:text-base py-[1px] font-medium text-gray-800 bg-white rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .loginbutton {
