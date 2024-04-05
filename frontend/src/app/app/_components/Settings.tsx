@@ -272,6 +272,11 @@ const Settings = ({
     }
   };
 
+  const settingsMenu = [
+    { name: "My QR Code", page: "myQr" },
+    { name: "FAQ", page: "faq" },
+  ];
+
   console.log("last render, paymentSettingsState:", paymentSettingsState);
   console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
@@ -350,40 +355,36 @@ const Settings = ({
       {/*---Page Title---*/}
       <div className="hidden md:block w-full font-extrabold text-2xl sm:text-3xl text-blue-700 text-center">Settings</div>
       {/*---Page Body---*/}
-      <div className="md:mt-2 mx-2 sm:mx-6">
-        {/*---Instructions---*/}
-        <Instructions
-          paymentSettingsState={paymentSettingsState}
-          cashoutSettingsState={cashoutSettingsState}
-          setFigmaModal={setFigmaModal}
-          downloadPlacardPdf={downloadPlacardPdf}
-          downloadQrSvg={downloadQrSvg}
-          downloadQrPng={downloadQrPng}
-          downloadPlacardFigma={downloadPlacardFigma}
-          setRefundModal={setRefundModal}
-          setExchangeModal={setExchangeModal}
-        />
 
+      <div className="md:mt-2 mx-2 sm:mx-6">
+        {/*---top options---*/}
+        <div className="flex justify-evenly">
+          {settingsMenu.map((i) => (
+            <div className="flex flex-col items-center">
+              <div className="w-[60px] h-[60px] border border-gray-800 rounded-md flex justify-center items-center"></div>
+              <div className="mt-0.5 leading-snug text-center">{i.name}</div>
+            </div>
+          ))}
+        </div>
         {/*---Payment Settings---*/}
         <div>
           {/*---title---*/}
-          <div className="mt-10 flex items-center relative">
+          <div className="mt-6 flex items-center relative">
             <div className="hidden xs:block w-[20px] h-[20px] rounded-full bg-orange-500 flex-none"></div>
             <div className="hidden xs:block absolute w-[2px] h-[1000px] bg-orange-500 top-[12px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-6 text-3xl xs:text-2xl font-bold text-blue-700">Payment Settings</div>
+            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-6 text-2xl font-bold text-blue-700">Payment Settings</div>
           </div>
           {/*---form + placard/UI container---*/}
           <div className="xs:ml-[28px] sm:ml-[41px] flex flex-col lg:flex-row">
             {/*---form---*/}
-            <form className="appSettingsForm">
+            <form className="mt-2 appSettingsForm">
               {/*---merchantName---*/}
               <div className="flex flex-col">
-                <label className="labelfont">Name of Your Business</label>
+                <label className="labelfont">Business Name</label>
                 <input
-                  className="inputfont"
+                  className="px-1 inputfont"
                   onChange={(e: any) => {
                     setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value });
-                    // createURL({ ...paymentSettingsState, merchantName: e.target.value }); // this is the new value
                     setSavingState("savechanges");
                   }}
                   value={paymentSettingsState.merchantName}
@@ -391,106 +392,84 @@ const Settings = ({
               </div>
 
               {/*---merchantCountry & merchantCurrency---*/}
-              <div className="flex flex-col">
-                <label className="labelfont">Your Local Currency</label>
-                <select
-                  onChange={(e) => {
-                    const merchantCountryTemp = e.target.value.split(" (")[0];
-                    const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
-                    const cexTemp = countryData[merchantCountryTemp].CEXes[0];
-                    setPaymentSettingsState({
-                      ...paymentSettingsState,
-                      merchantCountry: merchantCountryTemp,
-                      merchantCurrency: merchantCurrencyTemp,
-                    });
-                    setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" });
-                    setSavingState("savechanges");
-                  }}
-                  id="accountCountryCurrency"
-                  className="md:w-[200px] inputfont bg-white"
-                >
-                  {activeCountries.map((i, index) => (
-                    <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
-                      {i}
-                    </option>
-                  ))}
-                </select>
+              <div className="mt-2 flex flex-col">
+                <div>
+                  <label className="labelfont">Country / Currency</label>
+                </div>
+                <div>
+                  <select
+                    className="selectfont"
+                    onChange={(e) => {
+                      const merchantCountryTemp = e.target.value.split(" (")[0];
+                      const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
+                      const cexTemp = countryData[merchantCountryTemp].CEXes[0];
+                      setPaymentSettingsState({
+                        ...paymentSettingsState,
+                        merchantCountry: merchantCountryTemp,
+                        merchantCurrency: merchantCurrencyTemp,
+                      });
+                      setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
+                      setSavingState("savechanges");
+                    }}
+                  >
+                    {activeCountries.map((i, index) => (
+                      <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
+                        {i}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/*---merchantPaymentType---*/}
-              <div className="flex flex-col relative">
-                <div className="labelfont">
-                  <span className="group cursor-pointer">
-                    <span>
-                      Payment Type <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
-                    </span>
-                    <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] w-full px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                      In-person payments are suitable for physical stores. Online payments are suitable for online stores.
+              <div className="mt-2 flex flex-col">
+                <div className="flex">
+                  <div className="group cursor-pointer relative">
+                    <label className="labelfont">Payment Type</label>
+                    <FontAwesomeIcon icon={faCircleInfo} className="ml-1.5 xs:text-sm text-gray-300" />
+                    <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] w-[236px] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
+                      Select "In-person" for physical stores and "online" for online stores
                     </div>
-                  </span>
+                  </div>
                 </div>
-                <select
-                  id="accountMerchantPaymentType"
-                  className="w-full md:w-[200px] inputfont bg-white"
-                  onChange={(e) => {
-                    let merchantPaymentTypeTemp = e.target.value === "In-person payments" ? "inperson" : "online";
-                    if (merchantPaymentTypeTemp === "inperson") {
-                      setPaymentSettingsState({
-                        ...paymentSettingsState,
-                        merchantPaymentType: merchantPaymentTypeTemp,
-                        merchantBusinessType: "",
-                        merchantWebsite: "",
-                        merchantFields: [],
-                      });
-                    } else if (merchantPaymentTypeTemp === "online") {
-                      setPaymentSettingsState({
-                        ...paymentSettingsState,
-                        merchantPaymentType: merchantPaymentTypeTemp,
-                        merchantBusinessType: "onlinephysical",
-                        merchantWebsite: "",
-                        merchantFields: ["email", "item", "shipping"],
-                      });
-                    }
-                    setSavingState("savechanges");
-                  }}
-                >
-                  <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person payments</option>
-                  <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online payments</option>
-                </select>
-              </div>
-
-              {/*---merchantGoogleId---*/}
-              <div className="flex flex-col">
-                <div className="labelfont relative">
-                  <span className="group cursor-pointer">
-                    <span>
-                      (optional) Your Google Place ID <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
-                    </span>
-                    <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
-                      If you would like to advertise your business on www.stablecoinmap.com, please enter your business's Google Place ID. If you don't have one, enter your "lat,
-                      lng" coordinates (must include 6 digits after decimal). Find the coordinates by dropping a pin on Google Map. Stablecoin Map is a community-driven database of
-                      businesses that accept stablecoin payments.
-                    </div>
-                  </span>
+                <div>
+                  <select
+                    className="selectfont"
+                    onChange={(e) => {
+                      let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
+                      if (merchantPaymentTypeTemp === "inperson") {
+                        setPaymentSettingsState({
+                          ...paymentSettingsState,
+                          merchantPaymentType: merchantPaymentTypeTemp,
+                          merchantBusinessType: "",
+                          merchantWebsite: "",
+                          merchantFields: [],
+                        });
+                      } else if (merchantPaymentTypeTemp === "online") {
+                        setPaymentSettingsState({
+                          ...paymentSettingsState,
+                          merchantPaymentType: merchantPaymentTypeTemp,
+                          merchantBusinessType: "onlinephysical",
+                          merchantWebsite: "",
+                          merchantFields: ["email", "item", "shipping"],
+                        });
+                      }
+                      setSavingState("savechanges");
+                    }}
+                  >
+                    <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
+                    <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online</option>
+                  </select>
                 </div>
-                <input
-                  onChange={(e: any) => {
-                    setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value });
-                    setSavingState("savechanges");
-                  }}
-                  id="accountStablecoinmap"
-                  defaultValue={paymentSettingsState.merchantGoogleId}
-                  className="inputfont"
-                ></input>
               </div>
 
               {/*---2% off---*/}
               {paymentSettingsState.merchantPaymentType === "inperson" && (
-                <div className="mt-6 mb-4 xs:mt-4 xs:mb-2 flex items-center xs:justify-start relative">
+                <div className="mt-2 flex items-center xs:justify-start relative">
                   <div className="w-[218px] xs:w-auto md:w-[172px] text-lg xs:text-sm font-bold leading-tight">
                     <span className="group cursor-pointer">
                       <span className="labelfont">
-                        Give Customers 2% Instant Cashback? <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
+                        2% Instant Cashback? <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:text-sm text-gray-300" />
                       </span>
                       <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
                         Because credit cards charge businesses ~3% and give ~1% to the customer, customers have few incentives to use other payment methods. Therefore, we are
@@ -679,8 +658,9 @@ const Settings = ({
                           </div> */}
                 </div>
               </div>
-              {/*--- save button ---*/}
-              <div className="min-h-[96px] mt-4 mb-7 lg:mt-0 lg:mb-0 lg:h-full flex justify-center items-center">
+
+              {/*--- save button, form padding is 4---*/}
+              <div className="pt-8 pb-4 flex justify-center items-center">
                 <button
                   className={`${
                     savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
@@ -703,103 +683,19 @@ const Settings = ({
                 </button>
               </div>
             </form>
-
-            {/*---placard/UI---*/}
-            <div className="mt-4 sm:mt-0 lg:ml-2 w-full flex flex-col sm:flex-row lg:justify-center items-center">
-              {/*---PLACARD---*/}
-              <div className="flex flex-col items-center">
-                {/*---header---*/}
-                <div className="text-lg text-gray-700 font-bold">Your QR code placard</div>
-                {/*---placard svg---*/}
-                <div className="mt-1 relative">
-                  <div className="w-[210px] h-[308px]">
-                    <Image src="/placardCoinbaseUSDCCashback.svg" alt="placard" fill />
-                  </div>
-                  <QRCodeSVG
-                    id="qrsvg"
-                    xmlns="http://www.w3.org/2000/svg"
-                    size={104}
-                    bgColor={"#ffffff"}
-                    fgColor={"#000000"}
-                    level={"L"}
-                    value={url}
-                    className="absolute top-[100px] left-[53px]"
-                  />
-                </div>
-                {/*---download button or payment link---*/}
-                {paymentSettingsState.merchantPaymentType == "inperson" && (
-                  <div className="flex flex-col items-center">
-                    <button
-                      className="mt-0 w-[200px] h-[56px] xs:h-[44px] text-lg xs:text-base font-bold text-white bg-blue-500 lg:hover:bg-blue-600 rounded-full"
-                      onClick={downloadPlacardPdf}
-                    >
-                      Download
-                    </button>
-                    <div className="mt-2 link" onClick={() => setFigmaModal(true)}>
-                      Customize your placard
-                    </div>
-                  </div>
-                )}
-                {paymentSettingsState.merchantPaymentType == "online" && (
-                  <button
-                    id="accountcopylink"
-                    className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"} mt-1 w-full relative`}
-                    onClick={onClickPaymentLink}
-                  >
-                    <div className="w-full bg-blue-500 py-2 rounded-md text-white font-bold text-center hover:bg-blue-600 cursor-pointer">
-                      <FontAwesomeIcon icon={faCopy} className="mr-1" /> Copy Payment Link
-                    </div>
-                    {popup === "copyLinkButton" && (
-                      <div className="absolute bottom-[48px] left-[calc(50%-60px)] w-[120px] bg-white px-2 py-1 rounded-lg">
-                        <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" /> link copied
-                      </div>
-                    )}
-                  </button>
-                )}
-              </div>
-              {/*---arrows---*/}
-              <div className="my-4 md:my-0 sm:h-[280px] flex items-center text-slate-700">
-                <div className="px-1 flex flex-row-reverse sm:flex-col items-center">
-                  {paymentSettingsState.merchantPaymentType === "inperson" && <div className="w-[72px] text-sm text-center font-bold">customer scans QR code</div>}
-                  {paymentSettingsState.merchantPaymentType === "online" && (
-                    <div className="w-[150px] sm:w-[72px] text-sm text-center font-bold leading-tight sm:leading-normal">
-                      <p>customer clicks link</p>
-                      <p>or scans QR code</p>
-                    </div>
-                  )}
-                  <div className="hidden sm:block">
-                    <FontAwesomeIcon icon={faArrowRightLong} className="text-3xl" />
-                  </div>
-                  <div className="sm:hidden">
-                    <FontAwesomeIcon icon={faArrowDownLong} className="text-3xl" />
-                  </div>
-                </div>
-              </div>
-              {/*---UI---*/}
-              <div className="sm:mt-4 lg:mt-0 flex flex-col items-center">
-                <MockUI
-                  merchantName={paymentSettingsState.merchantName}
-                  merchantCurrency={paymentSettingsState.merchantCurrency}
-                  merchantPaymentType={paymentSettingsState.merchantPaymentType}
-                  merchantBusinessType={paymentSettingsState.merchantBusinessType}
-                  merchantWebsite={paymentSettingsState.merchantWebsite}
-                  merchantFields={paymentSettingsState.merchantFields}
-                />
-              </div>
-            </div>
           </div>
         </div>
 
         {/*---Cash Out Settings---*/}
         <div>
           {/*---title---*/}
-          <div className="mt-10 flex items-center relative">
+          <div className="mt-6 flex items-center relative">
             <div className="hidden xs:block w-[20px] h-[20px] rounded-full py-2 bg-orange-500 flex-none"></div>
             <div className="hidden xs:block absolute w-[2px] h-[400px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-bold text-blue-700">Cash Out Settings</div>
+            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-2xl font-bold text-blue-700">Cash Out Settings</div>
           </div>
           {/*---form---*/}
-          <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
+          <form className="mt-2 xs:ml-[28px] sm:ml-[41px] appSettingsForm">
             {/*---cex---*/}
             <div>
               <div className="labelfont">Your Cryptocurrency Exchange</div>
@@ -873,8 +769,9 @@ const Settings = ({
                     autoComplete="none"
                     className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg xs:text-base text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
                   ></input> */}
-            {/*---save button---*/}
-            <div className="my-8 flex justify-center">
+
+            {/*---save button, form padding is 4 ---*/}
+            <div className="pt-8 pb-4 flex justify-center">
               <button
                 className={`${
                   savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
@@ -901,26 +798,28 @@ const Settings = ({
         {/*---Account Settings---*/}
         <div>
           {/*---title---*/}
-          <div className="mt-10 flex items-center relative">
+          <div className="mt-6 flex items-center relative">
             <div className="hidden xs:block w-[20px] h-[20px] rounded-full text-center py-2 bg-orange-500 flex-none z-1"></div>
             <div className="hidden xs:block absolute w-[2px] h-[600px] bg-orange-500 bottom-[10px] left-[9px]"></div>
-            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-3xl xs:text-2xl font-bold text-blue-700">Account Settings</div>
+            <div className="w-full text-center xs:text-start xs:ml-2 sm:ml-5 text-2xl font-bold text-blue-700">Account Settings</div>
           </div>
           {/*---form---*/}
-          <form className="xs:ml-[28px] sm:ml-[41px] appSettingsForm">
+          <form className="mt-2 xs:ml-[28px] sm:ml-[41px] appSettingsForm">
+            {/*---EVM Address---*/}
+
             <label className="labelfont">My EVM Address</label>
-            <div className="text-lg font-bold xs:text-base py-0.5 px-1 border-transparent active:bg-gray-200 lg:hover:border-gray-300 lg:active:bg-gray-200 cursor-pointer rounded-md">
+            <div className="px-1 inputfont">
               <div className="break-all">
                 {paymentSettingsState.merchantEvmAddress}
                 <div className="ml-2 inline-block align-middle pb-0.5">
-                  <Image src="/copySvg.svg" alt="copy icon" height={24} width={24} />
+                  <Image src="/copySvg.svg" alt="copy icon" height={20} width={20} />
                 </div>
               </div>
             </div>
             {/*---email---*/}
-            <label className="labelfont">Email</label>
+            <label className="mt-2 labelfont">Email</label>
             <input
-              className="inputfont"
+              className="px-1 inputfont"
               onChange={(e: any) => {
                 setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value });
                 setSavingState("savechanges");
@@ -928,17 +827,37 @@ const Settings = ({
               value={paymentSettingsState.merchantEmail}
             ></input>
             {/*---employee password---*/}
-            <label className="labelfont">Employee Password</label>
+            <label className="mt-2 labelfont">Employee Password</label>
             <input
-              className="inputfont"
+              className={`px-1 inputfont ${paymentSettingsState.employeePass ? "" : "border border-gray-300"}`}
               onChange={(e: any) => {
                 setPaymentSettingsState({ ...paymentSettingsState, employeePass: e.currentTarget.value });
                 setSavingState("savechanges");
               }}
               value={paymentSettingsState.employeePass}
             ></input>
-            {/*---save button---*/}
-            <div className="my-8 flex justify-center items-center">
+
+            {/*---merchantGoogleId---*/}
+            <div className="mt-2 flex relative">
+              <div className="group cursor-pointer">
+                <label className="labelfont">Google Place ID</label>
+                <FontAwesomeIcon icon={faCircleInfo} className="ml-1.5 xs:text-sm text-gray-300" />
+                <div className="invisible group-hover:visible absolute left-0 bottom-[calc(100%+8px)] w-full px-3 py-2 text-lg xs:text-sm leading-tight font-normal bg-gray-100 border border-slate-600 text-slate-700 rounded-lg pointer-events-none z-[1]">
+                  If you add your Google Place ID, we will advertise your business to blockchain users by adding your business to www.stablecoinmap.com, which is a community-driven
+                  database of places that accept stablecoin payments.
+                </div>
+              </div>
+            </div>
+            <input
+              className={`px-1 inputfont placeholder:text-gray-400 ${paymentSettingsState.merchantGoogleId ? "" : "border border-gray-300"}`}
+              onChange={(e: any) => {
+                setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value });
+                setSavingState("savechanges");
+              }}
+              value={paymentSettingsState.merchantGoogleId}
+            ></input>
+            {/*---save button, form padding is 4---*/}
+            <div className="pt-8 pb-4 flex justify-center items-center">
               <button
                 className={`${
                   savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"

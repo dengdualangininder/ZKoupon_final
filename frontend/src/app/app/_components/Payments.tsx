@@ -305,11 +305,13 @@ const Payments = ({
                     >
                       {/*---Time---*/}
                       <td className=" whitespace-nowrap">
-                        <div className="">
+                        <div className="relative">
                           <span className="text-3xl sm:portrait:text-5xl md:landscape:text-5xl">{getLocalTime(txn.date).time}</span>
                           <span className="ml-1 font-medium text-sm sm:portrait:text-xl md:landscape:text-xl">{getLocalTime(txn.date).ampm}</span>
+                          <div className="absolute top-[calc(100%)] text-sm sm:portrait:text-xl md:landscape:text-xl leading-none font-medium text-gray-400">
+                            {getLocalDateWords(txn.date)}
+                          </div>
                         </div>
-                        <div className="ml-0.5 text-sm sm:portrait:text-xl md:landscape:text-xl leading-none font-medium text-gray-400">{getLocalDateWords(txn.date)}</div>
                       </td>
                       {/*---Customer---*/}
                       <td className=" text-center">
@@ -347,13 +349,19 @@ const Payments = ({
                       )}
                       {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>}
                       {/*---currencyAmount---*/}
-                      <td
-                        className={`${
-                          paymentSettingsState.merchantPaymentType === "inperson" ? "text-3xl sm:portrait:text-5xl md:landscape:text-5xl" : "text-xl"
-                        } pr-2 text-right relative`}
-                      >
-                        {txn.currencyAmount}
-                        <div className={`${txn.refundNote && !txn.refund ? "" : "hidden"} absolute bottom-[6px] left-0 text-xs text-gray-400`}>To Be Refunded</div>
+                      <td className="pr-2">
+                        <div className="flex justify-end relative">
+                          <span className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "text-3xl sm:portrait:text-5xl md:landscape:text-5xl" : "text-xl"}`}>
+                            {txn.currencyAmount}
+                          </span>
+                          <div
+                            className={`${
+                              txn.refundNote && !txn.refund ? "" : "hidden"
+                            } absolute top-[calc(100%)] pr-0.5 right-0 text-sm font-medium leading-none text-gray-400 whitespace-nowrap`}
+                          >
+                            To Be Refunded
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -372,28 +380,31 @@ const Payments = ({
           </div>
         )}
 
-        {/*--- tools & navigation , 74pw-full x height---*/}
+        {/*--- more & navigation , 74pw-full x height---*/}
         <div className="w-full h-[74px] sm:portrait:h-[120px] md:landscape:h-[120px] flex items-center">
           <div className="w-full h-[44px] flex items-center justify-between">
-            {/*--- tools ---*/}
-            <div onClick={() => setShowToolsModal(true)} className="w-[44px] h-full border border-gray-300 rounded-md relative">
-              <div className="text-lg text-center font-bold">...</div>
+            {/*--- more ---*/}
+            <div
+              onClick={() => setShowToolsModal(true)}
+              className="pt-0.5 w-[44px] h-full border border-gray-300 rounded-md flex justify-center items-ceneter text-lg font-bold cursor-pointer lg:hover:bg-gray-100 active:opacity-40 select-none"
+            >
+              ...
             </div>
             {/*--- navigation ---*/}
             <div className="h-full flex items-center justify-center">
               <div
-                className="text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer"
+                className="pb-1 text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer select-none"
                 onClick={() => (page === 1 ? "" : setPage(page - 1))}
               >
-                <div className="pb-0.5">{"\u2039"}</div>
+                {"\u2039"}
               </div>
               <div className="text-xl sm:portrait:text-3xl md:landscape:text-3xl w-[20px] text-center select-none mx-2">{page}</div>
 
               <div
-                className="text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer"
+                className="pb-1 text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer select-none"
                 onClick={() => (page == maxPage ? "" : setPage(page + 1))}
               >
-                <div className="pb-0.5">{"\u203A"}</div>
+                {"\u203A"}
               </div>
             </div>
             {/*--- qr code ---*/}
@@ -418,13 +429,6 @@ const Payments = ({
       {detailsModal && (
         <div className="">
           <div className="px-8 flex flex-col justify-center space-y-6 w-[348px] h-[440px] bg-white rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-50">
-            {/*---CLOSE BUTTON---*/}
-            {/* <button
-              onClick={() => setDetailsModal(false)}
-              className="absolute top-[calc(100%-28px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] text-3xl rounded-full h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 lg:hover:bg-red-500 active:bg-red-300"
-            >
-              <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-            </button> */}
             {/*---content---*/}
             <div className="flex flex-col text-lg lg:text-base space-y-1 font-medium">
               <p>
@@ -497,11 +501,17 @@ const Payments = ({
                 </button>
               </div>
             )}
+            {/*---CLOSE BUTTON---*/}
+            {/* <button
+              onClick={() => setDetailsModal(false)}
+              className="absolute top-[calc(100%-28px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] text-3xl rounded-full h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 lg:hover:bg-red-500 active:bg-red-300"
+            >
+              <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
+            </button> */}
           </div>
           <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
-
       {downloadModal && (
         <div>
           <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
@@ -547,7 +557,6 @@ const Payments = ({
           <div className="modalBlackout" onClick={() => setDownloadModal(false)}></div>
         </div>
       )}
-
       {refundAllModal && (
         <div>
           <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
@@ -563,7 +572,6 @@ const Payments = ({
           <div className="modalBlackout" onClick={() => setRefundAllModal(false)}></div>
         </div>
       )}
-
       {showToolsModal && (
         <div>
           <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center justify-evenly rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
@@ -590,7 +598,6 @@ const Payments = ({
           <div className="modalBlackout" onClick={() => setShowToolsModal(false)}></div>
         </div>
       )}
-
       {showQr && (
         <div onClick={() => setShowQr(false)}>
           <div className="fixed inset-0 z-10 bg-black"></div>
@@ -612,7 +619,6 @@ const Payments = ({
           </div>
         </div>
       )}
-
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );

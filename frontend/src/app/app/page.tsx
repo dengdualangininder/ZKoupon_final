@@ -16,6 +16,8 @@ import Payments from "./_components/Payments";
 import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import PWA from "./_components/PWA";
+import Intro from "./_components/Intro";
+import Instructions from "./_components/Instructions";
 import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 // constants
 import { abb2full, countryData } from "@/utils/constants";
@@ -37,7 +39,7 @@ const User = () => {
   const [cashoutSettingsState, setCashoutSettingsState] = useState({});
   const [transactionsState, setTransactionsState] = useState([]);
   const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
-  const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "app"
+  const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "intro" | "app"
   const [isGettingDoc, setIsGettingDoc] = useState(true);
   const [reload, setReload] = useState(true);
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
@@ -87,6 +89,8 @@ const User = () => {
   // });
 
   useEffect(() => {
+    // setPage("intro");
+    // return;
     console.log("/app, page.tsx, useEffect run once");
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
@@ -121,21 +125,11 @@ const User = () => {
       // return;
     }
 
-    // query localStorage to determine if to proceed or show Login component
-    const sessionIdObject = window.localStorage.getItem("openlogin_store");
-    console.log("sessionIdObject", sessionIdObject);
-    if (sessionIdObject) {
-      const sessionId = JSON.parse(sessionIdObject).sessionId;
-      if (sessionId) {
-        console.log("sessionId exists, already logged into web3Auth");
-      } else {
-        setPage("login");
-        console.log("no sessionId, page set to Login");
-        return;
-      }
-    } else {
+    // query localStorage to determine user logged into web3Auth
+    const sessionIdObject: any = window.localStorage.getItem("openlogin_store");
+    if (!sessionIdObject || !JSON.parse(sessionIdObject).sessionId) {
+      console.log("no web3Auth sessionId, page set to Login");
       setPage("login");
-      console.log("no sessionId, page set to Login");
       return;
     }
 
@@ -167,17 +161,17 @@ const User = () => {
   const verifyAndGetData = async () => {
     console.log("/app, verifyAndGetData() run once");
 
-    // get idToken
+    // get idToken from web3Auth
     try {
       const userInfo = await web3Auth?.getUserInfo();
       var idTokenTemp = userInfo?.idToken;
       console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
     } catch (e) {
-      console.log("cannot get web3Auth.userInfo, page set to Login");
+      console.log("error: could not get web3Auth.userInfo, page set to Login");
       setPage("login");
     }
 
-    // get publicKey
+    // get publicKey from window
     try {
       if (!walletClient) {
         console.log("veryifyandGetData function, no walletClient");
@@ -189,17 +183,18 @@ const User = () => {
       })) as string;
       var publicKeyTemp = getPublic(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
-      console.log("Cannot get publicKey, page set to Login");
+      console.log("error: could not get publicKey, page set to Login");
       setPage("login");
       return;
     }
 
-    // get user doc (idToken and publicKey needed for verification)
+    // get user doc (idToken and publicKey will be verified)
     if (idTokenTemp && publicKeyTemp) {
       setIdToken(idTokenTemp);
       setPublicKey(publicKeyTemp);
 
       try {
+        //fetch doc
         console.log("fetching doc...");
         const res = await fetch("/api/getUserDoc", {
           method: "POST",
@@ -207,32 +202,29 @@ const User = () => {
           headers: { "content-type": "application/json" },
         });
         const data = await res.json();
-
-        if (data.status === "success") {
-          console.log("set page to App, successfully fetched doc:", data.doc);
+        // if success
+        if (data.status == "success") {
+          console.log("successfully fetched doc:", data.doc);
+          // set states
           setPaymentSettingsState(data.doc.paymentSettings);
           setCashoutSettingsState(data.doc.cashoutSettings);
           setTransactionsState(data.doc.transactions);
           setIsAdmin(true);
-          // show intro modal
-          if (data.doc.intro) {
-            setIntroModal(true);
-            setMenu("settings");
-          }
           setPage("app");
         }
-
-        if (data === "create new user") {
-          await createNewUser();
+        // if new user
+        if (data == "create new user") {
+          createNewUser();
+          setPage("intro");
         }
-
-        if (data.status === "error") {
-          console.log("/app, something in getUserDoc api failed, page set to Login");
-          setPage("login");
+        // if error
+        if (data.status == "error") {
+          console.log(data);
           await disconnectAsync();
+          setPage("login");
         }
       } catch (err) {
-        console.log("/app, verify failed, page set to Login");
+        console.log("error: api request to getUserDoc failed");
         await disconnectAsync();
         setPage("login");
       }
@@ -271,14 +263,8 @@ const User = () => {
       console.log("page set to App, new user created, doc:", docTemp);
       setPaymentSettingsState(docTemp.paymentSettings);
       setCashoutSettingsState(docTemp.cashoutSettings);
-      // show intro modal
-      if (docTemp.intro) {
-        setIntroModal(true);
-        setMenu("settings");
-      }
-      setPage("app");
     } catch (err) {
-      console.log("page set to Login, could not create new user", err);
+      console.log("page set to Login, request to create user api failed");
       setPage("login");
     }
   };
@@ -299,6 +285,21 @@ const User = () => {
       )}
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
+      {page === "intro" && <Intro isMobile={isMobile} setPage={setPage} paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />}
+      {page === "faq" && (
+        <Instructions
+          paymentSettingsState={paymentSettingsState}
+          cashoutSettingsState={cashoutSettingsState}
+          setFigmaModal={setFigmaModal}
+          downloadPlacardPdf={downloadPlacardPdf}
+          downloadQrSvg={downloadQrSvg}
+          downloadQrPng={downloadQrPng}
+          downloadPlacardFigma={downloadPlacardFigma}
+          setRefundModal={setRefundModal}
+          setExchangeModal={setExchangeModal}
+        />
+      )}
+
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
