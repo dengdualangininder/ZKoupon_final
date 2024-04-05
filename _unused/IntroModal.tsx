@@ -3,8 +3,7 @@ import React from "react";
 const IntroModal = () => {
   return (
     <div>
-      {" "}
-      {introModal && (
+      {
         <div>
           <div className="flex flex-col justify-evenly items-center w-[348px] h-[450px] bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
             <div className="w-[242px] text-xl leading-relaxed">
@@ -19,7 +18,7 @@ const IntroModal = () => {
 
             {/*---close button---*/}
             <button
-              onClick={onClickIntroModal}
+              // onClick={onClickIntroModal}
               className="w-[290px] h-[56px] xs:h-[48px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-[4px] text-white text-xl xs:text-lg font-bold tracking-wide"
             >
               CLOSE
@@ -27,7 +26,7 @@ const IntroModal = () => {
           </div>
           <div className="opacity-60 fixed inset-0 z-10 bg-black"></div>
         </div>
-      )}
+      }
     </div>
   );
 };

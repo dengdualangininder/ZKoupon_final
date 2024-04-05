@@ -354,8 +354,6 @@ const User = () => {
               cashoutSettingsState={cashoutSettingsState}
               setCashoutSettingsState={setCashoutSettingsState}
               isMobile={isMobile}
-              introModal={introModal}
-              setIntroModal={setIntroModal}
               idToken={idToken}
               publicKey={publicKey}
               exchangeModal={exchangeModal}
