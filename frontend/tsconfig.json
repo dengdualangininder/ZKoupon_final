@@ -22,6 +22,15 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/Home.jsx", "app/_utils/constants/index.js", "src/utils/components/SpinningCircleGray.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/Home.jsx",
+    "app/_utils/constants/index.js",
+    "src/utils/components/SpinningCircleGray.tsx",
+    "../_unused/Unused.tsx"
+  ],
   "exclude": ["node_modules"]
 }

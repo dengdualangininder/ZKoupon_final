@@ -7,27 +7,18 @@ import { fees } from "@/utils/constants";
 const Instructions = ({
   paymentSettingsState,
   cashoutSettingsState,
-  setFigmaModal,
-  downloadPlacardPdf,
-  downloadQrSvg,
-  downloadQrPng,
-  downloadPlacardFigma,
-  setRefundModal,
+  exchangeModal,
   setExchangeModal,
 }: {
   paymentSettingsState: any;
   cashoutSettingsState: any;
-  setFigmaModal: any;
-  downloadPlacardPdf: any;
-  downloadQrSvg: any;
-  downloadQrPng: any;
-  downloadPlacardFigma: any;
-  setRefundModal: any;
+  exchangeModal: boolean;
   setExchangeModal: any;
 }) => {
   const [expandOne, setExpandOne] = useState(false);
   const [expandTwo, setExpandTwo] = useState(false);
   const [expandThree, setExpandThree] = useState(false);
+  const [refundModal, setRefundModal] = useState(false);
 
   return (
     <div className="xs:ml-[28px] sm:ml-[41px] space-y-6 lg:w-[688px]">
@@ -84,9 +75,7 @@ const Instructions = ({
                   <div>(Optional)</div>
                   <div className="ml-2 flex">
                     <div className="mr-2">&bull;</div>
-                    <div className="link" onClick={() => setFigmaModal(true)}>
-                      Design your own QR code placard
-                    </div>
+                    <div className="link">Design your own QR code placard</div>
                   </div>
                   <div className="ml-2 flex">
                     <div className="mr-2">&bull;</div>
@@ -129,29 +118,11 @@ const Instructions = ({
                   &lt;a&gt; tag in your HTML code to create a "Flash Pay" payment button. Or, put the link on your social media profile (use URL shorteners to shorten it).
                 </div>
                 <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
-                  (Optional){" "}
-                  <span onClick={downloadPlacardPdf} className="link">
-                    Download the QR Code placard
-                  </span>{" "}
-                  (or naked QR code in{" "}
-                  <span className="link" onClick={downloadQrSvg}>
-                    SVG
-                  </span>{" "}
-                  or{" "}
-                  <span className="link" onClick={downloadQrPng}>
-                    PNG
-                  </span>{" "}
+                  (Optional) <span className="link">Download the QR Code placard</span> (or naked QR code in <span className="link">SVG</span> or <span className="link">PNG</span>{" "}
                   format) and put it on any appropriate online medium
                 </div>
                 <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
-                  (Optional) To edit your placard's size or design, read{" "}
-                  <span className="link" onClick={() => setFigmaModal(true)}>
-                    these instructions
-                  </span>{" "}
-                  and download{" "}
-                  <span className="link" onClick={downloadPlacardFigma}>
-                    this Figma file
-                  </span>
+                  (Optional) To edit your placard's size or design, read <span className="link">these instructions</span> and download <span className="link">this Figma file</span>
                 </div>
               </div>
             )}

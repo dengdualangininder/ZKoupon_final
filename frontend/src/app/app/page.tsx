@@ -49,6 +49,7 @@ const User = () => {
   const [browser, setBrowser] = useState<string>("Safari");
   const [idToken, setIdToken] = useState("");
   const [publicKey, setPublicKey] = useState("");
+  const [exchangeModal, setExchangeModal] = useState(false);
 
   // hooks
   const router = useRouter();
@@ -287,17 +288,7 @@ const User = () => {
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "intro" && <Intro isMobile={isMobile} setPage={setPage} paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />}
       {page === "faq" && (
-        <Instructions
-          paymentSettingsState={paymentSettingsState}
-          cashoutSettingsState={cashoutSettingsState}
-          setFigmaModal={setFigmaModal}
-          downloadPlacardPdf={downloadPlacardPdf}
-          downloadQrSvg={downloadQrSvg}
-          downloadQrPng={downloadQrPng}
-          downloadPlacardFigma={downloadPlacardFigma}
-          setRefundModal={setRefundModal}
-          setExchangeModal={setExchangeModal}
-        />
+        <Instructions paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} exchangeModal={exchangeModal} setExchangeModal={setExchangeModal} />
       )}
 
       {page === "app" && (
@@ -367,6 +358,8 @@ const User = () => {
               setIntroModal={setIntroModal}
               idToken={idToken}
               publicKey={publicKey}
+              exchangeModal={exchangeModal}
+              setExchangeModal={setExchangeModal}
             />
           )}
         </div>

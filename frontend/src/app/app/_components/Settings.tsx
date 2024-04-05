@@ -38,6 +38,8 @@ const Settings = ({
   setIntroModal,
   idToken,
   publicKey,
+  exchangeModal,
+  setExchangeModal,
 }: {
   paymentSettingsState: any;
   setPaymentSettingsState: any;
@@ -48,12 +50,13 @@ const Settings = ({
   setIntroModal: any;
   idToken: string;
   publicKey: string;
+  exchangeModal: boolean;
+  setExchangeModal: any;
 }) => {
   console.log("Settings, rendered once");
   const [url, setUrl] = useState("");
   // modal states
   const [figmaModal, setFigmaModal] = useState(false);
-  const [exchangeModal, setExchangeModal] = useState(false);
   const [apiModal, setApiModal] = useState(false);
   const [merchantBusinessTypeModal, setMerchantBusinessTypeModal] = useState(false);
   const [refundModal, setRefundModal] = useState(false);
