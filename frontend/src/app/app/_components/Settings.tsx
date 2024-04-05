@@ -320,7 +320,7 @@ const Settings = ({
 
         {/*---form---*/}
         <form className="">
-          <div className="ml-1 mt-8 text-base font-bold text-blue-600">PAYMENT SETTINGS</div>
+          <div className="ml-1 mt-8 text-base text-center font-bold text-blue-600">PAYMENT SETTINGS</div>
 
           {/*---merchantName---*/}
           <div className="fieldContainer">
@@ -600,7 +600,7 @@ const Settings = ({
             </div>
           </div>
 
-          <div className="ml-1 mt-8 font-bold text-blue-600">CASH OUT SETTINGS</div>
+          <div className="ml-1 mt-8 font-bold text-center text-blue-600">CASH OUT SETTINGS</div>
 
           {/*---cex---*/}
           <div className="fieldContainer border-b-transparent">
@@ -683,18 +683,14 @@ const Settings = ({
                     className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg xs:text-base text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
                   ></input> */}
 
-          <div className="ml-1 mt-8 font-bold text-blue-600">ACCOUNT SETTINGS</div>
+          <div className="ml-1 mt-8 font-bold text-center text-blue-600">ACCOUNT SETTINGS</div>
 
           {/*---EVM Address---*/}
           <div className="fieldContainer">
-            <label className="labelfont">My EVM Address</label>
-            <div className="inputfont">
-              <div className="break-all">
-                {paymentSettingsState.merchantEvmAddress}
-                <div className="ml-2 inline-block align-middle pb-0.5">
-                  <Image src="/copySvg.svg" alt="copy icon" height={20} width={20} />
-                </div>
-              </div>
+            <label className="labelfont">Address</label>
+            <div className="inputfont flex items-center">
+              {paymentSettingsState.merchantEvmAddress.slice(0, 6)}...{paymentSettingsState.merchantEvmAddress.slice(-4)}{" "}
+              <div className="inline-block ml-2 font-medium text-sm text-gray-400 leading-none">copy</div>
             </div>
           </div>
 

@@ -23,7 +23,12 @@
   select {
     -webkit-appearance: none;
     -moz-appearance: none;
-    padding: 0px 4px;
+    padding: 0px 28px 0px 4px;
+    background-color: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 330 330'><path d='M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center right 8px;
+    background-size: 12px;
   }
 }
 
@@ -153,15 +158,15 @@
   }
 
   .labelfont {
-    @apply ml-1 text-lg xs:text-sm text-gray-400 font-medium leading-none;
+    @apply ml-1 text-base xs:text-sm text-gray-400 font-medium leading-none;
   }
 
   .inputfont {
-    @apply pl-1 text-xl xs:text-base py-[2px] font-medium text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply pl-1 text-lg xs:text-base py-[3px] font-medium text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .selectfont {
-    @apply text-xl xs:text-base py-[1px] font-medium text-gray-800 bg-white rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply text-lg xs:text-base py-[1px] font-medium text-gray-800 bg-white rounded-md outline-transparent;
   }
 
   .loginbutton {
@@ -222,7 +227,7 @@
   }
 
   .fieldContainer {
-    @apply flex flex-col py-2 border-b;
+    @apply flex flex-col py-3 border-b;
   }
 
   .appButton {
