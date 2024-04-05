@@ -153,7 +153,7 @@
   }
 
   .selectfont {
-    @apply text-lg xs:text-base py-[1px] font-medium text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply text-lg xs:text-base py-[1px] font-medium text-gray-800 bg-white rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .loginbutton {
