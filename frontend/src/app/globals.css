@@ -23,12 +23,12 @@
   select {
     -webkit-appearance: none;
     -moz-appearance: none;
-    padding: 0px 28px 0px 4px;
+    /* padding: 0px 28px 0px 4px;
     background-color: transparent;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 330 330'><path d='M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z'/></svg>");
     background-repeat: no-repeat;
     background-position: center right 8px;
-    background-size: 12px;
+    background-size: 12px; */
   }
 }
 
@@ -157,16 +157,24 @@
     @apply text-lg leading-snug lg:text-sm lg:leading-tight space-y-2 lg:space-y-1;
   }
 
+  .settingsHeader {
+    @apply mt-10 font-bold text-blue-600;
+  }
+
+  .fieldContainer {
+    @apply flex items-center justify-between py-2 border-b;
+  }
+
   .labelfont {
-    @apply ml-1 text-base xs:text-sm text-gray-400 font-medium leading-none;
+    @apply text-base xs:text-sm shrink-0 text-gray-400 font-medium leading-snug;
   }
 
   .inputfont {
-    @apply pl-1 text-lg xs:text-base py-[3px] font-medium text-gray-800 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply ml-2 w-full text-lg xs:text-base py-[2px] pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .selectfont {
-    @apply text-lg xs:text-base py-[1px] font-medium text-gray-800 bg-white rounded-md outline-transparent;
+    @apply text-lg xs:text-base py-[1px] pr-3 font-medium text-gray-800 bg-white rounded-md outline-transparent;
   }
 
   .loginbutton {
@@ -223,11 +231,7 @@
   }
 
   .appInstructionsBody {
-    @apply text-lg leading-snug xs:text-sm xs:leading-snug border border-gray-300 rounded-xl p-4 text-gray-600 bg-white;
-  }
-
-  .fieldContainer {
-    @apply flex flex-col py-3 border-b;
+    @apply ml-2 mt-2 text-base leading-snug xs:text-sm xs:leading-snug;
   }
 
   .appButton {

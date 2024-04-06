@@ -17,7 +17,8 @@ import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
-import Instructions from "./_components/Instructions";
+import Instructions from "./_components/modals/FaqModal";
+import MyQr from "./_components/modals/QrModal";
 import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 // constants
 import { abb2full, countryData } from "@/utils/constants";
@@ -287,10 +288,6 @@ const User = () => {
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "intro" && <Intro isMobile={isMobile} setPage={setPage} paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />}
-      {page === "faq" && (
-        <Instructions paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} exchangeModal={exchangeModal} setExchangeModal={setExchangeModal} />
-      )}
-
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
@@ -358,6 +355,7 @@ const User = () => {
               publicKey={publicKey}
               exchangeModal={exchangeModal}
               setExchangeModal={setExchangeModal}
+              setPage={setPage}
             />
           )}
         </div>

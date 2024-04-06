@@ -30,7 +30,8 @@
     "app/Home.jsx",
     "app/_utils/constants/index.js",
     "src/utils/components/SpinningCircleGray.tsx",
-    "../_unused/Unused.tsx"
+    "../_unused/Unused.tsx",
+    "../_unused/RefundModal.tsx"
   ],
   "exclude": ["node_modules"]
 }
