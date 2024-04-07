@@ -1,57 +1,63 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export type PaymentSettings = {
+  merchantEvmAddress: string;
+  merchantEmail: string;
+  merchantName: string;
+  merchantCountry: string;
+  merchantCurrency: string;
+  merchantPaymentType: string;
+  merchantWebsite: string;
+  merchantBusinessType: string;
+  merchantFields: string[];
+  merchantGoogleId: string;
+  employeePass: string;
+  qrCodeUrl: string;
+};
+
+export type CashoutSettings = {
+  cex: string;
+  cexEvmAddress: string;
+  cexApiKey: string;
+  cexSecretKey: string;
+  cexAccountName: string;
+};
+
+export type Transaction = {
+  date: any;
+  customerAddress: string;
+  merchantAddress: string;
+  currencyAmount: number;
+  merchantCurrency: string;
+  tokenAmount: number;
+  token: string;
+  network: string;
+  blockRate: number;
+  cashRate: number;
+  savings: string;
+  refund: boolean;
+  refundNote: boolean;
+  archive: boolean;
+  // online params
+  customerEmail: string;
+  item: string;
+  startDate: string;
+  endDate: string;
+  singleDate: string;
+  time: string;
+  countString: string;
+  shipping: any;
+  sku: string;
+  // txnHash
+  txnHash: string;
+};
+
 export interface IUser extends Document {
   cbRefreshToken: string;
   web3AuthSessionId: string;
-  paymentSettings: {
-    merchantEvmAddress: string;
-    merchantEmail: string;
-    merchantName: string;
-    merchantCountry: string;
-    merchantCurrency: string;
-    merchantPaymentType: string;
-    merchantWebsite: string;
-    merchantBusinessType: string;
-    merchantFields: string[];
-    merchantGoogleId: string;
-    employeePass: string;
-    qrCodeUrl: string;
-  };
-  cashoutSettings: {
-    cex: string;
-    cexEvmAddress: string;
-    cexApiKey: string;
-    cexApiSecret: string;
-    cexAccountName: string;
-  };
-  transactions: {
-    date: any;
-    customerAddress: string;
-    merchantAddress: string;
-    currencyAmount: number;
-    merchantCurrency: string;
-    tokenAmount: number;
-    token: string;
-    network: string;
-    blockRate: number;
-    cashRate: number;
-    savings: string;
-    refund: boolean;
-    refundNote: boolean;
-    archive: boolean;
-    // online params
-    customerEmail: string;
-    item: string;
-    startDate: string;
-    endDate: string;
-    singleDate: string;
-    time: string;
-    countString: string;
-    shipping: any;
-    sku: string;
-    // txnHash
-    txnHash: string;
-  };
+  paymentSettings: PaymentSettings;
+  cashoutSettings: CashoutSettings;
+  transactions: Transaction[];
   intro: boolean;
 }
 
@@ -76,7 +82,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     cex: String,
     cexEvmAddress: String,
     cexApiKey: String,
-    cexApiSecret: String,
+    cexSecretKey: String,
     cexAccountName: String,
   },
   transactions: [

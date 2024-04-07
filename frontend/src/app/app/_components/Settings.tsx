@@ -24,6 +24,8 @@ import { countryData, CEXdata, activeCountries, merchantType2data } from "@/util
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+// types
+import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
 
 const Settings = ({
   paymentSettingsState,
@@ -37,9 +39,9 @@ const Settings = ({
   setExchangeModal,
   setPage,
 }: {
-  paymentSettingsState: any;
+  paymentSettingsState: PaymentSettings;
   setPaymentSettingsState: any;
-  cashoutSettingsState: any;
+  cashoutSettingsState: CashoutSettings;
   setCashoutSettingsState: any;
   isMobile: boolean;
   idToken: string;
@@ -137,7 +139,7 @@ const Settings = ({
       if (missingInfo() === false) {
         setPopup("copyLinkButton");
         setTimeout(() => setPopup(""), 2000);
-        navigator.clipboard.writeText(paymentSettingsState.url.replace("metamask.app.link/dapp/", ""));
+        navigator.clipboard.writeText(paymentSettingsState.qrCodeUrl.replace("metamask.app.link/dapp/", ""));
       }
     } else {
       setErrorModal(true);
@@ -228,7 +230,7 @@ const Settings = ({
       )}
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
       {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} url={url} />}
-      {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.CEX} />}
+      {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.cex} />}
       {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
       {/* {depositAddressModal && <DepositAddressModal setDepositAddressModal={setDepositAddressModal} />} */}
 
@@ -439,7 +441,7 @@ const Settings = ({
                 className="checkboxMobile"
               ></input>
               <label className="ml-1 text-base xs:text-sm leading-none">
-                {paymentSettingsState.merchantType ? merchantType2data[paymentSettingsState.merchantType].itemlabel.toLowerCase() : "item name"}
+                {paymentSettingsState.merchantPaymentType ? merchantType2data[paymentSettingsState.merchantPaymentType].itemlabel.toLowerCase() : "item name"}
               </label>
             </div>
             <div className="flex items-center">

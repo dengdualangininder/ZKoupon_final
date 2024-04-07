@@ -15,8 +15,8 @@ import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 import { merchantType2data } from "@/utils/constants";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileArrowDown, faArrowsRotate, faXmark, faArrowLeft, faArrowRight, faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+// types
+import { PaymentSettings, Transaction } from "@/db/models/UserModel";
 
 const Payments = ({
   transactionsState,
@@ -24,10 +24,10 @@ const Payments = ({
   isMobile,
   paymentSettingsState,
 }: {
-  transactionsState: any;
+  transactionsState: Transaction[];
   setTransactionsState: any;
   isMobile: boolean;
-  paymentSettingsState: any;
+  paymentSettingsState: PaymentSettings;
 }) => {
   console.log("Payments component rendered");
 
@@ -281,7 +281,7 @@ const Payments = ({
                   {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
                   {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
                   {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
-                  {paymentSettingsState.merchantFields.includes("item") && <th className="">{merchantType2data[paymentSettingsState.merchantType]["itemlabel"]}</th>}
+                  {paymentSettingsState.merchantFields.includes("item") && <th className="">{merchantType2data[paymentSettingsState.merchantPaymentType]["itemlabel"]}</th>}
                   {paymentSettingsState.merchantFields.includes("count") && (
                     <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""}`}>Guests</th>
                   )}

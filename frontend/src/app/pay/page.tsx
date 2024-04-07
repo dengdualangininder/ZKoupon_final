@@ -221,26 +221,29 @@ const Pay = () => {
       return;
     }
 
-    setMsg("Verifying transaction...");
-
     try {
-      const sendToDb = async () => {
+      const saveToDbAndTriggerPusher = async () => {
         const res = await fetch("/api/payInperson", {
           method: "POST",
           body: JSON.stringify({ txn: txn, merchantEvmAddress: merchantEvmAddress }),
           headers: { "content-type": "application/json" },
         });
         const data = await res.json();
-        if (data == "saved") {
-          console.log("transaction saved to db");
-          setIsSendingComplete(true);
-        } else if (data == "error") {
+        if (data == "success") {
+          setIsSendingComplete(true); // show "Payment Complete" page on customer side ONLY if txn saved to db
+          console.log("saved to db and Pusher triggered");
+        } else if (data == "not saved") {
           setPayModal(false);
           setErrorModal(true);
-          setErrorMsg("Payment was successful. But, the payment data was not saved to the database.");
+          setErrorMsg("Payment was made. But, the payment data was not saved to the database.");
+        } else if (data == "not triggered") {
+          setPayModal(false);
+          setErrorModal(true);
+          setErrorMsg("Payment was made. But, the payment did not trigger a notification to the merchant.");
+          setIsSendingComplete(true); // show "Payment Complete" page on customer side ONLY if txn saved to db
         }
       };
-      await sendToDb();
+      await saveToDbAndTriggerPusher();
     } catch (err) {
       setPayModal(false);
       setErrorModal(true);
@@ -355,7 +358,7 @@ const Pay = () => {
                   onClick={(e) => {
                     setPayModal(false);
                     setIsSendingComplete(false);
-                    location.reload();
+                    location.reload(); // TODO: leaving a txn receipt on page isntead of resetting
                   }}
                   className="flex justify-center items-center py-3 mb-6 text-xl rounded-full w-[200px] bg-white text-gray-500 border border-gray-200 active:bg-gray-200 font-medium tracking-wide drop-shadow-lg"
                 >

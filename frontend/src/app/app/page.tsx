@@ -9,6 +9,7 @@ import { useAccount, useConfig, useWalletClient, useDisconnect, useAccountEffect
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
+import Pusher from "pusher-js";
 import { getPublic } from "@toruslabs/eccrypto";
 // components
 import Login from "./_components/Login";
@@ -27,6 +28,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faFileInvoiceDollar, faGear } from "@fortawesome/free-solid-svg-icons";
 // import PullToRefresh from "pulltorefreshjs";
+// types
+import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
 
 const User = () => {
   console.log("/app, page.tsx rendered once");
@@ -36,9 +39,9 @@ const User = () => {
   const menuTemp = searchParams.get("menu");
 
   // states
-  const [paymentSettingsState, setPaymentSettingsState] = useState({});
-  const [cashoutSettingsState, setCashoutSettingsState] = useState({});
-  const [transactionsState, setTransactionsState] = useState([]);
+  const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>();
+  const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>();
+  const [transactionsState, setTransactionsState] = useState<Transaction[] | null>([]);
   const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "intro" | "app"
   const [isGettingDoc, setIsGettingDoc] = useState(true);
@@ -154,6 +157,7 @@ const User = () => {
     if (!initialized.current) {
       initialized.current = true;
       verifyAndGetData();
+      subscribePusher();
     }
     console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);
@@ -230,6 +234,42 @@ const User = () => {
         await disconnectAsync();
         setPage("login");
       }
+    }
+  };
+
+  const subscribePusher = async () => {
+    // instantiate
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY ?? "", { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "" });
+    pusher.connection.bind("error", (e: any) => {
+      console.error("Pusher connection error:", e);
+    });
+    // ensure not double-subscribing
+    let channels = await pusher.allChannels();
+    let channelNames = channels.map((i) => i.name);
+    if (!channelNames.includes(account.address ?? "")) {
+      const channel = pusher.subscribe(account.address ?? "");
+      channel.bind("payment-submitted", async (pusherData: any) => {
+        const pusherCurrency = pusherData.currency;
+        const pusherAmount = pusherData.amount;
+        console.log("pusherData", pusherAmount, pusherCurrency);
+        // fetch new transactionsState from db
+        try {
+          //fetch doc
+          console.log("fetching doc...");
+          const res = await fetch("/api/getUserDoc", {
+            method: "POST",
+            body: JSON.stringify({ merchantEvmAddress: account.address }),
+            headers: { "content-type": "application/json" },
+          });
+          const data = await res.json();
+          console.log(data);
+          if (data.status == "success") {
+            setTransactionsState(data.transactions);
+          }
+        } catch (error) {
+          console.log("error: api request to getTransactions failed");
+        }
+      });
     }
   };
 
@@ -332,12 +372,12 @@ const User = () => {
           </div>
           {/*---menu pages---*/}
           {menu === "payments" && (
-            <Payments transactionsState={transactionsState} setTransactionsState={setTransactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState} />
+            <Payments transactionsState={transactionsState!} setTransactionsState={setTransactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState!} />
           )}
           {menu === "cashOut" && isAdmin && (
             <CashOut
-              paymentSettingsState={paymentSettingsState}
-              cashoutSettingsState={cashoutSettingsState}
+              paymentSettingsState={paymentSettingsState!}
+              cashoutSettingsState={cashoutSettingsState!}
               setCashoutSettingsState={setCashoutSettingsState}
               transactionsState={transactionsState}
               isMobile={isMobile}
@@ -347,9 +387,9 @@ const User = () => {
           )}
           {menu === "settings" && isAdmin && (
             <Settings
-              paymentSettingsState={paymentSettingsState}
+              paymentSettingsState={paymentSettingsState!}
               setPaymentSettingsState={setPaymentSettingsState}
-              cashoutSettingsState={cashoutSettingsState}
+              cashoutSettingsState={cashoutSettingsState!}
               setCashoutSettingsState={setCashoutSettingsState}
               isMobile={isMobile}
               idToken={idToken}
