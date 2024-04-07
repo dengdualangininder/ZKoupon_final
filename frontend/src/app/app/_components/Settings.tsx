@@ -223,9 +223,11 @@ const Settings = ({
       {faqModal && (
         <FaqModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setExchangeModal={setExchangeModal} setFaqModal={setFaqModal} />
       )}
-      {qrModal && <QrModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setQrModal={setQrModal} url={url} />}
+      {qrModal && (
+        <QrModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setQrModal={setQrModal} url={url} setFigmaModal={setFigmaModal} />
+      )}
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
-      {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} />}
+      {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} url={url} />}
       {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.CEX} />}
       {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
       {/* {depositAddressModal && <DepositAddressModal setDepositAddressModal={setDepositAddressModal} />} */}

@@ -25,6 +25,7 @@ const CashOut = ({
   paymentSettingsState,
   cashoutSettingsState,
   setCashoutSettingsState,
+  transactionsState,
   isMobile,
   idToken,
   publicKey,
@@ -32,11 +33,14 @@ const CashOut = ({
   paymentSettingsState: any;
   cashoutSettingsState: any;
   setCashoutSettingsState: any;
+  transactionsState: [any];
   isMobile: boolean;
   idToken: string;
   publicKey: string;
 }) => {
   console.log("CashOut component rendered");
+
+  const currencyDecimal = 2;
 
   const defaultRates: any = {
     USD: { usdcToLocal: 1, usdToLocal: 1 },
@@ -65,7 +69,7 @@ const CashOut = ({
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<any>();
 
-  const [stats, setStats] = useState<any>({});
+  const [stats, setStats] = useState<any>({ totalCurrencyAmount: 0, totalTokenAmount: 0, paymentRate: 0 });
 
   // hooks
   const router = useRouter();
@@ -171,6 +175,24 @@ const CashOut = ({
     // setCexBalance("1231.32"); // for testing purposes
     // setIsCexAccessible(true); // for testing purposes
     console.log("/app, Cashout, getCexBalance useEffect ended");
+  }, []);
+
+  useEffect(() => {
+    let totalCurrencyAmount = 0;
+    let totalTokenAmount = 0;
+    for (const txn of transactionsState) {
+      totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
+      totalTokenAmount = totalTokenAmount + Number(txn.tokenAmount);
+    }
+    console.log(totalCurrencyAmount, totalCurrencyAmount);
+    setStats({
+      totalTxns: transactionsState.length,
+      totalCurrencyAmount: totalCurrencyAmount,
+      totalTokenAmount: totalTokenAmount,
+      paymentRate: (totalCurrencyAmount * 0.98) / totalTokenAmount,
+      currentRate: 0.912,
+      cashoutRate: 0,
+    });
   }, []);
 
   const onClickCashOutConfirm = async () => {
@@ -312,7 +334,7 @@ const CashOut = ({
     console.log(data);
   };
 
-  const currencySymbol: any = { USD: "$", EUR: <span>&euro;</span>, TWD: "TWD" };
+  const currencyToSymbol: any = { USD: "$", EUR: <span>&euro;</span>, TWD: "TWD" };
 
   console.log("before render", "\ncexBalance:", cexBalance, "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible);
   return (
@@ -331,7 +353,7 @@ const CashOut = ({
               {/*---balance---*/}
               <div className="flex items-center">
                 <div className="text-3xl font-bold">
-                  {currencySymbol[paymentSettingsState.merchantCurrency]} {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}
+                  {currencyToSymbol[paymentSettingsState.merchantCurrency]} {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}
                 </div>
                 <div className="ml-3 group relative">
                   <FontAwesomeIcon icon={faCircleInfo} className="px-1 text-gray-400 text-sm" />
@@ -436,8 +458,84 @@ const CashOut = ({
             <div className="text-xl leading-none text-center font-bold">Statistics</div>
           </div>
           {/*---body---*/}
-          <div>
-            {stats.avgRatePayment} {stats.avgRateWithdraw}
+
+          {/*---above bordered stats---*/}
+          <div className="mt-2 px-1">
+            <div className="flex justify-between">
+              <div>Total Transactions</div>
+              <div>{stats.totalTxns}</div>
+            </div>
+
+            <div className="flex justify-between">
+              <div>Total Revenue</div>
+              <div>
+                {currencyToSymbol[paymentSettingsState.merchantCurrency]}
+                {stats.totalCurrencyAmount}
+              </div>
+            </div>
+          </div>
+
+          {/*---perceived costs from Flash---*/}
+          <div className="px-1 border border-gray-500 rounded-md">
+            {/*---cashback---*/}
+            <div className="flex justify-between">
+              <div>Total Cashback Given</div>
+              <div>
+                - {currencyToSymbol[paymentSettingsState.merchantCurrency]}
+                {(stats.totalCurrencyAmount * 0.02).toFixed(currencyDecimal)}
+              </div>
+            </div>
+            {/*---gain/loss from rates---*/}
+            <div className="flex justify-between">
+              <div>Est. Gain/Loss from Rates</div>
+              {/*---# times cashout * 0.015 USDC * USDC To currency rate + future ---*/}
+              <div></div>
+            </div>
+            {/*---gain/loss from rates, details---*/}
+            <div className="hidden">
+              <div className="flex justify-between">
+                <div>Total USDC Received</div>
+                <div>{stats.totalTokenAmount.toFixed(2)} USDC</div>
+              </div>
+              <div className="flex justify-between">
+                <div>Avg. USDC to EUR Rate</div>
+                <div>{stats.paymentRate.toFixed(4)}</div>
+              </div>
+            </div>
+            {/*---total transaction fees---*/}
+            <div className="flex justify-between">
+              <div>Total Transaction Fees</div>
+              <div>
+                {currencyToSymbol[paymentSettingsState.merchantCurrency]}
+                {(1 * 0.015 * stats.currentRate).toFixed(2)}
+              </div>
+            </div>
+          </div>
+
+          {/*---below bordered stats---*/}
+          <div className="px-1">
+            {/*---total net revenue---*/}
+            <div className="flex justify-between">
+              <div>Total Net Revenue</div>
+              <div>
+                {currencyToSymbol[paymentSettingsState.merchantCurrency]}
+                {(stats.totalCurrencyAmount * 0.98).toFixed(2)}
+              </div>
+            </div>
+            <div className="mt-4 flex justify-between">
+              <div>Est. Stripe Costs</div>
+              <div>
+                -{currencyToSymbol[paymentSettingsState.merchantCurrency]}
+                {(stats.totalCurrencyAmount * 0.029 + transactionsState.length * 0.3).toFixed(2)}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <div>Your Savings</div>
+              <div>
+                {currencyToSymbol[paymentSettingsState.merchantCurrency]}
+                {(stats.totalCurrencyAmount * 0.029 + transactionsState.length * 0.3 - stats.totalCurrencyAmount * 0.02).toFixed(2)}
+              </div>
+            </div>
           </div>
         </div>
 

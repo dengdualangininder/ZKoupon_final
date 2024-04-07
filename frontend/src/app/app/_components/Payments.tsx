@@ -608,7 +608,6 @@ const Payments = ({
           </div>
           <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[30]">
             <QRCodeSVG
-              id="qrsvg"
               xmlns="http://www.w3.org/2000/svg"
               size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (220 / 424.26)) : Math.round(window.innerWidth * (220 / 424.26))}
               bgColor={"#ffffff"}

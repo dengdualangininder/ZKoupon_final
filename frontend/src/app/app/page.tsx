@@ -339,6 +339,7 @@ const User = () => {
               paymentSettingsState={paymentSettingsState}
               cashoutSettingsState={cashoutSettingsState}
               setCashoutSettingsState={setCashoutSettingsState}
+              transactionsState={transactionsState}
               isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}

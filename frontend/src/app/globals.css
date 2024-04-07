@@ -94,7 +94,7 @@
   }
 
   .modalContainer {
-    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-xl border border-gray-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
+    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
   }
 
   .modalHeaderContainer {

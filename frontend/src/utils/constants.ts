@@ -182,11 +182,6 @@ export const CEXdata: { [key: string]: CEX } = {
     USDC: ["USD", "EUR", "GBP"],
     USDT: ["USD", "EUR", "GBP"],
     EURC: ["USD", "EUR"],
-    placard: {
-      component: PlacardCoinbaseCashback,
-      svg: placardCoinbaseCashback,
-      fig: "https://drive.google.com/uc?export=download&id=1rg50TULCZb07Eu0H5a2Qq2r7bIPvNroI",
-    },
   },
   Coinbase: {
     networkTokens: ["Polygon-USDC", "Base-USDC", "Optimism-USDC", "Arbitrum-USDC", "Avalanche-USDC"],
@@ -197,11 +192,6 @@ export const CEXdata: { [key: string]: CEX } = {
     USDC: ["USD", "EUR", "GBP"],
     USDT: ["USD", "EUR", "GBP"],
     EURC: ["USD", "EUR"],
-    placard: {
-      component: PlacardCoinbaseUSDCCashback,
-      svg: placardCoinbaseUSDCCashback,
-      fig: "https://drive.google.com/uc?export=download&id=1dN0to6EN1lQS8gTVF9MVCXxM_LFVTga7",
-    },
   },
   "Kraken Exchange": {
     networkTokens: ["Polygon-USDC", "Polygon-USDT", "Arbitrum-USDC", "Arbitrum-USDT"],
@@ -219,11 +209,6 @@ export const CEXdata: { [key: string]: CEX } = {
     USDC: ["USD", "EUR", "GBP", "AUD", "CHF", "CAD"],
     USDT: ["USD", "EUR", "GBP", "AUD", "CHF", "CAD"],
     EURT: ["USD", "EUR"],
-    placard: {
-      component: PlacardKrakenCashback,
-      svg: placardKrakenCashback,
-      fig: "https://drive.google.com/uc?export=download&id=1W-cHgH97qHPi6BdITPTPbcDVYrx-8CCk",
-    },
   },
   "MAX Exchange": {
     networkTokens: ["Polygon-USDC", "Polygon-USDT", "BNB-USDC", "BNB-USDT"],
@@ -231,11 +216,6 @@ export const CEXdata: { [key: string]: CEX } = {
     tokens: ["USDC", "USDT"],
     withdrawalFee: 15,
     tradingFee: 0.003,
-    placard: {
-      component: PlacardMAXCashback,
-      svg: placardMAXCashback,
-      fig: "https://drive.google.com/uc?export=download&id=1GYzknso9hk3jJfKR9NvZp0CjypYAkRq6",
-    },
   },
   "BitoPro Exchange": {
     networkTokens: ["Polygon-USDC", "Polygon-USDT"],
@@ -243,11 +223,6 @@ export const CEXdata: { [key: string]: CEX } = {
     tokens: ["USDC", "USDT"],
     withdrawalFee: 15,
     tradingFee: 0.002,
-    placard: {
-      component: PlacardBitoCashback,
-      svg: placardBitoCashback,
-      fig: "https://drive.google.com/uc?export=download&id=12fJhn-9_08YkLJjkXJxrpQljDX3efUQa",
-    },
   },
 };
 

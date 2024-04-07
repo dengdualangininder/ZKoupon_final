@@ -11,9 +11,24 @@ import { QRCodeSVG } from "qrcode.react";
 import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { Buffer } from "buffer";
+// component
+import Placard from "../placard/Placard";
 
-const qrModal = ({ paymentSettingsState, cashoutSettingsState, setQrModal, url }: { paymentSettingsState: any; cashoutSettingsState: any; setQrModal: any; url: string }) => {
+const qrModal = ({
+  paymentSettingsState,
+  cashoutSettingsState,
+  setQrModal,
+  url,
+  setFigmaModal,
+}: {
+  paymentSettingsState: any;
+  cashoutSettingsState: any;
+  setQrModal: any;
+  url: string;
+  setFigmaModal: any;
+}) => {
   const [qrWidth, setQrWidth] = useState(0);
+  const [showSend, setShowSend] = useState(false);
 
   useEffect(() => {
     const qrWidthTemp =
@@ -25,33 +40,13 @@ const qrModal = ({ paymentSettingsState, cashoutSettingsState, setQrModal, url }
     setQrWidth(qrWidthTemp);
   }, []);
 
-  const downloadQrPng = () => {
-    const el = document.getElementById("qrpng") as HTMLCanvasElement;
-    const qrPngUrl = el?.toDataURL(); // returns raw bytes in base64 format
-    let downloadLink = document.createElement("a");
-    downloadLink.href = qrPngUrl;
-    downloadLink.download = "QRCode.png";
-    downloadLink.click();
-  };
-
-  const downloadQrSvg = () => {
-    const el = document.getElementById("qrsvg") as HTMLCanvasElement;
-    const svgXML = new XMLSerializer().serializeToString(el);
-    const qrSvgUrl = "data:image/svg," + encodeURIComponent(svgXML);
-    let downloadLink = document.createElement("a");
-    downloadLink.href = qrSvgUrl;
-    downloadLink.download = "QRCode.svg";
-    downloadLink.click();
-  };
-
   const downloadPlacardPdf = async () => {
-    const PlacardComponent = CEXdata[cashoutSettingsState.CEX].placard.component;
-    const el = document.getElementById("qrsvg");
+    const el = document.getElementById("qrPlacard");
     const blob = await pdf(
       <Document>
         <Page size="A5" style={{ position: "relative" }}>
           <View>
-            <PlacardComponent />
+            <Placard />
           </View>
           <View style={{ position: "absolute", transform: "translate(105, 186)" }}>
             {/* @ts-ignore */}
@@ -68,13 +63,6 @@ const qrModal = ({ paymentSettingsState, cashoutSettingsState, setQrModal, url }
     saveAs(blob, "MyPlacard");
   };
 
-  const downloadPlacardFigma = () => {
-    let downloadLink = document.createElement("a");
-    downloadLink.href = CEXdata[cashoutSettingsState.CEX].placard.fig;
-    downloadLink.download = "template.fig";
-    downloadLink.click();
-  };
-
   const getSize = () => {
     if (document.getElementById("modalQrContainer")?.offsetWidth! * 1.4142 > document.getElementById("modalQrContainer")?.offsetHeight!) {
       var width = document.getElementById("modalQrContainer")?.offsetHeight! / 1.4142;
@@ -84,22 +72,56 @@ const qrModal = ({ paymentSettingsState, cashoutSettingsState, setQrModal, url }
     return width;
   };
 
+  const sendEmail = async () => {
+    //logic here
+  };
+
   return (
     <div>
       <div className="w-[90%] h-[88%] px-8 py-6 flex portrait:flex-col items-center rounded-3xl border border-gray-400 bg-white fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-53%] z-[90]">
         {/*---Qr Code---*/}
-        <div id="modalQrContainer" className="w-full landscape:h-[100%] portrait:h-[60%] relative bg-red-300">
+        <div id="modalQrContainer" className="w-full landscape:h-[100%] portrait:h-[50%] flex-none relative bg-red--300">
           <Image src="/placard.svg" alt="placard" fill className="" />
           <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[30]">
-            <QRCodeSVG id="qrsvg" xmlns="http://www.w3.org/2000/svg" size={qrWidth} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
+            <QRCodeSVG xmlns="http://www.w3.org/2000/svg" size={qrWidth} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
+          </div>
+          <div className="hidden">
+            <QRCodeSVG id="qrPlacard" xmlns="http://www.w3.org/2000/svg" size={220} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
           </div>
         </div>
 
         {/*---action buttons---*/}
-        <div className="grow mt-4 flex flex-col items-center space-y-4">
-          <button className="w-[250px] py-3 rounded-full border border-gray-400 text-gray-400 font-medium">Download QR Code</button>
-          <button className="w-[250px] py-3 rounded-full border border-gray-400 text-gray-400 font-medium">Send QR Code to Email</button>
-          <button className="w-[250px] py-3 rounded-full border border-gray-400 text-gray-400 font-medium">Customize Your QR Code</button>
+        <div className="w-full portrait:h-[50%] pt-6 pb-12 flex flex-col items-center justify-evenly">
+          <div>
+            Email this QR Code to a professional print shop. Then display it to your customers. A print size of A6 (4"x6") can fit <span className="link">these sign holders</span>.
+          </div>
+          <button
+            className={`${showSend ? "hidden" : ""} w-[50%] min-w-[300px] py-3 rounded-full border border-gray-400 text-gray-400 font-medium`}
+            onClick={() => setShowSend(true)}
+          >
+            Email QR Code
+          </button>
+          <div className={`${showSend ? "" : "hidden"} flex w-[50%] min-w-[300px] h-[48px] rounded-full border border-gray-400 text-gray-400 font-medium`}>
+            <div className="px-3 w-full h-full flex flex-none items-center">
+              <input className="w-full text-center text-gray-800 py-2 outline-none tracking-tight" placeholder="Enter email address"></input>
+              <button className="ml-2 font-bold text-blue-500 active:text-blue-400" onClick={sendEmail}>
+                Send
+              </button>
+            </div>
+          </div>
+          <button className="w-[50%] min-w-[300px] text-base py-3 rounded-full border border-gray-400 text-gray-400 font-medium" onClick={downloadPlacardPdf}>
+            Download QR Code
+          </button>
+
+          <button
+            className="w-[50%] min-w-[300px] py-3 rounded-full border border-gray-400 text-gray-400 font-medium"
+            onClick={() => {
+              setQrModal(false);
+              setFigmaModal(true);
+            }}
+          >
+            Customize QR Code
+          </button>
         </div>
         {/*---close button---*/}
         <button

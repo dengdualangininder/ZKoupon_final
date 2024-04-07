@@ -4,35 +4,74 @@ import figmaModalTwo from "../../assets/figmaModalTwo.png";
 import figmaModalThree from "../../assets/figmaModalThree.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { QRCodeSVG } from "qrcode.react";
 
-const FigmaModal = ({ setFigmaModal }: { setFigmaModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const FigmaModal = ({ setFigmaModal, url }: { setFigmaModal: React.Dispatch<React.SetStateAction<boolean>>; url: string }) => {
+  const downloadPlacardFigma = () => {
+    let downloadLink = document.createElement("a");
+    downloadLink.href = "https://drive.google.com/uc?export=download&id=1_CkZBPpEmwgd9F-4IfHHHKI3RHgo5Znk";
+    downloadLink.download = "template.fig";
+    downloadLink.click();
+  };
+
+  const downloadQrSvg = () => {
+    const el = document.getElementById("qrsvg") as HTMLCanvasElement;
+    const svgXML = new XMLSerializer().serializeToString(el);
+    const qrSvgUrl = "data:image/svg," + encodeURIComponent(svgXML);
+    let downloadLink = document.createElement("a");
+    downloadLink.href = qrSvgUrl;
+    downloadLink.download = "QRCode.svg";
+    downloadLink.click();
+  };
+
+  // const downloadQrPng = () => {
+  //   const el = document.getElementById("qrpng") as HTMLCanvasElement;
+  //   const qrPngUrl = el?.toDataURL(); // returns raw bytes in base64 format
+  //   let downloadLink = document.createElement("a");
+  //   downloadLink.href = qrPngUrl;
+  //   downloadLink.download = "QRCode.png";
+  //   downloadLink.click();
+  // };
+
   return (
     <div>
       <div className="modalContainer">
-        {/*---close button---*/}
-        <button
-          onClick={() => setFigmaModal(false)}
-          className="absolute top-[calc(100%-20px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 rounded-full hover:bg-red-500 text-3xl"
-        >
-          <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-        </button>
-        {/*---Title and Close Button---*/}
+        {/*--- Title ---*/}
         <div className="modalHeaderContainer">
           <div className="modalHeaderText">How to customize your placard with Figma</div>
         </div>
-        {/*---Content---*/}
+        <div className="hidden">
+          <QRCodeSVG id="qrsvg" xmlns="http://www.w3.org/2000/svg" size={300} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={url} />
+        </div>
+        {/*--- Content ---*/}
         <div className="overflow-y-auto overflow-x-hidden overscroll-contain">
           <div className="modalContentContainer">
-            <div className="mt-2 relative">
-              <span className="font-bold">Figma</span> is a free, easy-to-use image editor. With Figma, you can edit your placard's text, icons, color, etc. Or, for 10 USDC, we can
-              send you a design in 24 hours (
-              <span className="group">
-                <span className="link">instructions</span>
-                <div className="invisible group-hover:visible w-[344px] absolute top-[100%] left-[calc((100%-344px)/2)] px-3 py-2 text-lg md:text-base border border-slate-700 bg-gray-100 rounded-lg pointer-events-none">
-                  Email contact@lingpay.io a description of your design. After you receive the design and are satisfied, we will send instructions on how to pay 10 USDC.
-                </div>
-              </span>
-              ).
+            {/*--- download files ---*/}
+            <div className="mt-4 px-4 flex flex-col items-center">
+              <div>Downloadable Files</div>
+              <div className="link" onClick={downloadPlacardFigma}>
+                placard.fig
+              </div>
+              <div className="link" onClick={downloadQrSvg}>
+                QRcode.svg
+              </div>
+              {/* <div className="link" onClick={downloadQrPng}>
+                QRcode.png
+              </div> */}
+            </div>
+            {/*--- intro text ---*/}
+            <div className="mt-4 relative">
+              <span className="font-bold">Figma</span> is a free, easy-to-use image editor. With Figma, you can edit your placard's text, icons, color, etc.
+              {/* <span>
+                Or, for 10 USDC, we can send you a design in 24 hours (
+                <span className="group">
+                  <span className="link">instructions</span>
+                  <div className="invisible group-hover:visible w-[344px] absolute top-[100%] left-[calc((100%-344px)/2)] px-3 py-2 text-lg md:text-base border border-slate-700 bg-gray-100 rounded-lg pointer-events-none">
+                    Email contact@lingpay.io a description of your design. After you receive the design and are satisfied, we will send instructions on how to pay 10 USDC.
+                  </div>
+                  )
+                </span>
+              </span> */}
             </div>
             {/*---1---*/}
             <div className="flex mt-6 pb-3">
@@ -55,7 +94,7 @@ const FigmaModal = ({ setFigmaModal }: { setFigmaModal: React.Dispatch<React.Set
             {/*---3---*/}
             <div className="flex py-3 border-t border-slate-300">
               <div className="modalNumber">3.</div>
-              <div>On our website, choose the placard language and download the Figma file</div>
+              <div>On top, download placard.fig</div>
             </div>
             {/*---4---*/}
             <div className="flex py-3 border-t border-slate-300">
@@ -96,8 +135,8 @@ const FigmaModal = ({ setFigmaModal }: { setFigmaModal: React.Dispatch<React.Set
               <div>
                 <div>Insert your QR code:</div>
                 <div className="ml-2 sm:ml-4 text-base">
-                  On our website, download your QR code as an SVG file. On Figma, click the Figma icon (top left) &#10140; click "File" &#10140; click "Place Image". Open the saved
-                  SVG file and click anywhere on the frame to place the image. Use the tools on the right to change its size and align it.
+                  On top, download the QRCode SVG (recommended) or PNG file. On Figma, click the Figma icon (top left) &#10140; click "File" &#10140; click "Place Image". Open the
+                  saved SVG file and click anywhere on the frame to place the image. Use the tools on the right to change its size and align it.
                 </div>
                 <div className="flex justify-center">{/* <img src={figmaModalThree} className="w-full mt-1 mb-1 sm:px-4" /> */}</div>
               </div>
@@ -114,6 +153,13 @@ const FigmaModal = ({ setFigmaModal }: { setFigmaModal: React.Dispatch<React.Set
             </div>
           </div>
         </div>
+        {/*---close button---*/}
+        <button
+          onClick={() => setFigmaModal(false)}
+          className="absolute top-[calc(100%-20px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 rounded-full hover:bg-red-500 text-3xl"
+        >
+          <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
+        </button>
       </div>
       <div className="modalBlackout"></div>
     </div>
