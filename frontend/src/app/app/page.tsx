@@ -157,7 +157,7 @@ const User = () => {
     if (!initialized.current) {
       initialized.current = true;
       verifyAndGetData();
-      subscribePusher();
+      // subscribePusher();
     }
     console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);

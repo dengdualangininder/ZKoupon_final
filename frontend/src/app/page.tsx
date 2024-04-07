@@ -1,8 +1,6 @@
 "use client";
 // next
 import { useEffect } from "react";
-// others
-import Pusher from "pusher-js";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
@@ -13,15 +11,6 @@ import Overview from "./_components/Overview";
 // import Contact from "../components/Contact.jsx";
 
 const Home = () => {
-  // useEffect(() => {
-  //   const pusher = new Pusher("a29a22e46d485f5f2038", { cluster: "ap3" });
-  //   const channel = pusher.subscribe("my-channel");
-  //   channel.bind("my-event", (data: any) => {
-  //     alert(JSON.stringify(data));
-  //     console.log("pusher");
-  //   });
-  // }, []);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
