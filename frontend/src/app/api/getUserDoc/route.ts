@@ -12,7 +12,7 @@ export const POST = async (request: Request) => {
   const jwks = jose.createRemoteJWKSet(new URL("https://api-auth.web3auth.io/jwks")); // for social logins
   const jwtDecoded = await jose.jwtVerify(idToken, jwks, { algorithms: ["ES256"] });
   if ((jwtDecoded.payload as any).wallets[0].public_key.toLowerCase() != publicKey.toLowerCase()) {
-    Response.json({ status: "error", message: "failed to verify" });
+    return Response.json({ status: "error", message: "failed to verify" });
   }
   console.log("verified, publicKey:", (jwtDecoded.payload as any).wallets[0].public_key.toLowerCase());
 
@@ -29,6 +29,6 @@ export const POST = async (request: Request) => {
     }
   } catch (err) {
     console.log(err);
-    Response.json({ status: "error", message: "failed to get user doc" });
+    return Response.json({ status: "error", message: "failed to get user doc" });
   }
 };

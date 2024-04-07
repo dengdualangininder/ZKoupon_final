@@ -37,7 +37,7 @@ export const POST = async (request: Request) => {
         cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "",
         useTLS: true,
       });
-      await pusher.trigger(merchantEvmAddress, "payment-submitted", `currency=${txn.merchantCurrency}&amount=${txn.currencyAmount}`); // (channel, event-name, data)
+      await pusher.trigger(merchantEvmAddress, "payment-submitted", { currency: txn.merchantCurrency, amount: txn.currencyAmount }); // (channel, event-name, data)
       return Response.json("success");
     } catch (error) {
       console.log(error);
