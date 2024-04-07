@@ -166,11 +166,6 @@ export type CEX = {
   USDT?: string[];
   EURC?: string[];
   EURT?: string[];
-  placard: {
-    component: React.FunctionComponent;
-    svg: SVGElement;
-    fig: string;
-  };
 };
 export const CEXdata: { [key: string]: CEX } = {
   "Coinbase Exchange": {
