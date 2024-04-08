@@ -7,10 +7,14 @@ export const POST = async (request: Request) => {
 
   // request body
   const { merchantEvmAddress, idToken, publicKey } = await request.json();
+  console.log("idToken", idToken);
+  console.log("public key", publicKey);
 
   // verify
-  const jwks = jose.createRemoteJWKSet(new URL("https://api-auth.web3auth.io/jwks")); // for social logins
+  console.log("creating jwk set");
+  const jwks = await jose.createRemoteJWKSet(new URL("https://api-auth.web3auth.io/jwks")); // for social logins
   const jwtDecoded = await jose.jwtVerify(idToken, jwks, { algorithms: ["ES256"] });
+  console.log(jwtDecoded.payload);
   if ((jwtDecoded.payload as any).wallets[0].public_key.toLowerCase() != publicKey.toLowerCase()) {
     return Response.json({ status: "error", message: "failed to verify" });
   }

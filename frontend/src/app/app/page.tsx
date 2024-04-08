@@ -10,7 +10,7 @@ import { useAccount, useConfig, useWalletClient, useDisconnect, useAccountEffect
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
 import Pusher from "pusher-js";
-import { getPublic } from "@toruslabs/eccrypto";
+import { getPublic, getPublicCompressed } from "@toruslabs/eccrypto";
 // components
 import Login from "./_components/Login";
 import Payments from "./_components/Payments";
@@ -187,7 +187,7 @@ const User = () => {
         // @ts-ignore
         method: "eth_private_key", // it somehow works even if not typed
       })) as string;
-      var publicKeyTemp = getPublic(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
+      var publicKeyTemp = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
       console.log("error: could not get publicKey, page set to Login");
       setPage("login");
@@ -208,9 +208,10 @@ const User = () => {
           headers: { "content-type": "application/json" },
         });
         const data = await res.json();
+        console.log(data);
         // if success
         if (data.status == "success") {
-          console.log("successfully fetched doc:", data.doc);
+          console.log("successfully fetched doc");
           // set states
           setPaymentSettingsState(data.doc.paymentSettings);
           setCashoutSettingsState(data.doc.cashoutSettings);
