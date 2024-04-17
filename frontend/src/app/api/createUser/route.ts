@@ -3,7 +3,7 @@ import UserModel from "@/db/models/UserModel";
 import { NextResponse } from "next/server";
 
 export const POST = async (request: Request) => {
-  console.log("createUser api");
+  console.log("entered createUser api");
 
   // request body
   const { merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex } = await request.json();

@@ -38,22 +38,27 @@ const User = () => {
   const searchParams = useSearchParams();
   const menuTemp = searchParams.get("menu");
 
-  // states
+  // db values
   const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>();
   const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>();
   const [transactionsState, setTransactionsState] = useState<Transaction[] | null>([]);
+  // states
   const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "intro" | "app"
-  const [isGettingDoc, setIsGettingDoc] = useState(true);
-  const [reload, setReload] = useState(true);
+  // modals
+  const [exchangeModal, setExchangeModal] = useState(false);
+  // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
-  const [introModal, setIntroModal] = useState(false);
-  const [isAppLoading, setIsAppLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [browser, setBrowser] = useState<string>("Safari");
+  // for verification
   const [idToken, setIdToken] = useState("");
   const [publicKey, setPublicKey] = useState("");
-  const [exchangeModal, setExchangeModal] = useState(false);
+
+  const [isGettingDoc, setIsGettingDoc] = useState(true);
+  const [reload, setReload] = useState(true);
+  const [introModal, setIntroModal] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(true);
 
   // hooks
   const router = useRouter();
@@ -211,7 +216,7 @@ const User = () => {
         console.log(data);
         // if success
         if (data.status == "success") {
-          console.log("successfully fetched doc");
+          console.log("fetched doc and set states");
           // set states
           setPaymentSettingsState(data.doc.paymentSettings);
           setCashoutSettingsState(data.doc.cashoutSettings);
@@ -373,7 +378,7 @@ const User = () => {
           </div>
           {/*---menu pages---*/}
           {menu === "payments" && (
-            <Payments transactionsState={transactionsState!} setTransactionsState={setTransactionsState} isMobile={isMobile} paymentSettingsState={paymentSettingsState!} />
+            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState!} setTransactionsState={setTransactionsState} isMobile={isMobile} />
           )}
           {menu === "cashOut" && isAdmin && (
             <CashOut

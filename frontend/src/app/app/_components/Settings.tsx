@@ -441,7 +441,7 @@ const Settings = ({
                 className="checkboxMobile"
               ></input>
               <label className="ml-1 text-base xs:text-sm leading-none">
-                {paymentSettingsState.merchantPaymentType ? merchantType2data[paymentSettingsState.merchantPaymentType].itemlabel.toLowerCase() : "item name"}
+                {merchantType2data[paymentSettingsState.merchantPaymentType]?.itemlabel.toLowerCase() ?? "item name"}
               </label>
             </div>
             <div className="flex items-center">

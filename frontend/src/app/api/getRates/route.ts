@@ -5,7 +5,7 @@ import { keccak256, getAddress } from "viem";
 import * as jose from "jose";
 
 export const POST = async (request: Request) => {
-  console.log("entered getRates endpoint");
+  console.log("entered getRates api");
   const { merchantCurrency } = await request.json();
 
   const sheetOrder = ["EUR", "GBP"];
