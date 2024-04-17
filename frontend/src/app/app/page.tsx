@@ -192,7 +192,7 @@ const User = () => {
         // @ts-ignore
         method: "eth_private_key", // it somehow works even if not typed
       })) as string;
-      var publicKeyTemp = getPublicCompressed(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
+      var publicKeyTemp = getPublic(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
       console.log("error: could not get publicKey, page set to Login");
       setPage("login");
@@ -209,7 +209,7 @@ const User = () => {
         console.log("fetching doc...");
         const res = await fetch("/api/getUserDoc", {
           method: "POST",
-          body: JSON.stringify({ merchantEvmAddress: account.address, idToken: idTokenTemp, publicKey: publicKeyTemp }),
+          body: JSON.stringify({ idToken: idTokenTemp, publicKey: publicKeyTemp }),
           headers: { "content-type": "application/json" },
         });
         const data = await res.json();

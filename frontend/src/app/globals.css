@@ -170,11 +170,11 @@
   }
 
   .inputfont {
-    @apply ml-2 w-full text-lg xs:text-base py-[2px] pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply ml-2 w-full text-lg xs:text-base py-1.5 pl-2 pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .selectfont {
-    @apply text-lg xs:text-base py-[1px] pr-3 font-medium text-gray-800 bg-white rounded-md outline-transparent;
+    @apply text-lg xs:text-base py-1.5 px-3 font-medium text-gray-800 bg-white rounded-md outline-transparent;
   }
 
   .loginbutton {

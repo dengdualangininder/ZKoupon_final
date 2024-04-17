@@ -53,7 +53,6 @@ const Settings = ({
   console.log("Settings, rendered once");
   // states
   const [url, setUrl] = useState("");
-  const [savingState, setSavingState] = useState("saved"); // saved | savechanges | saving
   const [popup, setPopup] = useState("");
   // modal states
   const [figmaModal, setFigmaModal] = useState(false);
@@ -99,7 +98,7 @@ const Settings = ({
       }
     });
     setPaymentSettingsState({ ...paymentSettingsState, merchantFields: merchantFieldsTemp });
-    setSavingState("savechanges");
+    saveSettings();
   };
 
   // when user clicks "download QR code" or "copy payment link", this function executes to find missing required fields
@@ -135,21 +134,14 @@ const Settings = ({
   };
 
   const onClickPaymentLink = () => {
-    if (savingState === "saved") {
-      if (missingInfo() === false) {
-        setPopup("copyLinkButton");
-        setTimeout(() => setPopup(""), 2000);
-        navigator.clipboard.writeText(paymentSettingsState.qrCodeUrl.replace("metamask.app.link/dapp/", ""));
-      }
-    } else {
-      setErrorModal(true);
-      setErrorMsg("Please first save changes");
+    if (missingInfo() === false) {
+      setPopup("copyLinkButton");
+      setTimeout(() => setPopup(""), 2000);
+      navigator.clipboard.writeText(paymentSettingsState.qrCodeUrl.replace("metamask.app.link/dapp/", ""));
     }
   };
 
-  const saveSettings = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    setSavingState("saving");
+  const saveSettings = async () => {
     try {
       const res = await fetch("/api/saveSettings", {
         method: "POST",
@@ -159,18 +151,14 @@ const Settings = ({
       const data = await res.json();
 
       if (data === "saved") {
-        setSavingState("saved");
-        setPopup("saved");
-        setTimeout(() => setPopup(""), 1000);
+        console.log("settings saved");
       } else {
         setErrorMsg("Internal server error. Data was not saved.");
         setErrorModal(true);
-        setSavingState("savechanges");
       }
     } catch (e) {
       setErrorMsg("Server request error. Data was not saved.");
       setErrorModal(true);
-      setSavingState("savechanges");
     }
   };
 
@@ -201,7 +189,7 @@ const Settings = ({
                     const merchantFieldsTemp = merchantType2data[merchantBusinessTypeTemp].merchantFields;
                     setPaymentSettingsState({ ...paymentSettingsState, merchantBusinessType: merchantBusinessTypeTemp, merchantFields: merchantFieldsTemp });
                     setMerchantBusinessTypeModal(false);
-                    setSavingState("savechanges");
+                    saveSettings();
                   }}
                 >
                   <div>
@@ -259,10 +247,8 @@ const Settings = ({
           <label className="labelfont">Business Name</label>
           <input
             className="inputfont"
-            onChange={(e: any) => {
-              setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value });
-              setSavingState("savechanges");
-            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => saveSettings()}
             value={paymentSettingsState.merchantName}
           ></input>
         </div>
@@ -275,7 +261,7 @@ const Settings = ({
           <div>
             <select
               className="selectfont"
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 const merchantCountryTemp = e.target.value.split(" (")[0];
                 const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
                 const cexTemp = countryData[merchantCountryTemp].CEXes[0];
@@ -285,7 +271,7 @@ const Settings = ({
                   merchantCurrency: merchantCurrencyTemp,
                 });
                 setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
-                setSavingState("savechanges");
+                saveSettings();
               }}
             >
               {activeCountries.map((i, index) => (
@@ -330,7 +316,7 @@ const Settings = ({
                     merchantFields: ["email", "item", "shipping"],
                   });
                 }
-                setSavingState("savechanges");
+                saveSettings();
               }}
             >
               <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
@@ -379,9 +365,9 @@ const Settings = ({
           </div>
           <input
             className="inputfont"
-            onChange={(e: any) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPaymentSettingsState({ ...paymentSettingsState, merchantWebsite: e.target.value });
-              setSavingState("savechanges");
+              saveSettings();
             }}
             value={paymentSettingsState.merchantWebsite}
           ></input>
@@ -546,7 +532,7 @@ const Settings = ({
               onChange={(e) => {
                 const cexTemp = e.currentTarget.value;
                 setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
-                setSavingState("savechanges");
+                saveSettings();
               }}
             >
               {countryData[paymentSettingsState.merchantCountry]["CEXes"].map((i, index) => (
@@ -569,10 +555,8 @@ const Settings = ({
           </div>
           <textarea
             className="w-full inputfont break-all text-wrap"
-            onChange={(e: any) => {
-              setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
-              setSavingState("savechanges");
-            }}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
+            onBlur={() => saveSettings()}
             value={cashoutSettingsState.cexEvmAddress}
             autoComplete="none"
           ></textarea>
@@ -632,10 +616,8 @@ const Settings = ({
           <label className="labelfont">Email</label>
           <input
             className="inputfont"
-            onChange={(e: any) => {
-              setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value });
-              setSavingState("savechanges");
-            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
+            onBlur={() => saveSettings()}
             value={paymentSettingsState.merchantEmail}
           ></input>
         </div>
@@ -645,10 +627,8 @@ const Settings = ({
           <label className="labelfont">Employee Password</label>
           <input
             className={`inputfont placeholder:font-normal placeholder:italic`}
-            onChange={(e: any) => {
-              setPaymentSettingsState({ ...paymentSettingsState, employeePass: e.currentTarget.value });
-              setSavingState("savechanges");
-            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, employeePass: e.currentTarget.value })}
+            onBlur={() => saveSettings()}
             value={paymentSettingsState.employeePass}
             placeholder="empty"
           ></input>
@@ -667,44 +647,21 @@ const Settings = ({
             </div>
           </div>
           <input
-            className={`inputfont placeholder:font-normal placeholder:italic`}
-            onChange={(e: any) => {
-              setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value });
-              setSavingState("savechanges");
-            }}
+            className="inputfont placeholder:font-normal placeholder:italic"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
+            onBlur={() => saveSettings()}
             value={paymentSettingsState.merchantGoogleId}
             placeholder="empty"
           ></input>
         </div>
-
-        {/*---save button---*/}
-        {/* <div className="pt-8 pb-4 flex justify-center items-center">
-            <button
-              className={`${
-                savingState === "saved" ? "pointer-events-none bg-gray-300" : "bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300"
-              } text-lg xs:text-base font-bold w-[200px] xs:w-[160px] h-[56px] xs:h-[44px] rounded-full text-white`}
-              onClick={saveSettings}
-            >
-              {savingState === "saved" && <div>Saved</div>}
-              {savingState === "savechanges" && <div>Save Changes</div>}
-              {savingState === "saving" && (
-                <div className="w-full flex justify-center items-center">
-                  <SpinningCircleWhite />
-                </div>
-              )}
-              {popup === "saved" && (
-                <div className="flex items-center absolute top-[-24px] left-[calc(50%-36px)] text-slate-700 font-normal z-10">
-                  <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" /> saved
-                </div>
-              )}
-            </button>
-          </div> */}
       </form>
 
       {/*---Sign Out---*/}
       <div className="w-full flex justify-center">
         <button
           onClick={async () => {
+            window.sessionStorage.removeItem("cbAccessToken");
+            window.localStorage.removeItem("cbRefreshToken");
             await disconnectAsync();
             router.push("/app");
           }}
