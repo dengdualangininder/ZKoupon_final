@@ -45,39 +45,27 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
   ];
 
   const employeeSubmit = async () => {
-    // e.preventDefault();
-    console.log("employee submit clicked");
-    setPage("loading");
-
-    // check if matched. If so, return doc.transactions
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    // setAdmin(false);
-    // setPage("app");
-
-    // if error, return to Login
-    setPage("login");
-
-    //   await axios
-    //     .post(
-    //       import.meta.env.VITE_ISDEV == "true" ? "http://localhost:8080/login" : "https://server.lingpay.io/login",
-    //       { merchantEmail: merchantEmail, password: password },
-    //       { withCredentials: true }
-    //     )
-    //     .then((res) => {
-    //       if (res.data === "match") {
-    //         navigate("/app");
-    //       } else if (res.data === "nomatch") {
-    //         setErrorModal(true);
-    //         setErrorMsg("Email/password incorrect");
-    //       } else {
-    //         setErrorModal(true);
-    //         setErrorMsg("Internal server error");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       setErrorModal(true);
-    //       setErrorMsg("Server request error");
-    //     });
+    try {
+      //fetch doc
+      console.log("employeeSubmit()");
+      const res = await fetch("/api/employeeLogin", {
+        method: "POST",
+        body: JSON.stringify({ merchantEmail, employeePass }),
+        headers: { "content-type": "application/json" },
+      });
+      const data = await res.json();
+      // if success
+      if (data.status == "success") {
+        console.log("login successful");
+        setPage("loading");
+      } else {
+        console.log("failed to login");
+        setPage("login");
+      }
+    } catch (err) {
+      console.log("failed to login");
+      setPage("login");
+    }
   };
 
   const sendEmail = async () => {
@@ -186,7 +174,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
               <input
                 type="email"
                 className="mt-0.5 text-lg xs:text-xl font-bold px-1.5 py-2 xs:py-3 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms]"
-                onChange={(e) => setMerchantEmail(e.target.value)}
+                onBlur={(e) => setMerchantEmail(e.target.value)}
               ></input>
               {/*--password---*/}
               <label className="mt-4 text-lg xs:text-xl leading-snug font-medium">Password</label>
@@ -196,7 +184,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                   autoComplete="none"
                   autoCapitalize="none"
                   className="w-full mt-0.5 text-lg xs:text-xl font-bold px-1.5 py-2 xs:py-3 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms]"
-                  onChange={(e) => setEmployeePass(e.target.value)}
+                  onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
                   className="absolute right-[16px] xs:right-[18px] top-[10px] xs:top-[12px] cursor-pointer text-xl xs:text-2xl"

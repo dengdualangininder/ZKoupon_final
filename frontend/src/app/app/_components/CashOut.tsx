@@ -343,7 +343,7 @@ const CashOut = ({
   console.log("before render", "\ncexBalance:", cexBalance, "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="pt-4 min-h-[calc(100vh-84px)] w-full flex flex-col items-center">
+    <section className="py-4 min-h-[calc(100vh-84px)] w-full flex flex-col items-center overflow-y-auto">
       {/*---Flash Account + CEX + Statistics ---*/}
       <div className="w-[95%] sm:w-[80%] md:w-[70%] lg:w-[60%] flex flex-col space-y-4 text-gray-700">
         {/*---Flash Account---*/}
@@ -372,13 +372,13 @@ const CashOut = ({
               </div>
             </div>
             {/*---details---*/}
+
             <div className="mt-4 link" onClick={() => setFlashDetails(!flashDetails)}>
               {flashDetails ? "hide" : "show"} details
             </div>
             <div className={`${flashDetails ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-500`}>
               <div className="px-3 py-2 border border-gray-300 rounded-xl">
                 <div className="font-bold">Account Holdings</div>
-
                 <div className="mt-1 flex items-center">
                   <div className="relative w-[20px] h-[20px] lg:w-[20px] lg:h-[20px]">
                     <Image src="/usdc.svg" alt="USDC" fill />
@@ -386,10 +386,10 @@ const CashOut = ({
                   <div className="ml-0.5 text-base lg:text-lg font-bold">USDC</div>
                   <div className="ml-2 text-base lg:text-lg">{Number(flashBalance).toFixed(2)}</div>
                 </div>
-                <div className="mt-4 text-sm text-gray-400 font-bold">USDC ON NETWORKS</div>
+                {/* <div className="mt-4 text-sm text-gray-400 font-bold">USDC ON NETWORKS</div>
                 <div className="mt-1">
                   <span className="font-bold">Polygon</span> {Number(flashBalance).toFixed(2)}
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -428,7 +428,6 @@ const CashOut = ({
                 <div className={`${cexDetails ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-500`}>
                   <div className="px-3 py-2 border border-gray-300 rounded-xl">
                     <div className="font-bold">Account Holdings</div>
-
                     <div className="mt-1">
                       <div className="flex items-center">
                         <div className="relative w-[20px] h-[20px] lg:w-[20px] lg:h-[20px]">
@@ -465,10 +464,10 @@ const CashOut = ({
 
           {/*---above bordered stats---*/}
           <div className="mt-2 px-1">
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <div>Total Transactions</div>
               <div>{stats.totalTxns}</div>
-            </div>
+            </div> */}
 
             <div className="flex justify-between">
               <div>Total Revenue</div>
@@ -510,7 +509,7 @@ const CashOut = ({
             <div className="flex justify-between">
               <div>Total Transaction Fees</div>
               <div>
-                {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                - {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(1 * 0.015 * stats.currentRate).toFixed(2)}
               </div>
             </div>
@@ -527,14 +526,14 @@ const CashOut = ({
               </div>
             </div>
             <div className="mt-4 flex justify-between">
-              <div>Est. Stripe Costs</div>
+              <div>Est. Credit Card Costs</div>
               <div>
-                -{currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                - {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3).toFixed(2)}
               </div>
             </div>
             <div className="flex justify-between">
-              <div>Your Savings</div>
+              <div>Savings Over Credit Card</div>
               <div>
                 {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3 - stats.totalCurrencyAmount * 0.02).toFixed(2)}

@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Parser } from "@json2csv/plainjs"; // switch to papaparse or manually do it
+import { useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
 //wagmi
 import { useConfig } from "wagmi";
 import { writeContract } from "@wagmi/core";
 import { parseUnits } from "viem";
-// others
-import { QRCodeSVG } from "qrcode.react";
 // components
 import ErrorModal from "./modals/ErrorModal";
 // constants
@@ -15,19 +15,33 @@ import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 import { merchantType2data } from "@/utils/constants";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
+import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, Transaction } from "@/db/models/UserModel";
 
 const Payments = ({
   transactionsState,
   setTransactionsState,
-  isMobile,
   paymentSettingsState,
+  isAdmin,
+  signOutModal,
+  setSignOutModal,
+  searchModal,
+  setSearchModal,
+  setPage,
 }: {
   transactionsState: Transaction[];
   setTransactionsState: any;
-  isMobile: boolean;
   paymentSettingsState: PaymentSettings;
+  isAdmin: boolean;
+  signOutModal: boolean;
+  setSignOutModal: any;
+  searchModal: boolean;
+  setSearchModal: any;
+  setPage: any;
 }) => {
   console.log("Payments component rendered");
 
@@ -35,8 +49,9 @@ const Payments = ({
   const [clickedTxn, setClickedTxn] = useState<null | any>();
   const [clickedTxnIndex, setClickedTxnIndex] = useState<null | number>();
   const [refundStatus, setRefundStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
+  const [refundAllStatus, setRefundAllStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
   const [refundNoteStatus, setRefundNoteStatus] = useState("processing"); // "false" | "processing" | "true"
-  const [page, setPage] = useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
   const [selectedStartMonth, setSelectedStartMonth] = useState("select");
   const [selectedEndMonth, setSelectedEndMonth] = useState("select");
   // modal states
@@ -46,13 +61,15 @@ const Payments = ({
   const [downloadModal, setDownloadModal] = useState(false);
   const [downloadDates, setDownloadDates] = useState<string[]>([]);
   const [refundAllModal, setRefundAllModal] = useState(false);
+
   const [showToolsModal, setShowToolsModal] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  const maxPage = Math.ceil(transactionsState.length / 6);
+  const maxPageNumber = Math.ceil(transactionsState.length / 6);
 
   // hooks
   const config = useConfig();
+  const router = useRouter();
 
   // functions
   const getLocalTime = (mongoDate: string) => {
@@ -293,7 +310,7 @@ const Payments = ({
                 {/*---transactions---*/}
                 {transactionsState
                   .toReversed()
-                  .slice((page - 1) * 6, (page - 1) * 6 + 6)
+                  .slice((pageNumber - 1) * 6, (pageNumber - 1) * 6 + 6)
                   .map((txn: any, index: number) => (
                     <tr
                       id={txn.txnHash}
@@ -365,7 +382,7 @@ const Payments = ({
                       </td>
                     </tr>
                   ))}
-                {page == maxPage &&
+                {pageNumber == maxPageNumber &&
                   Array.from(Array(6 - (transactionsState.length % 6)).keys()).map((i) => (
                     <tr
                       className={`h-[calc((100vh-84px-50px-74px-4px)/6)] sm:portrait:h-[calc((100vh-140px-70px-120px-4px)/6)] md:landscape:h-[calc((100vh-70px-120px-4px)/6)]`}
@@ -380,46 +397,46 @@ const Payments = ({
           </div>
         )}
 
-        {/*--- more & navigation , 74pw-full x height---*/}
+        {/*--- buttons , w-full h-74px ---*/}
         <div className="w-full h-[74px] sm:portrait:h-[120px] md:landscape:h-[120px] flex items-center">
           <div className="w-full h-[44px] flex items-center justify-between">
-            {/*--- more ---*/}
+            {/*--- download button ---*/}
             <div
-              onClick={() => setShowToolsModal(true)}
-              className="pt-0.5 w-[44px] h-full border border-gray-300 rounded-md flex justify-center items-ceneter text-lg font-bold cursor-pointer lg:hover:bg-gray-100 active:opacity-40 select-none"
+              onClick={() => {
+                createDownloadDates();
+                setDownloadModal(true);
+              }}
+              className={`${
+                isAdmin ? "" : "invisible"
+              } w-[44px] h-full border border-gray-300 rounded-md flex justify-center items-ceneter text-xl font-bold cursor-pointer lg:hover:bg-gray-100 active:opacity-40 select-none`}
             >
-              ...
+              <div className="relative w-[30px] h-full">
+                <Image src="/download.svg" alt="download" fill />
+              </div>
             </div>
-            {/*--- navigation ---*/}
+            {/*--- navigation buttons ---*/}
             <div className="h-full flex items-center justify-center">
               <div
                 className="pb-1 text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer select-none"
-                onClick={() => (page === 1 ? "" : setPage(page - 1))}
+                onClick={() => (pageNumber === 1 ? "" : setPageNumber(pageNumber - 1))}
               >
                 {"\u2039"}
               </div>
-              <div className="text-xl sm:portrait:text-3xl md:landscape:text-3xl w-[20px] text-center select-none mx-2">{page}</div>
+              <div className="text-xl sm:portrait:text-3xl md:landscape:text-3xl w-[20px] text-center select-none mx-2">{pageNumber}</div>
 
               <div
                 className="pb-1 text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer select-none"
-                onClick={() => (page == maxPage ? "" : setPage(page + 1))}
+                onClick={() => (pageNumber == maxPageNumber ? "" : setPageNumber(pageNumber + 1))}
               >
                 {"\u203A"}
               </div>
             </div>
-            {/*--- qr code ---*/}
+            {/*--- search button ---*/}
             <div
-              onClick={() => {
-                if (paymentSettingsState.qrCodeUrl) {
-                  setShowQr(true);
-                } else {
-                  setErrorModal(true);
-                  setErrorMsg("Please first fill out your Payment Settings in the Settings menu tab.");
-                }
-              }}
-              className="relative w-[44px] h-full border border-gray-300 rounded-md"
+              onClick={() => setSearchModal(true)}
+              className={`${isAdmin ? "" : "invisible"} relative w-[44px] h-full border border-gray-300 rounded-md flex items-center justify-center`}
             >
-              <Image src="/qr.svg" alt="QR" fill />
+              <FontAwesomeIcon icon={faSearch} className="text-xl" />
             </div>
           </div>
         </div>
@@ -428,9 +445,9 @@ const Payments = ({
       {/*--- MODALS ---*/}
       {detailsModal && (
         <div className="">
-          <div className="px-8 flex flex-col justify-center space-y-6 w-[348px] h-[440px] bg-white rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-50">
+          <div className="modal">
             {/*---content---*/}
-            <div className="flex flex-col text-lg lg:text-base space-y-1 font-medium">
+            <div className="flex flex-col space-y-1 text-lg lg:text-base font-medium">
               <p>
                 <span className="text-gray-400 mr-1">Time</span> {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date).time} {getLocalTime(clickedTxn.date).ampm}
               </p>
@@ -444,77 +461,61 @@ const Payments = ({
                 <span className="text-gray-400 mr-1">Rate</span> {clickedTxn.blockRate}
               </p>
               <p>
-                <span className="text-gray-400 mr-1">Network</span> {clickedTxn.network}
-              </p>
-              <p>
                 <span className="text-gray-400 mr-1">Customer</span> <span className="break-all">{clickedTxn.customerAddress}</span>
               </p>
             </div>
-            {/*---actions---*/}
+            {/*--- action button ---*/}
             {clickedTxn.refund || refundStatus === "refunded" ? (
-              <div className="text-center text-lg font-bold text-gray-400 pt-8">Payment has been refunded</div>
+              <div className="mt-10 text-center text-lg font-bold text-gray-400 pt-8">This payment has been refunded</div>
             ) : (
-              <div className="flex justify-center space-x-10 font-medium text-base">
-                {/*---refund now---*/}
-                <button
-                  id="paymentsRefundButton"
-                  className={`${
-                    clickedTxn.refund || refundStatus === "refunded" ? "hidden" : " bg-white lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer"
-                  } w-[110px] h-[110px] flex justify-center items-center rounded-full border border-gray-200 drop-shadow-lg`}
-                  onClick={onClickRefund}
-                >
-                  {refundStatus === "initial" && clickedTxn.refund == false && (
-                    <div>
-                      Refund
-                      <br />
-                      Now
-                    </div>
-                  )}
-                  {refundStatus === "processing" && (
-                    <div className="flex items-center justify-center">
-                      <SpinningCircleGray />
-                    </div>
-                  )}
-                  {(refundStatus === "processed" || clickedTxn.refund == true) && "Refunded"}
-                </button>
-                {/*---mark "to be refunded"---*/}
-                <button
-                  className={`${
-                    clickedTxn.refund || refundStatus === "refunded" ? "hidden" : " bg-white lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer"
-                  } w-[110px] h-[110px] flex justify-center items-center rounded-full border border-gray-200 drop-shadow-lg`}
-                  onClick={onClickRefundNote}
-                >
-                  {refundNoteStatus == "processing" && (
-                    <div className="flex items-center justify-center">
-                      <SpinningCircleGray />
-                    </div>
-                  )}
-                  {refundNoteStatus != "processing" && (
-                    <div>
-                      {refundNoteStatus == "true" ? "Remove" : "Add"}
-                      <br />
-                      <span className="text-sm tracking-tighter">TO BE REFUNDED</span>
-                      <br />
-                      Note
-                    </div>
-                  )}
-                </button>
+              <div className="mt-10 flex justify-center space-x-10 font-medium text-base">
+                {isAdmin ? (
+                  <div>
+                    <button id="paymentsRefundButton" className="modalButtonBlue" onClick={onClickRefund}>
+                      {refundStatus === "initial" && clickedTxn.refund == false && <div>Refund Now</div>}
+                      {refundStatus === "processing" && (
+                        <div className="flex items-center justify-center">
+                          <SpinningCircleGray />
+                        </div>
+                      )}
+                      {(refundStatus === "processed" || clickedTxn.refund == true) && "Refunded"}
+                    </button>
+                    <button className="mt-6 modalButtonBlue" onClick={onClickRefundNote}>
+                      {refundNoteStatus == "processing" ? (
+                        <div className="flex items-center justify-center">
+                          <SpinningCircleWhite />
+                        </div>
+                      ) : (
+                        <div>
+                          {refundNoteStatus == "true" ? "Remove " : "Add "}
+                          "To Be Refunded" Note
+                        </div>
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <button className="modalButtonBlue" onClick={onClickRefundNote}>
+                    {refundNoteStatus == "processing" ? (
+                      <div className="flex items-center justify-center">
+                        <SpinningCircleWhite />
+                      </div>
+                    ) : (
+                      <div>
+                        {refundNoteStatus == "true" ? "Remove " : "Add "}
+                        "To Be Refunded" Note
+                      </div>
+                    )}
+                  </button>
+                )}
               </div>
             )}
-            {/*---CLOSE BUTTON---*/}
-            {/* <button
-              onClick={() => setDetailsModal(false)}
-              className="absolute top-[calc(100%-28px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] text-3xl rounded-full h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 lg:hover:bg-red-500 active:bg-red-300"
-            >
-              <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-            </button> */}
           </div>
           <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
       {downloadModal && (
         <div>
-          <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
+          <div className="w-[350px] h-[300px] px-8 pb-10 flex flex-col items-center rounded-xl bg-white fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
             {/*---content---*/}
             <div className="w-full grow flex flex-col justify-center">
               {/*---start---*/}
@@ -540,82 +541,52 @@ const Payments = ({
                 </div>
               </div>
             </div>
-            <button
-              className="w-[70%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
-              onClick={onClickDownload}
-            >
+            <button className="modalButtonBlue" onClick={onClickDownload}>
               Download
             </button>
-            {/*---close button---*/}
-            {/* <button
-              onClick={() => setDownloadModal(false)}
-              className="absolute top-[calc(100%-28px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] text-3xl rounded-full h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 lg:hover:bg-red-500 active:bg-red-300"
-            >
-              <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-            </button> */}
           </div>
           <div className="modalBlackout" onClick={() => setDownloadModal(false)}></div>
         </div>
       )}
       {refundAllModal && (
         <div>
-          <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
+          <div className="modal h-[330px] px-8 py-10 flex flex-col items-center">
             {/*---content---*/}
             <div className="w-full grow text-xl text-center flex items-center">Refund all payments marked as "To Be Refunded"?</div>
-            <button
-              className="mt-10 w-[70%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
-              onClick={onClickRefundAll}
-            >
+            <button className="mt-10 modalButtonBlue" onClick={onClickRefundAll}>
               Confirm
             </button>
           </div>
           <div className="modalBlackout" onClick={() => setRefundAllModal(false)}></div>
         </div>
       )}
-      {showToolsModal && (
+      {searchModal && (
         <div>
-          <div className="w-[330px] h-[330px] px-8 py-10 flex flex-col items-center justify-evenly rounded-3xl bg-white border border-gray-500 fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
-            <button
-              className="w-[85%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
-              onClick={() => {
-                setShowToolsModal(false);
-                setRefundAllModal(true);
-              }}
-            >
-              Refund All
-            </button>
-            <button
-              className="w-[85%] h-[56px] lg:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 rounded-full text-white text-lg font-bold tracking-wide"
-              onClick={() => {
-                createDownloadDates();
-                setShowToolsModal(false);
-                setDownloadModal(true);
-              }}
-            >
-              Download History
-            </button>
+          <div className="modal">
+            {/*---content---*/}
+            <div className="grow text-xl text-center flex items-center">Function coming soon</div>
           </div>
-          <div className="modalBlackout" onClick={() => setShowToolsModal(false)}></div>
+          <div className="modalBlackout" onClick={() => setSearchModal(false)}></div>
         </div>
       )}
-      {showQr && (
-        <div onClick={() => setShowQr(false)}>
-          <div className="fixed inset-0 z-10 bg-black"></div>
-          <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-[20]">
-            <div className="w-full h-full relative">
-              <Image src="/placard.svg" alt="placard" fill />
-            </div>
+      {signOutModal && (
+        <div>
+          <div className="modal">
+            {/*---content---*/}
+            <div className="grow text-xl text-center flex items-center">Do you want to sign out?</div>
+            {/*---button---*/}
+            <button
+              onClick={() => {
+                setSignOutModal(false);
+                deleteCookie("jwt");
+                setPage("login");
+              }}
+              className="mt-10 modalButtonBlue"
+            >
+              Confirm
+            </button>
           </div>
-          <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[30]">
-            <QRCodeSVG
-              xmlns="http://www.w3.org/2000/svg"
-              size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (220 / 424.26)) : Math.round(window.innerWidth * (220 / 424.26))}
-              bgColor={"#ffffff"}
-              fgColor={"#000000"}
-              level={"L"}
-              value={paymentSettingsState.qrCodeUrl}
-            />
-          </div>
+          <div className="modalBlackout" onClick={() => setSignOutModal(false)}></div>
         </div>
       )}
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}

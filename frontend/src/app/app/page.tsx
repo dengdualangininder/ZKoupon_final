@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { getCookie } from "cookies-next";
 // wagmi
 import { useAccount, useConfig, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
 // web3Auth
@@ -11,6 +12,7 @@ import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
 import Pusher from "pusher-js";
 import { getPublic, getPublicCompressed } from "@toruslabs/eccrypto";
+import { QRCodeSVG } from "qrcode.react";
 // components
 import Login from "./_components/Login";
 import Payments from "./_components/Payments";
@@ -26,6 +28,7 @@ import { abb2full, countryData } from "@/utils/constants";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { far } from "@fortawesome/free-regular-svg-icons";
 import { faList, faFileInvoiceDollar, faGear } from "@fortawesome/free-solid-svg-icons";
 // import PullToRefresh from "pulltorefreshjs";
 // types
@@ -47,6 +50,8 @@ const User = () => {
   const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "intro" | "app"
   // modals
   const [exchangeModal, setExchangeModal] = useState(false);
+  const [signOutModal, setSignOutModal] = useState(false);
+  const [searchModal, setSearchModal] = useState(false);
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
@@ -133,6 +138,14 @@ const User = () => {
       // setPage("saveToHome");
       // console.log("page set to saveToHome");
       // return;
+    }
+
+    const jwt = getCookie("jwt");
+    console.log(jwt);
+    if (jwt) {
+      verifyAndGetEmployeeData();
+
+      return;
     }
 
     // query localStorage to determine user logged into web3Auth
@@ -243,6 +256,24 @@ const User = () => {
     }
   };
 
+  const verifyAndGetEmployeeData = async () => {
+    console.log("/app, verifyAndGetEmployeeData() run once");
+    const res = await fetch("/api/getEmployeeData", {
+      method: "GET",
+      headers: { "content-type": "application/json" },
+    });
+    const data = await res.json();
+    if (data.status == "success") {
+      console.log("success");
+      setTransactionsState(data.transactions);
+      setPaymentSettingsState(data.paymentSettings);
+      setIsAdmin(false);
+      setPage("app");
+    } else {
+      console.log("employee login failed");
+    }
+  };
+
   const subscribePusher = async () => {
     // instantiate
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY ?? "", { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "" });
@@ -317,12 +348,6 @@ const User = () => {
     }
   };
 
-  const menuArray = [
-    { id: "payments", title: "Payments", img: "/payments.svg" },
-    { id: "cashOut", title: "Cash Out", img: "/cashout.svg" },
-    { id: "settings", title: "Settings", img: "/settings.svg" },
-  ];
-
   return (
     <div className="pl-[calc(100vw-100%)] text-gray-800">
       {page === "loading" && (
@@ -345,40 +370,60 @@ const User = () => {
               </div>
             </div>
             {/*---menu---*/}
-            {isAdmin ? (
-              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] sm:portrait:h-[140px] landscape:h-[56%] lg:landscape:h-[50%] landscape:space-y-8 flex landscape:flex-col items-center portrait:justify-evenly landscape:justify-between portrait:pb-3">
-                {menuArray.map((i) => (
-                  <div
-                    id={i.id}
-                    key={i.id}
-                    className={`${menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
-                    onClick={(e) => {
-                      setMenu(e.currentTarget.id);
-                    }}
-                  >
-                    <div className={`relative w-[66px] h-[18px] sm:h-[36px] point-events-none`}>
-                      <Image src={i.img} alt={i.title} fill />
-                    </div>
-                    <div className="mt-[2px] landscape:text-[15px] portrait:text-[15px] landscape:sm:text-lg portrait:sm:text-2xl landscape:md:text-2xl portrait:md:text-2xl  font-medium pointer-events-none">
-                      {i.title}
-                    </div>
+            <div
+              className={`portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] sm:portrait:h-[140px] landscape:h-[56%] lg:landscape:h-[50%] landscape:space-y-8 flex items-center portrait:justify-around landscape:flex-col landscape:justify-between portrait:pb-3`}
+            >
+              {(isAdmin
+                ? [
+                    { id: "qrCode", title: "QR Code", img: "/qr.svg" },
+                    { id: "payments", title: "Payments", img: "/payments.svg" },
+                    { id: "cashOut", title: "Cash Out", img: "/cashout.svg" },
+                    { id: "settings", title: "Settings", img: "/settings.svg" },
+                  ]
+                : [
+                    { id: "payments", title: "Sign Out", img: "/signout.svg", modal: "signOutModal" },
+                    { id: "qrCode", title: "QR Code", img: "/qr.svg" },
+                    { id: "payments", title: "Search", img: "/search.svg", modal: "searchModal" },
+                  ]
+              ).map((i) => (
+                <div
+                  id={i.id}
+                  key={i.id}
+                  onClick={(e) => {
+                    setMenu(e.currentTarget.id);
+                    if (i.modal) {
+                      if (i.modal == "signOutModal") {
+                        setSignOutModal(true);
+                      } else if (i.modal == "searchModal") {
+                        setSearchModal(true);
+                      }
+                    }
+                  }}
+                  className={`${!isAdmin || menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
+                >
+                  <div className="relative w-[66px] h-[22px] sm:h-[36px] point-events-none">
+                    <Image src={i.img} alt={i.title} fill />
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex md:block text-lg font-bold space-x-3 xs:space-x-4 md:space-x-0 md:space-y-4">
-                <div id="appPayments" className="cursor-pointer hover:bg-white px-4 py-3 flex flex-col xs:flex-row items-center rounded-3xl">
-                  <div className="w-[36px] flex justify-center pointer-events-none">
-                    <FontAwesomeIcon icon={faList} className="text-2xl mr-1 pointer-events-none" />
+                  <div className="landscape:text-sm portrait:text-sm landscape:sm:text-lg portrait:sm:text-2xl landscape:md:text-2xl portrait:md:text-2xl  font-medium pointer-events-none">
+                    {i.title}
                   </div>
-                  <div className="pointer-events-none">Payments</div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
           {/*---menu pages---*/}
           {menu === "payments" && (
-            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState!} setTransactionsState={setTransactionsState} isMobile={isMobile} />
+            <Payments
+              paymentSettingsState={paymentSettingsState!}
+              transactionsState={transactionsState!}
+              setTransactionsState={setTransactionsState}
+              isAdmin={isAdmin}
+              signOutModal={signOutModal}
+              setSignOutModal={setSignOutModal}
+              searchModal={searchModal}
+              setSearchModal={setSearchModal}
+              setPage={setPage}
+            />
           )}
           {menu === "cashOut" && isAdmin && (
             <CashOut
@@ -404,6 +449,37 @@ const User = () => {
               setExchangeModal={setExchangeModal}
               setPage={setPage}
             />
+          )}
+          {menu === "qrCode" && (
+            <div onClick={() => setMenu("payments")}>
+              <div className="fixed inset-0 z-[10] bg-black">
+                <div className="absolute bottom-[60px] w-full text-center text-base font-medium text-white z-[30]">Tap screen to exit</div>
+              </div>
+              <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-[20]">
+                <div className="w-full h-full relative">
+                  <Image src="/placard.svg" alt="placard" fill />
+                </div>
+              </div>
+              <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[20]">
+                <QRCodeSVG
+                  xmlns="http://www.w3.org/2000/svg"
+                  size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (220 / 424.26)) : Math.round(window.innerWidth * (220 / 424.26))}
+                  bgColor={"#ffffff"}
+                  fgColor={"#000000"}
+                  level={"L"}
+                  value={paymentSettingsState?.qrCodeUrl ?? ""}
+                />
+              </div>
+            </div>
+          )}
+          {menu == "signOut" && (
+            <div>
+              <div className="modal">
+                {/*---content---*/}
+                <div className="mb-8 grow flex flex-col justify-center text-lg md:text-base text-center">{errorMsg}</div>
+              </div>
+              <div className="modalBlackout" onClick={() => setErrorModal(false)}></div>
+            </div>
           )}
         </div>
       )}

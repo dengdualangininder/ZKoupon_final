@@ -11,7 +11,6 @@ export type PaymentSettings = {
   merchantBusinessType: string;
   merchantFields: string[];
   merchantGoogleId: string;
-  employeePass: string;
   qrCodeUrl: string;
 };
 
@@ -21,6 +20,7 @@ export type CashoutSettings = {
   cexApiKey: string;
   cexSecretKey: string;
   cexAccountName: string;
+  employeePass: string;
 };
 
 export type Transaction = {
@@ -53,17 +53,12 @@ export type Transaction = {
 };
 
 export interface IUser extends Document {
-  cbRefreshToken: string;
-  web3AuthSessionId: string;
   paymentSettings: PaymentSettings;
   cashoutSettings: CashoutSettings;
   transactions: Transaction[];
-  intro: boolean;
 }
 
 const userSchema: Schema = new mongoose.Schema<IUser>({
-  cbRefreshToken: String,
-  web3AuthSessionId: String,
   paymentSettings: {
     merchantEvmAddress: String,
     merchantEmail: String,
@@ -75,7 +70,6 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     merchantBusinessType: String,
     merchantFields: [String], // dates, count, sku, shipping, custom, <custom>,
     merchantGoogleId: String,
-    employeePass: String,
     qrCodeUrl: String,
   },
   cashoutSettings: {
@@ -84,6 +78,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     cexApiKey: String,
     cexSecretKey: String,
     cexAccountName: String,
+    employeePass: String,
   },
   transactions: [
     {
@@ -115,7 +110,6 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
       txnHash: String,
     },
   ],
-  intro: { type: Boolean },
 });
 
 const UserModel = mongoose.models.User || mongoose.model<IUser>("User", userSchema);

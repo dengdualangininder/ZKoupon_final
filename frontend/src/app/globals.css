@@ -242,8 +242,20 @@
     @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
   }
 
+  .modal {
+    @apply w-[350px] min-h-[280px] pt-10 pb-12 px-6 flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[90];
+  }
+
   .modalBlackout {
     @apply opacity-60 fixed inset-0 z-10 bg-black;
+  }
+
+  .modalButtonBlue {
+    @apply w-[300px] h-[56px] text-white text-lg font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-[4px];
+  }
+
+  .modalButtonWhite {
+    @apply w-[300px] h-[56px] text-lg font-medium border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
   }
 
   .introNext {

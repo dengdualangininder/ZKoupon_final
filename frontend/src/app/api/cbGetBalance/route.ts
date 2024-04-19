@@ -5,7 +5,6 @@ import { keccak256, getAddress } from "viem";
 import * as jose from "jose";
 
 export const POST = async (request: Request) => {
-  console.log(Date.now());
   console.log("entered getCbBalance endpoint");
   const { cbAccessToken, cbRefreshToken, idToken, publicKey } = await request.json();
 
@@ -13,11 +12,8 @@ export const POST = async (request: Request) => {
   if (cbAccessToken) {
     var { balance, cexEvmAddress, cexAccountName } = await getCbBalance(cbAccessToken);
   }
-  console.log(Date.now());
   if (balance) {
     // success
-    console.log(Date.now());
-    console.log("balance:", balance, "cexEvmAddress:", cexEvmAddress, "cexAccountName:", cexAccountName);
     saveToDb(publicKey, idToken, cexEvmAddress, cexAccountName);
     return Response.json({ status: "success", balance: balance, cexEvmAddress: cexEvmAddress, cexAccountName: cexAccountName });
   } else {
@@ -41,8 +37,7 @@ export const POST = async (request: Request) => {
 };
 
 const getCbBalance = async (cbAccessToken: string) => {
-  console.log(Date.now());
-  console.log("getCbBalance function, cbAccessToken:", cbAccessToken);
+  console.log("getCbBalance function");
   try {
     // get balance
     const res = await axios.get("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
@@ -63,8 +58,6 @@ const getCbBalance = async (cbAccessToken: string) => {
     });
     const cexAccountName = resCexAccountName.data.data.name;
     // return
-    console.log(Date.now());
-    console.log("balance:", balance, "cexEvmAddress:", cexEvmAddress, "cexAccountName:", cexAccountName);
     return { balance, cexEvmAddress, cexAccountName };
   } catch (err: any) {
     return { balance: undefined };
@@ -88,7 +81,6 @@ const saveToDb = async (publicKey: string, idToken: string, cexEvmAddress: strin
         { "paymentSettings.merchantEvmAddress": merchantEvmAddress },
         { "cashoutSettings.cexEvmAddress": cexEvmAddress, "cashoutSettings.cexAccountName": cexAccountName }
       );
-      console.log(Date.now());
       console.log("cexEvmAddress and cexAccountName saved to db");
       return true;
     } else {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { deleteCookie } from "cookies-next";
 // qr code
 import { QRCodeSVG } from "qrcode.react";
 import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
@@ -16,16 +17,16 @@ import QrModal from "./modals/QrModal";
 import ErrorModal from "./modals/ErrorModal";
 import FigmaModal from "./modals/FigmaModal";
 import ExchangeModal from "./modals/ExchangeModal";
-// import APIModal from "./modals/ApiKeyModal";
-import DepositAddressModal from "./modals/DepositAddressModal";
+import EmployeePassModal from "./modals/EmployeePassModal";
+import APIModal from "./modals/ApiKeyModal";
 // constants
-import { countryData, CEXdata, activeCountries, merchantType2data } from "@/utils/constants";
+import { countryData, activeCountries, merchantType2data } from "@/utils/constants";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 // types
-import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
+import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
 const Settings = ({
   paymentSettingsState,
@@ -61,6 +62,7 @@ const Settings = ({
   const [errorModal, setErrorModal] = useState(false);
   const [faqModal, setFaqModal] = useState(false);
   const [qrModal, setQrModal] = useState(false);
+  const [employeePassModal, setEmployeePassModal] = useState(false);
   // consider removing
   const [apiModal, setApiModal] = useState(false);
   const [depositAddressModal, setDepositAddressModal] = useState(false);
@@ -162,6 +164,27 @@ const Settings = ({
     }
   };
 
+  const saveEmployeePass = async (e: React.FocusEvent<HTMLInputElement, Element>) => {
+    try {
+      const res = await fetch("/api/saveEmployeePass", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ employeePass: e.target.value, idToken, publicKey }),
+      });
+      const data = await res.json();
+
+      if (data === "saved") {
+        console.log("settings saved");
+      } else {
+        setErrorMsg("Internal server error. Data was not saved.");
+        setErrorModal(true);
+      }
+    } catch (e) {
+      setErrorMsg("Server request error. Data was not saved.");
+      setErrorModal(true);
+    }
+  };
+
   const settingsMenu = [
     { name: "My QR Code", page: "myQr" },
     { name: "FAQ", page: "faq" },
@@ -217,6 +240,7 @@ const Settings = ({
         <QrModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setQrModal={setQrModal} url={url} setFigmaModal={setFigmaModal} />
       )}
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} />}
       {figmaModal && <FigmaModal setFigmaModal={setFigmaModal} url={url} />}
       {exchangeModal && <ExchangeModal setExchangeModal={setExchangeModal} CEX={cashoutSettingsState.cex} />}
       {/* {apiModal && <APIModal setApiModal={setApiModal} />} */}
@@ -625,13 +649,25 @@ const Settings = ({
         {/*---employee password---*/}
         <div className="fieldContainer">
           <label className="labelfont">Employee Password</label>
-          <input
-            className={`inputfont placeholder:font-normal placeholder:italic`}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, employeePass: e.currentTarget.value })}
-            onBlur={() => saveSettings()}
-            value={paymentSettingsState.employeePass}
-            placeholder="empty"
-          ></input>
+          <div className="ml-2 relative">
+            <div id="employeePassMask" onClick={() => setEmployeePassModal(true)} className="absolute top-0 right-0 h-full w-full"></div>
+            <input
+              id="employeePass"
+              className="w-full text-lg xs:text-base py-1.5 pl-2 pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic"
+              onBlur={async (e: React.FocusEvent<HTMLInputElement, Element>) => {
+                document.getElementById("employeePassMask")?.classList.remove("hidden");
+                await saveEmployeePass(e);
+                if (e.target.value) {
+                  (document.getElementById("employeePass") as HTMLInputElement).value = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
+                } else {
+                  (document.getElementById("employeePass") as HTMLInputElement).value = "";
+                }
+              }}
+              defaultValue={cashoutSettingsState.employeePass ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" : ""}
+              placeholder="empty"
+              autoComplete="off"
+            ></input>
+          </div>
         </div>
 
         {/*---merchantGoogleId---*/}
@@ -662,6 +698,7 @@ const Settings = ({
           onClick={async () => {
             window.sessionStorage.removeItem("cbAccessToken");
             window.localStorage.removeItem("cbRefreshToken");
+            deleteCookie("jwt");
             await disconnectAsync();
             router.push("/app");
           }}
