@@ -3,36 +3,29 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileInvoiceDollar, faList, faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const Instructions = ({
-  paymentSettingsState,
-  cashoutSettingsState,
-  setExchangeModal,
-  setFaqModal,
-}: {
-  paymentSettingsState: any;
-  cashoutSettingsState: any;
-  setExchangeModal: any;
-  setFaqModal: any;
-}) => {
+const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal }: { paymentSettingsState: any; cashoutSettingsState: any; setFaqModal: any }) => {
   const [expand, setExpand] = useState("");
 
   return (
     <div>
-      <div className="w-[90%] h-[88%] pb-8 flex flex-col items-center rounded-3xl fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-53%] bg-white border border-gray-400 z-[90]">
+      <div className="w-[90%] h-[90%] pb-8 flex flex-col items-center rounded-xl fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white border border-gray-400 z-[90]">
         {/*---close button---*/}
-        <button
+        <div onClick={() => setFaqModal(false)} className="absolute top-0 right-1 px-4 py-3 text-4xl active:bg-gray-200 rounded-lg">
+          &#10005;
+        </div>
+        {/* <button
           onClick={() => setFaqModal(false)}
           className="absolute top-[calc(100%-20px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 rounded-full hover:bg-red-500 text-3xl"
         >
           <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-        </button>
+        </button> */}
 
         {/*--- title ---*/}
         <div className="py-4 w-full text-center text-2xl font-bold">Instructions</div>
 
         {/*--- body ---*/}
         <div className="px-4 flex flex-col overflow-y-auto">
-          <div className="pt-6 flex flex-col space-y-6">
+          <div className="pt-4 flex flex-col space-y-6">
             {/*--- Step 1: Set up ---*/}
             <div className="">
               {/*--- header ---*/}
@@ -151,7 +144,7 @@ const Instructions = ({
                       </div>
                       <div className="mt-4 font-bold">How do I confirm payment?</div>
                       <div className="mt-1 relative">
-                        Several seconds after payment, your (or your employee's) Flash App will receive a push notification. The payment will also appear in{" "}
+                        Several seconds after payment, you will receive a notification banner indicating a successful payment. The payment will then appear in{" "}
                         <span className="text-blue-700 whitespace-nowrap font-bold">
                           <FontAwesomeIcon icon={faList} className="pr-0.5" />
                           Payments
@@ -160,12 +153,12 @@ const Instructions = ({
                       </div>
                       <div className="mt-4 font-bold">How should I log the payment?</div>
                       <div className="mt-1">
-                        All payment details can be downloaded in{" "}
+                        If you have PoS device, log the payment in your PoS device as you would a cash payment. If you don't, all payment details can be downloaded in{" "}
                         <span className="text-blue-700 font-bold whitespace-nowrap">
                           <FontAwesomeIcon icon={faList} className="px-0.5" />
                           Payments
-                        </span>
-                        . But, we recommend you log the payment as a cash payment in your PoS device to maintain a single system.
+                        </span>{" "}
+                        for record keeping.
                       </div>
                     </div>
                   ) : (
@@ -262,7 +255,12 @@ const Instructions = ({
                         <div className="mr-1">1.</div>
                         <div>
                           Sign up for a Coinbase account (
-                          <span className="link" onClick={() => setExchangeModal(true)}>
+                          <span
+                            className="link"
+                            onClick={() => {
+                              // setExchangeModal(true);
+                            }}
+                          >
                             instructions
                           </span>
                           )
@@ -295,7 +293,12 @@ const Instructions = ({
                         <div className="mr-1">1.</div>
                         <div>
                           Sign up for an account on {cashoutSettingsState.cex} (
-                          <span className="link" onClick={() => setExchangeModal(true)}>
+                          <span
+                            className="link"
+                            onClick={() => {
+                              // setExchangeModal(true);
+                            }}
+                          >
                             instructions
                           </span>
                           )

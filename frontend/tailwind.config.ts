@@ -150,9 +150,9 @@ module.exports = {
     screens: {
       xs: "480px",
       sm: "600px",
-      md: "900px",
-      lg: "1200px",
-      xl: "1400px",
+      md: "750px",
+      lg: "1000px",
+      xl: "1250px",
     },
   },
   plugins: [

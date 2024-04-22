@@ -33,6 +33,26 @@
 }
 
 @layer components {
+  .textSm {
+    @apply text-sm portrait:sm:text-lg landscape:lg:text-lg;
+  }
+
+  .textBase {
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl;
+  }
+
+  .textLg {
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl;
+  }
+
+  .textXl {
+    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl;
+  }
+
+  .text2xl {
+    @apply text-2xl portrait:sm:text-4xl landscape:lg:text-4xl;
+  }
+
   .chainLogo {
     @apply h-[38px] pointer-events-none;
   }
@@ -55,6 +75,10 @@
 
   .link {
     @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
+  }
+
+  .tooltip {
+    @apply invisible group-hover:visible absolute px-3 py-2 text-base portrait:sm:text-xl landscape:lg:text-xl leading-snug bg-slate-100 border border-blue-500 rounded-lg z-[1];
   }
 
   .learnContainer {
@@ -158,39 +182,75 @@
   }
 
   .settingsHeader {
-    @apply mt-10 font-bold text-blue-600;
+    @apply text-sm portrait:sm:text-lg landscape:lg:text-xl font-bold text-blue-600;
   }
 
   .fieldContainer {
     @apply flex items-center justify-between py-2 border-b;
   }
 
-  .labelfont {
-    @apply text-base xs:text-sm shrink-0 text-gray-400 font-medium leading-snug;
+  .settingsLabelFont {
+    @apply text-base portrait:sm:text-2xl landscape:lg:text-2xl leading-snug text-gray-400 font-medium shrink-0;
   }
 
-  .inputfont {
-    @apply ml-2 w-full text-lg xs:text-base py-1.5 pl-2 pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+  .settingsInputFont {
+    @apply ml-3 w-full max-w-[400px] text-lg portrait:sm:text-2xl landscape:lg:text-2xl py-1 portrait:sm:py-3 landscape:lg:py-3 pl-2 pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
-  .selectfont {
-    @apply text-lg xs:text-base py-1.5 px-3 font-medium text-gray-800 bg-white rounded-md outline-transparent;
+  .settingsSelectFont {
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl py-1 portrait:sm:py-3 landscape:lg:py-3 px-3 font-medium text-gray-800 bg-white rounded-md outline-transparent;
   }
 
-  .loginbutton {
-    @apply h-[60px] xs:h-[48px] bg-blue-500 text-2xl xs:text-lg font-bold text-white rounded-lg lg:hover:bg-blue-600;
+  .settingsInfo {
+    @apply ml-1.5 text-sm portrait:sm:text-lg landscape:lg:text-lg portrait:sm:pb-[1px] landscape:lg:pb-[1px] text-gray-300;
   }
 
-  .inputfontlogin {
-    @apply mt-0.5 text-lg font-bold xs:text-base text-gray-800 px-1.5 py-2 xs:py-2 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+  .inputOutline {
+    @apply border border-gray-500 rounded-[4px] outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
-  .loginlabelfont {
-    @apply text-base xs:text-sm;
+  .loginInputFont {
+    @apply w-full font-medium px-1.5 py-2 xs:py-3 border border-gray-500 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .checkboxMobile {
     @apply w-6 h-6 xs:w-4 xs:h-4;
+  }
+
+  .modal {
+    @apply w-[330px] min-h-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 text-xl portrait:sm:text-2xl landscape:lg:text-2xl leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  }
+
+  .modalBlackout {
+    @apply opacity-60 fixed inset-0 z-10 bg-black;
+  }
+
+  .modalButtonBlue {
+    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-white bg-blue-500 border border-blue-500 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+  }
+
+  .modalButtonWhite {
+    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-700 bg-white border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+  }
+
+  .introNext {
+    @apply mr-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:md:w-[140px] landscape:md:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:md:text-3xl portrait:sm:text-3xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+  }
+
+  .introBack {
+    @apply ml-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:md:w-[140px] landscape:md:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:md:text-3xl portrait:sm:text-3xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+  }
+
+  .introFont {
+    @apply text-xl landscape:md:text-3xl landscape:md:leading-relaxed portrait:sm:text-3xl portrait:sm:leading-relaxed;
+  }
+
+  .introFontLarge {
+    @apply text-3xl leading-relaxed landscape:md:text-4xl landscape:md:leading-[56px] portrait:sm:text-4xl portrait:sm:leading-[56px];
+  }
+
+  .introPageContainer {
+    @apply w-[88%] portrait:sm:w-[590px] landscape:md:w-[630px] h-full portrait:sm:h-[90%] flex flex-col items-center;
   }
 
   /* ----UNUSED---- */
@@ -240,30 +300,6 @@
 
   .buttonWhiteTextLg {
     @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
-  }
-
-  .modal {
-    @apply w-[350px] min-h-[280px] pt-10 pb-12 px-6 flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[90];
-  }
-
-  .modalBlackout {
-    @apply opacity-60 fixed inset-0 z-10 bg-black;
-  }
-
-  .modalButtonBlue {
-    @apply w-[300px] h-[56px] text-white text-lg font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-[4px];
-  }
-
-  .modalButtonWhite {
-    @apply w-[300px] h-[56px] text-lg font-medium border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
-  }
-
-  .introNext {
-    @apply text-xl px-5 py-3 font-bold text-white bg-blue-500 active:bg-blue-400 lg:hover:bg-blue-600 rounded-md;
-  }
-
-  .introBack {
-    @apply text-xl px-5 py-3 font-bold text-gray-700 border-2 border-gray-700 active:opacity-40 lg:hover:opacity-40 rounded-md;
   }
 }
 

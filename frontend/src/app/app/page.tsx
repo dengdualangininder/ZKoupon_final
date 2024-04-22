@@ -2,11 +2,11 @@
 // nextjs
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import { getCookie } from "cookies-next";
+import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
-import { useAccount, useConfig, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
+import { useAccount, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
 // web3Auth
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
@@ -20,16 +20,9 @@ import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
-import Instructions from "./_components/modals/FaqModal";
-import MyQr from "./_components/modals/QrModal";
 import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 // constants
-import { abb2full, countryData } from "@/utils/constants";
-// images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { faList, faFileInvoiceDollar, faGear } from "@fortawesome/free-solid-svg-icons";
+import { abb2full, countryData, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
@@ -47,9 +40,8 @@ const User = () => {
   const [transactionsState, setTransactionsState] = useState<Transaction[] | null>([]);
   // states
   const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
-  const [page, setPage] = useState("loading"); // "loading" | "login" | "saveToHome" | "intro" | "app"
+  const [page, setPage] = useState("loading"); // "loading" (default) | "login" | "saveToHome" | "intro" | "app"
   // modals
-  const [exchangeModal, setExchangeModal] = useState(false);
   const [signOutModal, setSignOutModal] = useState(false);
   const [searchModal, setSearchModal] = useState(false);
   // other
@@ -60,17 +52,10 @@ const User = () => {
   const [idToken, setIdToken] = useState("");
   const [publicKey, setPublicKey] = useState("");
 
-  const [isGettingDoc, setIsGettingDoc] = useState(true);
-  const [reload, setReload] = useState(true);
-  const [introModal, setIntroModal] = useState(false);
-  const [isAppLoading, setIsAppLoading] = useState(true);
-
   // hooks
-  const router = useRouter();
   const account = useAccount();
   const { data: walletClient } = useWalletClient();
   let web3Auth = useWeb3Auth();
-  let config = useConfig();
   const { disconnectAsync } = useDisconnect();
   const initialized = useRef(false); //makes it so API runs once
 
@@ -104,8 +89,6 @@ const User = () => {
   // });
 
   useEffect(() => {
-    // setPage("intro");
-    // return;
     console.log("/app, page.tsx, useEffect run once");
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
@@ -144,7 +127,6 @@ const User = () => {
     console.log(jwt);
     if (jwt) {
       verifyAndGetEmployeeData();
-
       return;
     }
 
@@ -358,21 +340,30 @@ const User = () => {
       )}
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
-      {page === "intro" && <Intro isMobile={isMobile} setPage={setPage} paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />}
+      {page === "intro" && (
+        <Intro
+          isMobile={isMobile}
+          setPage={setPage}
+          idToken={idToken}
+          publicKey={publicKey}
+          paymentSettingsState={paymentSettingsState!}
+          setPaymentSettingsState={setPaymentSettingsState}
+          cashoutSettingsState={cashoutSettingsState!}
+          setCashoutSettingsState={setCashoutSettingsState}
+        />
+      )}
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
-          <div className="portrait:w-full portrait:h-[84px] sm:portrait:h-[140px] landscape:w-[120px] md:landscape:w-[160px] landscape:h-screen flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 relative">
+          <div className="portrait:w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:w-[120px] landscape:md:w-[160px] landscape:h-screen flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 bg-white z-[1] relative">
             {/*--- logo ---*/}
-            <div className="portrait:hidden landscape:block absolute top-6 lg:top-8 right-[calc(w-[100%]/2)]">
-              <div className="relative w-[100px] h-[55px]">
+            <div className="w-full hidden landscape:lg:block absolute top-[20px]">
+              <div className="relative w-full landscape:lg:h-[48px] landscape:xl:h-[52px] landscape">
                 <Image src={"/logo.svg"} alt="logo" fill />
               </div>
             </div>
             {/*---menu---*/}
-            <div
-              className={`portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] sm:portrait:h-[140px] landscape:h-[56%] lg:landscape:h-[50%] landscape:space-y-8 flex items-center portrait:justify-around landscape:flex-col landscape:justify-between portrait:pb-3`}
-            >
+            <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-3">
               {(isAdmin
                 ? [
                     { id: "qrCode", title: "QR Code", img: "/qr.svg" },
@@ -401,10 +392,10 @@ const User = () => {
                   }}
                   className={`${!isAdmin || menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
                 >
-                  <div className="relative w-[66px] h-[22px] sm:h-[36px] point-events-none">
+                  <div className="relative w-[66px] h-[22px] portrait:sm:h-[36px] landscape:lg:h-[36px] point-events-none">
                     <Image src={i.img} alt={i.title} fill />
                   </div>
-                  <div className="landscape:text-sm portrait:text-sm landscape:sm:text-lg portrait:sm:text-2xl landscape:md:text-2xl portrait:md:text-2xl  font-medium pointer-events-none">
+                  <div className="mt-0.5 landscape:text-sm portrait:text-sm landscape:sm:text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:md:text-2xl font-medium pointer-events-none">
                     {i.title}
                   </div>
                 </div>
@@ -418,11 +409,8 @@ const User = () => {
               transactionsState={transactionsState!}
               setTransactionsState={setTransactionsState}
               isAdmin={isAdmin}
-              signOutModal={signOutModal}
-              setSignOutModal={setSignOutModal}
               searchModal={searchModal}
               setSearchModal={setSearchModal}
-              setPage={setPage}
             />
           )}
           {menu === "cashOut" && isAdmin && (
@@ -445,15 +433,12 @@ const User = () => {
               isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}
-              exchangeModal={exchangeModal}
-              setExchangeModal={setExchangeModal}
-              setPage={setPage}
             />
           )}
           {menu === "qrCode" && (
             <div onClick={() => setMenu("payments")}>
               <div className="fixed inset-0 z-[10] bg-black">
-                <div className="absolute bottom-[60px] w-full text-center text-base font-medium text-white z-[30]">Tap screen to exit</div>
+                <div className="absolute bottom-[32px] w-full text-center text-base font-medium text-white z-[30]">Tap screen to exit</div>
               </div>
               <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-[20]">
                 <div className="w-full h-full relative">
@@ -463,13 +448,38 @@ const User = () => {
               <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[20]">
                 <QRCodeSVG
                   xmlns="http://www.w3.org/2000/svg"
-                  size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (220 / 424.26)) : Math.round(window.innerWidth * (220 / 424.26))}
+                  size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (210 / 424.26)) : Math.round(window.innerWidth * (210 / 424.26))}
                   bgColor={"#ffffff"}
                   fgColor={"#000000"}
                   level={"L"}
                   value={paymentSettingsState?.qrCodeUrl ?? ""}
                 />
               </div>
+            </div>
+          )}
+          {signOutModal && (
+            <div>
+              <div className="modal">
+                {/*---content---*/}
+                <div className="grow flex flex-col justify-center">Do you want to sign out?</div>
+                {/*--- buttons ---*/}
+                <div className="w-full space-y-6">
+                  <button
+                    onClick={() => {
+                      setSignOutModal(false);
+                      deleteCookie("jwt");
+                      setPage("login");
+                    }}
+                    className="mt-10 modalButtonBlue"
+                  >
+                    Confirm
+                  </button>
+                  <button onClick={() => setSignOutModal(false)} className="modalButtonWhite">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+              <div className="modalBlackout" onClick={() => setSignOutModal(false)}></div>
             </div>
           )}
         </div>

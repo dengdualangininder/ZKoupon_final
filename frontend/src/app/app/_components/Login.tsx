@@ -29,13 +29,11 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
       { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
       { name: "Apple", img: "/apple.svg", connectorIndex: 2 },
-      { name: "MetaMask", img: "/metamask.svg", connectorIndex: 6 },
     ];
   } else {
     var myConnectors = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
       { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
-      { name: "MetaMask", img: "/metamask.svg", connectorIndex: 6 },
     ];
   }
   const myConnectorsMore = [
@@ -98,130 +96,118 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
     //     setErrorModal(true);
     //     setErrorMsg("Please enter a valid email");
     //     setModalState("initial");
-    //   }
+    //   }xs:w-[90%] sm:w-[540px]
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center xs:py-4 overflow-y-auto text-gray-800">
-      {/*--- container (with borders for desktop) ---*/}
-      <div
-        className={`w-full h-screen xs:h-[800px] px-8 xs:w-[90%] sm:w-[540px] ${
-          isMobile ? "" : ""
-        } flex flex-col items-center xs:rounded-2xl border-slate-300 xs:border-4  overflow-y-auto`}
-      >
-        {/*--- spacer ---*/}
-        <div className="w-full h-[5%] xs:h-[3%]"></div>
-
-        {/*--- HEADER ---*/}
-        <div className="w-full pb-2 flex flex-col items-center">
-          <div className={`mt-2 relative w-[220px] h-[88px] mr-1 ${isMobile ? "" : ""}`}>
-            <Image src="/logo.svg" alt="logo" fill />
-          </div>
-          <div className="mt-2 tracking-tight font-medium text-base xs:text-lg text-center">Fast global payments with 0% fees</div>
-        </div>
-
-        {/*--- spacer ---*/}
-        <div className="w-full h-[5%]"></div>
-
-        {/*--- OWNERS or EMPLOYEES ---*/}
-        <div className="w-full flex justify-center text-base xs:text-xl font-bold">
-          <div className="flex space-x-12">
-            <div className={`${role == "owners" ? "underline underline-offset-4 decoration-2" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("owners")}>
-              FOR OWNERS
-            </div>
-            <div className={`${role == "employees" ? "underline underline-offset-4 decoration-2" : "text-gray-400"} cursor-pointer`} onClick={() => setRole("employees")}>
-              FOR EMPLOYEES
-            </div>
-          </div>
-        </div>
-
-        {/*--- spacer ---*/}
-        <div className="w-full h-[3%] xs:h-[5%]"></div>
-
-        {/*--- FOR OWNERS ---*/}
-        {role == "owners" && (
-          <div className="pt-3 pb-10 w-full px-[calc((100%-360px)/2)] xs:w-[380px] xs:px-0 flex flex-col space-y-4 xs:space-y-5">
-            {/*--- connectors: google, apple, line, phantom, metamask ---*/}
-            {myConnectors.map<any>((i: any) => (
-              <div
-                key={i.name}
-                className="w-full py-4 xs:py-5 flex items-center text-gray-500 bg-white rounded-full font-bold lg:hover:bg-gray-100 active:bg-gray-100 cursor-pointer border border-gray-100 drop-shadow-md"
-                onClick={async () => {
-                  console.log("login page, clicked connect, set page to Loading");
-                  setPage("loading");
-                  await connectAsync({ connector: connectors[i.connectorIndex] });
-                  console.log("login page, finished connecting");
-                }}
-              >
-                <div className="relative ml-7 mr-4 w-[40px] h-[36px]">
-                  <Image src={i.img} alt={i.name} fill />
-                </div>
-                <div className="xs:text-xl">Sign in with {i.name}</div>
+    <div className="w-full h-screen flex items-center justify-center text-black">
+      <div className="w-full h-full flex flex-col items-center overflow-y-auto text-lg portrait:sm:text-2xl landscape:md:text-xl landscape:lg:text-2xl">
+        <div className="w-[320px] portrait:sm:w-[440px] landscape:md:w-[400px] landscape:lg:w-[430px]">
+          {/*--- HEADER + MENU ---*/}
+          <div className="w-full landscape:mt-8 landscape:md:mt-10 landscape:lg:mt-12 portrait:mt-14 portrait:sm:mt-20 landscape:space-y-8 landscape:md:space-y-10 landscape:lg:space-y-12 portrait:space-y-12 portrait:sm:space-y-20">
+            {/*--- header ---*/}
+            <div className="w-full flex flex-col items-center">
+              <div className="relative w-full h-[90px] portrait:sm:h-[120px] landscape:md:h-[100px] landscape:lg:h-[110px] mr-1">
+                <Image src="/logo.svg" alt="logo" fill />
               </div>
-            ))}
-            <div className="pt-2 xs:pt-4 xs:text-xl link text-center font-bold" onClick={() => setMoreOptionsModal(true)}>
-              More options
+            </div>
+            {/*--- subheader ---*/}
+            <div className="pb-2 font-medium text-center">Fast global payments with 0% fees</div>
+            {/*--- MENU ---*/}
+            <div className="w-full h-[50px] portrait:sm:h-[64px] landscape:md:h-[56px] landscape:lg:h-[64px] flex justify-center font-medium bg-gray-200 rounded-full flex-none">
+              <div
+                className={`${role == "owners" ? "bg-blue-500 text-white" : ""} w-[50%] h-full cursor-pointer flex items-center justify-center rounded-full`}
+                onClick={() => setRole("owners")}
+              >
+                Owners
+              </div>
+              <div
+                className={`${role == "employees" ? "bg-blue-500 text-white" : "text-gray-700"} w-[50%] h-full cursor-pointer flex items-center justify-center rounded-full`}
+                onClick={() => setRole("employees")}
+              >
+                Employees
+              </div>
             </div>
           </div>
-        )}
 
-        {/*--FOR EMPLOYEES---*/}
-        {role == "employees" && (
-          <div className="w-full py-2 xs:px-0 flex flex-col items-center">
-            <form className="w-[320px] xs:w-[360px] flex flex-col">
-              {/*--email---*/}
-              <label className="text-lg xs:text-xl leading-snug font-medium">Email</label>
-              <input
-                type="email"
-                className="mt-0.5 text-lg xs:text-xl font-bold px-1.5 py-2 xs:py-3 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms]"
-                onBlur={(e) => setMerchantEmail(e.target.value)}
-              ></input>
-              {/*--password---*/}
-              <label className="mt-4 text-lg xs:text-xl leading-snug font-medium">Password</label>
-              <div className="w-full relative">
-                <input
-                  type={show ? "text" : "password"}
-                  autoComplete="none"
-                  autoCapitalize="none"
-                  className="w-full mt-0.5 text-lg xs:text-xl font-bold px-1.5 py-2 xs:py-3 border border-gray-300 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms]"
-                  onBlur={(e) => setEmployeePass(e.target.value)}
-                ></input>
+          {/*--- content below MENU ---*/}
+          <div className="mt-8 landscape:md:mt-10 landscape:lg:mt-10 portrait:sm:mt-12 pb-10">
+            {/*--- FOR OWNERS ---*/}
+            {role == "owners" && (
+              <div className="w-full flex flex-col space-y-4 portrait:sm:space-y-10 landscape:md:space-y-6 landscape:lg:space-y-10">
+                {/*--- connectors: google, apple, line, phantom, metamask ---*/}
+                {myConnectors.map<any>((i: any) => (
+                  <div
+                    key={i.name}
+                    className="w-full h-[60px] portrait:sm:h-[80px] landscape:md:h-[72px] landscape:lg:h-[80px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                    onClick={async () => {
+                      console.log("login page, clicked connect, set page to Loading");
+                      setPage("loading");
+                      await connectAsync({ connector: connectors[i.connectorIndex] });
+                      console.log("login page, finished connecting");
+                    }}
+                  >
+                    <div className="relative ml-7 mr-4 w-[40px] h-[32px]">
+                      <Image src={i.img} alt={i.name} fill />
+                    </div>
+                    <div>Sign in with {i.name}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/*--FOR EMPLOYEES---*/}
+            {role == "employees" && (
+              <div className="w-full flex flex-col items-center">
+                <div className="w-full">
+                  {/*--email---*/}
+                  <div className="font-medium">Email</div>
+                  <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
+                  {/*--password---*/}
+                  <div className="mt-4 landscape:md:mt-4 landscape:lg:mt-6 portrait:sm:mt-6 font-medium">Password</div>
+                  <div className="w-full relative">
+                    <input
+                      type={show ? "text" : "password"}
+                      autoComplete="none"
+                      autoCapitalize="none"
+                      className="loginInputFont"
+                      onBlur={(e) => setEmployeePass(e.target.value)}
+                    ></input>
+                    <div className="absolute w-[68px] portrait:sm:w-[100px] landscape:md:w-[100px] h-full right-0 top-0 flex justify-center items-center">
+                      <div
+                        className="relative w-[28px] h-[28px] portrait:sm:w-[38px] portrait:sm:h-[38px] landscape:md:w-[38px] landscape:md:h-[38px] pointer-cursor"
+                        onClick={() => {
+                          show ? setShow(false) : setShow(true);
+                        }}
+                      >
+                        <Image src={show ? "/eyesOpen.svg" : "/eyesClosed.svg"} alt="eye" fill />
+                      </div>
+                    </div>
+                  </div>
+                  {/*--sign in button---*/}
+                  <div className="mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 flex justify-center">
+                    <button
+                      type="submit"
+                      className="w-full h-[56px] landscape:md:h-[64px] portrait:sm:h-[64px] text-white font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-[4px]"
+                      onClick={employeeSubmit}
+                    >
+                      Sign in
+                    </button>
+                  </div>
+                </div>
                 <div
-                  className="absolute right-[16px] xs:right-[18px] top-[10px] xs:top-[12px] cursor-pointer text-xl xs:text-2xl"
+                  className="landscape:mt-8 portrait:mt-12 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link"
                   onClick={() => {
-                    show ? setShow(false) : setShow(true);
+                    setForgotModal(true);
+                    setModalState("initial");
                   }}
                 >
-                  <FontAwesomeIcon icon={faEye} />
-                  <div
-                    className={`${
-                      show ? "hidden" : ""
-                    } absolute top-[0px] xs:top-[-1px] left-[10px] xs:left-[11px] rotate-[-45deg] h-[30px] xs:h-[34px] w-[2px] xs:w-[3px] rounded-full bg-gray-800`}
-                  ></div>
+                  Forgot password?
                 </div>
               </div>
-              {/*--sign in button---*/}
-              <div className="mt-8 flex justify-center">
-                <button
-                  type="submit"
-                  className="w-[260px] xs:w-[280px] text-xl rounded-full py-4 xs:py-5 bg-blue-500 hover:bg-blue-600 active:bg-blue-400 text-white font-bold"
-                  onClick={employeeSubmit}
-                >
-                  Sign in
-                </button>
-              </div>
-            </form>
-            <div
-              className="mt-12 pb-10 text-base xs:text-xl text-center link"
-              onClick={() => {
-                setForgotModal(true);
-                setModalState("initial");
-              }}
-            >
-              Forgot password?
-            </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/*---MODALS---*/}

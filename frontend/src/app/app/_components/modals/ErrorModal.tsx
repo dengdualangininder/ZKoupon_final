@@ -3,7 +3,11 @@ const ErrorModal = ({ errorMsg, setErrorModal }: { errorMsg: any; setErrorModal:
     <div>
       <div className="modal">
         {/*---content---*/}
-        <div className="mb-8 grow flex flex-col justify-center text-lg md:text-base text-center">{errorMsg}</div>
+        <div className="grow flex flex-col justify-center">{errorMsg}</div>
+        {/*---content---*/}
+        <button onClick={() => setErrorModal(false)} className="modalButtonWhite">
+          Dismiss
+        </button>
       </div>
       <div className="modalBlackout" onClick={() => setErrorModal(false)}></div>
     </div>
