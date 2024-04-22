@@ -1,9 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Parser } from "@json2csv/plainjs"; // switch to papaparse or manually do it
 import { useRouter } from "next/navigation";
-import { deleteCookie } from "cookies-next";
 //wagmi
 import { useConfig } from "wagmi";
 import { writeContract } from "@wagmi/core";
@@ -27,15 +25,11 @@ const Payments = ({
   setTransactionsState,
   paymentSettingsState,
   isAdmin,
-  searchModal,
-  setSearchModal,
 }: {
   transactionsState: Transaction[];
   setTransactionsState: any;
   paymentSettingsState: PaymentSettings;
   isAdmin: boolean;
-  searchModal: boolean;
-  setSearchModal: any;
 }) => {
   console.log("Payments component rendered");
 
@@ -183,20 +177,17 @@ const Payments = ({
   };
 
   const onClickDownload = () => {
-    // FINISH BELOW LOGIC
-
-    const startDate = new Date(Number(selectedStartMonth.split("-")[0]), Number(selectedStartMonth.split("-")[1]) - 1, 1); // takes in year, monthIndex, day
-    const endDate = new Date(Number(selectedEndMonth.split("-")[0]), Number(selectedEndMonth.split("-")[1]), 0); // day=0 returns last day of the previous month
+    const startDate = new Date(Number(selectedStartMonth.split("-")[0]), Number(selectedStartMonth.split("-")[1]) - 1, 1); // returns 1st, 0:00h
+    const endDate = new Date(Number(selectedEndMonth.split("-")[0]), Number(selectedEndMonth.split("-")[1]), 1); // returns return 1st, 0:00h of the following month
 
     let selectedTxns = [];
     for (const txn of transactionsState) {
-      if (txn.date > startDate && txn.date < endDate) {
-        selectedTxns.push(txn);
+      const date = new Date(txn.date);
+      if (date > startDate && date < endDate) {
+        const newDate = date.toLocaleString([], { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" });
+        selectedTxns.push({ ...txn, date: newDate });
       }
     }
-
-    setDownloadModal(false);
-    return;
 
     const fields = [
       { label: "Date", value: "date" },
@@ -212,38 +203,24 @@ const Payments = ({
       { label: "Transaction Hash", value: "txnHash" },
     ];
 
-    const myData = selectedTxns.map((i) => {
-      return {
-        date: i.date,
-        currencyAmount: i.currencyAmount,
-        merchantCurrency: i.merchantCurrency,
-        tokenAmount: i.tokenAmount,
-        token: i.token,
-        refund: i.refund,
-        blockRate: i.blockRate,
-        network: i.network,
-        customerAddress: i.customerAddress,
-        merchantAddress: i.merchantAddress,
-        txnHash: i.txnHash,
-      };
-    });
+    const jsonToCsv = (jsonObject: any) => {
+      let csv = "";
+      const keys = fields.map((i) => i.value); // get jsonObject keys
+      const headers = fields.map((i) => i.label); // get csv headers
+      csv += headers.join(",") + "\n";
+      jsonObject.forEach((i: any) => {
+        let data = keys.map((key) => JSON.stringify(i[key])).join(",");
+        csv += data + "\n";
+      });
+      return csv;
+    };
 
-    console.log(myData);
-
-    try {
-      const options = { fields };
-      const parser = new Parser(options);
-      var csv = parser.parse(myData);
-      console.log(csv);
-
-      const blob = new Blob([csv], { type: "text/csv" });
-      const element = document.createElement("a");
-      element.download = "payments.csv";
-      element.href = window.URL.createObjectURL(blob);
-      element.click();
-    } catch (error) {
-      console.error(error);
-    }
+    const csv = jsonToCsv(selectedTxns);
+    const blob = new Blob([csv], { type: "text/csv" });
+    const element = document.createElement("a");
+    element.download = "payments.csv";
+    element.href = window.URL.createObjectURL(blob);
+    element.click();
   };
 
   const createDownloadDates = () => {
@@ -273,6 +250,8 @@ const Payments = ({
       }
     }
     setDownloadDates(yearmonthArray);
+    setSelectedStartMonth(yearmonthArray.slice(-1)[0]);
+    setSelectedEndMonth(yearmonthArray.slice(-1)[0]);
   };
 
   const onClickRefundAll = async () => {
@@ -412,17 +391,20 @@ const Payments = ({
         {/*--- MENU BAR ---*/}
         <div
           className={`${
-            isSearch ? "translate-x-[100vw]" : ""
-          } translate-x-[0px] absolute px-6 w-full h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-center justify-between transition-transform duration-700`}
+            isSearch ? "translate-x-[-100vw]" : ""
+          } translate-x-0 absolute px-6 w-full h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-center justify-between transition-transform duration-700`}
         >
-          {/*--- search button ---*/}
+          {/*--- download button ---*/}
           <div
-            onClick={() => setIsSearch(true)}
-            className={`${
-              isAdmin ? "" : "invisible"
-            } relative w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex items-center justify-center`}
+            onClick={() => {
+              createDownloadDates();
+              setDownloadModal(true);
+            }}
+            className={`w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex justify-center items-ceneter text-xl font-bold cursor-pointer lg:hover:bg-gray-100 active:opacity-40 select-none`}
           >
-            <FontAwesomeIcon icon={faSearch} className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl" />
+            <div className="relative w-[30px] portrait:sm:w-[36px] landscape:lg:w-[36px] h-full">
+              <Image src="/download.svg" alt="download" fill />
+            </div>
           </div>
           {/*--- navigation buttons ---*/}
           <div className="h-full flex items-center justify-center">
@@ -441,26 +423,21 @@ const Payments = ({
               {"\u203A"}
             </div>
           </div>
-          {/*--- download button ---*/}
+          {/*--- search button ---*/}
           <div
-            onClick={() => {
-              createDownloadDates();
-              setDownloadModal(true);
-            }}
+            onClick={() => setIsSearch(true)}
             className={`${
               isAdmin ? "" : "invisible"
-            } w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex justify-center items-ceneter text-xl font-bold cursor-pointer lg:hover:bg-gray-100 active:opacity-40 select-none`}
+            } relative w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex items-center justify-center`}
           >
-            <div className="relative w-[30px] portrait:sm:w-[36px] landscape:lg:w-[36px] h-full">
-              <Image src="/download.svg" alt="download" fill />
-            </div>
+            <FontAwesomeIcon icon={faSearch} className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl" />
           </div>
         </div>
-        {/*--- search bar ---*/}
-        <div className={`${isSearch ? "translate-x-0" : ""} w-full h-full flex justify-center items-center absolute -translate-x-[100vw] transition-transform duration-700`}>
-          <div className="pt-1 pb-2 w-[300px] portrait:sm:w-[400px] landscape:lg:w-[400px] h-full max-h-[90px] flex flex-col">
+        {/*--- SEARCH BAR ---*/}
+        <div className={`${isSearch ? "translate-x-[0px]" : ""} w-full h-full flex justify-center items-center absolute translate-x-[100vw] transition-transform duration-700`}>
+          <div className="w-[300px] portrait:sm:w-[420px] landscape:lg:w-[420px] pb-2 h-[64px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex flex-col justify-between">
             <div className="w-full text-center textSm">Enter last 4 chars of customer's address</div>
-            <div className="w-full h-full flex items-center space-x-2">
+            <div className="w-full h-[32px] portrait:sm:h-[48px] landscape:lg:h-[48px] flex space-x-2 portrait:sm:space-x-4 landscape:lg:space-x-4">
               <input
                 onChange={(e) => {
                   setSearchedChars(e.currentTarget.value);
@@ -474,7 +451,7 @@ const Payments = ({
                   console.log(searchedTxnsTemp);
                   setSearchedTxns(searchedTxnsTemp);
                 }}
-                className="w-[25%] textBase h-full text-white border border-blue-500 rounded-[4px] bg-blue-500"
+                className="w-[25%] textSm h-full text-white border border-blue-500 rounded-[4px] bg-blue-500"
               >
                 Search
               </button>
@@ -484,7 +461,7 @@ const Payments = ({
                   setSearchedChars("");
                   setIsSearch(false);
                 }}
-                className="w-[25%] textBase h-full border border-gray-500 rounded-[4px]"
+                className="w-[25%] textSm h-full border border-gray-500 rounded-[4px]"
               >
                 Exit
               </button>
@@ -564,48 +541,16 @@ const Payments = ({
           <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
-      {searchModal && (
+      {downloadModal && (
         <div>
           <div className="modal">
             {/*---content---*/}
-            <div className="grow flex flex-col items-center text-start">
-              <div>Enter last 4 characters of customer's address:</div>
-              <input
-                placeholder="enter text"
-                onBlur={(e) => setSearchedChars(e.currentTarget.value)}
-                className="mt-2 w-full inputOutline px-2 h-[48px] portrait:sm:h-[60px] landscape:lg:h-[60px]"
-              ></input>
-            </div>
-            <div className="w-full space-y-6">
-              <button
-                onClick={() => {
-                  const searchedTxnsTemp = transactionsState?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == searchedChars);
-                  console.log(searchedTxnsTemp);
-                  setSearchedTxns(searchedTxnsTemp);
-                  setSearchModal(false);
-                }}
-                className="modalButtonBlue"
-              >
-                Submit
-              </button>
-              <button onClick={() => setSearchModal(false)} className="modalButtonWhite">
-                Cancel
-              </button>
-            </div>
-          </div>
-          <div className="modalBlackout" onClick={() => setSearchModal(false)}></div>
-        </div>
-      )}
-      {downloadModal && (
-        <div>
-          <div className="w-[350px] h-[300px] px-8 pb-10 flex flex-col items-center rounded-xl bg-white fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-50">
-            {/*---content---*/}
-            <div className="w-full grow flex flex-col justify-center">
+            <div className="w-full flex flex-col text-xl portrait:sm:text-2xl landscape:lg:text-2xl justify-center grow space-y-4">
               {/*---start---*/}
               <div className="w-full flex items-center justify-between">
-                <div className="text-xl lg:text-lg">Start Month</div>
-                <div className="px-4 py-2 border border-slate-300 rounded-lg">
-                  <select className="text-xl lg:text-lg outline:none focus:outline-none" value={selectedStartMonth} onChange={(e) => setSelectedStartMonth(e.target.value)}>
+                <div className="">Start Month</div>
+                <div className="px-6 py-2 border border-gray-300 rounded-lg">
+                  <select className="" value={selectedStartMonth} onChange={(e) => setSelectedStartMonth(e.target.value)}>
                     {downloadDates.map((i) => (
                       <option>{i}</option>
                     ))}
@@ -613,10 +558,10 @@ const Payments = ({
                 </div>
               </div>
               {/*---end---*/}
-              <div className="mt-2 w-full flex items-center justify-between">
-                <div className="text-xl lg:text-lg">End Month</div>
-                <div className="px-4 py-2 border border-slate-300 rounded-lg">
-                  <select className="text-xl lg:text-lg outline:none focus:outline-none" value={selectedEndMonth} onChange={(e) => setSelectedEndMonth(e.target.value)}>
+              <div className="w-full flex items-center justify-between">
+                <div className="">End Month</div>
+                <div className="px-6 py-2 border border-gray-300 rounded-lg">
+                  <select className="" value={selectedEndMonth} onChange={(e) => setSelectedEndMonth(e.target.value)}>
                     {downloadDates.map((i) => (
                       <option>{i}</option>
                     ))}
@@ -624,10 +569,23 @@ const Payments = ({
                 </div>
               </div>
             </div>
-            <button className="modalButtonBlue" onClick={onClickDownload}>
-              Download
-            </button>
+            {/*---buttons---*/}
+            <div className="w-full space-y-6">
+              <button className="modalButtonBlue" onClick={onClickDownload}>
+                Download
+              </button>
+              <button
+                className="modalButtonWhite"
+                onClick={() => {
+                  setSelectedEndMonth;
+                  setDownloadModal(false);
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
+
           <div className="modalBlackout" onClick={() => setDownloadModal(false)}></div>
         </div>
       )}

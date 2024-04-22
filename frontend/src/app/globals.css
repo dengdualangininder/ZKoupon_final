@@ -34,7 +34,7 @@
 
 @layer components {
   .textSm {
-    @apply text-sm portrait:sm:text-lg landscape:lg:text-lg;
+    @apply text-sm portrait:sm:text-xl landscape:lg:text-xl;
   }
 
   .textBase {

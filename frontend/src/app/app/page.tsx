@@ -43,7 +43,6 @@ const User = () => {
   const [page, setPage] = useState("loading"); // "loading" (default) | "login" | "saveToHome" | "intro" | "app"
   // modals
   const [signOutModal, setSignOutModal] = useState(false);
-  const [searchModal, setSearchModal] = useState(false);
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
@@ -217,7 +216,7 @@ const User = () => {
           setCashoutSettingsState(data.doc.cashoutSettings);
           setTransactionsState(data.doc.transactions);
           setIsAdmin(true);
-          setPage("app");
+          setPage("intro");
         }
         // if new user
         if (data == "create new user") {
@@ -374,7 +373,6 @@ const User = () => {
                 : [
                     { id: "payments", title: "Sign Out", img: "/signout.svg", modal: "signOutModal" },
                     { id: "qrCode", title: "QR Code", img: "/qr.svg" },
-                    { id: "payments", title: "Search", img: "/search.svg", modal: "searchModal" },
                   ]
               ).map((i) => (
                 <div
@@ -382,12 +380,8 @@ const User = () => {
                   key={i.id}
                   onClick={(e) => {
                     setMenu(e.currentTarget.id);
-                    if (i.modal) {
-                      if (i.modal == "signOutModal") {
-                        setSignOutModal(true);
-                      } else if (i.modal == "searchModal") {
-                        setSearchModal(true);
-                      }
+                    if (i.modal == "signOutModal") {
+                      setSignOutModal(true);
                     }
                   }}
                   className={`${!isAdmin || menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
@@ -404,14 +398,7 @@ const User = () => {
           </div>
           {/*---menu pages---*/}
           {menu === "payments" && (
-            <Payments
-              paymentSettingsState={paymentSettingsState!}
-              transactionsState={transactionsState!}
-              setTransactionsState={setTransactionsState}
-              isAdmin={isAdmin}
-              searchModal={searchModal}
-              setSearchModal={setSearchModal}
-            />
+            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState!} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />
           )}
           {menu === "cashOut" && isAdmin && (
             <CashOut

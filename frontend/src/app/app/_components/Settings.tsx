@@ -11,7 +11,8 @@ import { saveAs } from "file-saver";
 import { Buffer } from "buffer";
 // wagmi
 import { useDisconnect } from "wagmi";
-// components - modals
+// components
+import Placard from "./placard/Placard";
 import FaqModal from "./modals/FaqModal";
 import ErrorModal from "./modals/ErrorModal";
 import EmployeePassModal from "./modals/EmployeePassModal";
@@ -150,6 +151,29 @@ const Settings = ({
     }
   };
 
+  const downloadQrCode = async () => {
+    const el = document.getElementById("qrPlacard");
+    const blob = await pdf(
+      <Document>
+        <Page size="A5" style={{ position: "relative" }}>
+          <View>
+            <Placard />
+          </View>
+          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
+            {/* @ts-ignore */}
+            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* @ts-ignore */}
+              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+              {/* @ts-ignore */}
+              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
+            </Svg>
+          </View>
+        </Page>
+      </Document>
+    ).toBlob();
+    saveAs(blob, "MyPlacard");
+  };
+
   const onClickPaymentLink = () => {
     if (missingInfo() === false) {
       setPopup("copyLinkButton");
@@ -191,10 +215,6 @@ const Settings = ({
     //logic
   };
 
-  const downloadQrCode = async () => {
-    //logic
-  };
-
   console.log("last render, paymentSettingsState:", paymentSettingsState);
   console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
@@ -222,6 +242,10 @@ const Settings = ({
           >
             FAQs
           </div>
+        </div>
+
+        <div className="hidden">
+          <QRCodeSVG id="qrPlacard" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
         </div>
 
         {/*---form, mt=10 ---*/}
