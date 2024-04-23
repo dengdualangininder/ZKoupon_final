@@ -1,8 +1,4 @@
 import axios from "axios";
-import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
-import { keccak256, getAddress } from "viem";
-import * as jose from "jose";
 
 export const POST = async (request: Request) => {
   console.log("entered getRates api");

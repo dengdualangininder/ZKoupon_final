@@ -15,11 +15,11 @@ import circleCheck from "@/utils/lotties/circleCheck.json";
 import Inperson from "./_components/Inperson";
 import Online from "./_components/Online";
 // constants
-import { currency2symbol } from "@/utils/constants";
+import { currency2decimal, currency2symbol } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
-
-export type U2local = { [key: string]: number };
+// types
+import { Rates } from "@/utils/types";
 
 const Pay = () => {
   console.log("/pay rendered once");
@@ -36,7 +36,9 @@ const Pay = () => {
   const [currencyAmount, setCurrencyAmount] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [selectedToken, setSelectedToken] = useState("USDC");
-  const [u2local, setu2local] = useState<U2local>({ USD: 0, USDC: 0 });
+  const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
+  const [tokenAmount, setTokenAmount] = useState("0");
+  const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
   const [payModal, setPayModal] = useState(false);
   const [msg, setMsg] = useState("Please confirm transaction on MetaMask...");
@@ -100,7 +102,23 @@ const Pay = () => {
       //   });
       // }
     })();
-  }, [selectedNetwork]);
+
+    // get rates
+    const getRates = async () => {
+      const ratesRes = await fetch("/api/getRates", {
+        method: "POST",
+        body: JSON.stringify({ merchantCurrency: urlParams.merchantCurrency }),
+        headers: { "content-type": "application/json" },
+      });
+      const ratesData = await ratesRes.json();
+      console.log("ratesData", ratesData);
+      if (ratesData.status == "success") {
+        setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
+        setFxSavings(((ratesData.usdcToLocal / ratesData.usdToLocal - 1) * 100).toFixed(1));
+      }
+    };
+    getRates();
+  }, []);
 
   const merchantNetworks = [
     { img: "/polygon.svg", name: "Polygon", gas: 0.01 },
@@ -115,31 +133,6 @@ const Pay = () => {
   const initialized = useRef(false);
   if (!initialized.current) {
     initialized.current = true;
-    const getPrices = async () => {
-      // let USDres = await axios.get(
-      //   `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usd!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-      // );
-      // let USDTres = await axios.get(
-      //   `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdt!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-      // );
-      // let USDCres = await axios.get(
-      //   `https://sheets.googleapis.com/v4/spreadsheets/1TszZIf9wFoAQXQf0-TGi203lgMhSiSSHxQn1yVLtnLA/values/usdc!B4:AE4?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-      // );
-      // let sheetCountryOrder = "twd, jpy, krw, hkd, sgd, php, thb, idr, myr, vnd, eur, gbp, cad, aud, usd".split(", ").map((i) => i.toUpperCase());
-      // let sheetIndex = sheetCountryOrder.findIndex((i) => i == merchantCurrency);
-      // setu2local({
-      //   USD: Number(USDres.data.values[0][sheetIndex * 2]).toPrecision(4),
-      //   USDC: Number(USDCres.data.values[0][sheetIndex * 2]).toPrecision(4),
-      // });
-      const u2localAll: { [key: string]: U2local } = {
-        TWD: { USD: 31.96, USDC: 32.13 },
-        USD: { USD: 1, USDC: 1 },
-        EUR: { USD: 0.931, USDC: 0.932 },
-        GBP: { USD: 0.7971, USDC: 0.7968 },
-      };
-      setu2local(u2localAll[merchantCurrency!]);
-    };
-    getPrices();
   }
 
   const getBalance = async (network: string) => {
@@ -214,9 +207,6 @@ const Pay = () => {
       return;
     }
 
-    const tokenAmount = ((Number(currencyAmount) * 0.98) / u2local[selectedToken]).toFixed(2); // returns string
-    const savings = `${((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%`; // returns string
-
     // define txn object, except "customerAddress" and "txnHash"
     let txn = {
       date: new Date(),
@@ -227,9 +217,9 @@ const Pay = () => {
       tokenAmount: Number(tokenAmount),
       token: selectedToken,
       network: selectedNetwork,
-      blockRate: Number(u2local[selectedToken]),
-      cashRate: Number(u2local["USD"]),
-      savings: savings,
+      blockRate: rates.usdcToLocal,
+      cashRate: rates.usdToLocal,
+      savings: fxSavings,
       refund: false,
       archive: false,
       txnHash: "",
@@ -328,10 +318,10 @@ const Pay = () => {
               </div>
               <div>USDC {USDCBalance}</div>
             </div>
-            {/*--- merchantCurrency balance ---*/}
+            {/*--- local currency balance ---*/}
             <div>
               &#40;{currency2symbol[urlParams.merchantCurrency!]}
-              {(Number(USDCBalance) * u2local.USDC).toFixed(2)}&#41;
+              {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
             </div>
           </div>
         </div>
@@ -347,10 +337,13 @@ const Pay = () => {
             selectedNetwork={selectedNetwork}
             selectedToken={selectedToken}
             onClickNetwork={onClickNetwork}
-            u2local={u2local}
+            rates={rates}
             isGettingBalance={isGettingBalance}
             USDCBalance={USDCBalance}
             send={send}
+            fxSavings={fxSavings}
+            tokenAmount={tokenAmount}
+            setTokenAmount={setTokenAmount}
           />
         )}
         {paymentType == "online" && (
@@ -364,8 +357,13 @@ const Pay = () => {
             selectedNetwork={selectedNetwork}
             selectedToken={selectedToken}
             onClickNetwork={onClickNetwork}
-            u2local={u2local}
+            rates={rates}
+            isGettingBalance={isGettingBalance}
+            USDCBalance={USDCBalance}
             send={send}
+            fxSavings={fxSavings}
+            tokenAmount={tokenAmount}
+            setTokenAmount={setTokenAmount}
           />
         )}
       </div>

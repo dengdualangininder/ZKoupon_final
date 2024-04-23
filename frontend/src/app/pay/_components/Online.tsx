@@ -1,4 +1,6 @@
 import React from "react";
+// types
+import { Rates } from "@/utils/types";
 
 const Online = ({
   urlParams,
@@ -10,8 +12,13 @@ const Online = ({
   selectedNetwork,
   selectedToken,
   onClickNetwork,
-  u2local,
+  rates,
+  isGettingBalance,
+  USDCBalance,
   send,
+  fxSavings,
+  tokenAmount,
+  setTokenAmount,
 }: {
   urlParams: any;
   currencyAmount: string;
@@ -22,8 +29,13 @@ const Online = ({
   selectedNetwork: string;
   selectedToken: string;
   onClickNetwork: any;
-  u2local: any;
+  rates: Rates;
+  isGettingBalance: boolean;
+  USDCBalance: string;
   send: any;
+  fxSavings: string;
+  tokenAmount: string;
+  setTokenAmount: any;
 }) => {
   return <div>Online</div>;
 };

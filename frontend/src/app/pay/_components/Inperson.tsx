@@ -5,7 +5,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 // types
-import { U2local } from "../page";
+import { Rates } from "@/utils/types";
+import { currency2decimal } from "@/utils/constants";
 
 const Inperson = ({
   urlParams,
@@ -17,10 +18,13 @@ const Inperson = ({
   selectedNetwork,
   selectedToken,
   onClickNetwork,
-  u2local,
+  rates,
   isGettingBalance,
   USDCBalance,
   send,
+  fxSavings,
+  tokenAmount,
+  setTokenAmount,
 }: {
   urlParams: any;
   currencyAmount: string;
@@ -31,10 +35,13 @@ const Inperson = ({
   selectedNetwork: string;
   selectedToken: string;
   onClickNetwork: any;
-  u2local: U2local;
+  rates: Rates;
   isGettingBalance: boolean;
   USDCBalance: string;
   send: any;
+  fxSavings: string;
+  tokenAmount: string;
+  setTokenAmount: any;
 }) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-evenly text-2xl font-bold">
@@ -54,6 +61,7 @@ const Inperson = ({
           value={currencyAmount}
           onChange={(e) => {
             setCurrencyAmount(e.currentTarget.value);
+            setTokenAmount((Number(e.currentTarget.value) / rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency]));
             // setShowNetwork(true);
           }}
           placeholder="Enter Amount"
@@ -88,7 +96,7 @@ const Inperson = ({
       <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- AMOUNT SENT ---*/}
         <div className="flex text-center">
-          {((Number(currencyAmount) * 0.98) / u2local[selectedToken]).toFixed(2)} {selectedToken} will be sent
+          {tokenAmount} {selectedToken} will be sent
         </div>
         {/*--- SAVINGS ---*/}
         <div className="w-full mt-2 flex justify-between text-sm text-gray-400 font-medium tracking-tighter relative">
@@ -97,18 +105,14 @@ const Inperson = ({
             <div className="flex items-center group">
               <div className="flex flex-col items-center">
                 <div>FX Savings</div>
-                {Number(u2local[selectedToken]) >= Number(u2local.USD) ? (
-                  <div className="font-bold text-green-500">+{((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%</div>
-                ) : (
-                  <div className="font-bold text-red-500">{((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)}%</div>
-                )}
+                <div className="font-bold text-green-500">{fxSavings}%</div>
                 {/*--- tooltip ---*/}
                 <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start text-gray-800">
                   <p>
-                    Your Rate: 1 {selectedToken} &rarr; {u2local[selectedToken]} {urlParams.merchantCurrency}
+                    Your Rate: 1 {selectedToken} &rarr; {rates.usdcToLocal} {urlParams.merchantCurrency}
                   </p>
                   <p>
-                    Bank Rate: 1 USD &rarr; {u2local.USD} {urlParams.merchantCurrency}
+                    Bank Rate: 1 USD &rarr; {rates.usdToLocal} {urlParams.merchantCurrency}
                   </p>
                 </div>
               </div>
@@ -120,7 +124,7 @@ const Inperson = ({
           <div className="flex items-center group">
             <div className="flex flex-col items-center text-center">
               <p>Instant Cashback</p>
-              <p className="font-bold text-green-500">+2%</p>
+              <p className="font-bold text-green-500">2%</p>
               {/*--- tooltip ---*/}
               <div className="w-full bottom-[calc(100%+2px)] tooltip text-start text-gray-800">The value of USDC sent is 2% less than the value of the payment amount</div>
             </div>
@@ -132,11 +136,7 @@ const Inperson = ({
             <div className="flex flex-col items-center text-center">
               <p>You Save</p>
               <div>
-                {Number(u2local[selectedToken]) >= Number(u2local.USD) ? (
-                  <div className="font-bold text-green-500">+{Number(((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)) + 2}%</div>
-                ) : (
-                  <div className="font-bold text-red-500">{Number(((u2local[selectedToken] / u2local.USD - 1) * 100).toFixed(1)) + 2}%</div>
-                )}
+                <div className="font-bold text-green-500">{2 + Number(fxSavings)}%</div>
               </div>
             </div>
           ) : (

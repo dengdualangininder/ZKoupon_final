@@ -11,7 +11,7 @@ import { parseUnits, formatUnits } from "viem";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 // constants
-import { tokenAddresses, currency2symbol } from "@/utils/web3Constants";
+import { currency2symbol } from "@/utils/constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 // components
 import ErrorModal from "./modals/ErrorModal";
