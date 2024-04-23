@@ -11,7 +11,7 @@ import { parseUnits, formatUnits } from "viem";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 // constants
-import { tokenAddresses } from "@/utils/web3Constants";
+import { tokenAddresses, currency2symbol } from "@/utils/web3Constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 // components
 import ErrorModal from "./modals/ErrorModal";
@@ -338,8 +338,6 @@ const CashOut = ({
     console.log(data);
   };
 
-  const currencyToSymbol: any = { USD: "$", EUR: <span>&euro;</span>, TWD: "TWD" };
-
   console.log("before render", "\ncexBalance:", cexBalance, "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible);
   return (
     // 96px is height of mobile top menu bar + 14px mt
@@ -357,7 +355,7 @@ const CashOut = ({
               {/*---balance---*/}
               <div className="flex items-center">
                 <div className="text-3xl font-bold">
-                  {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]} {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}
+                  {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]} {(Number(flashBalance) * rates.usdcToLocal).toFixed(2)}
                 </div>
                 <div className="ml-3 group relative">
                   <FontAwesomeIcon icon={faCircleInfo} className="px-1 text-gray-400 text-sm" />
@@ -472,7 +470,7 @@ const CashOut = ({
             <div className="flex justify-between">
               <div>Total Revenue</div>
               <div>
-                {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {stats.totalCurrencyAmount}
               </div>
             </div>
@@ -484,7 +482,7 @@ const CashOut = ({
             <div className="flex justify-between">
               <div>Total Cashback Given</div>
               <div>
-                - {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(stats.totalCurrencyAmount * 0.02).toFixed(currencyDecimal)}
               </div>
             </div>
@@ -509,7 +507,7 @@ const CashOut = ({
             <div className="flex justify-between">
               <div>Total Transaction Fees</div>
               <div>
-                - {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(1 * 0.015 * stats.currentRate).toFixed(2)}
               </div>
             </div>
@@ -521,21 +519,21 @@ const CashOut = ({
             <div className="flex justify-between">
               <div>Total Net Revenue</div>
               <div>
-                {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(stats.totalCurrencyAmount * 0.98).toFixed(2)}
               </div>
             </div>
             <div className="mt-4 flex justify-between">
               <div>Est. Credit Card Costs</div>
               <div>
-                - {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3).toFixed(2)}
               </div>
             </div>
             <div className="flex justify-between">
               <div>Savings Over Credit Card</div>
               <div>
-                {currencyToSymbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
                 {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3 - stats.totalCurrencyAmount * 0.02).toFixed(2)}
               </div>
             </div>

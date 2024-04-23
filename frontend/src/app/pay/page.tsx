@@ -15,6 +15,7 @@ import circleCheck from "@/utils/lotties/circleCheck.json";
 import Inperson from "./_components/Inperson";
 import Online from "./_components/Online";
 // constants
+import { currency2symbol } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
 
@@ -33,9 +34,9 @@ const Pay = () => {
 
   //inperson states
   const [currencyAmount, setCurrencyAmount] = useState("");
-  const [selectedNetwork, setSelectedNetwork] = useState("");
+  const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [selectedToken, setSelectedToken] = useState("USDC");
-  const [u2local, setu2local] = useState<U2local>({ USD: 31.96, USDC: 32.13 });
+  const [u2local, setu2local] = useState<U2local>({ USD: 0, USDC: 0 });
   // modals and other states
   const [payModal, setPayModal] = useState(false);
   const [msg, setMsg] = useState("Please confirm transaction on MetaMask...");
@@ -52,11 +53,52 @@ const Pay = () => {
   useEffect(() => {
     (async () => {
       const ethereum = await detectEthereumProvider();
-      if (selectedNetwork) {
-        ethereum?.on("accountsChanged", () => {
-          getBalance(selectedNetwork);
+      // new code for single newtork
+      const selectedNetworkTemp = "Polygon";
+      try {
+        // @ts-ignore
+        await ethereum?.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: chainIds[selectedNetworkTemp] }],
         });
+
+        // get balance
+        try {
+          await getBalance(selectedNetworkTemp);
+        } catch (error) {
+          console.log("error getting balance", error);
+        }
+      } catch (error: any) {
+        if (error.message === "User rejected the request.") {
+          console.log("user rejected chain switch request", error);
+        } else {
+          try {
+            // @ts-ignore
+            await ethereum?.request({
+              method: "wallet_addEthereumChain",
+              params: [addChainParams[selectedNetworkTemp]],
+            });
+            // user's MetaMask already set to selected network
+            setSelectedNetwork(selectedNetworkTemp);
+            setShowToken(true);
+            // get balance
+            try {
+              await getBalance(selectedNetworkTemp);
+            } catch (error) {
+              console.log("error getting balance", error);
+            }
+          } catch (error) {
+            console.log("User rejected add chain or MetaMask not installed", error);
+          }
+        }
       }
+      // code for multiple networks
+      // const ethereum = await detectEthereumProvider();
+      // if (selectedNetwork) {
+      //   ethereum?.on("accountsChanged", () => {
+      //     getBalance(selectedNetwork);
+      //   });
+      // }
     })();
   }, [selectedNetwork]);
 
@@ -67,7 +109,7 @@ const Pay = () => {
     { img: "/bsc.svg", name: "BNB", gas: 0.05 },
     { img: "/avax.svg", name: "Avalanche", gas: 0.03 },
   ];
-  const merchantTokens = [{ img: "/usdc.svg", name: "USDC", balance: USDCBalance }];
+  // const merchantTokens = [{ img: "/usdc.svg", name: "USDC", balance: USDCBalance }];
 
   //makes it so getPrices runs once
   const initialized = useRef(false);
@@ -261,49 +303,72 @@ const Pay = () => {
   };
 
   return (
-    <div className="h-[100dvh]">
-      {/*---banner, h-[24px]---*/}
-      <div className="w-full h-[28px] flex justify-center items-center border-b border-gray-300 relative">
-        <a href={`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}`} target="_blank" className="absolute top-[2px] left-[4px]">
-          <div className="relative h-[24px] w-[64px]">
+    <div className="w-full h-[100dvh] flex flex-col justify-center items-center">
+      {/*--- banner ---*/}
+      <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
+        <a href={`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}`} target="_blank" className="flex items-center">
+          <div className="relative h-[36px] w-[80px] mr-2">
             <Image src="/logo.svg" alt="logo" fill />
           </div>
         </a>
-        <div className="text-xs font-bold text-center leading-none text-gray-800">offering you true P2P payments</div>
+        <div className="text-sm leading-tight font-medium">giving you better FX rates than any bank</div>
       </div>
+      {/*--- content below banner ---*/}
+      <div className="w-[340px] h-[94%] flex flex-col items-center justify-evenly">
+        {/*--- your balance ---*/}
+        <div className="mt-4 p-4 w-full flex items-center justify-between text-lg font-medium border bg-gray-200 border-gray-200 rounded-xl">
+          <div>Your Wallet</div>
 
-      {paymentType == "inperson" && (
-        <Inperson
-          urlParams={urlParams}
-          currencyAmount={currencyAmount}
-          setCurrencyAmount={setCurrencyAmount}
-          showNetwork={showNetwork}
-          setShowNetwork={setShowNetwork}
-          merchantNetworks={merchantNetworks}
-          selectedNetwork={selectedNetwork}
-          selectedToken={selectedToken}
-          onClickNetwork={onClickNetwork}
-          u2local={u2local}
-          isGettingBalance={isGettingBalance}
-          USDCBalance={USDCBalance}
-          send={send}
-        />
-      )}
-      {paymentType == "online" && (
-        <Online
-          urlParams={urlParams}
-          currencyAmount={currencyAmount}
-          setCurrencyAmount={setCurrencyAmount}
-          showNetwork={showNetwork}
-          setShowNetwork={setShowNetwork}
-          merchantNetworks={merchantNetworks}
-          selectedNetwork={selectedNetwork}
-          selectedToken={selectedToken}
-          onClickNetwork={onClickNetwork}
-          u2local={u2local}
-          send={send}
-        />
-      )}
+          {/*--- balance ---*/}
+          <div className="text-xl flex flex-col items-end">
+            {/*--- usdc balance ---*/}
+            <div className="flex items-center">
+              <div className="relative mr-[2px] w-[22px] h-[22px]">
+                <Image src="/usdc.svg" alt="usdc" fill />
+              </div>
+              <div>USDC {USDCBalance}</div>
+            </div>
+            {/*--- merchantCurrency balance ---*/}
+            <div>
+              &#40;{currency2symbol[urlParams.merchantCurrency!]}
+              {(Number(USDCBalance) * u2local.USDC).toFixed(2)}&#41;
+            </div>
+          </div>
+        </div>
+
+        {paymentType == "inperson" && (
+          <Inperson
+            urlParams={urlParams}
+            currencyAmount={currencyAmount}
+            setCurrencyAmount={setCurrencyAmount}
+            showNetwork={showNetwork}
+            setShowNetwork={setShowNetwork}
+            merchantNetworks={merchantNetworks}
+            selectedNetwork={selectedNetwork}
+            selectedToken={selectedToken}
+            onClickNetwork={onClickNetwork}
+            u2local={u2local}
+            isGettingBalance={isGettingBalance}
+            USDCBalance={USDCBalance}
+            send={send}
+          />
+        )}
+        {paymentType == "online" && (
+          <Online
+            urlParams={urlParams}
+            currencyAmount={currencyAmount}
+            setCurrencyAmount={setCurrencyAmount}
+            showNetwork={showNetwork}
+            setShowNetwork={setShowNetwork}
+            merchantNetworks={merchantNetworks}
+            selectedNetwork={selectedNetwork}
+            selectedToken={selectedToken}
+            onClickNetwork={onClickNetwork}
+            u2local={u2local}
+            send={send}
+          />
+        )}
+      </div>
 
       {/*---error modal---*/}
       {errorModal && (

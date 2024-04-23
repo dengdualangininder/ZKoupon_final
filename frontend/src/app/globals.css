@@ -234,23 +234,23 @@
   }
 
   .introNext {
-    @apply mr-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:md:w-[140px] landscape:md:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:md:text-3xl portrait:sm:text-3xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply mr-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:lg:w-[140px] landscape:lg:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:lg:text-3xl portrait:sm:text-3xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introBack {
-    @apply ml-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:md:w-[140px] landscape:md:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:md:text-3xl portrait:sm:text-3xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply ml-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:lg:w-[140px] landscape:lg:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:lg:text-3xl portrait:sm:text-3xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introFont {
-    @apply text-xl landscape:md:text-3xl landscape:md:leading-relaxed portrait:sm:text-3xl portrait:sm:leading-relaxed;
+    @apply text-xl landscape:lg:text-3xl landscape:lg:leading-relaxed portrait:sm:text-3xl portrait:sm:leading-relaxed;
   }
 
   .introFontLarge {
-    @apply text-3xl leading-relaxed landscape:md:text-4xl landscape:md:leading-[56px] portrait:sm:text-4xl portrait:sm:leading-[56px];
+    @apply text-3xl leading-relaxed landscape:lg:text-4xl landscape:lg:leading-[56px] portrait:sm:text-4xl portrait:sm:leading-[56px];
   }
 
   .introPageContainer {
-    @apply w-[88%] portrait:sm:w-[590px] landscape:md:w-[630px] h-full portrait:sm:h-[90%] flex flex-col items-center;
+    @apply w-[88%] portrait:sm:w-[590px] landscape:lg:w-[630px] h-full portrait:sm:h-[90%] flex flex-col items-center;
   }
 
   /* ----UNUSED---- */

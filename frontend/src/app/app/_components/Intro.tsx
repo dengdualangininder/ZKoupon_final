@@ -89,13 +89,13 @@ const Intro = ({
       <div className="w-full portrait:max-w-[500px] portrait:sm:max-w-none h-full flex justify-center items-center">
         {/*--- welcome ---*/}
         {step == "welcome" && (
-          <div className="introFont landscape:w-[350px] landscape:md:w-[540px] portrait:w-[88%] portrait:sm:w-[540px] h-full portrait:sm:h-[90%] flex flex-col items-center">
+          <div className="introFont landscape:w-[350px] landscape:lg:w-[540px] portrait:w-[88%] portrait:sm:w-[540px] h-full portrait:sm:h-[90%] flex flex-col items-center">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-6 landscape:md:space-y-24 portrait:space-y-16 portrait:sm:space-y-24">
-              <div className="relative w-[300px] h-[90px] landscape:md:h-[120px] portrait:sm:h-[120px] mr-1">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-6 landscape:lg:space-y-24 portrait:space-y-16 portrait:sm:space-y-24">
+              <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
                 <Image src="/logo.svg" alt="logo" fill />
               </div>
-              <div className="text-3xl landscape:md:text-5xl portrait:sm:text-5xl font-bold text-center">Welcome to Flash!</div>
+              <div className="text-3xl landscape:lg:text-5xl portrait:sm:text-5xl font-bold text-center">Welcome to Flash!</div>
               <div className="text-center leading-relaxed">
                 Here's a quick 1 minute
                 <br />
@@ -240,7 +240,7 @@ const Intro = ({
         {step == "name" && (
           <div className="introFontLarge introPageContainer">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-8 landscape:md:space-y-16 portrait:space-y-16">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-8 landscape:lg:space-y-16 portrait:space-y-16">
               <div className="">Now, let's create your QR code. It'll only take 15 seconds.</div>
               <div>
                 <label>Enter the name of your business:</label>
@@ -268,7 +268,7 @@ const Intro = ({
         {step == "currency" && (
           <div className="introFontLarge introPageContainer">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center space-y-6 landscape:md:space-y-16 portrait:sm:space-y-16">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center space-y-6 landscape:lg:space-y-16 portrait:sm:space-y-16">
               <div>Confirm (or select) your currency:</div>
               <select
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -283,7 +283,7 @@ const Intro = ({
                   setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
                   setSave(!save);
                 }}
-                className="px-2 border-b-2 outline-none font-bold"
+                className="px-2 border-b-2 outline-none font-bold bg-white"
               >
                 {activeCountries.map((i, index) => (
                   <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
@@ -307,7 +307,7 @@ const Intro = ({
         {step == "email" && (
           <div className="introFontLarge introPageContainer">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center space-y-8 landscape:md:space-y-16 portrait:sm:space-y-16">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center space-y-8 landscape:lg:space-y-16 portrait:sm:space-y-16">
               <div>Confirm (or edit) your email:</div>
               <input
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
@@ -331,9 +331,9 @@ const Intro = ({
         {step == "emailSent" && (
           <div className="introFontLarge introPageContainer">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-10 portrait:sm:space-y-16 landscape:md:space-y-16">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
               <div>Your QR code was successfully created!</div>
-              <div>We emailed it to you, along with instructions on how to print and display it</div>
+              <div>We emailed it to you, along with instructions on how to print and display it.</div>
             </div>
 
             {/* <div id="introQrContainer" className="w-[200px] h-[280px] flex-none relative bg-red-300">
@@ -363,14 +363,16 @@ const Intro = ({
         )}
         {/*--- link ---*/}
         {step == "link" && (
-          <div className=" landscape:introFont landscape:md:introFontLarge portrait:introFontLarge introPageContainer">
+          <div className=" landscape:introFont landscape:lg:introFontLarge portrait:introFontLarge introPageContainer">
             {/*--- content ---*/}
             <div className="w-full h-[85%] flex flex-col justify-center sm:h-[80%]">
               <div className="flex flex-col items-center portrait:space-y-5 portrait:sm:space-y-16 landscape:space-y-8 landscape:lg:space-y-12 overflow-y-auto">
                 <div className="w-full">To transfer funds to your bank, you must link a cryptocurrency exchange to Flash.</div>
                 <div className="w-full">We recommend Coinbase, as they offer low fees and strong security.</div>
                 <button className="px-8 py-2 text-white font-medium bg-blue-500 border-2 border-blue-500 introFont rounded-[4px]">Link Your Coinbase Account</button>
-                <div className="w-full">Don't have a Coinbase account? Register an account and link it later.</div>
+                <div className="pt-3 w-full introFont leading-relaxed">
+                  Don't have a Coinbase account? Skip this step and sign up for one later. You can link it in the Flash App at any time.
+                </div>
                 {/* <button className="mt-4 w-full h-[54px] text-gray-500 font-medium bg-white border-2 border-gray-500 introFont rounded-[4px]">Create Coinbase Account</button> */}
               </div>
             </div>
@@ -388,7 +390,7 @@ const Intro = ({
         {step == "final" && (
           <div className="introFontLarge introPageContainer">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-10 portrait:sm:space-y-16 landscape:md:space-y-16">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
               <p>Your Flash account is ready!</p>
               <div>If you have questions, read to the FAQs under Settings or contact us.</div>
             </div>

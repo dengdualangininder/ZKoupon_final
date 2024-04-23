@@ -301,6 +301,8 @@ export const merchantType2data: MerchantType2data = {
   },
 };
 
+export const currency2symbol: any = { USD: "$", EUR: "€", TWD: "TWD" };
+
 export const list2string = (list: string[]) => {
   let text;
   if (list.length === 1) {

@@ -550,7 +550,7 @@ const Payments = ({
               <div className="w-full flex items-center justify-between">
                 <div className="">Start Month</div>
                 <div className="px-6 py-2 border border-gray-300 rounded-lg">
-                  <select className="" value={selectedStartMonth} onChange={(e) => setSelectedStartMonth(e.target.value)}>
+                  <select className="bg-white" value={selectedStartMonth} onChange={(e) => setSelectedStartMonth(e.target.value)}>
                     {downloadDates.map((i) => (
                       <option>{i}</option>
                     ))}
@@ -561,7 +561,7 @@ const Payments = ({
               <div className="w-full flex items-center justify-between">
                 <div className="">End Month</div>
                 <div className="px-6 py-2 border border-gray-300 rounded-lg">
-                  <select className="" value={selectedEndMonth} onChange={(e) => setSelectedEndMonth(e.target.value)}>
+                  <select className="bg-white" value={selectedEndMonth} onChange={(e) => setSelectedEndMonth(e.target.value)}>
                     {downloadDates.map((i) => (
                       <option>{i}</option>
                     ))}
