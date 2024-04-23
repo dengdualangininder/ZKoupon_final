@@ -46,7 +46,6 @@ const Settings = ({
 }) => {
   console.log("Settings, rendered once");
   // states
-  const [url, setUrl] = useState("");
   const [popup, setPopup] = useState("");
   const [save, setSave] = useState(false);
   // modal states
@@ -81,7 +80,7 @@ const Settings = ({
         "&&" +
         paymentSettingsState.merchantFields.join(",");
     }
-    setUrl(tempUrl);
+    setPaymentSettingsState({ ...paymentSettingsState, qrCodeUrl: tempUrl });
     console.log(tempUrl);
 
     const saveSettings = async () => {
@@ -105,7 +104,7 @@ const Settings = ({
         setErrorModal(true);
       }
     };
-    // saveSettings();
+    saveSettings();
   }, [save]);
 
   const onChangeMerchantFields = (e: any) => {

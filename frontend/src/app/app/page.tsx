@@ -11,7 +11,7 @@ import { useAccount, useWalletClient, useDisconnect, useAccountEffect } from "wa
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
 // others
 import Pusher from "pusher-js";
-import { getPublic, getPublicCompressed } from "@toruslabs/eccrypto";
+import { getPublic } from "@toruslabs/eccrypto";
 import { QRCodeSVG } from "qrcode.react";
 // components
 import Login from "./_components/Login";
