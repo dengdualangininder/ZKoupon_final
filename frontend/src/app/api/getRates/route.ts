@@ -21,6 +21,7 @@ export const POST = async (request: Request) => {
 
     return Response.json({ status: "success", usdcToLocal, usdToLocal });
   } catch (e) {
+    console.log(e);
     console.log({ status: "error", message: "Could not get rates" });
     return Response.json({ status: "error", message: "Could not get rates" });
   }

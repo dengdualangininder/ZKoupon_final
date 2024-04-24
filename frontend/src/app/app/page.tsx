@@ -22,7 +22,7 @@ import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
 import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 // constants
-import { abb2full, countryData, merchantType2data } from "@/utils/constants";
+import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
@@ -43,6 +43,7 @@ const User = () => {
   const [page, setPage] = useState("loading"); // "loading" (default) | "login" | "saveToHome" | "intro" | "app"
   // modals
   const [signOutModal, setSignOutModal] = useState(false);
+  const [bannerModal, setBannerModal] = useState(false);
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
@@ -50,6 +51,8 @@ const User = () => {
   // for verification
   const [idToken, setIdToken] = useState("");
   const [publicKey, setPublicKey] = useState("");
+  // useEffect riggers
+  const [newTxn, setNewTxn] = useState<Transaction | null>(null);
 
   // hooks
   const account = useAccount();
@@ -122,8 +125,9 @@ const User = () => {
       // return;
     }
 
+    // check if employee login
     const jwt = getCookie("jwt");
-    console.log(jwt);
+    console.log("jwt", jwt);
     if (jwt) {
       verifyAndGetEmployeeData();
       return;
@@ -156,12 +160,23 @@ const User = () => {
     if (!initialized.current) {
       initialized.current = true;
       verifyAndGetData();
-      // subscribePusher();
     }
     console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);
   // if you use web3Auth in dependency array, web3Auth.status will show "connected" but walletClient will still be undefined
   // if you use wagmi's "account" in dependency array, will achieve workable results, but too many rerenders, as account changes more frequently than walletClient
+
+  useEffect(() => {
+    if (newTxn) {
+      console.log("add new txn to transactionsState...");
+      setTransactionsState([...transactionsState!, newTxn]);
+      setBannerModal(true);
+      setTimeout(() => {
+        setBannerModal(false);
+        setNewTxn(null);
+      }, 5000);
+    }
+  }, [newTxn]);
 
   const verifyAndGetData = async () => {
     console.log("/app, verifyAndGetData() run once");
@@ -216,12 +231,12 @@ const User = () => {
           setCashoutSettingsState(data.doc.cashoutSettings);
           setTransactionsState(data.doc.transactions);
           setIsAdmin(true);
-          setPage("intro");
+          subscribePusher(data.doc.paymentSettings.merchantEvmAddress);
+          setPage("app");
         }
         // if new user
         if (data == "create new user") {
           createNewUser();
-          setPage("intro");
         }
         // if error
         if (data.status == "error") {
@@ -255,43 +270,22 @@ const User = () => {
     }
   };
 
-  const subscribePusher = async () => {
-    // instantiate
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY ?? "", { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "" });
+  const subscribePusher = async (merchantEvmAddress: string) => {
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER! });
+    // test for connection errors
     pusher.connection.bind("error", (e: any) => {
       console.error("Pusher connection error:", e);
     });
-    // ensure not double-subscribing
-    let channels = await pusher.allChannels();
-    let channelNames = channels.map((i) => i.name);
-    if (!channelNames.includes(account.address ?? "")) {
-      const channel = pusher.subscribe(account.address ?? "");
-      channel.bind("payment-submitted", async (pusherData: any) => {
-        const pusherCurrency = pusherData.currency;
-        const pusherAmount = pusherData.amount;
-        console.log("pusherData", pusherAmount, pusherCurrency);
-        // fetch new transactionsState from db
-        try {
-          //fetch doc
-          console.log("fetching doc...");
-          const res = await fetch("/api/getUserDoc", {
-            method: "POST",
-            body: JSON.stringify({ merchantEvmAddress: account.address }),
-            headers: { "content-type": "application/json" },
-          });
-          const data = await res.json();
-          console.log(data);
-          if (data.status == "success") {
-            setTransactionsState(data.transactions);
-          }
-        } catch (error) {
-          console.log("error: api request to getTransactions failed");
-        }
-      });
-    }
+    // listen for events called "payment" on channel with name equal to merchantEvmAddress
+    var channel = pusher.subscribe(merchantEvmAddress);
+    channel.bind("payment", async ({ txn }: { txn: Transaction }) => {
+      console.log("pusher txn", txn);
+      setNewTxn(txn);
+    });
   };
 
   const createNewUser = async () => {
+    setPage("intro");
     console.log("creating new user");
     // detect IP and set merchantCountry, merchantCurrency, and cex
     let merchantCountry: string;
@@ -301,30 +295,30 @@ const User = () => {
       const res = await axios.get("https://api.country.is");
       merchantCountry = abb2full[res.data.country] || "United States";
       merchantCurrency = countryData[merchantCountry]?.currency || "USD";
-      cex = countryData[merchantCountry]?.CEXes[0] || "Coinbase";
+      cex = countryData[merchantCountry]?.CEXes[0] || "Coinbase Exchange";
       console.log("detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
     } catch (err) {
       merchantCountry = "United States";
       merchantCurrency = "USD";
       cex = "Coinbase";
-      console.log("detect country API failed", err);
+      console.log("detect country API failed, set default to US, USD, and Coinbase. Error:", err);
     }
-    // call createUser API (should have already passed verification)
-    const merchantEmail = (await web3Auth?.getUserInfo())?.email || "";
+    const merchantEmail = (await web3Auth?.getUserInfo())?.email || ""; // TODO:check if this works for Apple login
     const merchantEvmAddress = account.address;
-    console.log(merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex);
+    console.log("merchantEmail, merchantEvmAddress:", merchantEmail, merchantEvmAddress);
+    // create new user in db (should have already passed verification)
     try {
       const res = await fetch("/api/createUser", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex }),
       });
-      const docTemp = await res.json();
-      console.log("page set to App, new user created, doc:", docTemp);
-      setPaymentSettingsState(docTemp.paymentSettings);
-      setCashoutSettingsState(docTemp.cashoutSettings);
-    } catch (err) {
-      console.log("page set to Login, request to create user api failed");
+      const doc = await res.json();
+      console.log("new user created, doc:", doc);
+      setPaymentSettingsState(doc.paymentSettings);
+      setCashoutSettingsState(doc.cashoutSettings);
+    } catch (error) {
+      console.log("request to createUser api failed");
       setPage("login");
     }
   };
@@ -354,7 +348,7 @@ const User = () => {
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
-          <div className="portrait:w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:w-[120px] landscape:md:w-[160px] landscape:h-screen flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 bg-white z-[1] relative">
+          <div className="portrait:w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 bg-white z-[1] relative">
             {/*--- logo ---*/}
             <div className="w-full hidden landscape:lg:block absolute top-[20px]">
               <div className="relative w-full landscape:lg:h-[48px] landscape:xl:h-[52px] landscape">
@@ -444,6 +438,26 @@ const User = () => {
               </div>
             </div>
           )}
+          <div
+            className={`${
+              bannerModal ? "top-4" : "-top-[92px] portrait:sm:-top-[128px] landscape:lg:-top-[128px]"
+            } w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[88px] portrait:sm:h-[120px] landscape:lg:h-[120px] flex justify-center fixed right-0 z-[90] transition-[top] duration-500`}
+          >
+            <div className="pl-[4%] w-[92%] landscape:lg:max-w-[560px] landscape:xl:max-w-[700px] portrait:sm:max-w-[560px] portrait:lg:max-w-[700px] flex items-center justify-between rounded-xl bg-gray-200 border border-gray-400">
+              {/*---content---*/}
+              <div className=" flex-col justify-center">
+                <div className="text-base landscape:lg:text-lg landscape:xl:text-xl portrait:sm:text-lg portrait:lg:text-xl font-bold text-gray-500 pb-1">NEW PAYMENT</div>
+                <div className="text-2xl landscape:lg:text-4xl landscape:xl:text-5xl portrait:sm:text-4xl portrait:lg:text-5xl">
+                  {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency ?? "USD"])}{" "}
+                  {paymentSettingsState?.merchantCurrency} from {transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
+                </div>
+              </div>
+              {/*--- buttons ---*/}
+              <button onClick={() => setBannerModal(false)} className="w-[20%] h-full text-4xl portrait:sm:text-5xl landscape:lg:text-5xl">
+                &#10005;
+              </button>
+            </div>
+          </div>
           {signOutModal && (
             <div>
               <div className="modal">

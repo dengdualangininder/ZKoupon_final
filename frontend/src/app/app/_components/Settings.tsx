@@ -81,7 +81,6 @@ const Settings = ({
         paymentSettingsState.merchantFields.join(",");
     }
     setPaymentSettingsState({ ...paymentSettingsState, qrCodeUrl: tempUrl });
-    console.log(tempUrl);
 
     const saveSettings = async () => {
       try {
@@ -92,7 +91,6 @@ const Settings = ({
           body: JSON.stringify({ paymentSettings: { ...paymentSettingsState, qrCodeUrl: tempUrl }, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
         });
         const data = await res.json();
-
         if (data === "saved") {
           console.log("settings saved");
         } else {

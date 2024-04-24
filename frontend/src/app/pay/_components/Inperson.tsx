@@ -61,7 +61,7 @@ const Inperson = ({
           value={currencyAmount}
           onChange={(e) => {
             setCurrencyAmount(e.currentTarget.value);
-            setTokenAmount((Number(e.currentTarget.value) / rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency]));
+            setTokenAmount(((Number(e.currentTarget.value) / rates.usdcToLocal) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]));
             // setShowNetwork(true);
           }}
           placeholder="Enter Amount"

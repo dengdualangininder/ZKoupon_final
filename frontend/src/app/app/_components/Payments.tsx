@@ -10,7 +10,7 @@ import { parseUnits } from "viem";
 import ErrorModal from "./modals/ErrorModal";
 // constants
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
-import { merchantType2data } from "@/utils/constants";
+import { currency2decimal, merchantType2data } from "@/utils/constants";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
@@ -303,7 +303,7 @@ const Payments = ({
                       {/*---Time---*/}
                       <td className=" whitespace-nowrap">
                         <div className="relative">
-                          <span className="landscape:text-3xl landscape:lg:text-4xl portrait:text-3xl portrait:sm:text-5xl">{getLocalTime(txn.date).time}</span>
+                          <span className="text-3xl landscape:lg:text-4xl landscape:xl:text-5xl portrait:sm:text-4xl portrait:lg:text-5xl">{getLocalTime(txn.date).time}</span>
                           <span className="landscape:text-xl landscape:lg:text-xl portrait:text-sm sm:portrait:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
                           <div className="landscape:text-sm landscape:lg:text-lg portrait:text-sm portrait:sm:text-xl landscape:leading-none portrait:leading-none absolute top-[calc(100%-1px)] font-medium text-gray-400">
                             {getLocalDateWords(txn.date)}
@@ -313,7 +313,7 @@ const Payments = ({
                       {/*---Customer---*/}
                       <td className=" text-center">
                         {paymentSettingsState.merchantPaymentType === "inperson" && (
-                          <div className="landscape:text-2xl landscape:lg:text-3xl portrait:text-lg sm:portrait:text-3xl pt-2 pr-1">
+                          <div className="text-xl landscape:lg:text-3xl landscape:xl:text-4xl portrait:sm:text-3xl portrait:lg:text-4xl pt-2 pr-1">
                             ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
                           </div>
                         )}
@@ -353,11 +353,11 @@ const Payments = ({
                           <span
                             className={`${
                               paymentSettingsState.merchantPaymentType === "inperson"
-                                ? "landscape:text-3xl landscape:lg:text-4xl portrait:text-3xl sm:portrait:sm:text-5xl"
+                                ? "text-3xl landscape:lg:text-4xl landscape:xl:text-5xl sm:portrait:sm:text-4xl portrait:lg:text-5xl"
                                 : "text-xl"
                             }`}
                           >
-                            {txn.currencyAmount}
+                            {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
                           </span>
                           <div
                             className={`${

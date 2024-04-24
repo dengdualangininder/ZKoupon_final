@@ -1,4 +1,4 @@
-const public_RPC_URLs = {
+export const rpcUrls = {
   eth: "https://rpc.ankr.com/eth",
   Polygon: "https://polygon-rpc.com/",
   BNB: "https://bsc-dataseed.binance.org",
@@ -13,7 +13,7 @@ const public_RPC_URLs = {
 type TokenAddresses = {
   [key: string]: { [key: string]: { address: string; decimals: number } };
 };
-const tokenAddresses: TokenAddresses = {
+export const tokenAddresses: TokenAddresses = {
   Polygon: {
     USDC: { address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", decimals: 6 },
     USDT: { address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", decimals: 6 },
@@ -52,7 +52,7 @@ const tokenAddresses: TokenAddresses = {
 type ChainIds = {
   [key: string]: string;
 };
-const chainIds: ChainIds = {
+export const chainIds: ChainIds = {
   Gnosis: "0x64",
   Polygon: "0x89",
   Thunder: "0x6c",
@@ -66,7 +66,7 @@ const chainIds: ChainIds = {
 type AddChainParams = {
   [key: string]: { chainId: string; chainName: string; rpcUrls: string[]; nativeCurrency: { name: string; symbol: string; decimals: number }; blockExplorerUrls: string[] };
 };
-const addChainParams: AddChainParams = {
+export const addChainParams: AddChainParams = {
   Polygon: {
     chainId: "0x89",
     chainName: "Polygon",
@@ -157,7 +157,7 @@ const addChainParams: AddChainParams = {
   },
 };
 
-const blockExplorer = {
+export const blockExplorer = {
   Polygon: "https://polygonscan.com/tx/",
   Optimism: "https://optimistic.etherscan.io/tx/",
   Arbitrum: "https://arbiscan.io/tx/",
@@ -165,5 +165,3 @@ const blockExplorer = {
   BNB: "https://bscscan.com/tx/",
   Base: "https://basescan.org/tx/",
 };
-
-export { chainIds, addChainParams, tokenAddresses, public_RPC_URLs, blockExplorer };

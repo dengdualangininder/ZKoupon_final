@@ -1,50 +1,64 @@
 import dbConnect from "@/db/dbConnect";
 import UserModel from "@/db/models/UserModel";
 import Pusher from "pusher";
+import { ethers } from "ethers";
+import { rpcUrls } from "@/utils/web3Constants";
 
 export const POST = async (request: Request) => {
-  console.log("saveSettings api");
-
-  const { merchantEvmAddress, txn } = await request.json();
-  console.log(merchantEvmAddress);
-  console.log(txn);
+  console.log("payInperson api");
+  const { txn } = await request.json();
 
   // verify txn
   try {
-    // TODO: get txn data from blockchain, and verify 3 things 1) transferTo = merchantEvmAddress, 2) amount = tokenAmount, and 3) time is within last 1 minute
+    const provider = new ethers.JsonRpcProvider(rpcUrls["Polygon"]);
+    const txResponse = await provider.getTransaction(txn.txnHash);
+    const currentBlock = await provider.getBlockNumber();
+    const txResponseTokenAmount = ethers.formatUnits("0x" + txResponse!.data.slice(-64), 6);
+    var txResponseMerchantEvmAddress = ethers.getAddress(txResponse!.data.substring(34, 74));
+    if (
+      currentBlock &&
+      txResponse &&
+      txResponseMerchantEvmAddress == txn.merchantEvmAddress &&
+      Number(txResponseTokenAmount) == txn.tokenAmount &&
+      currentBlock - txResponse.blockNumber! < 20
+    ) {
+      console.log("payment verified");
+    } else {
+      return Response.json("not verified");
+    }
   } catch (error) {
-    console.log(error);
     return Response.json("not verified");
   }
 
   // save to db
-  await dbConnect();
   try {
+    await dbConnect();
     await UserModel.findOneAndUpdate(
-      { "paymentSettings.merchantEvmAddress": merchantEvmAddress },
+      { "paymentSettings.merchantEvmAddress": txResponseMerchantEvmAddress },
       {
         $push: {
           transactions: txn,
         },
       }
     );
-    // if saved to db, trigger pusher event
-    try {
-      const pusher = new Pusher({
-        appId: process.env.PUSHER_ID ?? "",
-        key: process.env.NEXT_PUBLIC_PUSHER_KEY ?? "",
-        secret: process.env.PUSHER_SECRET ?? "",
-        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "",
-        useTLS: true,
-      });
-      await pusher.trigger(merchantEvmAddress, "payment-submitted", { currency: txn.merchantCurrency, amount: txn.currencyAmount }); // (channel, event-name, data)
-      return Response.json("success");
-    } catch (error) {
-      console.log(error);
-      return Response.json("not triggered");
-    }
-  } catch (error: any) {
-    console.log(error);
+    console.log("saved");
+  } catch (error) {
     return Response.json("not saved");
+  }
+
+  // pusher
+  try {
+    const pusher = new Pusher({
+      appId: process.env.PUSHER_ID ?? "",
+      key: process.env.NEXT_PUBLIC_PUSHER_KEY ?? "",
+      secret: process.env.PUSHER_SECRET ?? "",
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "",
+      useTLS: true,
+    });
+    pusher.trigger(txResponseMerchantEvmAddress!, "payment", { txn: txn });
+    return Response.json("success");
+  } catch (error) {
+    console.log(error);
+    return Response.json("not pushed");
   }
 };

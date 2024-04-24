@@ -29,7 +29,6 @@ const Pay = () => {
   const merchantName = searchParams.get("merchantName"); // decodeURIComponent(merchantIdArray[0]);
   const merchantCurrency = searchParams.get("merchantCurrency"); // decodeURIComponent(merchantIdArray[0]);
   const merchantEvmAddress = searchParams.get("merchantEvmAddress"); // decodeURIComponent(merchantIdArray[0]);
-
   const urlParams = { paymentType: paymentType, merchantName: merchantName, merchantCurrency: merchantCurrency, merchantEvmAddress: merchantEvmAddress };
 
   //inperson states
@@ -41,7 +40,7 @@ const Pay = () => {
   const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
   const [payModal, setPayModal] = useState(false);
-  const [msg, setMsg] = useState("Please confirm transaction on MetaMask...");
+  const [payModalMsg, setPayModalMsg] = useState("Please confirm transaction on MetaMask...");
   const [isSendingComplete, setIsSendingComplete] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -197,10 +196,9 @@ const Pay = () => {
 
   const send = async () => {
     setPayModal(true);
-    setMsg("Please confirm transaction on MetaMask...");
+    setPayModalMsg("Please confirm transaction on MetaMask...");
 
-    // check if currencyAmount is negative
-    if (Number(currencyAmount) <= 0) {
+    if (isNaN(Number(currencyAmount)) || Number(currencyAmount) <= 0) {
       setPayModal(false);
       setErrorModal(true);
       setErrorMsg("Please enter a valid payment amount");
@@ -210,10 +208,11 @@ const Pay = () => {
     // define txn object, except "customerAddress" and "txnHash"
     let txn = {
       date: new Date(),
-      merchantEvmAddress: merchantEvmAddress,
+      merchantEvmAddress: urlParams.merchantEvmAddress,
       currencyAmount: Number(currencyAmount),
-      merchantCurrency: merchantCurrency,
-      customerAddress: "",
+      currencyAmountAfterCashBack: Number((Number(currencyAmount) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency!])),
+      merchantCurrency: urlParams.merchantCurrency,
+      customerAddress: "", // will get later
       tokenAmount: Number(tokenAmount),
       token: selectedToken,
       network: selectedNetwork,
@@ -222,23 +221,21 @@ const Pay = () => {
       savings: fxSavings,
       refund: false,
       archive: false,
-      txnHash: "",
+      txnHash: "", // will get later
     };
 
-    // initiate Web3 APIs and send txn
+    // send txn
     // @ts-ignore
-    let provider = new ethers.BrowserProvider(ethereum); // is ethereum = await detectEthereumProvider() better?
+    let provider = new ethers.BrowserProvider(window.ethereum);
     let signer = await provider.getSigner();
     txn.customerAddress = await signer.getAddress();
     let contract = new ethers.Contract(tokenAddresses[selectedNetwork][selectedToken]["address"], erc20ABI, signer);
-
-    setMsg("Sending transaction...");
-
     try {
       const txResponse = await contract.transfer(merchantEvmAddress, ethers.parseUnits(tokenAmount, tokenAddresses[selectedNetwork][selectedToken]["decimals"]));
+      setPayModalMsg("Sending transaction...");
       const txReceipt = await txResponse.wait();
+      setPayModalMsg("Notifying the business...");
       txn.txnHash = txReceipt.hash;
-      console.log("txnHash:", txReceipt.hash);
     } catch (err: any) {
       console.log(err);
       setPayModal(false);
@@ -253,33 +250,36 @@ const Pay = () => {
       return;
     }
 
+    // call payInperson API, which saves db and pushes notification
     try {
-      const saveToDbAndTriggerPusher = async () => {
-        const res = await fetch("/api/payInperson", {
-          method: "POST",
-          body: JSON.stringify({ txn: txn, merchantEvmAddress: merchantEvmAddress }),
-          headers: { "content-type": "application/json" },
-        });
-        const data = await res.json();
-        if (data == "success") {
-          setIsSendingComplete(true); // show "Payment Complete" page on customer side ONLY if txn saved to db
-          console.log("saved to db and Pusher triggered");
-        } else if (data == "not saved") {
-          setPayModal(false);
-          setErrorModal(true);
-          setErrorMsg("Payment was made. But, the payment data was not saved to the database.");
-        } else if (data == "not triggered") {
-          setPayModal(false);
-          setErrorModal(true);
-          setErrorMsg("Payment was made. But, the payment did not trigger a notification to the merchant.");
-          setIsSendingComplete(true); // show "Payment Complete" page on customer side ONLY if txn saved to db
-        }
-      };
-      await saveToDbAndTriggerPusher();
+      const res = await fetch("/api/payInperson", {
+        method: "POST",
+        body: JSON.stringify({ txn: txn }),
+        headers: { "content-type": "application/json" },
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data == "success") {
+        console.log("saved and pushed");
+        setIsSendingComplete(true); // show "Payment Complete" page on customer side
+      } else if (data == "not verified") {
+        setPayModal(false);
+        setErrorModal(true);
+        setErrorMsg("A transaction was sent. But, the payment could not be verified.");
+      } else if (data == "not saved") {
+        setPayModal(false);
+        setErrorModal(true);
+        setErrorMsg("Payment was successful. But, the payment data was not saved to the database.");
+      } else if (data == "not pushed") {
+        setPayModal(false);
+        setErrorModal(true);
+        setErrorMsg("Payment was successful. But, the payment did not trigger a notification to the merchant.");
+        setIsSendingComplete(true); // show "Payment Complete" page on customer side ONLY if txn saved to db
+      }
     } catch (err) {
       setPayModal(false);
       setErrorModal(true);
-      setErrorMsg("Payment was successful. But,the payment data could not be sent to the database.");
+      setErrorMsg("Payment was successful. But, the payment data could not be sent to the server.");
     }
   };
 
@@ -371,20 +371,18 @@ const Pay = () => {
       {/*---error modal---*/}
       {errorModal && (
         <div className="">
-          <div className="flex py-10 justify-center bg-white w-[290px] h-[330px] rounded-3xl border border-gray-500 fixed inset-1/2 translate-y-[-55%] translate-x-[-50%] z-[90]">
-            {/*---container---*/}
-            <div className="h-full w-full flex flex-col justify-between items-center text-lg leading-tight md:text-base md:leading-snug px-6">
-              {/*---Error---*/}
-              <div className="text-2xl font-medium text-gray-500 text-center">Payment Cancelled</div>
-              {/*---msg---*/}
+          <div className="modal">
+            {/*---content---*/}
+            <div className="grow flex flex-col justify-center space-y-8">
+              <div className="text-3xl text-center text-gray-400 font-bold">Error</div>
               <div className="text-center">{errorMsg}</div>
-              {/*---close button---*/}
-              <button onClick={() => setErrorModal(false)} className="buttonWhiteTextLg w-[160px]">
-                DISMISS
-              </button>
             </div>
+            {/*---close button---*/}
+            <button onClick={() => setErrorModal(false)} className="modalButtonWhite">
+              DISMISS
+            </button>
           </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
+          <div className="modalBlackout"></div>
         </div>
       )}
 
@@ -431,7 +429,7 @@ const Pay = () => {
             ) : (
               <div className="w-full h-full px-6 flex flex-col justify-center items-center">
                 <SpinningCircleGray />
-                <div className="mt-4 text-center text-xl">{msg}</div>
+                <div className="mt-4 text-center text-xl leading-relaxed">{payModalMsg}</div>
               </div>
             )}
           </div>
