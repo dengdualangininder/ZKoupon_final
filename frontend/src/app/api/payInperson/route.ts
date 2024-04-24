@@ -55,7 +55,7 @@ export const POST = async (request: Request) => {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "",
       useTLS: true,
     });
-    pusher.trigger(txResponseMerchantEvmAddress!, "payment", { txn: txn });
+    await pusher.trigger(txResponseMerchantEvmAddress!, "payment", { txn: txn });
     return Response.json("success");
   } catch (error) {
     console.log(error);
