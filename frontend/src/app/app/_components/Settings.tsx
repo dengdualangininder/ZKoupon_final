@@ -336,7 +336,7 @@ const Settings = ({
 
             {/*---2% off---*/}
             {paymentSettingsState.merchantPaymentType === "inperson" && (
-              <div className="fieldContainer border-b-transparent relative">
+              <div className="fieldContainer border-b relative">
                 <div className="group cursor-pointer">
                   <label className="settingsLabelFont">Give 2% Instant Cashback?</label>
                   <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
@@ -528,7 +528,7 @@ const Settings = ({
           <div>
             <div className="settingsHeader">CASH OUT SETTINGS</div>
             {/*---cex---*/}
-            <div className="fieldContainer border-b-transparent">
+            <div className="fieldContainer border-b">
               <div>
                 <label className="settingsLabelFont">Cash Out Platform</label>
               </div>

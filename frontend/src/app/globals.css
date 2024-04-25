@@ -33,23 +33,51 @@
 }
 
 @layer components {
+  .textXs {
+    @apply text-xs portrait:sm:text-sm landscape:lg:text-sm portrait:lg:text-base landscape:xl:text-base;
+  }
+
   .textSm {
-    @apply text-sm portrait:sm:text-xl landscape:lg:text-xl;
+    @apply text-sm portrait:sm:text-base landscape:lg:text-base;
   }
 
   .textBase {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl;
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg;
   }
 
   .textLg {
-    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl;
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl;
   }
 
   .textXl {
-    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl;
+    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl;
   }
 
   .text2xl {
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl;
+  }
+
+  .text3xl {
+    @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl portrait:lg:text-5xl landscape:xl:text-5xl;
+  }
+
+  .textSm2 {
+    @apply text-sm portrait:sm:text-lg landscape:lg:text-lg portrait:lg:text-xl landscape:xl:text-xl;
+  }
+
+  .textBase2 {
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl;
+  }
+
+  .textLg2 {
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl;
+  }
+
+  .textXl2 {
+    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl;
+  }
+
+  .text2xl2 {
     @apply text-2xl portrait:sm:text-4xl landscape:lg:text-4xl;
   }
 
@@ -182,11 +210,11 @@
   }
 
   .settingsHeader {
-    @apply text-sm portrait:sm:text-lg landscape:lg:text-xl font-bold text-blue-600;
+    @apply pb-1 text-sm portrait:sm:text-lg landscape:lg:text-xl font-bold text-blue-600;
   }
 
   .fieldContainer {
-    @apply flex items-center justify-between py-2 border-b;
+    @apply flex items-center justify-between py-2 border-t;
   }
 
   .settingsLabelFont {
@@ -231,6 +259,10 @@
 
   .modalButtonWhite {
     @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-700 bg-white border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+  }
+
+  .modalButtonNoBorder {
+    @apply w-full text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-700 active:opacity-50;
   }
 
   .introNext {
@@ -282,10 +314,6 @@
     @apply text-xs md:text-sm text-white bg-gradient-to-l from-blue-700 from-20% via-pink-500 to-yellow-300 to-100% rounded-lg px-2 py-0 hover:text-black animate-textTwo;
   }
 
-  .cashoutContainer {
-    @apply min-h-[140px] px-6 py-4 rounded-xl bg-white border border-gray-400;
-  }
-
   .appSettingsForm {
     @apply flex-none flex flex-col px-3 xs:px-4 py-4 w-full xs:w-[420px] md:w-[356px] lg:w-[360px];
   }
@@ -300,6 +328,42 @@
 
   .buttonWhiteTextLg {
     @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
+  }
+
+  .cashoutContainer {
+    @apply min-h-[160px] px-6 py-4 rounded-xl bg-white border border-gray-400;
+  }
+
+  .cashoutHeader {
+    @apply textXl font-bold;
+  }
+
+  .cashoutBalance {
+    @apply text3xl mt-3 portrait:sm:mt-6 landscape:lg:mt-6 font-medium;
+  }
+
+  .cashoutDetails {
+    @apply textXl w-[190px] portrait:sm:w-[220px] landscape:lg:w-[220px] portrait:lg:w-[260px] landscape:xl:w-[260px] overflow-hidden transition-all duration-500 font-medium relative;
+  }
+
+  .cashoutShow {
+    @apply textSm2 link;
+  }
+
+  .cashoutStats {
+    @apply textBase2;
+  }
+
+  .cashoutStats2 {
+    @apply textSm2 font-medium text-center;
+  }
+
+  .cashoutBalanceDetails {
+    @apply text-lg;
+  }
+
+  .cashoutButton {
+    @apply textLg mt-12 portrait:sm:mt-16 landscape:lg:mt-16 w-full max-w-[340px] h-[44px] portrait:sm:h-[56px] landscape:lg:h-[56px] font-medium text-white bg-blue-500 active:opacity-50 rounded-[4px] portrait:sm:rounded-md landscape:lg:rounded-md;
   }
 }
 

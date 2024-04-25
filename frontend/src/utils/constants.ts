@@ -303,6 +303,7 @@ export const merchantType2data: MerchantType2data = {
 
 export const currency2symbol: any = { USD: "$", EUR: "€", TWD: "TWD" };
 export const currency2decimal: any = { USD: 2, EUR: 2, TWD: 0 };
+export const currency2rateDecimal: any = { USD: 4, EUR: 4, TWD: 4 };
 
 export const list2string = (list: string[]) => {
   let text;

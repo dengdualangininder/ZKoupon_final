@@ -264,7 +264,7 @@ const Payments = ({
       {/*--- Table or "no payments" ---*/}
       {transactionsState.length > 1 ? (
         <div className="w-full overflow-y-auto">
-          <div className="landscape:min-h-[calc(80px*6+50px)] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] portrait:h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] flex justify-center select-none">
+          <div className="landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] portrait:h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] flex justify-center select-none">
             <table
               className={`${
                 paymentSettingsState.merchantPaymentType == "inperson" ? "w-[90%] landscape:max-w-[70%] sm:portrait:max-w-[80%]" : ""
@@ -303,7 +303,7 @@ const Payments = ({
                       {/*---Time---*/}
                       <td className=" whitespace-nowrap">
                         <div className="relative">
-                          <span className="text-3xl landscape:lg:text-4xl landscape:xl:text-5xl portrait:sm:text-4xl portrait:lg:text-5xl">{getLocalTime(txn.date).time}</span>
+                          <span className="text-3xl landscape:lg:text-4xl portrait:sm:text-4xl landscape:xl:text-5xl portrait:lg:text-5xl">{getLocalTime(txn.date).time}</span>
                           <span className="landscape:text-xl landscape:lg:text-xl portrait:text-sm sm:portrait:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
                           <div className="landscape:text-sm landscape:lg:text-lg portrait:text-sm portrait:sm:text-xl landscape:leading-none portrait:leading-none absolute top-[calc(100%-1px)] font-medium text-gray-400">
                             {getLocalDateWords(txn.date)}
@@ -426,15 +426,13 @@ const Payments = ({
           {/*--- search button ---*/}
           <div
             onClick={() => setIsSearch(true)}
-            className={`${
-              isAdmin ? "" : "invisible"
-            } relative w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex items-center justify-center`}
+            className="relative w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex items-center justify-center"
           >
             <FontAwesomeIcon icon={faSearch} className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl" />
           </div>
         </div>
         {/*--- SEARCH BAR ---*/}
-        <div className={`${isSearch ? "translate-x-[0px]" : ""} w-full h-full flex justify-center items-center absolute translate-x-[100vw] transition-transform duration-700`}>
+        <div className={`${isSearch ? "translate-x-[0px]" : "translate-x-[100vw]"} w-full h-full flex justify-center items-center absolute transition-transform duration-700`}>
           <div className="w-[300px] portrait:sm:w-[420px] landscape:lg:w-[420px] pb-2 h-[64px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex flex-col justify-between">
             <div className="w-full text-center textSm">Enter last 4 chars of customer's address</div>
             <div className="w-full h-[32px] portrait:sm:h-[48px] landscape:lg:h-[48px] flex space-x-2 portrait:sm:space-x-4 landscape:lg:space-x-4">

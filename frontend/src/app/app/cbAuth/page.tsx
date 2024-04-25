@@ -2,6 +2,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 
 const cbAuth = () => {
   const router = useRouter();
@@ -13,11 +14,10 @@ const cbAuth = () => {
     if (!initialized.current) {
       initialized.current = true;
       (async () => {
-        const code = searchParams.get("code") ?? "";
-        const state = searchParams.get("state") ?? "";
+        const code = searchParams.get("code");
+        const state = searchParams.get("state");
         const browserState = window.sessionStorage.getItem("cbRandomSecure");
-        console.log(code, state, browserState);
-
+        // if successful, exit function
         if (code && state && state == browserState) {
           const res = await fetch("/api/cbGetNewTokens", {
             method: "POST",
@@ -29,23 +29,24 @@ const cbAuth = () => {
             window.sessionStorage.setItem("cbAccessToken", data.cbAccessToken);
             window.localStorage.setItem("cbRefreshToken", data.cbRefreshToken); // TODO: store in MongoDB is safer
             router.push("/app");
-          } else if (data === "error") {
-            console.log("/cbAuth, cbGetNewTokens API failed to get new cbRefreshToken or cbAccessToken");
-            window.sessionStorage.removeItem("cbAccessToken");
-            window.localStorage.removeItem("cbRefreshToken");
-            router.push("/app");
+            return;
           }
-        } else {
-          console.log("/cbAuth, no code, state, or matching state");
-          window.sessionStorage.removeItem("cbAccessToken");
-          window.localStorage.removeItem("cbRefreshToken");
-          router.push("/app");
         }
+        // if not successful, remove items from local storage
+        window.sessionStorage.removeItem("cbRandomSecure");
+        window.sessionStorage.removeItem("cbAccessToken");
+        window.localStorage.removeItem("cbRefreshToken");
+        router.push("/app");
       })();
     }
   }, []);
 
-  return <div>Loading...</div>;
+  return (
+    <div className="w-full h-screen flex flex-col justify-center items-center">
+      <SpinningCircleGrayLarge />
+      <div className="mt-2">Connecting to Coinbase...</div>
+    </div>
+  );
 };
 
 export default cbAuth;

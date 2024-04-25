@@ -15,7 +15,7 @@ import circleCheck from "@/utils/lotties/circleCheck.json";
 import Inperson from "./_components/Inperson";
 import Online from "./_components/Online";
 // constants
-import { currency2decimal, currency2symbol } from "@/utils/constants";
+import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
 // types
@@ -45,7 +45,7 @@ const Pay = () => {
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   // pay form states
-  const [USDCBalance, setUSDCBalance] = useState("0");
+  const [USDCBalance, setUSDCBalance] = useState("");
   const [isGettingBalance, setIsGettingBalance] = useState(true);
   const [showNetwork, setShowNetwork] = useState(false);
   const [showToken, setShowToken] = useState(false);
@@ -112,8 +112,11 @@ const Pay = () => {
       const ratesData = await ratesRes.json();
       console.log("ratesData", ratesData);
       if (ratesData.status == "success") {
-        setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
-        setFxSavings(((ratesData.usdcToLocal / ratesData.usdToLocal - 1) * 100).toFixed(1));
+        setRates({
+          usdcToLocal: Number((ratesData.usdcToLocal * 0.997).toFixed(currency2rateDecimal[urlParams?.merchantCurrency!])),
+          usdToLocal: Number((ratesData.usdToLocal * 0.997).toFixed(currency2rateDecimal[urlParams?.merchantCurrency!])),
+        });
+        setFxSavings((((ratesData.usdcToLocal * 0.997) / ratesData.usdToLocal - 1) * 100).toFixed(1));
       }
     };
     getRates();
@@ -304,67 +307,87 @@ const Pay = () => {
         <div className="text-sm leading-tight font-medium">giving you better FX rates than any bank</div>
       </div>
       {/*--- content below banner ---*/}
-      <div className="w-[340px] h-[94%] flex flex-col items-center justify-evenly">
+      <div className="w-[340px] h-[94%] flex flex-col">
         {/*--- your balance ---*/}
-        <div className="mt-4 p-4 w-full flex items-center justify-between text-lg font-medium border bg-gray-200 border-gray-200 rounded-xl">
-          <div>Your Wallet</div>
-
-          {/*--- balance ---*/}
-          <div className="text-xl flex flex-col items-end">
-            {/*--- usdc balance ---*/}
-            <div className="flex items-center">
-              <div className="relative mr-[2px] w-[22px] h-[22px]">
-                <Image src="/usdc.svg" alt="usdc" fill />
+        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-3 w-full h-[90px] flex items-center justify-center bg-gray-200 rounded-xl text-lg font-medium`}>
+          {USDCBalance ? (
+            <div className="px-4 w-full h-full flex items-center justify-between">
+              <div>Your Wallet</div>
+              {/*--- balance ---*/}
+              <div className="text-xl flex flex-col items-end">
+                {/*--- usdc balance ---*/}
+                <div className="flex items-center">
+                  <div className="relative mr-[2px] w-[22px] h-[22px]">
+                    <Image src="/usdc.svg" alt="usdc" fill />
+                  </div>
+                  <div>USDC {USDCBalance}</div>
+                </div>
+                {/*--- local currency balance ---*/}
+                <div>
+                  &#40;{currency2symbol[urlParams.merchantCurrency!]}
+                  {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
+                </div>
               </div>
-              <div>USDC {USDCBalance}</div>
             </div>
-            {/*--- local currency balance ---*/}
-            <div>
-              &#40;{currency2symbol[urlParams.merchantCurrency!]}
-              {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
-            </div>
-          </div>
+          ) : (
+            <div className="text-center">Connecting...</div>
+          )}
         </div>
-
-        {paymentType == "inperson" && (
-          <Inperson
-            urlParams={urlParams}
-            currencyAmount={currencyAmount}
-            setCurrencyAmount={setCurrencyAmount}
-            showNetwork={showNetwork}
-            setShowNetwork={setShowNetwork}
-            merchantNetworks={merchantNetworks}
-            selectedNetwork={selectedNetwork}
-            selectedToken={selectedToken}
-            onClickNetwork={onClickNetwork}
-            rates={rates}
-            isGettingBalance={isGettingBalance}
-            USDCBalance={USDCBalance}
-            send={send}
-            fxSavings={fxSavings}
-            tokenAmount={tokenAmount}
-            setTokenAmount={setTokenAmount}
-          />
-        )}
-        {paymentType == "online" && (
-          <Online
-            urlParams={urlParams}
-            currencyAmount={currencyAmount}
-            setCurrencyAmount={setCurrencyAmount}
-            showNetwork={showNetwork}
-            setShowNetwork={setShowNetwork}
-            merchantNetworks={merchantNetworks}
-            selectedNetwork={selectedNetwork}
-            selectedToken={selectedToken}
-            onClickNetwork={onClickNetwork}
-            rates={rates}
-            isGettingBalance={isGettingBalance}
-            USDCBalance={USDCBalance}
-            send={send}
-            fxSavings={fxSavings}
-            tokenAmount={tokenAmount}
-            setTokenAmount={setTokenAmount}
-          />
+        {USDCBalance && (
+          <div className="h-[calc(100%-90px)]">
+            {Number(USDCBalance) > 0.01 ? (
+              <div className="h-full">
+                {paymentType == "inperson" && (
+                  <Inperson
+                    urlParams={urlParams}
+                    currencyAmount={currencyAmount}
+                    setCurrencyAmount={setCurrencyAmount}
+                    showNetwork={showNetwork}
+                    setShowNetwork={setShowNetwork}
+                    merchantNetworks={merchantNetworks}
+                    selectedNetwork={selectedNetwork}
+                    selectedToken={selectedToken}
+                    onClickNetwork={onClickNetwork}
+                    rates={rates}
+                    isGettingBalance={isGettingBalance}
+                    USDCBalance={USDCBalance}
+                    send={send}
+                    fxSavings={fxSavings}
+                    tokenAmount={tokenAmount}
+                    setTokenAmount={setTokenAmount}
+                  />
+                )}
+                {paymentType == "online" && (
+                  <Online
+                    urlParams={urlParams}
+                    currencyAmount={currencyAmount}
+                    setCurrencyAmount={setCurrencyAmount}
+                    showNetwork={showNetwork}
+                    setShowNetwork={setShowNetwork}
+                    merchantNetworks={merchantNetworks}
+                    selectedNetwork={selectedNetwork}
+                    selectedToken={selectedToken}
+                    onClickNetwork={onClickNetwork}
+                    rates={rates}
+                    isGettingBalance={isGettingBalance}
+                    USDCBalance={USDCBalance}
+                    send={send}
+                    fxSavings={fxSavings}
+                    tokenAmount={tokenAmount}
+                    setTokenAmount={setTokenAmount}
+                  />
+                )}
+              </div>
+            ) : (
+              <div className="mt-6 w-full h-full flex flex-col items-center text-lg leading-relaxed space-y-4">
+                <p>You need native USDC on Polygon for payment. Here are serveral ways to get some:</p>
+                <p>&bull; if you have native USDC (Polygon) on another MetaMask account, click the top right icon to change accounts</p>
+                <p>&bull; if you have funds on a CEX, send USDC via Polygon to your MetaMask</p>
+                <p>&bull; if you have tokens on Polygon, swap some for native USDC on Uniswap</p>
+                <p>&bull; if you have USDC on another chain, bridge it to Polygon using Stargate, Celer, or other bridges</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
