@@ -227,7 +227,6 @@ const Pay = () => {
       txnHash: "", // will get later
     };
 
-    // send txn
     // @ts-ignore
     let provider = new ethers.BrowserProvider(window.ethereum);
     let signer = await provider.getSigner();

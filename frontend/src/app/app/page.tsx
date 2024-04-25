@@ -278,6 +278,7 @@ const User = () => {
     });
     // listen for events called "payment" on channel with name equal to merchantEvmAddress
     var channel = pusher.subscribe(merchantEvmAddress);
+    console.log("listening to channel:", merchantEvmAddress);
     channel.bind("payment", async ({ txn }: { txn: Transaction }) => {
       console.log("pusher txn", txn);
       setNewTxn(txn);
@@ -349,14 +350,8 @@ const User = () => {
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
           <div className="portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 bg-white z-[1] relative">
-            {/*--- logo ---*/}
-            {/* <div className="hidden landscape:lg:block w-full">
-              <div className="relative w-full landscape:lg:h-[48px] landscape:xl:h-[52px] landscape">
-                <Image src={"/logo.svg"} alt="logo" fill />
-              </div>
-            </div> */}
             {/*---menu---*/}
-            <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-3">
+            <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-3 portrait:px-1">
               {(isAdmin
                 ? [
                     { id: "qrCode", title: "QR Code", img: "/qr.svg" },
@@ -380,12 +375,10 @@ const User = () => {
                   }}
                   className={`${!isAdmin || menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
                 >
-                  <div className="relative w-[66px] h-[22px] portrait:sm:h-[36px] landscape:lg:h-[36px] point-events-none">
+                  <div className="relative w-[66px] h-[20px] portrait:sm:h-[36px] landscape:lg:h-[36px] point-events-none">
                     <Image src={i.img} alt={i.title} fill />
                   </div>
-                  <div className="mt-0.5 landscape:text-sm portrait:text-sm landscape:sm:text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:md:text-2xl font-medium pointer-events-none">
-                    {i.title}
-                  </div>
+                  <div className="text-sm landscape:sm:text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:md:text-2xl font-medium pointer-events-none">{i.title}</div>
                 </div>
               ))}
             </div>
