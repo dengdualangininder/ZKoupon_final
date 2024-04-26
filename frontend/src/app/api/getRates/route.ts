@@ -18,10 +18,12 @@ export const POST = async (request: Request) => {
       `https://sheets.googleapis.com/v4/spreadsheets/1AYtFng--zDWlSJmQuF16dyXwdxvrsM6SItTTYSpVq0s/values/Sheet1!B2:E2?key=${process.env.GOOGLE_API_KEY}`
     );
     const usdToLocal = USDres.data.values[0][sheetIndex * 2];
-
-    return Response.json({ status: "success", usdcToLocal, usdToLocal });
+    if (usdcToLocal && usdToLocal) {
+      return Response.json({ status: "success", usdcToLocal: usdcToLocal, usdToLocal: usdToLocal });
+    } else {
+      return Response.json({ status: "error", message: "rate values are empty" });
+    }
   } catch (e) {
-    console.log(e);
     console.log({ status: "error", message: "Could not get rates" });
     return Response.json({ status: "error", message: "Could not get rates" });
   }

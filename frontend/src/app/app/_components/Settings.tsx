@@ -245,11 +245,11 @@ const Settings = ({
           <QRCodeSVG id="qrPlacard" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
         </div>
 
-        {/*---form, mt=10 ---*/}
-        <form className="space-y-6 portrait:sm:space-y-10 landscape:lg:space-y-10 landscape:xl:space-y-10">
+        {/*---form ---*/}
+        <form className="w-full">
           {/*--- PAYMENT SETTINGS ---*/}
-          <div>
-            <div className="settingsHeader">PAYMENT SETTINGS</div>
+          <div className="w-full">
+            <div className="flex-none w-full pb-1.5 flex flex-col justify-end text-sm portrait:sm:text-lg landscape:lg:text-lg font-bold text-blue-600">PAYMENT SETTINGS</div>
             {/*---merchantName---*/}
             <div className="fieldContainer">
               <label className="settingsLabelFont">Business Name</label>
@@ -263,75 +263,67 @@ const Settings = ({
 
             {/*---merchantCountry & merchantCurrency---*/}
             <div className="fieldContainer">
-              <div>
-                <label className="settingsLabelFont">Currency</label>
-              </div>
-              <div>
-                <select
-                  className="settingsSelectFont"
-                  onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
-                    const merchantCountryTemp = e.target.value.split(" (")[0];
-                    const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
-                    const cexTemp = countryData[merchantCountryTemp].CEXes[0];
-                    setPaymentSettingsState({
-                      ...paymentSettingsState,
-                      merchantCountry: merchantCountryTemp,
-                      merchantCurrency: merchantCurrencyTemp,
-                    });
-                    setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
-                    await new Promise((resolve) => setTimeout(resolve, 1500));
-                    setSave(!save);
-                  }}
-                >
-                  {activeCountries.map((i, index) => (
-                    <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
-                      {i}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <label className="settingsLabelFont">Currency</label>
+              <select
+                className="settingsSelectFont text-end"
+                onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
+                  const merchantCountryTemp = e.target.value.split(" (")[0];
+                  const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
+                  const cexTemp = countryData[merchantCountryTemp].CEXes[0];
+                  setPaymentSettingsState({
+                    ...paymentSettingsState,
+                    merchantCountry: merchantCountryTemp,
+                    merchantCurrency: merchantCurrencyTemp,
+                  });
+                  setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
+                  await new Promise((resolve) => setTimeout(resolve, 1500));
+                  setSave(!save);
+                }}
+              >
+                {activeCountries.map((i, index) => (
+                  <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
+                    {i}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/*---merchantPaymentType---*/}
             <div className="fieldContainer relative">
-              <div className="flex">
-                <div className="group cursor-pointer">
-                  <label className="settingsLabelFont">Payment Type</label>
-                  <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
-                  <div className="top-[100%] w-full tooltip">Select "In-person" for physical stores and "online" for online stores</div>
-                </div>
+              <div className="flex items-center group cursor-pointer">
+                <label className="settingsLabelFont">Payment Type</label>
+                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
+                <div className="top-[100%] w-full tooltip">Select "In-person" for physical stores and "online" for online stores</div>
               </div>
-              <div>
-                <select
-                  className="settingsSelectFont"
-                  onChange={async (e) => {
-                    let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
-                    console.log(merchantPaymentTypeTemp);
-                    if (merchantPaymentTypeTemp === "inperson") {
-                      setPaymentSettingsState({
-                        ...paymentSettingsState,
-                        merchantPaymentType: merchantPaymentTypeTemp,
-                        merchantBusinessType: "",
-                        merchantWebsite: "",
-                        merchantFields: [],
-                      });
-                    } else if (merchantPaymentTypeTemp === "online") {
-                      setPaymentSettingsState({
-                        ...paymentSettingsState,
-                        merchantPaymentType: merchantPaymentTypeTemp,
-                        merchantBusinessType: "onlinephysical",
-                        merchantWebsite: "",
-                        merchantFields: ["email", "item", "shipping"],
-                      });
-                    }
-                    await new Promise((resolve) => setTimeout(resolve, 1500));
-                    setSave(!save);
-                  }}
-                >
-                  <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
-                  <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online</option>
-                </select>
-              </div>
+              <select
+                className="settingsSelectFont text-end"
+                onChange={async (e) => {
+                  let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
+                  console.log(merchantPaymentTypeTemp);
+                  if (merchantPaymentTypeTemp === "inperson") {
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantPaymentType: merchantPaymentTypeTemp,
+                      merchantBusinessType: "",
+                      merchantWebsite: "",
+                      merchantFields: [],
+                    });
+                  } else if (merchantPaymentTypeTemp === "online") {
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantPaymentType: merchantPaymentTypeTemp,
+                      merchantBusinessType: "onlinephysical",
+                      merchantWebsite: "",
+                      merchantFields: ["email", "item", "shipping"],
+                    });
+                  }
+                  await new Promise((resolve) => setTimeout(resolve, 1500));
+                  setSave(!save);
+                }}
+              >
+                <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
+                <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online</option>
+              </select>
             </div>
 
             {/*---2% off---*/}
@@ -346,13 +338,10 @@ const Settings = ({
                     discount can may motivate new customers to go to your business. When blockchain payments become more popular, we will make this cashback optional.
                   </div>
                 </div>
-                <div className="flex items-center">
-                  <label className="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" checked readOnly></input>
-                    <div className="relative w-[44px] h-[24px] bg-gray-200 rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
-                  </label>
-                  <div className="text-lg portrait:sm:text-2xl landscape:lg:text-2xl py-1 portrait:sm:py-3 landscape:lg:py-3 pl-2 pr-3 font-medium">On</div>
-                </div>
+                <select className="settingsSelectFont pointer-events-none" onChange={(e) => {}}>
+                  <option key="yes">Yes</option>
+                  <option key="no">No</option>
+                </select>
               </div>
             )}
 
@@ -500,115 +489,47 @@ const Settings = ({
                   ></input>
                   <label className="ml-1 text-base  leading-none">SKU#</label>
                 </div>
-
-                {/* <div className="md:ml-6">
-                            <div>
-                              <input
-                                category="field"
-                                name="custom"
-                                type="checkbox"
-                                onChange={() => setIsCustomLabelSelected(document.querySelector("input[name='custom']").checked)}
-                              ></input>
-                              <label className="ml-2">custom label</label>
-                              {isCustomLabelSelected ? (
-                                <input
-                                  id="customInput"
-                                  onChange={handleOnChange}
-                                  className="ml-[8px] w-full md:w-[160px] px-2 h-[23px] border border-slate-300 rounded-sm"
-                                  placeholder="label name"
-                                ></input>
-                              ) : null}
-                            </div>
-                          </div> */}
               </div>
             </div>
           </div>
 
           {/*--- CASHOUT SETTINGS ---*/}
-          <div>
+          <div className="w-full">
+            {/*---header---*/}
             <div className="settingsHeader">CASH OUT SETTINGS</div>
             {/*---cex---*/}
-            <div className="fieldContainer border-b">
-              <div>
-                <label className="settingsLabelFont">Cash Out Platform</label>
-              </div>
-              <div>
-                <select
-                  className="settingsSelectFont"
-                  onChange={(e) => {
-                    const cexTemp = e.currentTarget.value;
-                    setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
-                    setSave(!save);
-                  }}
-                >
-                  {countryData[paymentSettingsState.merchantCountry]["CEXes"].map((i, index) => (
-                    <option key={index} selected={cashoutSettingsState.cex === i}>
-                      {i}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "border-b" : ""} fieldContainer`}>
+              <label className="settingsLabelFont">Cash Out Platform</label>
+              <select
+                className="settingsSelectFont text-end"
+                onChange={(e) => {
+                  const cexTemp = e.currentTarget.value;
+                  setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
+                  setSave(!save);
+                }}
+              >
+                {countryData[paymentSettingsState.merchantCountry]["CEXes"].map((i, index) => (
+                  <option key={index} selected={cashoutSettingsState.cex === i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
             </div>
-
             {/*---cexEvmAddress---*/}
-            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "hidden" : ""}`}>
-              <div className="settingsLabelFont">
-                Your Exchange's USDC deposit address on the Polygon network (
-                <span className="link" onClick={() => setDepositAddressModal(true)}>
-                  instructions
-                </span>
-                )
-              </div>
-              <textarea
-                className="w-full settingsInputFont break-all text-wrap"
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
+            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "hidden" : "border-b"} fieldContainer`}>
+              <label className="settingsLabelFont">CEX EVM Address</label>
+              <input
+                className="settingsInputFont"
+                onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={cashoutSettingsState.cexEvmAddress}
                 autoComplete="none"
-              ></textarea>
+              ></input>
             </div>
-
-            {/*---cexApiKey---*/}
-            {/* <div className="mt-3 text-lg  font-bold leading-tight xs:leading-tight">
-                    Your Exchange's API Key{" "}
-                    <span className="link" onClick={() => setApiModal(true)}>
-                      instructions
-                    </span>
-                  </div>
-                  <input
-                    id="accountCexApiKey"
-                    onChange={(e: any) => {
-                      setCashoutSettingsState({ ...cashoutSettingsState, CEXKey: e.target.value });
-                      setSavingState("savechanges");
-                    }}
-                    name="cexApiKey"
-                    autoComplete="none"
-                    defaultValue={cashoutSettingsState.cexSecretKey}
-                    className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg  text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
-                  ></input> */}
-
-            {/*---cexSecretKey---*/}
-            {/* <div className="mt-3 text-lg  font-bold leading-tight xs:leading-tight">
-                    Your Exchange's Key{" "}
-                    <span className="link" onClick={() => setApiModal(true)}>
-                      instructions
-                    </span>
-                  </div>
-                  <input
-                    id="accountCexSecretKey"
-                    name="cexSecret"
-                    onChange={(e: any) => {
-                      setCashoutSettingsState({ ...cashoutSettingsState, CEXSecret: e.target.value });
-                      setSavingState("savechanges");
-                    }}
-                    defaultValue={cashoutSettingsState.CEXSecret}
-                    autoComplete="none"
-                    className="w-full mt-1 xs:mt-0 px-1 h-[40px] xs:h-[28px] text-lg  text-gray-700 border border-slate-300 rounded-md outline-slate-300 lg:hover:bg-slate-100 focus:outline-blue-500 focus:bg-white transition-[outline-color] duration-[400ms]"
-                  ></input> */}
           </div>
 
           {/*--- ACCOUNT SETTINGS ---*/}
-          <div>
+          <div className="w-full">
             <div className="settingsHeader">ACCOUNT SETTINGS</div>
             {/*---EVM Address---*/}
             <div className="fieldContainer">
@@ -624,21 +545,22 @@ const Settings = ({
               <label className="settingsLabelFont">Email</label>
               <input
                 className="settingsInputFont"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
+                onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantEmail}
+                placeholder="empty"
               ></input>
             </div>
 
             {/*---employee password---*/}
             <div className="fieldContainer">
               <label className="settingsLabelFont">Employee Password</label>
-              <div className="ml-2 relative">
+              <div className="relative w-full max-w-[400px] landscape:lg:max-w-[400px] h-full">
                 <div id="employeePassMask" onClick={() => setEmployeePassModal(true)} className="absolute top-0 right-0 h-full w-full"></div>
                 <input
                   id="employeePass"
-                  className="w-full text-lg  py-1.5 pl-2 pr-3 text-end font-medium rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic"
-                  onBlur={async (e: React.FocusEvent<HTMLInputElement, Element>) => {
+                  className="settingsInputFont"
+                  onBlur={async (e) => {
                     document.getElementById("employeePassMask")?.classList.remove("hidden");
                     await saveEmployeePass(e);
                     if (e.target.value) {
@@ -655,20 +577,18 @@ const Settings = ({
             </div>
 
             {/*---merchantGoogleId---*/}
-            <div className="fieldContainer border-b-transparent relative">
-              <div className="flex shrink-0">
-                <div className="group cursor-pointer">
-                  <label className="settingsLabelFont">Google Place ID</label>
-                  <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
-                  <div className="bottom-[100%] w-full tooltip">
-                    If you add your Google Place ID, we'll add your business to stablecoinmap.com, which is convenient website for blockchain users to find places that accept
-                    stablecoin payments.
-                  </div>
+            <div className="fieldContainer border-b relative">
+              <div className="group cursor-pointer flex items-center flex-none">
+                <label className="settingsLabelFont">Google Place ID</label>
+                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
+                <div className="bottom-[100%] w-full tooltip">
+                  If you add your Google Place ID, we'll add your business to stablecoinmap.com, which is convenient website for blockchain users to find places that accept
+                  stablecoin payments.
                 </div>
               </div>
               <input
-                className="settingsInputFont placeholder:font-normal placeholder:italic"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
+                className="settingsInputFont"
+                onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantGoogleId}
                 placeholder="empty"
