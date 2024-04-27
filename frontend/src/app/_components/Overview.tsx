@@ -6,7 +6,7 @@ import { QRCodeSVG } from "qrcode.react";
 // import components
 import MockUI from "./MockUI";
 // import constants
-import { countryData, activeCountries, merchantType2data } from "@/utils/constants";
+import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
 // import font awesome
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -76,7 +76,7 @@ const Overview = () => {
                 className="px-1 text-lg lg:text-base border-gray-300 rounded-lg outline-none cursor-pointer border-transparent"
                 onChange={onChangeCountryCurrency}
               >
-                {activeCountries.map((i, index) => (
+                {countryCurrencyList.map((i, index) => (
                   <option key={index} className="bg-white">
                     {i}
                   </option>
