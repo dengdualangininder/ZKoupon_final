@@ -19,7 +19,7 @@ import EmployeePassModal from "./modals/EmployeePassModal";
 // import APIModal from "./modals/ApiKeyModal";
 // import QrModal from "./modals/QrModal";
 // constants
-import { countryData, activeCountries, merchantType2data } from "@/utils/constants";
+import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -187,9 +187,9 @@ const Settings = ({
         body: JSON.stringify({ employeePass: e.target.value, idToken, publicKey }),
       });
       const data = await res.json();
-
       if (data === "saved") {
-        console.log("settings saved");
+        console.log("employeePass saved");
+        setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: true });
       } else {
         setErrorMsg("Internal server error. Data was not saved.");
         setErrorModal(true);
@@ -250,6 +250,7 @@ const Settings = ({
           {/*--- PAYMENT SETTINGS ---*/}
           <div className="w-full">
             <div className="flex-none w-full pb-1.5 flex flex-col justify-end text-sm portrait:sm:text-lg landscape:lg:text-lg font-bold text-blue-600">PAYMENT SETTINGS</div>
+
             {/*---merchantName---*/}
             <div className="fieldContainer">
               <label className="settingsLabelFont">Business Name</label>
@@ -263,27 +264,25 @@ const Settings = ({
 
             {/*---merchantCountry & merchantCurrency---*/}
             <div className="fieldContainer">
-              <label className="settingsLabelFont">Currency</label>
+              <label className="settingsLabelFont">Country / Currency</label>
               <select
-                className="settingsSelectFont text-end"
+                className="settingsSelectFont"
                 onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
-                  const merchantCountryTemp = e.target.value.split(" (")[0];
-                  const merchantCurrencyTemp = e.target.value.split(" (")[1].replace(")", "");
-                  const cexTemp = countryData[merchantCountryTemp].CEXes[0];
+                  const merchantCountryTemp = e.target.value.split(" / ")[0];
+                  const merchantCurrencyTemp = e.target.value.split(" / ")[1];
+                  const cexTemp = merchantCountryTemp == "Any country" ? "" : countryData[merchantCountryTemp].CEXes[0];
                   setPaymentSettingsState({
                     ...paymentSettingsState,
                     merchantCountry: merchantCountryTemp,
                     merchantCurrency: merchantCurrencyTemp,
                   });
-                  setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "", cexApiKey: "", cexSecretKey: "" }); // need to set blank as cex will change
-                  await new Promise((resolve) => setTimeout(resolve, 1500));
+                  setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "" }); // need to set blank as cex will change
                   setSave(!save);
                 }}
+                value={`${paymentSettingsState.merchantCountry} / ${paymentSettingsState.merchantCurrency}`}
               >
-                {activeCountries.map((i, index) => (
-                  <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
-                    {i}
-                  </option>
+                {countryCurrencyList.map((i, index) => (
+                  <option key={index}>{i}</option>
                 ))}
               </select>
             </div>
@@ -296,7 +295,7 @@ const Settings = ({
                 <div className="top-[100%] w-full tooltip">Select "In-person" for physical stores and "online" for online stores</div>
               </div>
               <select
-                className="settingsSelectFont text-end"
+                className="settingsSelectFont"
                 onChange={async (e) => {
                   let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
                   console.log(merchantPaymentTypeTemp);
@@ -317,12 +316,12 @@ const Settings = ({
                       merchantFields: ["email", "item", "shipping"],
                     });
                   }
-                  await new Promise((resolve) => setTimeout(resolve, 1500));
                   setSave(!save);
                 }}
+                value={paymentSettingsState.merchantPaymentType}
               >
-                <option selected={paymentSettingsState.merchantPaymentType === "inperson"}>In-person</option>
-                <option selected={paymentSettingsState.merchantPaymentType === "online"}>Online</option>
+                <option value="inperson">In-person</option>
+                <option value="online">Online</option>
               </select>
             </div>
 
@@ -494,106 +493,104 @@ const Settings = ({
           </div>
 
           {/*--- CASHOUT SETTINGS ---*/}
-          <div className="w-full">
-            {/*---header---*/}
-            <div className="settingsHeader">CASH OUT SETTINGS</div>
-            {/*---cex---*/}
-            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "border-b" : ""} fieldContainer`}>
+          {/*---header---*/}
+          <div className="settingsHeader">CASH OUT SETTINGS</div>
+          {/*---cex---*/}
+          {paymentSettingsState.merchantCountry != "Any country" && (
+            <div className={`${cashoutSettingsState.cex == "Coinbase" ? "border-b" : ""} fieldContainer`}>
               <label className="settingsLabelFont">Cash Out Platform</label>
               <select
-                className="settingsSelectFont text-end"
+                className="settingsSelectFont"
                 onChange={(e) => {
                   const cexTemp = e.currentTarget.value;
                   setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
                   setSave(!save);
                 }}
+                value={cashoutSettingsState.cex}
               >
-                {countryData[paymentSettingsState.merchantCountry]["CEXes"].map((i, index) => (
-                  <option key={index} selected={cashoutSettingsState.cex === i}>
-                    {i}
-                  </option>
+                {countryData[paymentSettingsState.merchantCountry].CEXes.map((i, index) => (
+                  <option key={index}>{i}</option>
                 ))}
               </select>
             </div>
-            {/*---cexEvmAddress---*/}
-            <div className={`${cashoutSettingsState.cex == "Coinbase Exchange" ? "hidden" : "border-b"} fieldContainer`}>
-              <label className="settingsLabelFont">CEX EVM Address</label>
+          )}
+          {/*---cexEvmAddress---*/}
+          <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} fieldContainer border-b`}>
+            <label className="settingsLabelFont">CEX EVM Address</label>
+            <input
+              className="settingsInputFont"
+              onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
+              onBlur={() => setSave(!save)}
+              value={cashoutSettingsState.cexEvmAddress}
+              autoComplete="none"
+              placeholder="empty"
+            ></input>
+          </div>
+
+          {/*--- ACCOUNT SETTINGS ---*/}
+          <div className="settingsHeader">ACCOUNT SETTINGS</div>
+          {/*---EVM Address---*/}
+          <div className="fieldContainer">
+            <label className="settingsLabelFont">EVM Address</label>
+            <div className="settingsInputFont flex items-center justify-end">
+              {paymentSettingsState.merchantEvmAddress.slice(0, 6)}...{paymentSettingsState.merchantEvmAddress.slice(-4)}{" "}
+              <div className="inline-block ml-2 font-medium text-sm text-gray-400 leading-none">copy</div>
+            </div>
+          </div>
+
+          {/*---email---*/}
+          <div className="fieldContainer">
+            <label className="settingsLabelFont">Email</label>
+            <input
+              className="settingsInputFont"
+              onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
+              onBlur={() => setSave(!save)}
+              value={paymentSettingsState.merchantEmail}
+              placeholder="empty"
+            ></input>
+          </div>
+
+          {/*---employee password---*/}
+          <div className="fieldContainer">
+            <label className="settingsLabelFont">Employee Password</label>
+            <div className="relative w-full max-w-[400px] landscape:lg:max-w-[400px] h-full">
+              <div id="employeePassMask" onClick={() => setEmployeePassModal(true)} className="absolute top-0 right-0 h-full w-full"></div>
               <input
+                id="employeePass"
                 className="settingsInputFont"
-                onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
-                onBlur={() => setSave(!save)}
-                value={cashoutSettingsState.cexEvmAddress}
-                autoComplete="none"
+                onBlur={async (e) => {
+                  document.getElementById("employeePassMask")?.classList.remove("hidden");
+                  await saveEmployeePass(e);
+                  if (e.target.value) {
+                    (document.getElementById("employeePass") as HTMLInputElement).value = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
+                  } else {
+                    (document.getElementById("employeePass") as HTMLInputElement).value = "";
+                  }
+                }}
+                defaultValue={cashoutSettingsState.isEmployeePass ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" : ""}
+                placeholder="empty"
+                autoComplete="off"
               ></input>
             </div>
           </div>
 
-          {/*--- ACCOUNT SETTINGS ---*/}
-          <div className="w-full">
-            <div className="settingsHeader">ACCOUNT SETTINGS</div>
-            {/*---EVM Address---*/}
-            <div className="fieldContainer">
-              <label className="settingsLabelFont">EVM Address</label>
-              <div className="settingsInputFont flex items-center justify-end">
-                {paymentSettingsState.merchantEvmAddress.slice(0, 6)}...{paymentSettingsState.merchantEvmAddress.slice(-4)}{" "}
-                <div className="inline-block ml-2 font-medium text-sm text-gray-400 leading-none">copy</div>
+          {/*---merchantGoogleId---*/}
+          <div className="fieldContainer border-b relative">
+            <div className="group cursor-pointer flex items-center flex-none">
+              <label className="settingsLabelFont">Google Place ID</label>
+              <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
+              <div className="bottom-[100%] w-full tooltip">
+                If you add your Google Place ID, we'll add your business to stablecoinmap.com, which is convenient website for blockchain users to find places that accept
+                stablecoin payments.
               </div>
             </div>
-
-            {/*---email---*/}
-            <div className="fieldContainer">
-              <label className="settingsLabelFont">Email</label>
-              <input
-                className="settingsInputFont"
-                onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
-                onBlur={() => setSave(!save)}
-                value={paymentSettingsState.merchantEmail}
-                placeholder="empty"
-              ></input>
-            </div>
-
-            {/*---employee password---*/}
-            <div className="fieldContainer">
-              <label className="settingsLabelFont">Employee Password</label>
-              <div className="relative w-full max-w-[400px] landscape:lg:max-w-[400px] h-full">
-                <div id="employeePassMask" onClick={() => setEmployeePassModal(true)} className="absolute top-0 right-0 h-full w-full"></div>
-                <input
-                  id="employeePass"
-                  className="settingsInputFont"
-                  onBlur={async (e) => {
-                    document.getElementById("employeePassMask")?.classList.remove("hidden");
-                    await saveEmployeePass(e);
-                    if (e.target.value) {
-                      (document.getElementById("employeePass") as HTMLInputElement).value = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
-                    } else {
-                      (document.getElementById("employeePass") as HTMLInputElement).value = "";
-                    }
-                  }}
-                  defaultValue={cashoutSettingsState.employeePass ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" : ""}
-                  placeholder="empty"
-                  autoComplete="off"
-                ></input>
-              </div>
-            </div>
-
-            {/*---merchantGoogleId---*/}
-            <div className="fieldContainer border-b relative">
-              <div className="group cursor-pointer flex items-center flex-none">
-                <label className="settingsLabelFont">Google Place ID</label>
-                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
-                <div className="bottom-[100%] w-full tooltip">
-                  If you add your Google Place ID, we'll add your business to stablecoinmap.com, which is convenient website for blockchain users to find places that accept
-                  stablecoin payments.
-                </div>
-              </div>
-              <input
-                className="settingsInputFont"
-                onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
-                onBlur={() => setSave(!save)}
-                value={paymentSettingsState.merchantGoogleId}
-                placeholder="empty"
-              ></input>
-            </div>
+            <input
+              className="settingsInputFont"
+              onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
+              onBlur={() => setSave(!save)}
+              value={paymentSettingsState.merchantGoogleId}
+              placeholder="empty"
+            ></input>
           </div>
         </form>
 

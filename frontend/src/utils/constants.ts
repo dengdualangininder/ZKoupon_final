@@ -19,61 +19,143 @@ import placardMAXCashback from "/public/placardMAXCashback.svg";
 import placardBitoCashback from "/public/placardBitoCashback.svg";
 
 export const fieldsList = ["email", "item", "date", "daterange", "count", "sku", "shipping", "time"]; // delete??
-export const activeCountries = ["Euro countries (EUR)", "United States (USD)", "Taiwan (TWD)"];
 
-export const countryData: { [key: string]: { the?: boolean; currency: string; CEXes: string[]; networks: string[]; tokens: string[]; bank: string } } = {
+// United States, Euro countries,
+export const countryData: { [key: string]: { the?: boolean; currency: string; CEXes: string[]; networks?: string[]; tokens?: string[]; bank?: string } } = {
   Taiwan: {
     currency: "TWD",
-    CEXes: ["MAX Exchange", "BitoPro Exchange"],
+    CEXes: ["MAX", "BitoPro", "Other CEX"],
     networks: ["Polygon", "BNB"], // in order of popularity
     tokens: ["USDT", "USDC"], // in order of popularity
     bank: "Bank of Taiwan",
   },
-  "United States": {
+  Philippines: {
+    the: true,
+    currency: "PHP",
+    CEXes: ["Coins.ph", "PDAX Exchange", "Other CEX"],
+    networks: ["Polygon", "BNB", "Arbitrum"], // in order of popularity
+    tokens: ["USDT", "USDC"], // in order of popularity
+    bank: "PNB Philippines",
+  },
+  "U.S.": {
     the: true,
     currency: "USD",
-    CEXes: ["Coinbase Exchange", "Kraken Exchange"],
+    CEXes: ["Coinbase", "Other CEX"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC"], // in order of popularity
     bank: "Wise",
   },
-  "Euro countries": {
-    currency: "EUR",
-    CEXes: ["Coinbase Exchange", "Kraken Exchange"],
-    networks: ["Polygon", "Arbitrum"], // in order of popularity
-    tokens: ["USDC", "USDT"], // in order of popularity
-    bank: "Wise",
-  },
-  "United Kingdom": {
+  "U.K.": {
     the: true,
     currency: "GBP",
-    CEXes: ["Coinbase Exchange", "Kraken Exchange"],
+    CEXes: ["Coinbase", "Other CEX"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
   },
+  "Euro countries": {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+    networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
+    tokens: ["USDC", "USDT"], // in order of popularity
+    bank: "Wise",
+  },
+  Austria: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Belgium: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Croatia: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Cyprus: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Estonia: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Finland: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  France: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Germany: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Greece: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Ireland: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Italy: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Latvia: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Lithuania: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Luxembourg: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Malta: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Netherlands: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Portugal: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Slovakia: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Slovenia: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Spain: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+
   Canada: {
     currency: "CAD",
-    CEXes: ["Coinbase Exchange", "Kraken Exchange"],
+    CEXes: ["Coinbase", "Other CEX"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
   },
   Australia: {
     currency: "AUD",
-    CEXes: ["Coinbase Exchange", "Kraken Exchange"],
+    CEXes: ["Coinbase", "Other CEX"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
   },
-  Philippines: {
-    the: true,
-    currency: "PHP",
-    CEXes: ["Coins.ph", "PDAX Exchange"],
-    networks: ["Polygon", "BNB", "Arbitrum"], // in order of popularity
-    tokens: ["USDT", "USDC"], // in order of popularity
-    bank: "PNB Philippines",
-  },
+
   Japan: {
     currency: "JPY",
     CEXes: ["UniSwap", "BitFlyer"],
@@ -166,59 +248,6 @@ export type CEX = {
   USDT?: string[];
   EURC?: string[];
   EURT?: string[];
-};
-export const CEXdata: { [key: string]: CEX } = {
-  "Coinbase Exchange": {
-    networkTokens: ["Polygon-USDC", "Polygon-USDT", "Base-USDC", "Optimism-USDC", "Optimism-USDT", "Arbitrum-USDC", "Arbitrum-USDT", "Avalanche-USDC", "Avalanche-USDT"],
-    networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"],
-    tokens: ["USDC", "USDT"],
-    tradingFee: 0,
-    withdrawalFee: { ACH: 0, SEPA: 0 },
-    USDC: ["USD", "EUR", "GBP"],
-    USDT: ["USD", "EUR", "GBP"],
-    EURC: ["USD", "EUR"],
-  },
-  Coinbase: {
-    networkTokens: ["Polygon-USDC", "Base-USDC", "Optimism-USDC", "Arbitrum-USDC", "Avalanche-USDC"],
-    networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"],
-    tokens: ["USDC"],
-    tradingFee: 0,
-    withdrawalFee: { ACH: 0, SEPA: 0 },
-    USDC: ["USD", "EUR", "GBP"],
-    USDT: ["USD", "EUR", "GBP"],
-    EURC: ["USD", "EUR"],
-  },
-  "Kraken Exchange": {
-    networkTokens: ["Polygon-USDC", "Polygon-USDT", "Arbitrum-USDC", "Arbitrum-USDT"],
-    networks: ["Polygon", "Arbitrum"],
-    tokens: ["USDC", "USDT"],
-    withdrawalFee: {
-      ACH: { amount: 0, currency: "USD" },
-      SEPA: { amount: 1, currency: "EUR" },
-      FPS: { amount: 1.95, currency: "GBP" },
-      EFT: { percentage: 0.0035, currency: "CAD" },
-      "bank transfer": { amount: 0, currency: "AUD" },
-      Osko: { amount: 0, currency: "AUD" },
-    },
-    tradingFee: 0.002,
-    USDC: ["USD", "EUR", "GBP", "AUD", "CHF", "CAD"],
-    USDT: ["USD", "EUR", "GBP", "AUD", "CHF", "CAD"],
-    EURT: ["USD", "EUR"],
-  },
-  "MAX Exchange": {
-    networkTokens: ["Polygon-USDC", "Polygon-USDT", "BNB-USDC", "BNB-USDT"],
-    networks: ["Polygon", "BNB"],
-    tokens: ["USDC", "USDT"],
-    withdrawalFee: 15,
-    tradingFee: 0.003,
-  },
-  "BitoPro Exchange": {
-    networkTokens: ["Polygon-USDC", "Polygon-USDT"],
-    networks: ["Polygon", "BNB"],
-    tokens: ["USDC", "USDT"],
-    withdrawalFee: 15,
-    tradingFee: 0.002,
-  },
 };
 
 type MerchantType2data = {
@@ -319,29 +348,6 @@ export const list2string = (list: string[]) => {
   return text;
 };
 
-// export const getSafe = (object, errorReturn) => {
-//   try {
-//     return object;
-//   } catch (e) {
-//     return errorReturn;
-//   }
-// };
-
-export const currencyList = [
-  "Select",
-  // "Brazil (BRL)",
-  // "France (EUR)",
-  // "Germany (EUR)",
-  // "India (INR)",
-  // "Palau (USD)",
-  // "Serbia (RSD)",
-  "Philippines (PHP)",
-  "Taiwan (TWD)",
-  // "Turkey (TRY)",
-  // "United States (USD)",
-  // "United Kingdom (GBP)",
-];
-
 export const currencyNames = [
   "Select a currency",
   // "AED (UAE Dirham)",
@@ -385,7 +391,7 @@ export const currencyNames = [
   // "ZAR (South African Rand)",
 ];
 
-const euroList = [
+export const euroList = [
   "Austria",
   "Belgium",
   "Croatia",
@@ -408,46 +414,6 @@ const euroList = [
   "Spain",
 ];
 
-export const countryList = [
-  "Select country",
-  // UAE,
-  // Argentina,
-  "Australia",
-  // Bulgaria,
-  // Bahrain,
-  // Brazil,
-  // Canada,
-  // Switzerland,
-  // Chile,
-  // China,
-  // Colombia,
-  // "Czech Republic",
-  // Denmark,
-  "United Kingdom",
-  "Hong Kong",
-  // Hungary,
-  // Indonesia,
-  // Israel,
-  // India,
-  "Japan",
-  "Korea",
-  // Mexico,
-  // Malaysia,
-  // "New Zealand",
-  // Peru,
-  "Philippines",
-  // Poland,
-  // Romania,
-  // Russia,
-  // "Saudi Arabia",
-  // Sweden,
-  // Singapore,
-  // Thailand,
-  "Turkey",
-  "Taiwan",
-  "USA",
-];
-
 export const euroCountries: any = {
   AD: "Andorra",
   AT: "Austria",
@@ -460,7 +426,6 @@ export const euroCountries: any = {
   GR: "Greece",
   IE: "Ireland",
   IT: "Italy",
-  XK: "Kosovo",
   LV: "Latvia",
   LT: "Lithuania",
   LU: "Luxemburg",
@@ -476,6 +441,60 @@ export const euroCountries: any = {
   VA: "Vatican City",
 };
 
+// non-coinbase active countries: Taiwan, Philippines
+export const coinbaseCountries = [
+  "Austria", // 1
+  "Belgium", // 2
+  "Croatia", // 3
+  "Cyprus", // 4
+  "Estonia", // 5
+  "Finland", // 6
+  "France", // 7
+  "Germany", // 8
+  "Greece", // 9
+  "Ireland", // 10
+  "Italy", // 11
+  "Latvia", // 12
+  "Lithuania", // 13
+  "Luxembourg", // 14
+  "Malta", // 15
+  "Netherlands", // 16
+  "Portugal", // 17
+  "Slovakia", // 18
+  "Slovenia", // 19
+  "Spain", // 20
+  "United States",
+  "United Kingdom",
+];
+export const countryCurrencyList = [
+  "Austria / EUR", // 1
+  "Belgium / EUR", // 2
+  "Croatia / EUR", // 3
+  "Cyprus / EUR", // 4
+  "Estonia / EUR", // 5
+  "Finland / EUR", // 6
+  "France / EUR", // 7
+  "Germany / EUR", // 8
+  "Greece / EUR", // 9
+  "Ireland / EUR", // 10
+  "Italy / EUR", // 11
+  "Latvia / EUR", // 12
+  "Lithuania / EUR", // 13
+  "Luxembourg / EUR", // 14
+  "Malta / EUR", // 15
+  "Netherlands / EUR", // 16
+  "Philippines / PHP",
+  "Portugal / EUR", // 17
+  "Slovakia / EUR", // 18
+  "Slovenia / EUR", // 19
+  "Spain / EUR", // 20
+  "Taiwan / TWD",
+  "U.S. / USD",
+  "U.K. / GBP",
+  "Any country / USD",
+  "Any country / EUR",
+];
+
 export const abb2full: any = {
   US: "United States",
   TW: "Taiwan",
@@ -490,7 +509,6 @@ export const abb2full: any = {
   GR: "Euro countries",
   IE: "Euro countries",
   IT: "Euro countries",
-  XK: "Euro countries",
   LV: "Euro countries",
   LT: "Euro countries",
   LU: "Euro countries",
@@ -507,3 +525,57 @@ export const abb2full: any = {
 };
 
 export const fees: any = { "Coinbase Exchange": { "United States": "no", "Euro countries": "no" }, "MAX Exchange": { Taiwan: "15 TWD" } };
+
+export const CEXdata: { [key: string]: CEX } = {
+  "Coinbase Exchange": {
+    networkTokens: ["Polygon-USDC", "Polygon-USDT", "Base-USDC", "Optimism-USDC", "Optimism-USDT", "Arbitrum-USDC", "Arbitrum-USDT", "Avalanche-USDC", "Avalanche-USDT"],
+    networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"],
+    tokens: ["USDC", "USDT"],
+    tradingFee: 0,
+    withdrawalFee: { ACH: 0, SEPA: 0 },
+    USDC: ["USD", "EUR", "GBP"],
+    USDT: ["USD", "EUR", "GBP"],
+    EURC: ["USD", "EUR"],
+  },
+  Coinbase: {
+    networkTokens: ["Polygon-USDC", "Base-USDC", "Optimism-USDC", "Arbitrum-USDC", "Avalanche-USDC"],
+    networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"],
+    tokens: ["USDC"],
+    tradingFee: 0,
+    withdrawalFee: { ACH: 0, SEPA: 0 },
+    USDC: ["USD", "EUR", "GBP"],
+    USDT: ["USD", "EUR", "GBP"],
+    EURC: ["USD", "EUR"],
+  },
+  "Kraken Exchange": {
+    networkTokens: ["Polygon-USDC", "Polygon-USDT", "Arbitrum-USDC", "Arbitrum-USDT"],
+    networks: ["Polygon", "Arbitrum"],
+    tokens: ["USDC", "USDT"],
+    withdrawalFee: {
+      ACH: { amount: 0, currency: "USD" },
+      SEPA: { amount: 1, currency: "EUR" },
+      FPS: { amount: 1.95, currency: "GBP" },
+      EFT: { percentage: 0.0035, currency: "CAD" },
+      "bank transfer": { amount: 0, currency: "AUD" },
+      Osko: { amount: 0, currency: "AUD" },
+    },
+    tradingFee: 0.002,
+    USDC: ["USD", "EUR", "GBP", "AUD", "CHF", "CAD"],
+    USDT: ["USD", "EUR", "GBP", "AUD", "CHF", "CAD"],
+    EURT: ["USD", "EUR"],
+  },
+  "MAX Exchange": {
+    networkTokens: ["Polygon-USDC", "Polygon-USDT", "BNB-USDC", "BNB-USDT"],
+    networks: ["Polygon", "BNB"],
+    tokens: ["USDC", "USDT"],
+    withdrawalFee: 15,
+    tradingFee: 0.003,
+  },
+  "BitoPro Exchange": {
+    networkTokens: ["Polygon-USDC", "Polygon-USDT"],
+    networks: ["Polygon", "BNB"],
+    tokens: ["USDC", "USDT"],
+    withdrawalFee: 15,
+    tradingFee: 0.002,
+  },
+};

@@ -9,9 +9,9 @@ const EmployeePassModal = ({ setEmployeePassModal }: { setEmployeePassModal: any
           <button
             onClick={() => {
               document.getElementById("employeePassMask")?.classList.add("hidden");
-              setEmployeePassModal(false);
               (document.getElementById("employeePass") as HTMLInputElement).value = "";
               document.getElementById("employeePass")?.focus();
+              setEmployeePassModal(false);
             }}
             className="modalButtonBlue"
           >

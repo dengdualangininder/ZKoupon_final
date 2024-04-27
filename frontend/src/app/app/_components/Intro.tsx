@@ -7,7 +7,7 @@ import { faArrowUpFromBracket, faEllipsisVertical } from "@fortawesome/free-soli
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 import { QRCodeSVG } from "qrcode.react";
 import ErrorModal from "./modals/ErrorModal";
-import { countryData, activeCountries, merchantType2data } from "@/utils/constants";
+import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
 
 const Intro = ({
   paymentSettingsState,
@@ -43,6 +43,8 @@ const Intro = ({
 
   useEffect(() => {
     console.log("saveSettings useEffect run once");
+    console.log(paymentSettingsState);
+    console.log(cashoutSettingsState);
     const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
     let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
     if (paymentSettingsState.merchantPaymentType === "online") {
@@ -133,7 +135,7 @@ const Intro = ({
                     Customers pay you by scanning a QR code (you will create one later) with their mobile camera and then entering the amount of{" "}
                     {paymentSettingsState.merchantCurrency} for payment.
                   </div>
-                  <div className="relative">
+                  <div className="relative text-5xl">
                     <span className="group">
                       <span className="link">USDC tokens</span>
                       <div className="invisible group-hover:visible absolute bottom-[calc(100%+8px)] left-0 px-3 py-2 border border-gray-400 rounded-lg bg-gray-200">
@@ -285,7 +287,7 @@ const Intro = ({
                 }}
                 className="px-2 border-b-2 outline-none font-bold bg-white"
               >
-                {activeCountries.map((i, index) => (
+                {countryCurrencyList.map((i, index) => (
                   <option key={index} selected={paymentSettingsState.merchantCountry === i.split(" (")[0]}>
                     {i}
                   </option>

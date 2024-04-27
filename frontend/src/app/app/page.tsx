@@ -285,21 +285,19 @@ const User = () => {
     });
   };
 
+  // only reason this is not in newuser component is because web3auth finalized here
   const createNewUser = async () => {
-    setPage("intro");
     console.log("creating new user");
-    // detect IP and set merchantCountry, merchantCurrency, and cex
-    let merchantCountry: string;
-    let merchantCurrency: string;
-    let cex: string;
+    setPage("intro");
+    // set merchantCountry, merchantCurrency, and cex
     try {
       const res = await axios.get("https://api.country.is");
-      merchantCountry = abb2full[res.data.country] || "United States";
-      merchantCurrency = countryData[merchantCountry]?.currency || "USD";
-      cex = countryData[merchantCountry]?.CEXes[0] || "Coinbase Exchange";
+      var merchantCountry = abb2full[res.data.country] || "U.S.";
+      var merchantCurrency = countryData[merchantCountry]?.currency || "USD";
+      var cex = countryData[merchantCountry]?.CEXes[0] || "Coinbase";
       console.log("detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
     } catch (err) {
-      merchantCountry = "United States";
+      merchantCountry = "U.S.";
       merchantCurrency = "USD";
       cex = "Coinbase";
       console.log("detect country API failed, set default to US, USD, and Coinbase. Error:", err);
@@ -307,7 +305,8 @@ const User = () => {
     const merchantEmail = (await web3Auth?.getUserInfo())?.email || ""; // TODO:check if this works for Apple login
     const merchantEvmAddress = account.address;
     console.log("merchantEmail, merchantEvmAddress:", merchantEmail, merchantEvmAddress);
-    // create new user in db (should have already passed verification)
+    // create new user in db
+    return;
     try {
       const res = await fetch("/api/createUser", {
         method: "POST",

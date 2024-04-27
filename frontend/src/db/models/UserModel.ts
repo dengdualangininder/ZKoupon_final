@@ -17,10 +17,8 @@ export type PaymentSettings = {
 export type CashoutSettings = {
   cex: string;
   cexEvmAddress: string;
-  cexApiKey: string;
-  cexSecretKey: string;
   cexAccountName: string;
-  employeePass: string;
+  isEmployeePass: boolean;
 };
 
 export type Transaction = {
@@ -54,12 +52,14 @@ export type Transaction = {
 };
 
 export interface IUser extends Document {
+  hashedEmployeePass: string;
   paymentSettings: PaymentSettings;
   cashoutSettings: CashoutSettings;
   transactions: Transaction[];
 }
 
 const userSchema: Schema = new mongoose.Schema<IUser>({
+  hashedEmployeePass: String,
   paymentSettings: {
     merchantEvmAddress: String,
     merchantEmail: String,
@@ -76,10 +76,8 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
   cashoutSettings: {
     cex: String,
     cexEvmAddress: String,
-    cexApiKey: String,
-    cexSecretKey: String,
     cexAccountName: String,
-    employeePass: String,
+    isEmployeePass: Boolean,
   },
   transactions: [
     {

@@ -218,15 +218,15 @@
   }
 
   .settingsLabelFont {
-    @apply flex-none text-base portrait:sm:text-2xl landscape:lg:text-2xl text-gray-400;
+    @apply flex-none textSm2 text-gray-400;
   }
 
   .settingsInputFont {
-    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full pl-2 pr-3 text-lg portrait:sm:text-2xl landscape:lg:text-2xl text-end rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic;
+    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full pl-2 pr-3 textBase2 text-end rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic;
   }
 
   .settingsSelectFont {
-    @apply h-full text-lg portrait:sm:text-2xl landscape:lg:text-2xl px-3 bg-white rounded-md outline-transparent;
+    @apply h-full textBase2 text-end px-3 bg-white rounded-md outline-transparent;
   }
 
   .settingsInfo {
@@ -246,7 +246,7 @@
   }
 
   .modal {
-    @apply w-[330px] min-h-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 text-xl portrait:sm:text-2xl landscape:lg:text-2xl leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+    @apply w-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 text-xl portrait:sm:text-2xl landscape:lg:text-2xl leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
 
   .modalBlackout {

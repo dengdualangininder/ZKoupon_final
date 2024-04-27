@@ -23,11 +23,20 @@ export const POST = async (request: Request) => {
   if (verified) {
     console.log("verified");
     try {
-      const hashedPassword = employeePass ? await bcrypt.hash(employeePass, 10) : "";
-      console.log("hashedPassword:", hashedPassword);
-      await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress }, { "cashoutSettings.employeePass": hashedPassword });
-      console.log("saved");
-      return Response.json("saved");
+      if (employeePass) {
+        const hashedEmployeePass = await bcrypt.hash(employeePass, 10);
+        await UserModel.findOneAndUpdate(
+          { "paymentSettings.merchantEvmAddress": merchantEvmAddress },
+          { hashedEmployeePass: hashedEmployeePass, "cashoutSettings.isEmployeePass": true }
+        );
+        console.log("saved");
+        return Response.json("saved");
+      } else {
+        console.log("no employee pass");
+        await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress }, { hashedEmployeePass: "", "cashoutSettings.isEmployeePass": false });
+        console.log("saved");
+        return Response.json("saved");
+      }
     } catch (e: any) {
       console.log({ status: "error", message: "failed to update db" });
       return Response.json({ status: "error", message: "failed to update db" });
