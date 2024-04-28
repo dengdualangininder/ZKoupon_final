@@ -230,7 +230,7 @@
   }
 
   .settingsSelectFont {
-    @apply h-full textBase2 text-end px-3 bg-white rounded-md outline-transparent;
+    @apply h-full textBase2 text-end px-3 bg-white rounded-md outline-transparent [text-align-last:right];
   }
 
   .settingsInfo {

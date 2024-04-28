@@ -381,9 +381,7 @@ const Payments = ({
           </div>
         </div>
       ) : (
-        <div className="h-full w-full flex items-center justify-center">
-          <div className="text-xl">No payments so far</div>
-        </div>
+        <div className="h-full w-full flex items-center justify-center text-xl">No payments so far</div>
       )}
 
       {/*--- payments menu bar , w-full h-74px ---*/}
