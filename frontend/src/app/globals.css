@@ -217,28 +217,24 @@
     @apply text-lg leading-snug lg:text-sm lg:leading-tight space-y-2 lg:space-y-1;
   }
 
-  .settingsHeader {
-    @apply flex-none w-full h-[54px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[72px] landscape:xl:h-[72px] textSm2 pb-1.5 flex flex-col justify-end font-bold text-blue-600;
-  }
-
   .fieldContainer {
-    @apply flex-none w-full h-[55px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[72px] landscape:xl:h-[72px] textBase2 py-1 flex items-center justify-between space-x-3 font-medium border-t;
+    @apply w-full h-[64px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[90px] landscape:xl:h-[90px] textBase2 font-medium py-1 flex items-center justify-between border-t;
   }
 
   .settingsLabelFont {
-    @apply flex-none text-gray-400;
+    @apply flex-none h-full flex items-center text-gray-400 tracking-tight mr-3;
   }
 
   .settingsInputFont {
-    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full pl-2 pr-3 text-end rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic;
+    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full px-3 text-end tracking-tight rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic placeholder:pr-[2px] focus:placeholder:text-transparent;
   }
 
   .settingsSelectFont {
-    @apply h-full textBase2 text-end px-3 bg-white rounded-md outline-transparent [text-align-last:right];
+    @apply h-full px-3 textBase2 text-end bg-white rounded-md outline-transparent [text-align-last:right];
   }
 
   .settingsInfo {
-    @apply ml-1.5 text-sm portrait:sm:text-lg landscape:lg:text-lg portrait:sm:pb-[1px] landscape:lg:pb-[1px] text-gray-300;
+    @apply ml-3 text-sm portrait:sm:text-lg landscape:lg:text-lg portrait:sm:pb-[1px] landscape:lg:pb-[1px] text-gray-300;
   }
 
   .inputOutline {
@@ -320,10 +316,6 @@
 
   .gradientButtonSmall {
     @apply text-xs md:text-sm text-white bg-gradient-to-l from-blue-700 from-20% via-pink-500 to-yellow-300 to-100% rounded-lg px-2 py-0 hover:text-black animate-textTwo;
-  }
-
-  .appSettingsForm {
-    @apply flex-none flex flex-col px-3 xs:px-4 py-4 w-full xs:w-[420px] md:w-[356px] lg:w-[360px];
   }
 
   .appButton {

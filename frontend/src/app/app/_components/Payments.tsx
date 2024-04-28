@@ -375,7 +375,7 @@ const Payments = ({
                 ))}
             </tbody>
           </table>
-          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textLg">No payments</div>}
+          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textXl">No payments</div>}
         </div>
       </div>
 

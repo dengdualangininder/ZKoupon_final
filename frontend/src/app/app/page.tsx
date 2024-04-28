@@ -371,7 +371,7 @@ const User = () => {
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
-          <div className="portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 bg-white z-[1] relative">
+          <div className="portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 z-[1] relative">
             {/*---menu---*/}
             <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
               {(isAdmin

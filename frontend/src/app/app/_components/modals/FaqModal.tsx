@@ -232,7 +232,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                     <div className="flex">
                       <div className="mr-1">2.</div>
                       <div>
-                        In the <span className="font-bold">Cash Out</span>menu, click "Link your Coinbase account"
+                        In the <span className="font-bold">Cash Out</span> menu, click "Link your Coinbase account"
                       </div>
                     </div>
                     <div className="flex">
