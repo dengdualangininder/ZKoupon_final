@@ -164,7 +164,7 @@ const User = () => {
   useEffect(() => {
     if (newTxn) {
       console.log("add new txn to transactionsState...");
-      setTransactionsState([...transactionsState!, newTxn]);
+      setTransactionsState([...transactionsState, newTxn]);
       setBannerModal(true);
       setTimeout(() => {
         setBannerModal(false);
@@ -407,7 +407,7 @@ const User = () => {
           </div>
           {/*---menu pages---*/}
           {menu === "payments" && (
-            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState!} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />
+            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />
           )}
           {menu === "cashOut" && isAdmin && (
             <CashOut
