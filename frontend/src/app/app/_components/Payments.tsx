@@ -42,7 +42,7 @@ const Payments = ({
   const [pageNumber, setPageNumber] = useState(1);
   const [selectedStartMonth, setSelectedStartMonth] = useState("select");
   const [selectedEndMonth, setSelectedEndMonth] = useState("select");
-  const [searchedTxns, setSearchedTxns] = useState<Transaction[] | null>(null);
+  const [searchedTxns, setSearchedTxns] = useState<Transaction[]>([]);
   const [searchedChars, setSearchedChars] = useState("");
   const [isSearch, setIsSearch] = useState(false);
   // modal states
@@ -262,127 +262,122 @@ const Payments = ({
   return (
     <section className="w-full flex flex-col items-center">
       {/*--- Table or "no payments" ---*/}
-      {transactionsState.length ? (
-        <div className="w-full overflow-y-auto">
-          <div className="landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] portrait:h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] flex justify-center select-none">
-            <table
-              className={`${
-                paymentSettingsState.merchantPaymentType == "inperson" ? "w-[90%] landscape:max-w-[70%] sm:portrait:max-w-[80%]" : ""
-              } table-fixed text-left select-none`}
-            >
-              <thead className="text-base sm:portrait:text-2xl md:landscape:text-2xl">
-                {/*---headers, 40px---*/}
-                <tr className="h-[50px] sm:portrait:h-[70px] landscape:lg:h-[70px]">
-                  <th className="">Time</th>
-                  <th className="text-center">Customer</th>
-                  {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
-                  {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
-                  {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
-                  {paymentSettingsState.merchantFields.includes("item") && <th className="">{merchantType2data[paymentSettingsState.merchantBusinessType]["itemlabel"]}</th>}
-                  {paymentSettingsState.merchantFields.includes("count") && (
-                    <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""}`}>Guests</th>
-                  )}
-                  {paymentSettingsState.merchantFields.includes("sku") && <th className="">SKU#</th>}
-                  <th className="text-right pr-2">{paymentSettingsState.merchantCurrency}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/*---transactions---*/}
-                {(searchedTxns ?? transactionsState)
-                  .toReversed()
-                  .slice((pageNumber - 1) * 6, (pageNumber - 1) * 6 + 6)
-                  .map((txn: any, index: number) => (
-                    <tr
-                      id={txn.txnHash}
-                      key={index}
-                      className={`${
-                        txn.refund ? "text-gray-400" : ""
-                      } portrait:h-[calc((100vh-84px-50px-74px-4px)/6)] landscape:h-[74px] portrait:sm:h-[calc((100vh-140px-70px-120px-4px)/6)] landscape:lg:h-[calc((100vh-70px-120px-4px)/6)] landscape:xl:h-[calc((100vh-70px-140px-4px)/6)] flex-none border-t lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer`}
-                      onClick={onClickTxn}
-                    >
-                      {/*---Time---*/}
-                      <td className=" whitespace-nowrap">
-                        <div className="relative">
-                          <span className="text-3xl landscape:lg:text-4xl portrait:sm:text-4xl landscape:xl:text-5xl portrait:lg:text-5xl">{getLocalTime(txn.date).time}</span>
-                          <span className="landscape:text-xl landscape:lg:text-xl portrait:text-sm sm:portrait:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
-                          <div className="landscape:text-sm landscape:lg:text-lg portrait:text-sm portrait:sm:text-xl landscape:leading-none portrait:leading-none absolute top-[calc(100%-1px)] font-medium text-gray-400">
-                            {getLocalDateWords(txn.date)}
-                          </div>
+      <div className="w-full overflow-y-auto">
+        <div className="landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] portrait:h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] flex flex-col items-center select-none">
+          <table
+            className={`${paymentSettingsState.merchantPaymentType == "inperson" ? "w-[90%] landscape:max-w-[70%] sm:portrait:max-w-[80%]" : ""} table-fixed text-left select-none`}
+          >
+            <thead className="text-base sm:portrait:text-2xl md:landscape:text-2xl">
+              {/*---headers, 40px---*/}
+              <tr className="h-[50px] sm:portrait:h-[70px] landscape:lg:h-[70px]">
+                <th className="">Time</th>
+                <th className="text-center">Customer</th>
+                {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
+                {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
+                {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
+                {paymentSettingsState.merchantFields.includes("item") && <th className="">{merchantType2data[paymentSettingsState.merchantBusinessType]["itemlabel"]}</th>}
+                {paymentSettingsState.merchantFields.includes("count") && (
+                  <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""}`}>Guests</th>
+                )}
+                {paymentSettingsState.merchantFields.includes("sku") && <th className="">SKU#</th>}
+                <th className="text-right pr-2">{paymentSettingsState.merchantCurrency}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/*---transactions---*/}
+              {(searchedTxns.length != 0 ? searchedTxns : transactionsState)
+                .toReversed()
+                .slice((pageNumber - 1) * 6, (pageNumber - 1) * 6 + 6)
+                .map((txn: any, index: number) => (
+                  <tr
+                    id={txn.txnHash}
+                    key={index}
+                    className={`${
+                      txn.refund ? "text-gray-400" : ""
+                    } portrait:h-[calc((100vh-84px-50px-74px-4px)/6)] landscape:h-[74px] portrait:sm:h-[calc((100vh-140px-70px-120px-4px)/6)] landscape:lg:h-[calc((100vh-70px-120px-4px)/6)] landscape:xl:h-[calc((100vh-70px-140px-4px)/6)] flex-none border-t lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer`}
+                    onClick={onClickTxn}
+                  >
+                    {/*---Time---*/}
+                    <td className=" whitespace-nowrap">
+                      <div className="relative">
+                        <span className="text-3xl landscape:lg:text-4xl portrait:sm:text-4xl landscape:xl:text-5xl portrait:lg:text-5xl">{getLocalTime(txn.date).time}</span>
+                        <span className="landscape:text-xl landscape:lg:text-xl portrait:text-sm sm:portrait:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
+                        <div className="landscape:text-sm landscape:lg:text-lg portrait:text-sm portrait:sm:text-xl landscape:leading-none portrait:leading-none absolute top-[calc(100%-1px)] font-medium text-gray-400">
+                          {getLocalDateWords(txn.date)}
+                        </div>
+                      </div>
+                    </td>
+                    {/*---Customer---*/}
+                    <td className=" text-center">
+                      {paymentSettingsState.merchantPaymentType === "inperson" && (
+                        <div className="text-xl landscape:lg:text-3xl landscape:xl:text-4xl portrait:sm:text-3xl portrait:lg:text-4xl pt-2 pr-1">
+                          ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
+                        </div>
+                      )}
+                      {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
+                        <div className="text-sm leading-tight">
+                          <div>{txn.customerEmail.split("@")[0]}</div>
+                          <div>@{txn.customerEmail.split("@")[1]}</div>
+                        </div>
+                      )}
+                    </td>
+                    {/*---Online Options---*/}
+                    {paymentSettingsState.merchantFields.includes("daterange") && (
+                      <td className="xs:px-2">
+                        <div className="text-sm leading-tight whitespace-nowrap">
+                          <div>{txn.startDate}</div>
+                          <div>{txn.endDate}</div>
                         </div>
                       </td>
-                      {/*---Customer---*/}
-                      <td className=" text-center">
-                        {paymentSettingsState.merchantPaymentType === "inperson" && (
-                          <div className="text-xl landscape:lg:text-3xl landscape:xl:text-4xl portrait:sm:text-3xl portrait:lg:text-4xl pt-2 pr-1">
-                            ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
-                          </div>
-                        )}
-                        {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
+                    )}
+                    {paymentSettingsState.merchantFields.includes("date") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.singledate}</td>}
+                    {paymentSettingsState.merchantFields.includes("time") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.time}</td>}
+                    {paymentSettingsState.merchantFields.includes("item") && <td className="xs:px-2 text-sm leading-tight">{txn.item}</td>}
+                    {paymentSettingsState.merchantFields.includes("count") && (
+                      <td className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""} xs:px-2`}>
+                        {txn.countString && (
                           <div className="text-sm leading-tight">
-                            <div>{txn.customerEmail.split("@")[0]}</div>
-                            <div>@{txn.customerEmail.split("@")[1]}</div>
+                            <div>{txn.countString.split(", ")[0]}</div>
+                            <div>{txn.countString.split(", ")[1]}</div>
                           </div>
                         )}
                       </td>
-                      {/*---Online Options---*/}
-                      {paymentSettingsState.merchantFields.includes("daterange") && (
-                        <td className="xs:px-2">
-                          <div className="text-sm leading-tight whitespace-nowrap">
-                            <div>{txn.startDate}</div>
-                            <div>{txn.endDate}</div>
-                          </div>
-                        </td>
-                      )}
-                      {paymentSettingsState.merchantFields.includes("date") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.singledate}</td>}
-                      {paymentSettingsState.merchantFields.includes("time") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.time}</td>}
-                      {paymentSettingsState.merchantFields.includes("item") && <td className="xs:px-2 text-sm leading-tight">{txn.item}</td>}
-                      {paymentSettingsState.merchantFields.includes("count") && (
-                        <td className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""} xs:px-2`}>
-                          {txn.countString && (
-                            <div className="text-sm leading-tight">
-                              <div>{txn.countString.split(", ")[0]}</div>
-                              <div>{txn.countString.split(", ")[1]}</div>
-                            </div>
-                          )}
-                        </td>
-                      )}
-                      {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>}
-                      {/*---currencyAmount---*/}
-                      <td className="pr-2">
-                        <div className="flex justify-end relative">
-                          <span
-                            className={`${
-                              paymentSettingsState.merchantPaymentType === "inperson"
-                                ? "text-3xl landscape:lg:text-4xl landscape:xl:text-5xl sm:portrait:sm:text-4xl portrait:lg:text-5xl"
-                                : "text-xl"
-                            }`}
-                          >
-                            {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
-                          </span>
-                          <div
-                            className={`${
-                              txn.refundNote && !txn.refund ? "" : "hidden"
-                            } absolute top-[calc(100%)] pr-0.5 right-0 text-sm landscape:lg:text-lg portrait:sm:text-lg font-medium leading-none text-gray-400 whitespace-nowrap`}
-                          >
-                            To Be Refunded
-                          </div>
+                    )}
+                    {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>}
+                    {/*---currencyAmount---*/}
+                    <td className="pr-2">
+                      <div className="flex justify-end relative">
+                        <span
+                          className={`${
+                            paymentSettingsState.merchantPaymentType === "inperson"
+                              ? "text-3xl landscape:lg:text-4xl landscape:xl:text-5xl sm:portrait:sm:text-4xl portrait:lg:text-5xl"
+                              : "text-xl"
+                          }`}
+                        >
+                          {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
+                        </span>
+                        <div
+                          className={`${
+                            txn.refundNote && !txn.refund ? "" : "hidden"
+                          } absolute top-[calc(100%)] pr-0.5 right-0 text-sm landscape:lg:text-lg portrait:sm:text-lg font-medium leading-none text-gray-400 whitespace-nowrap`}
+                        >
+                          To Be Refunded
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                {pageNumber == maxPageNumber &&
-                  Array.from(Array(6 - (transactionsState.length % 6)).keys()).map((i) => (
-                    <tr
-                      className={`h-[calc((100vh-84px-50px-74px-4px)/6)] sm:portrait:h-[calc((100vh-140px-70px-120px-4px)/6)] md:landscape:h-[calc((100vh-70px-120px-4px)/6)]`}
-                    ></tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              {pageNumber == maxPageNumber &&
+                Array.from(Array(6 - (transactionsState.length % 6)).keys()).map((i) => (
+                  <tr
+                    className={`h-[calc((100vh-84px-50px-74px-4px)/6)] sm:portrait:h-[calc((100vh-140px-70px-120px-4px)/6)] md:landscape:h-[calc((100vh-70px-120px-4px)/6)]`}
+                  ></tr>
+                ))}
+            </tbody>
+          </table>
+          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textLg">No payments</div>}
         </div>
-      ) : (
-        <div className="h-full w-full flex items-center justify-center text-xl">No payments so far</div>
-      )}
+      </div>
 
       {/*--- payments menu bar , w-full h-74px ---*/}
       <div className="w-full sm:landscape:max-w-[75%] sm:portrait:max-w-[85%] h-[74px] portrait:sm:h-[120px] landscape:lg:h-[120px] landscape:xl:h-[140px] flex items-center flex-none border-t relative">
@@ -444,7 +439,6 @@ const Payments = ({
               <button
                 onClick={() => {
                   const searchedTxnsTemp = transactionsState?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == searchedChars.toLowerCase());
-                  console.log(searchedTxnsTemp);
                   setSearchedTxns(searchedTxnsTemp);
                 }}
                 className="w-[25%] textSm h-full text-white border border-blue-500 rounded-[4px] bg-blue-500"
@@ -453,7 +447,7 @@ const Payments = ({
               </button>
               <button
                 onClick={() => {
-                  setSearchedTxns(null);
+                  setSearchedTxns([]);
                   setSearchedChars("");
                   setIsSearch(false);
                 }}

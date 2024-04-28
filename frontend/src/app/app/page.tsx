@@ -454,7 +454,7 @@ const User = () => {
             </div>
           )}
           {/*---bannerModal---*/}
-          {transactionsState.length && (
+          {transactionsState.length != 0 && (
             <div
               className={`${
                 bannerModal ? "top-4" : "-top-[92px] portrait:sm:-top-[128px] landscape:lg:-top-[128px]"

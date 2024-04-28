@@ -26,7 +26,7 @@ export type Transaction = {
   customerAddress: string;
   merchantAddress: string;
   currencyAmount: number;
-  currencyAmountAfterCashBack: number;
+  currencyAmountAfterCashback: number;
   merchantCurrency: string;
   tokenAmount: number;
   token: string;
@@ -84,7 +84,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
       date: Date,
       customerAddress: String,
       currencyAmount: Number,
-      currencyAmountAfterCashBack: Number,
+      currencyAmountAfterCashback: Number,
       merchantCurrency: String,
       tokenAmount: Number,
       token: String,

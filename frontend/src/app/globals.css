@@ -61,6 +61,10 @@
     @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl portrait:lg:text-5xl landscape:xl:text-5xl;
   }
 
+  .text4xl {
+    @apply text-4xl portrait:sm:text-5xl landscape:lg:text-5xl portrait:lg:text-5xl landscape:xl:text-5xl;
+  }
+
   .textSm2 {
     @apply text-sm portrait:sm:text-lg landscape:lg:text-lg portrait:lg:text-xl landscape:xl:text-xl;
   }
@@ -331,7 +335,7 @@
   }
 
   .cashoutContainer {
-    @apply w-full min-h-[200px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] flex flex-col justify-between px-6 portrait:sm:px-10 landscape:lg:px-10 py-4 portrait:sm:py-8 landscape:lg:py-8 rounded-xl bg-white border border-gray-400;
+    @apply w-full min-h-[240px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] flex flex-col justify-between px-6 portrait:sm:px-10 landscape:lg:px-10 py-4 portrait:sm:py-8 landscape:lg:py-8 rounded-xl bg-white border border-gray-400;
   }
 
   .cashoutContainerStats {
@@ -339,11 +343,11 @@
   }
 
   .cashoutHeader {
-    @apply textXl font-bold;
+    @apply text2xl font-bold;
   }
 
   .cashoutBalance {
-    @apply text3xl mt-3 portrait:sm:mt-6 landscape:lg:mt-6 font-medium;
+    @apply text4xl mt-3 portrait:sm:mt-6 landscape:lg:mt-6 font-medium;
   }
 
   .cashoutDetails {

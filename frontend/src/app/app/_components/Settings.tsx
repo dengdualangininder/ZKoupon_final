@@ -603,7 +603,7 @@ const Settings = ({
         <div className="h-[14%] textBase2 flex items-center justify-center relative">
           <button
             onClick={onClickSignOut}
-            className="font-medium px-8 portrait:sm:px-10 landscape:lg:px-10 h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
+            className="textLg font-medium px-8 portrait:sm:px-10 landscape:lg:px-10 h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
           >
             Sign Out
           </button>
