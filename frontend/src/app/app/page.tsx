@@ -453,6 +453,7 @@ const User = () => {
               </div>
             </div>
           )}
+          {/*---bannerModal---*/}
           <div
             className={`${
               bannerModal ? "top-4" : "-top-[92px] portrait:sm:-top-[128px] landscape:lg:-top-[128px]"
@@ -463,7 +464,7 @@ const User = () => {
               <div className=" flex-col justify-center">
                 <div className="text-base landscape:lg:text-lg landscape:xl:text-xl portrait:sm:text-lg portrait:lg:text-xl font-bold text-gray-500 pb-1">NEW PAYMENT</div>
                 <div className="text-2xl landscape:lg:text-4xl landscape:xl:text-5xl portrait:sm:text-4xl portrait:lg:text-5xl">
-                  {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency ?? "USD"])}{" "}
+                  {transactionsState.length ? transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]) : ""}{" "}
                   {paymentSettingsState?.merchantCurrency} from {transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
                 </div>
               </div>
@@ -473,6 +474,7 @@ const User = () => {
               </button>
             </div>
           </div>
+          {/*---signOutModal---*/}
           {signOutModal && (
             <div>
               <div className="modal">
