@@ -375,101 +375,103 @@ const CashOut = ({
         </div>
 
         {/*--- Your Savings ---*/}
-        <div className="cashoutContainerStats cashoutStats">
-          {/*--- header ---*/}
-          <div className="w-full flex items-center justify-between">
-            <div className="cashoutHeader">Your Savings</div>
-            <div className="cashoutShow" onClick={() => setStatDetails(!statDetails)}>
-              {statDetails ? "hide" : "show"} details
+        {transactionsState?.length && (
+          <div className="cashoutContainerStats cashoutStats">
+            {/*--- header ---*/}
+            <div className="w-full flex items-center justify-between">
+              <div className="cashoutHeader">Your Savings</div>
+              <div className="cashoutShow" onClick={() => setStatDetails(!statDetails)}>
+                {statDetails ? "hide" : "show"} details
+              </div>
             </div>
-          </div>
-          {/*--- earnings ---*/}
-          <div className="mt-2 px-2 flex justify-between">
-            <div>Earnings</div>
-            <div>
-              {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-              {stats.totalCurrencyAmount}
+            {/*--- earnings ---*/}
+            <div className="mt-2 px-2 flex justify-between">
+              <div>Earnings</div>
+              <div>
+                {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {stats.totalCurrencyAmount}
+              </div>
             </div>
-          </div>
 
-          {/*--- Flash costs ---*/}
-          <div className={`${statDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
-            <div className="cashoutStats2">Flash Costs</div>
-            <div className="p-2 border border-gray-400 rounded-md">
-              {/*---Cash Back Given = totalCurrencyAmount - totalCurrencyAmountAfterCashBack ---*/}
-              <div className="flex justify-between">
-                <div>Cash Back Given</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
-                  {(stats.totalCurrencyAmount * 0.02).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-                </div>
-              </div>
-              {/*---gain/loss from rates---*/}
-              <div className="flex justify-between">
-                <div>Est. Gain/Loss from Rates</div>
-                {/*---# times cashout * 0.015 USDC * USDC To currency rate + future ---*/}
-              </div>
-              {/*---gain/loss from rates details---*/}
-              <div className="hidden">
+            {/*--- Flash costs ---*/}
+            <div className={`${statDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
+              <div className="cashoutStats2">Flash Costs</div>
+              <div className="p-2 border border-gray-400 rounded-md">
+                {/*---Cash Back Given = totalCurrencyAmount - totalCurrencyAmountAfterCashBack ---*/}
                 <div className="flex justify-between">
-                  <div>USDC Received</div>
-                  <div>{stats.totalTokenAmount.toFixed(2)} USDC</div>
+                  <div>Cash Back Given</div>
+                  <div>
+                    - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                    {(stats.totalCurrencyAmount * 0.02).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                  </div>
+                </div>
+                {/*---gain/loss from rates---*/}
+                <div className="flex justify-between">
+                  <div>Est. Gain/Loss from Rates</div>
+                  {/*---# times cashout * 0.015 USDC * USDC To currency rate + future ---*/}
+                </div>
+                {/*---gain/loss from rates details---*/}
+                <div className="hidden">
+                  <div className="flex justify-between">
+                    <div>USDC Received</div>
+                    <div>{stats.totalTokenAmount.toFixed(2)} USDC</div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>Avg. USDC to EUR Rate</div>
+                    <div>{stats.paymentRate.toFixed(4)}</div>
+                  </div>
+                </div>
+                {/*---total transaction fees---*/}
+                <div className="flex justify-between">
+                  <div>Transaction Fees</div>
+                  <div>
+                    - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                    {(1 * 0.015 * stats.currentRate).toFixed(2)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/*--- net earnings ---*/}
+            <div className="px-2 flex justify-between">
+              <div>Net Earnings</div>
+              <div>
+                {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {stats.totalCurrencyAmount}
+              </div>
+            </div>
+
+            {/*--- credit card costs ---*/}
+            <div className={`${statDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
+              <div className="cashoutStats2">Credit Card Costs</div>
+              <div className="p-2 border border-gray-400 rounded-md">
+                <div className="flex justify-between">
+                  <div>Fee Percentage (2.7%)</div>
+                  <div>
+                    - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                    {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length * 0.3).toFixed(2)}
+                  </div>
                 </div>
                 <div className="flex justify-between">
-                  <div>Avg. USDC to EUR Rate</div>
-                  <div>{stats.paymentRate.toFixed(4)}</div>
-                </div>
-              </div>
-              {/*---total transaction fees---*/}
-              <div className="flex justify-between">
-                <div>Transaction Fees</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
-                  {(1 * 0.015 * stats.currentRate).toFixed(2)}
+                  <div>Fee per Txn ($0.10)</div>
+                  <div>
+                    - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                    {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length * 0.3).toFixed(2)}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/*--- net earnings ---*/}
-          <div className="px-2 flex justify-between">
-            <div>Net Earnings</div>
-            <div>
-              {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-              {stats.totalCurrencyAmount}
-            </div>
-          </div>
-
-          {/*--- credit card costs ---*/}
-          <div className={`${statDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
-            <div className="cashoutStats2">Credit Card Costs</div>
-            <div className="p-2 border border-gray-400 rounded-md">
-              <div className="flex justify-between">
-                <div>Fee Percentage (2.7%)</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
-                  {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3).toFixed(2)}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div>Fee per Txn ($0.10)</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
-                  {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3).toFixed(2)}
-                </div>
+            {/*--- savings over credit card ---*/}
+            <div className="px-2 flex justify-between">
+              <div>Savings Over Credit Card</div>
+              <div>
+                {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
+                {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length * 0.3 - stats.totalCurrencyAmount * 0.02).toFixed(2)}
               </div>
             </div>
           </div>
-
-          {/*--- savings over credit card ---*/}
-          <div className="px-2 flex justify-between">
-            <div>Savings Over Credit Card</div>
-            <div>
-              {currency2symbol[paymentSettingsState?.merchantCurrency ?? "USD"]}
-              {(stats.totalCurrencyAmount * 0.029 + transactionsState?.length! * 0.3 - stats.totalCurrencyAmount * 0.02).toFixed(2)}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/*--- 3 modals---*/}
