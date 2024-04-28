@@ -2,21 +2,6 @@ import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDo
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 // import { config } from '@fortawesome/fontawesome-svg-core'
-// config.autoAddCss = false
-
-// import placard components
-import PlacardCoinbaseCashback from "./components/PlacardCoinbaseCashback";
-import PlacardCoinbaseUSDCCashback from "./components/PlacardCoinbaseUSDCCashback";
-import PlacardKrakenCashback from "./components/PlacardKrakenCashback";
-import PlacardMAXCashback from "./components/PlacardMAXCashback";
-import PlacardBitoCashback from "./components/PlacardBitoCashback";
-
-// import placard SVGs
-import placardCoinbaseCashback from "/public/placardCoinbaseCashback.svg";
-import placardCoinbaseUSDCCashback from "/public/placardCoinbaseUSDCCashback.svg";
-import placardKrakenCashback from "/public/placardKrakenCashback.svg";
-import placardMAXCashback from "/public/placardMAXCashback.svg";
-import placardBitoCashback from "/public/placardBitoCashback.svg";
 
 export const fieldsList = ["email", "item", "date", "daterange", "count", "sku", "shipping", "time"]; // delete??
 

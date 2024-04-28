@@ -227,7 +227,7 @@ const User = () => {
           setTransactionsState(data.doc.transactions);
           setIsAdmin(true);
           subscribePusher(data.doc.paymentSettings.merchantEvmAddress);
-          setPage("intro"); // starthere
+          setPage("app"); // starthere
         }
         // if new user
         if (data == "create new user") {
