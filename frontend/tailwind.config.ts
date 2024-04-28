@@ -37,6 +37,7 @@ module.exports = {
         nunito: ["Nunito Sans", "sans-serif"],
       },
       animation: {
+        fadeInAnimation: "fadeInAnimation ease 3s 1",
         text: "text 7s ease infinite",
         textTwo: "textTwo 2s ease infinite",
         textThree: "text 5s ease infinite",
@@ -46,6 +47,14 @@ module.exports = {
         blob3: "blob3 3s infinite",
       },
       keyframes: {
+        fadeInAnimation: {
+          "0%": {
+            opacity: "0",
+          },
+          "100%": {
+            opacity: "1",
+          },
+        },
         text: {
           "0%, 100%": {
             "background-size": "200% 200%",

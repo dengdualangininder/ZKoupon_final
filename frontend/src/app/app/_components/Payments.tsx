@@ -392,7 +392,7 @@ const Payments = ({
         <div
           className={`${
             isSearch ? "translate-x-[-100vw]" : ""
-          } translate-x-0 absolute px-6 w-full h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-center justify-between transition-transform duration-700`}
+          } translate-x-0 absolute px-6 w-full h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-center justify-between transition-transform duration-500`}
         >
           {/*--- download button ---*/}
           <div
@@ -432,10 +432,10 @@ const Payments = ({
           </div>
         </div>
         {/*--- SEARCH BAR ---*/}
-        <div className={`${isSearch ? "translate-x-[0px]" : "translate-x-[100vw]"} w-full h-full flex justify-center items-center absolute transition-transform duration-700`}>
-          <div className="w-[300px] portrait:sm:w-[420px] landscape:lg:w-[420px] pb-2 h-[64px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex flex-col justify-between">
-            <div className="w-full text-center textSm">Enter last 4 chars of customer's address</div>
-            <div className="w-full h-[32px] portrait:sm:h-[48px] landscape:lg:h-[48px] flex space-x-2 portrait:sm:space-x-4 landscape:lg:space-x-4">
+        <div className={`${isSearch ? "translate-x-[0px]" : "translate-x-[100vw]"} w-full h-full flex justify-center items-center absolute transition-transform duration-500`}>
+          <div className="w-[300px] portrait:sm:w-[420px] landscape:lg:w-[420px] pb-2 h-[68px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex flex-col justify-between">
+            <div className="w-full text-center textSm">Enter last 4 chars of the customer's address</div>
+            <div className="w-full h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] flex space-x-2 portrait:sm:space-x-4 landscape:lg:space-x-4">
               <input
                 onChange={(e) => {
                   setSearchedChars(e.currentTarget.value);

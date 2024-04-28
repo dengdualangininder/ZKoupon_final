@@ -106,7 +106,11 @@
   }
 
   .tooltip {
-    @apply invisible group-hover:visible absolute px-3 py-2 text-base portrait:sm:text-xl landscape:lg:text-xl leading-snug bg-slate-100 border border-blue-500 rounded-lg z-[1];
+    @apply invisible group-hover:visible absolute px-3 py-2 text-base portrait:sm:text-xl landscape:lg:text-xl leading-snug font-normal bg-gray-100 border border-blue-500 rounded-lg z-[1];
+  }
+
+  .tooltipIntro {
+    @apply invisible group-hover:visible absolute px-3 py-2 font-normal leading-snug bg-gray-100 border border-blue-500 rounded-lg z-[1];
   }
 
   .learnContainer {
@@ -210,19 +214,19 @@
   }
 
   .settingsHeader {
-    @apply flex-none w-full h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] pb-1.5 flex flex-col justify-end text-sm portrait:sm:text-lg landscape:lg:text-lg font-bold text-blue-600;
+    @apply flex-none w-full h-[54px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[72px] landscape:xl:h-[72px] textSm2 pb-1.5 flex flex-col justify-end font-bold text-blue-600;
   }
 
   .fieldContainer {
-    @apply flex-none w-full h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] py-1 flex items-center justify-between font-medium border-t space-x-3;
+    @apply flex-none w-full h-[55px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[72px] landscape:xl:h-[72px] textBase2 py-1 flex items-center justify-between space-x-3 font-medium border-t;
   }
 
   .settingsLabelFont {
-    @apply flex-none textSm2 text-gray-400;
+    @apply flex-none text-gray-400;
   }
 
   .settingsInputFont {
-    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full pl-2 pr-3 textBase2 text-end rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic;
+    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full pl-2 pr-3 text-end rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic;
   }
 
   .settingsSelectFont {
@@ -318,10 +322,6 @@
     @apply flex-none flex flex-col px-3 xs:px-4 py-4 w-full xs:w-[420px] md:w-[356px] lg:w-[360px];
   }
 
-  .appInstructionsBody {
-    @apply ml-2 mt-2 text-base leading-snug xs:text-sm xs:leading-snug;
-  }
-
   .appButton {
     @apply h-[56px] xs:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 text-white font-bold rounded-full text-lg;
   }
@@ -368,6 +368,26 @@
 
   .cashoutTooltip {
     @apply invisible group-hover:visible absolute px-3 py-2 textXs leading-snug text-white bg-gray-700 rounded-lg z-[1];
+  }
+
+  .faqContainer {
+    @apply border-t py-2 border-gray-300;
+  }
+
+  .faqModalBody {
+    @apply ml-2 mt-2 text-base leading-snug xs:text-sm xs:leading-snug;
+  }
+
+  .faqQuestionFont {
+    @apply textLg font-medium;
+  }
+
+  .faqLine1 {
+    @apply absolute left-[8.5px] bottom-[3px] w-[2px] h-[16px] bg-blue-600 transition-all duration-500;
+  }
+
+  .faqLine2 {
+    @apply rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[16px] bg-blue-600;
   }
 }
 

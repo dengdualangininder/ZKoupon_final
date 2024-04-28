@@ -106,23 +106,17 @@ export default function ContextProvider({ children }: { children: React.ReactNod
   // }, []);
 
   web3AuthInstance.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-    console.log("connected to wallet", data);
-    // web3auth.provider will be available here after user is connected
+    console.log("connected to wallet", data); // web3auth.provider is now available; data = {adapter: "openLogin", reconnected: true}
   });
   web3AuthInstance.on(ADAPTER_EVENTS.CONNECTING, () => {
-    console.log("connecting");
+    console.log("connecting to web3Auth");
   });
   web3AuthInstance.on(ADAPTER_EVENTS.DISCONNECTED, () => {
-    console.log("disconnected");
+    console.log("disconnected from web3Auth");
   });
   web3AuthInstance.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
-    console.log("error", error);
+    console.log("error when connecting to web3Auth", error);
   });
-  web3AuthInstance.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
-    console.log("error", error);
-  });
-
-  // const [web3Auth, setWeb3Auth] = useState(web3AuthInstance);
 
   return (
     <Web3AuthContext.Provider value={web3AuthInstance}>

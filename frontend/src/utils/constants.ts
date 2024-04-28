@@ -120,11 +120,23 @@ export const countryData: { [key: string]: { the?: boolean; currency: string; CE
     currency: "EUR",
     CEXes: ["Coinbase", "Other CEX"],
   },
+  Monaco: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Montenegro: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
   Netherlands: {
     currency: "EUR",
     CEXes: ["Coinbase", "Other CEX"],
   },
   Portugal: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  "San Marino": {
     currency: "EUR",
     CEXes: ["Coinbase", "Other CEX"],
   },
@@ -137,6 +149,10 @@ export const countryData: { [key: string]: { the?: boolean; currency: string; CE
     CEXes: ["Coinbase", "Other CEX"],
   },
   Spain: {
+    currency: "EUR",
+    CEXes: ["Coinbase", "Other CEX"],
+  },
+  Vatican: {
     currency: "EUR",
     CEXes: ["Coinbase", "Other CEX"],
   },
@@ -348,124 +364,7 @@ export const list2string = (list: string[]) => {
   return text;
 };
 
-export const currencyNames = [
-  "Select a currency",
-  // "AED (UAE Dirham)",
-  // "ARS Argentine Peso",
-  // "AUD (Australian Dollar)",
-  // "BGN Bulgarian Lev",
-  // "BHD (Bahraini Dinar)",
-  // "BRL (Brazilian Real)",
-  // "CAD (Canadian Dollar)",
-  // "CHF (Swiss Franc)",
-  // "CLP (Chilean Peso)",
-  // "CNY (Renminbi)",
-  // "COP (Colombian Peso)",
-  // "CZK (Czech Koruna)",
-  // "DKK (Danish Krone)",
-  // "EUR (Euro)",
-  // "GBP (British Pound)",
-  // "HKD (Hong Kong Dollar)",
-  // "HUF (Hungarian Forint)",
-  // "IDR (Indonesian Rupiah)",
-  // "ILS (Israeli New Shekel)",
-  // "INR (Indian Rupee)",
-  // "JPY (Japanese Yen)",
-  // "KRW (Korean Won)",
-  // "MXN (Mexican Peso)",
-  // "MYR (Malaysian Ringgit)",
-  // "NOK (Norwegian Krone)",
-  // "NZD (New Zealand Dollar)",
-  // "PEN (Peruvian Sol)",
-  "PHP (Philippine Pesos)",
-  // "PLN (Polish Zloty)",
-  // "RON (Romanian Leu)",
-  // "RUB (Russian Ruble)",
-  // "SAR (Saudi Riyal)",
-  // "SEK (Swedish Krona)",
-  // "SGD (Singaporean Dollar)",
-  // "THB (Thai Baht)",
-  // "TRY (Turkish Lira)",
-  "TWD (Taiwan Dollar)",
-  "USD (US Dollar)",
-  // "ZAR (South African Rand)",
-];
-
-export const euroList = [
-  "Austria",
-  "Belgium",
-  "Croatia",
-  "Cyprus",
-  "Estonia",
-  "Finland",
-  "France",
-  "Germany",
-  "Greece",
-  "Ireland",
-  "Italy",
-  "Latvia",
-  "Lithuania",
-  "Luxembourg",
-  "Malta",
-  "Netherlands",
-  "Portugal",
-  "Slovakia",
-  "Slovenia",
-  "Spain",
-];
-
-export const euroCountries: any = {
-  AD: "Andorra",
-  AT: "Austria",
-  BE: "Belgium",
-  CY: "Cyprus",
-  EE: "Estonia",
-  FI: "Finland",
-  FR: "France",
-  DE: "Germany",
-  GR: "Greece",
-  IE: "Ireland",
-  IT: "Italy",
-  LV: "Latvia",
-  LT: "Lithuania",
-  LU: "Luxemburg",
-  MT: "Malta",
-  MC: "Monaco",
-  ME: "Montenegro",
-  NL: "Netherlands",
-  PT: "Portugal",
-  SM: "San Marino",
-  SK: "Slovakia",
-  SI: "Slovenia",
-  ES: "Spain",
-  VA: "Vatican City",
-};
-
-// non-coinbase active countries: Taiwan, Philippines
-export const coinbaseCountries = [
-  "Austria", // 1
-  "Belgium", // 2
-  "Croatia", // 3
-  "Cyprus", // 4
-  "Estonia", // 5
-  "Finland", // 6
-  "France", // 7
-  "Germany", // 8
-  "Greece", // 9
-  "Ireland", // 10
-  "Italy", // 11
-  "Latvia", // 12
-  "Lithuania", // 13
-  "Luxembourg", // 14
-  "Malta", // 15
-  "Netherlands", // 16
-  "Portugal", // 17
-  "Slovakia", // 18
-  "Slovenia", // 19
-  "Spain", // 20
-  "United States",
-  "United Kingdom",
-];
+// add Andorra
 export const countryCurrencyList = [
   "Austria / EUR", // 1
   "Belgium / EUR", // 2
@@ -482,46 +381,52 @@ export const countryCurrencyList = [
   "Lithuania / EUR", // 13
   "Luxembourg / EUR", // 14
   "Malta / EUR", // 15
+  "Monaco / EUR",
+  "Montenegro / EUR",
   "Netherlands / EUR", // 16
   "Philippines / PHP",
   "Portugal / EUR", // 17
+  "San Marino / EUR",
   "Slovakia / EUR", // 18
   "Slovenia / EUR", // 19
   "Spain / EUR", // 20
   "Taiwan / TWD",
   "U.S. / USD",
   "U.K. / GBP",
+  "Vatican / EUR",
   "Any country / USD",
   "Any country / EUR",
 ];
 
-export const abb2full: any = {
-  US: "United States",
+export const abb2full: { [key: string]: string } = {
+  AT: "Austria", // 1
+  BE: "Belgium", // 2
+  HR: "Croatia", // 3
+  CY: "Cyprus", // 4
+  EE: "Estonia", // 5
+  FI: "Finland", // 6
+  FR: "France", // 7
+  DE: "Germany", // 8
+  GR: "Greece", // 9
+  IE: "Ireland", // 10
+  IT: "Italy", // 11
+  LV: "Latvia", // 12
+  LT: "Lithuania", // 13
+  LU: "Luxembourg", // 14
+  MT: "Malta", // 15
+  MC: "Monaco",
+  ME: "Montenegro",
+  NL: "Netherlands", // 16
+  PH: "Philippines / PHP",
+  PT: "Portugal", // 17
+  SM: "San Marino",
+  SK: "Slovakia", // 18
+  SI: "Slovenia", // 19
+  ES: "Spain", // 20
   TW: "Taiwan",
-  AD: "Euro countries",
-  AT: "Euro countries",
-  BE: "Euro countries",
-  CY: "Euro countries",
-  EE: "Euro countries",
-  FI: "Euro countries",
-  FR: "Euro countries",
-  DE: "Euro countries",
-  GR: "Euro countries",
-  IE: "Euro countries",
-  IT: "Euro countries",
-  LV: "Euro countries",
-  LT: "Euro countries",
-  LU: "Euro countries",
-  MT: "Euro countries",
-  MC: "Euro countries",
-  ME: "Euro countries",
-  NL: "Euro countries",
-  PT: "Euro countries",
-  SM: "Euro countries",
-  SK: "Euro countries",
-  SI: "Euro countries",
-  ES: "Euro countries",
-  VA: "Euro countries",
+  US: "U.S.",
+  GB: "U.K.",
+  VA: "Vatican",
 };
 
 export const fees: any = { "Coinbase Exchange": { "United States": "no", "Euro countries": "no" }, "MAX Exchange": { Taiwan: "15 TWD" } };

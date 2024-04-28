@@ -20,9 +20,9 @@ import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
-import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
+
 // import PullToRefresh from "pulltorefreshjs";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
@@ -37,7 +37,7 @@ const User = () => {
   // db values
   const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>();
   const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>();
-  const [transactionsState, setTransactionsState] = useState<Transaction[] | null>([]);
+  const [transactionsState, setTransactionsState] = useState<Transaction[]>([]);
   // states
   const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" (default) | "login" | "saveToHome" | "intro" | "app"
@@ -82,14 +82,13 @@ const User = () => {
     },
   });
 
-  // web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-  //   console.log("connected to wallet", data);
-  //   console.log(walletClient ? "in event listener, no walletClient" : "in event listener, walletClient detected"); // will always return true
-  // });
-  // web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
-  //   console.log("connecting");
-  // });
-
+  // IF NOT LOGGED IN
+  // onClick => loading page, exit loading page when connected to web3Auth and wagmi
+  // 1st useEffect run => web3Auth.status returns "ready", web3Auth.connected returns true, account.address returns address, walletClient is detected
+  // IF PREVIOUSLY LOGGED IN
+  // 1st useEffect run => web3Auth.status returns "ready", web3Auth.connected returns false, account.address returns the address, walletClient is not detected
+  // useEffect ends and web3Auth even lsitener will log "connecting", and then "connected". /app will then be rendered twice (why??) but useEffect is not run
+  // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
   useEffect(() => {
     console.log("/app, page.tsx, useEffect run once");
 
@@ -97,7 +96,7 @@ const User = () => {
     const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
-    console.log("useEffect, isMobileTemp:", isMobileTemp);
+    console.log("isMobileTemp:", isMobileTemp);
     setIsMobile(isMobileTemp);
     if (isMobileAndNotStandaloneTemp) {
       console.log("detected mobile & not standalone");
@@ -127,26 +126,22 @@ const User = () => {
 
     // check if employee login
     const jwt = getCookie("jwt");
-    console.log("jwt", jwt);
+    console.log("jwt:", jwt);
     if (jwt) {
       verifyAndGetEmployeeData();
       return;
     }
 
-    // query localStorage to determine user logged into web3Auth
-    const sessionIdObject: any = window.localStorage.getItem("openlogin_store");
+    // query localStorage to determine user logged into web3Auth (TODO: is sessionId sometimes invalid?)
+    const sessionIdObject = window.localStorage.getItem("openlogin_store");
     if (!sessionIdObject || !JSON.parse(sessionIdObject).sessionId) {
       console.log("no web3Auth sessionId, page set to Login");
       setPage("login");
       return;
     }
 
-    console.log("web3Auth.status:", web3Auth?.status ?? "web3Auth is null", "| web3Auth.connected:", web3Auth?.connected ?? "web3Auth is null");
+    console.log("web3Auth.status:", web3Auth?.status, "| web3Auth.connected:", web3Auth?.connected);
     console.log("account.address:", account.address);
-    // In general, all the above will show "undefined" in 1st useEffect run (thus, we query localStorage to determine if web3Auth
-    // already connected). In 2nd run, web3Auth.status will show "connected", while account.address and walletClient will be undefined.
-    // Web3Auth event listener will then show connecting and connected. /App page will then be rendered twice in a row (why???) but the useEffect
-    // is only run once. In this 3rd run, account.address and walletClient will be detected.
 
     // prevent further work from being done if walletClient not loaded
     if (walletClient) {
@@ -232,7 +227,7 @@ const User = () => {
           setTransactionsState(data.doc.transactions);
           setIsAdmin(true);
           subscribePusher(data.doc.paymentSettings.merchantEvmAddress);
-          setPage("app");
+          setPage("intro"); // starthere
         }
         // if new user
         if (data == "create new user") {
@@ -285,16 +280,16 @@ const User = () => {
     });
   };
 
-  // only reason this is not in newuser component is because web3auth finalized here
+  // reason this is not in newuser component is because web3auth context already used here, don't want to use in another component
   const createNewUser = async () => {
     console.log("creating new user");
     setPage("intro");
     // set merchantCountry, merchantCurrency, and cex
     try {
       const res = await axios.get("https://api.country.is");
-      var merchantCountry = abb2full[res.data.country] || "U.S.";
-      var merchantCurrency = countryData[merchantCountry]?.currency || "USD";
-      var cex = countryData[merchantCountry]?.CEXes[0] || "Coinbase";
+      var merchantCountry = abb2full[res.data.country] ?? "Any country";
+      var merchantCurrency = countryData[merchantCountry]?.currency ?? "USD";
+      var cex = countryData[merchantCountry]?.CEXes[0] ?? "";
       console.log("detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
     } catch (err) {
       merchantCountry = "U.S.";
@@ -306,7 +301,6 @@ const User = () => {
     const merchantEvmAddress = account.address;
     console.log("merchantEmail, merchantEvmAddress:", merchantEmail, merchantEvmAddress);
     // create new user in db
-    return;
     try {
       const res = await fetch("/api/createUser", {
         method: "POST",
@@ -326,16 +320,45 @@ const User = () => {
   return (
     <div className="pl-[calc(100vw-100%)] text-black">
       {page === "loading" && (
-        <div className="w-full h-screen flex flex-col justify-center items-center">
-          <SpinningCircleGrayLarge />
-          <div className="mt-2">Loading...</div>
+        <div className="w-full h-screen flex items-center justify-center text-transparent">
+          <div className="w-full h-full flex justify-center items-center">
+            {/*--- welcome ---*/}
+            <div className="introFont w-full h-full portrait:sm:h-[90%] flex flex-col items-center">
+              {/*--- content ---*/}
+              <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-6 landscape:lg:space-y-24 portrait:space-y-16 portrait:sm:space-y-24">
+                <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
+                  <Image src="/logo.svg" alt="logo" fill />
+                </div>
+                <div className="w-full text-3xl landscape:lg:text-5xl portrait:sm:text-5xl font-bold text-center relative">
+                  XXX
+                  <div className="absolute top-0 left-0 w-full flex flex-col items-center">
+                    <div className="relative w-[340px] h-[50px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
+                      <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+                    </div>
+                    <div className="mt-4 font-medium textLg2 text-black">Loading profile...</div>
+                  </div>
+                </div>
+                <div className="invisible text-center leading-relaxed">
+                  XXX
+                  <br />
+                  XXX
+                </div>
+              </div>
+              {/*--- buttons ---*/}
+              <div className="invisible w-full h-[15%] sm:h-[20%]">
+                <button className="">XXX</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
+
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "intro" && (
         <Intro
           isMobile={isMobile}
+          page={page}
           setPage={setPage}
           idToken={idToken}
           publicKey={publicKey}

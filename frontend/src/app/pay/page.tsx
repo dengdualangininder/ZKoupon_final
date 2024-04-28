@@ -378,12 +378,9 @@ const Pay = () => {
                 )}
               </div>
             ) : (
-              <div className="mt-6 w-full h-full flex flex-col items-center text-lg leading-relaxed space-y-4">
-                <p>You need native USDC on Polygon for payment. Here are serveral ways to get some:</p>
-                <p>&bull; if you have native USDC (Polygon) on another MetaMask account, click the top right icon to change accounts</p>
-                <p>&bull; if you have funds on a CEX, send USDC via Polygon to your MetaMask</p>
-                <p>&bull; if you have tokens on Polygon, swap some for native USDC on Uniswap</p>
-                <p>&bull; if you have USDC on another chain, bridge it to Polygon using Stargate, Celer, or other bridges</p>
+              <div className="mt-6 w-full h-full flex flex-col items-center text-2xl leading-relaxed space-y-4">
+                <p>You need USDC (on the Polygon network) in your MetaMask for payment.</p>
+                <p>A common way to get USDC into your MetaMask is to send USDC from a cryptocurrency exchange (e.g., Coinbase) to your Metamask via the Polygon network.</p>
               </div>
             )}
           </div>

@@ -65,6 +65,9 @@ const Settings = ({
 
   // listens to changes in save and saves the states to db
   useEffect(() => {
+    // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
+    // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
+    // control when to specifically trigger this useEffect
     console.log("saveSettings useEffect run once");
     const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
     let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
@@ -216,9 +219,10 @@ const Settings = ({
   console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
     <section id="accountEl" className="w-full px-3 portrait:h-[calc(100vh-84px)] portrait:sm:h-[calc(100vh-140px)] flex flex-col items-center overflow-y-auto">
-      <div className="w-full portrait:sm:max-w-[640px] landscape:lg:max-w-[640px]">
+      <div className="w-full max-w-[640px]">
+        {/* <div className="text-center text3xl font-bold pt-4">Settings</div> */}
         {/*--- TOP BUTTONS ---*/}
-        <div className="h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] landscape:xl:h-[180px] text-sm portrait:sm:text-xl landscape:lg:text-xl flex items-center justify-evenly">
+        {/* <div className="h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] landscape:xl:h-[180px] text-sm portrait:sm:text-xl landscape:lg:text-xl flex items-center justify-evenly">
           <div
             className="flex items-center justify-center w-[74px] h-[74px] portrait:sm:w-[110px] portrait:sm:h-[100px] landscape:lg:w-[110px] landscape:lg:h-[100px] rounded-lg text-center font-medium text-gray-500 border border-gray-500 bg-white"
             onClick={emailQrCode}
@@ -239,7 +243,7 @@ const Settings = ({
           >
             FAQs
           </div>
-        </div>
+        </div> */}
 
         <div className="hidden">
           <QRCodeSVG id="qrPlacard" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
@@ -249,7 +253,7 @@ const Settings = ({
         <form className="w-full">
           {/*--- PAYMENT SETTINGS ---*/}
           <div className="w-full">
-            <div className="flex-none w-full pb-1.5 flex flex-col justify-end text-sm portrait:sm:text-lg landscape:lg:text-lg font-bold text-blue-600">PAYMENT SETTINGS</div>
+            <div className="settingsHeader">PAYMENT SETTINGS</div>
 
             {/*---merchantName---*/}
             <div className="fieldContainer">
@@ -292,10 +296,10 @@ const Settings = ({
               <div className="flex items-center group cursor-pointer">
                 <label className="settingsLabelFont">Payment Type</label>
                 <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
-                <div className="top-[100%] w-full tooltip">Select "In-person" for physical stores and "online" for online stores</div>
+                <div className="top-[100%] w-full tooltip">Currently, we are only enabling "In-person" payments. In the future, "Online" payments will be available.</div>
               </div>
               <select
-                className="settingsSelectFont"
+                className="settingsSelectFont pointer-events-none"
                 onChange={async (e) => {
                   let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
                   console.log(merchantPaymentTypeTemp);
@@ -329,7 +333,7 @@ const Settings = ({
             {paymentSettingsState.merchantPaymentType === "inperson" && (
               <div className="fieldContainer border-b relative">
                 <div className="group cursor-pointer">
-                  <label className="settingsLabelFont">Give 2% Instant Cashback?</label>
+                  <label className="settingsLabelFont">Give 2% Cashback?</label>
                   <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
                   <div className="w-full top-[100%] tooltip">
                     Because credit cards charge businesses ~3% and give ~1% to customers, customers have few incentives to use other payment methods. Therefore, we are temporarily
@@ -493,8 +497,8 @@ const Settings = ({
           </div>
 
           {/*--- CASHOUT SETTINGS ---*/}
-          {/*---header---*/}
           <div className="settingsHeader">CASH OUT SETTINGS</div>
+
           {/*---cex---*/}
           {paymentSettingsState.merchantCountry != "Any country" && (
             <div className={`${cashoutSettingsState.cex == "Coinbase" ? "border-b" : ""} fieldContainer`}>
@@ -514,6 +518,7 @@ const Settings = ({
               </select>
             </div>
           )}
+
           {/*---cexEvmAddress---*/}
           <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} fieldContainer border-b`}>
             <label className="settingsLabelFont">CEX EVM Address</label>
@@ -595,13 +600,16 @@ const Settings = ({
         </form>
 
         {/*---Sign Out---*/}
-        <div className="pb-4 h-[110px] portrait:sm:h-[140px] landscape:lg:h-[140px] landscape:xl:h-[140px] text-base portrait:sm:text-2xl landscape:lg:text-2xl flex items-center justify-evenly">
+        <div className="h-[14%] textBase2 flex items-center justify-center relative">
           <button
             onClick={onClickSignOut}
-            className="font-medium px-6 portrait:sm:px-10 landscape:lg:px-10 py-3 rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
+            className="font-medium px-8 portrait:sm:px-10 landscape:lg:px-10 h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
           >
             Sign Out
           </button>
+          <div onClick={() => setFaqModal(true)} className="link absolute right-8 font-bold textSm2">
+            HELP
+          </div>
         </div>
       </div>
 

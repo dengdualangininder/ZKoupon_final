@@ -139,7 +139,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 {myConnectors.map<any>((i: any) => (
                   <div
                     key={i.name}
-                    className="w-full h-[60px] portrait:sm:h-[80px] landscape:md:h-[72px] landscape:lg:h-[80px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                    className="w-full h-[60px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                     onClick={async () => {
                       console.log("login page, clicked connect, set page to Loading");
                       setPage("loading");

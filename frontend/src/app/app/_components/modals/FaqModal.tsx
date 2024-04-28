@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileInvoiceDollar, faList, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -8,361 +9,346 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
 
   return (
     <div>
-      <div className="w-[90%] h-[90%] pb-8 flex flex-col items-center rounded-xl fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white border border-gray-400 z-[90]">
+      <div className="w-[90%] max-w-[600px] h-[92%] pb-8 flex flex-col items-center rounded-xl fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white border border-gray-400 z-[90]">
         {/*---close button---*/}
-        <div onClick={() => setFaqModal(false)} className="absolute top-0 right-1 px-4 py-3 text-4xl active:bg-gray-200 rounded-lg">
+        <div onClick={() => setFaqModal(false)} className="absolute top-1 right-1 font-bold px-4 py-3 text-4xl active:bg-gray-200 rounded-lg">
           &#10005;
         </div>
-        {/* <button
-          onClick={() => setFaqModal(false)}
-          className="absolute top-[calc(100%-20px)] right-[calc(50%-30px)] sm:right-[-20px] sm:top-[-20px] h-[60px] w-[60px] sm:h-[48px] sm:w-[48px] bg-red-400 rounded-full hover:bg-red-500 text-3xl"
-        >
-          <FontAwesomeIcon icon={faXmark} className="text-white pt-1" />
-        </button> */}
 
         {/*--- title ---*/}
-        <div className="py-4 w-full text-center text-2xl font-bold">Instructions</div>
+        <div className="py-5 w-full text-center text2xl font-bold">FAQs</div>
 
         {/*--- body ---*/}
-        <div className="px-4 flex flex-col overflow-y-auto">
-          <div className="pt-4 flex flex-col space-y-6">
-            {/*--- Step 1: Set up ---*/}
-            <div className="">
-              {/*--- header ---*/}
-              <div className="flex">
-                <div
-                  className="flex mb-1"
-                  onClick={() => {
-                    expand == "1" ? setExpand("") : setExpand("1");
-                  }}
-                >
-                  <div className=" text-xl xs:text-lg font-bold">Set up</div>
-                  <div className="relative mt-[5px] ml-2 w-[20px] h-[20px] rounded-full">
-                    <div className={`${expand == "1" ? "rotate-[90deg]" : ""} absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600 transition-all duration-500`}></div>
-                    <div className={`rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600`}></div>
-                  </div>
+        <div className="px-4 overflow-y-auto">
+          <div className="flex flex-col">
+            {/*--- How do I set up? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "setup" ? setExpand("") : setExpand("setup");
+                }}
+              >
+                <div className="faqQuestionFont">How do I start?</div>
+                <div className="relative ml-2 w-[22px] h-[22px] flex items-center justify-center">
+                  <div className={`${expand == "setup" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
                 </div>
               </div>
-              {/*--- body ---*/}
-              <div className={`${expand == "1" ? "max-h-[700px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
-                <div className="appInstructionsBody">
-                  {paymentSettingsState.merchantPaymentType === "inperson" ? (
-                    <div className="flex flex-col relative">
-                      <div className="flex">
-                        <div className="mr-2">1.</div>
-                        <div>
-                          Fill out your <span className="font-bold">Payment Settings</span> in Settings
-                        </div>
-                      </div>
-                      <div className="mt-4 flex">
-                        <div className="mr-2">2.</div>
-                        <div>
-                          Click <span className="font-bold">My QR Code</span> (in Settings) and send the QR code to a professional print shop
-                        </div>
-                      </div>
-                      <div className="mt-4 flex">
-                        <div className="mr-2">3.</div>
-                        <div className="font-bold">
-                          Display your QR code
-                          <div className="ml-2 font-normal">
-                            &bull; a print size of A6 (4x6") will fit{" "}
-                            <a href="https://www.amazon.com/s?k=4x6+sign+holders" target="_blank" className="link">
-                              these sign holders
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-4 italic">Optional</div>
-                      <div className="flex">
-                        <div className="mr-2">4.</div>
-                        <div className="flex flex-col">
-                          <div>
-                            <span className="font-bold">Create an Employee Password under Account Settings</span> in Settings.
-                          </div>
-                          <div className="mt-1 group relative">
-                            <span className="link">What is the purpose of an Employee Password?</span>
-                            <div className="invisible group-hover:visible absolute bottom-[calc(100%)] left-0 w-full px-3 py-2 rounded-md border border-gray-500 bg-gray-100 z-1">
-                              When employees login with your Account Email and the Employee Password, they have access to 2 functions: 1) viewing payments, so they can confirm a
-                              payment, and 2) marking payments as "To Be Refunded". Employees do not have access to other functions.
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
+              {/*--- answer ---*/}
+              <div className={`${expand == "setup" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                {paymentSettingsState.merchantPaymentType === "inperson" && (
+                  <div className="">
+                    All you have to do is print out and display your QR code so that customers can scan it. In the <span className="font-bold">Cash Out</span> menu, you can
+                    download your QR code or email it to a print shop. We recommend a print size of A6 (4x6"), which will fit{" "}
+                    <a href="https://www.amazon.com/s?k=4x6+sign+holders" target="_blank" className="link">
+                      these sign holders
+                    </a>
+                    .
+                  </div>
+                )}
+                {paymentSettingsState.merchantPaymentType === "online" && (
+                  <div className="flex flex-col space-y-2">
                     <div>
+                      Copy your Payment Link in the <span className="font-bold">Cash Out</span> menu and use it in an &lt;a&gt; tag in your HTML code to create a "Pay With
+                      MetaMask" button in your checkout page. When a user clicks the button, they will be be able to make payments with MetaMask on desktop or mobile.
+                    </div>
+                    <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
+                      (Optional) <span className="link">Download the QR Code placard</span> (or naked QR code in <span className="link">SVG</span> or{" "}
+                      <span className="link">PNG</span> format) and put it on any appropriate online medium
+                    </div>
+                    <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
+                      (Optional) To edit your placard's size or design, read <span className="link">these instructions</span> and download{" "}
+                      <span className="link">this Figma file</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/*--- What is the Employee Password? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "employeePass" ? setExpand("") : setExpand("employeePass");
+                }}
+              >
+                <div className="faqQuestionFont">What is the Employee Password?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "employeePass" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "employeePass" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                You can create an Employee Password in Settings. When an employee logins with your Account Email and your Employee Password, they can view the{" "}
+                <span className="font-bold">Payments</span> menu. This allows them to confirm payment and mark payments as "To Be Refunded". Employees do not have access to other
+                functions.
+              </div>
+            </div>
+
+            {/*--- How does a customer pay? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "pay" ? setExpand("") : setExpand("pay");
+                }}
+              >
+                <div className="faqQuestionFont">How does a customer pay?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "pay" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "pay" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase space-y-2 relative`}>
+                <div className="">
+                  Before payment, the customer must have the{" "}
+                  <span className="group">
+                    <span className="link">MetaMask App</span>
+                    <div className="w-full bottom-0 tooltip">
+                      MetaMask is used by &gt; 50 million people worldwide. It is the most popular App used by crypto users to send and receive tokens.
+                    </div>
+                  </span>{" "}
+                  and USDC tokens on the Polygon network. To pay, the customer will scan your QR code with their camera and enter the amount of{" "}
+                  {paymentSettingsState.merchantCurrency} for payment.
+                </div>
+                <div>USDC tokens equal in value to the payment amount will be sent from the customer to your Flash account (no fees).</div>
+              </div>
+            </div>
+
+            {/*--- How do I confirm payment? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "confirm" ? setExpand("") : setExpand("confirm");
+                }}
+              >
+                <div className="faqQuestionFont">How do I confirm payment?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "confirm" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "confirm" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                Upon a successful payment, you will receive a notification banner in your Flash App. The payment will then appear in the <span className="font-bold">Payments</span>{" "}
+                menu.
+              </div>
+            </div>
+
+            {/*--- How should I log a payment? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "log" ? setExpand("") : setExpand("log");
+                }}
+              >
+                <div className="faqQuestionFont">How should I log a payment?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "log" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "log" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                If you have PoS device, log the payment on it as you would a cash payment, so you can maintain a single system. If you don't have a PoS system, don't worry about
+                logging payments, as all payment details are saved and can be downloaded in the <span className="font-bold">Cash Out</span> menu.
+              </div>
+            </div>
+
+            {/* <div className="mt-1">You can confirm the payment in two ways:</div>
+            <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
+              <span className="font-bold">Check your email.</span> If payment has been successfully sent to you, you will receive an email. The email will contain all information
+              about the purchase.
+            </div>
+            <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
+              <span className="font-bold">Check the Flash Pay App.</span> Payment should appear in the{" "}
+              <span className="text-blue-700 font-bold whitespace-nowrap">
+                <FontAwesomeIcon icon={faList} className="pr-0.5" />
+                Payments
+              </span>{" "}
+              menu tab after ~5s (a page refresh may be needed)
+            </div> */}
+
+            {/*--- How do I make refunds? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "refund" ? setExpand("") : setExpand("refund");
+                }}
+              >
+                <div className="faqQuestionFont">How do I make refunds?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "refund" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "refund" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase space-y-2`}>
+                <p>Owners can refund payments by clicking on a transaction, and clicking "Refund".</p>
+                <p>Due to seurity, employees are restricted from transferring funds. Therefore, they cannot make refunds.</p>
+                <p className="">
+                  Instead, employees can mark a payment as "To Be Refunded". Then, at any time, you (the owner) can go to the <span className="font-bold">Payments</span> menu and
+                  click "Refund All Payments Marked As 'To Be Refunded'" to execute all refunds in a single click.
+                </p>
+              </div>
+            </div>
+
+            {/*--- How do I cash out? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "cashout" ? setExpand("") : setExpand("cashout");
+                }}
+              >
+                <div className="faqQuestionFont">How do I cash out?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "cashout" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "cashout" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? (
+                  <div className="space-y-2">
+                    <div className="flex">
+                      <div className="mr-1">1.</div>
+                      <div>Sign up for a Coinbase account</div>
+                    </div>
+                    <div className="flex">
+                      <div className="mr-1">2.</div>
                       <div>
-                        Fill out the <span className="font-bold">Payment Settings</span> below. Then, copy your Payment Link (located below the QR Code placard) and use it in an
-                        &lt;a&gt; tag in your HTML code to create a "Flash Pay" payment button. Or, put the link on your social media profile (use URL shorteners to shorten it).
-                      </div>
-                      <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
-                        (Optional) <span className="link">Download the QR Code placard</span> (or naked QR code in <span className="link">SVG</span> or{" "}
-                        <span className="link">PNG</span> format) and put it on any appropriate online medium
-                      </div>
-                      <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
-                        (Optional) To edit your placard's size or design, read <span className="link">these instructions</span> and download{" "}
-                        <span className="link">this Figma file</span>
+                        In the <span className="font-bold">Cash Out</span>menu, click "Link your Coinbase account"
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/*---Instructions, Step 2: Download your QR code---*/}
-            <div>
-              <div className="flex">
-                <div
-                  className="flex mb-1"
-                  onClick={() => {
-                    expand == "2" ? setExpand("") : setExpand("2");
-                  }}
-                >
-                  <div className="text-xl xs:text-lg font-bold">How customers pay</div>
-                  <div className="relative mt-[5px] ml-2 w-[20px] h-[20px] rounded-full">
-                    <div className={`${expand == "2" ? "rotate-[90deg]" : ""} absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600 transition-all duration-500`}></div>
-                    <div className={`rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600`}></div>
+                    <div className="flex">
+                      <div className="mr-1">3.</div>
+                      <div>Click the "Transfer to Coinbase" button and make a transfer</div>
+                    </div>
+                    <div className="flex">
+                      <div className="mr-1">4.</div>
+                      <div>
+                        After 1-5 minutes, when your Coinbase balance reflects the new balance, click the "Transfer to Bank" button and make a transfer. USDC will be converted to{" "}
+                        {paymentSettingsState.merchantCurrency}, and the money transferred to your bank within 1-2 days.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className={`${expand == "2" ? "max-h-[800px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
-                <div className="appInstructionsBody">
-                  {paymentSettingsState.merchantPaymentType === "inperson" ? (
-                    <div className="">
-                      <div className="font-bold">How do customers pay?</div>
-                      <div className="mt-1 relative">
-                        Customers need to have USDC tokens in a{" "}
-                        <span className="group">
-                          <span className="link">Web3 Wallet</span>
-                          <div className="invisible group-hover:visible absolute bottom--0 left-0 w-[346px] px-3 py-2 rounded-md border border-gray-500 bg-gray-100 z-1">
-                            A <span className="font-bold">Web3 Wallet</span> is an App that can hold USDC tokens. Currently, MetaMask is the most popular Web3 Wallet.
-                          </div>
-                        </span>{" "}
-                        to pay. To pay, the customer scans your QR code with their camera, enters the amount of {paymentSettingsState.merchantCurrency} for payment, and clicks
-                        "Send".
-                        {paymentSettingsState.merchantCurrency == "USD" ? "" : ` USDC tokens equal to the payment value will be sent from the customer to your Flash account.`}
-                      </div>
-                      <div className="mt-4 font-bold">How do I confirm payment?</div>
-                      <div className="mt-1 relative">
-                        Several seconds after payment, you will receive a notification banner indicating a successful payment. The payment will then appear in{" "}
-                        <span className="text-blue-700 whitespace-nowrap font-bold">
-                          <FontAwesomeIcon icon={faList} className="pr-0.5" />
-                          Payments
-                        </span>
-                        .
-                      </div>
-                      <div className="mt-4 font-bold">How should I log the payment?</div>
-                      <div className="mt-1">
-                        If you have PoS device, log the payment in your PoS device as you would a cash payment. If you don't, all payment details can be downloaded in{" "}
-                        <span className="text-blue-700 font-bold whitespace-nowrap">
-                          <FontAwesomeIcon icon={faList} className="px-0.5" />
-                          Payments
-                        </span>{" "}
-                        for record keeping.
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="font-bold">How does the customer pay?</div>
-                      <div className="mt-1">
-                        The customer pays by opening their Flash App, scanning your QR Code, and entering the amount of {paymentSettingsState.merchantCurrency} for payment.
-                        {paymentSettingsState.merchantCurrency == "USD" ? "" : ` USDC tokens with the same value will be sent to your Flash Pay account.`}
-                      </div>
-                      <div className="mt-1">You can confirm the payment in two ways:</div>
-                      <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
-                        <span className="font-bold">Check your email.</span> If payment has been successfully sent to you, you will receive an email. The email will contain all
-                        information about the purchase.
-                      </div>
-                      <div className="mt-1 ml-3 text-base leading-tight xs:text-sm xs:leading-tight">
-                        <span className="font-bold">Check the Flash Pay App.</span> Payment should appear in the{" "}
-                        <span className="text-blue-700 font-bold whitespace-nowrap">
-                          <FontAwesomeIcon icon={faList} className="pr-0.5" />
-                          Payments
-                        </span>{" "}
-                        menu tab after ~5s (a page refresh may be needed)
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/*--- Instructions, 3. Refunds ---*/}
-            <div>
-              <div className="flex">
-                <div
-                  className="flex mb-1"
-                  onClick={() => {
-                    expand == "3" ? setExpand("") : setExpand("3");
-                  }}
-                >
-                  <div className="text-xl xs:text-lg font-bold">Refunds</div>
-                  <div className="relative mt-[5px] ml-2 w-[20px] h-[20px] rounded-full">
-                    <div className={`${expand == "3" ? "rotate-[90deg]" : ""} absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600 transition-all duration-500`}></div>
-                    <div className={`rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600`}></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={`${expand == "3" ? "max-h-[650px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
-                <div className="appInstructionsBody">
-                  {cashoutSettingsState.cex == "Coinbase Exchange" && (
-                    <div className="space-y-4">
-                      {/*--- cash out step 1 ---*/}
-                      <p className="mt-1 relative">
-                        You (or an employee) can mark a payment in{" "}
-                        <span className="text-blue-700 font-bold whitespace-nowrap">
-                          <FontAwesomeIcon icon={faList} className="px-0.5" />
-                          Payments
-                        </span>{" "}
-                        as "To Be Refunded". At any time, you (the owner) can go to{" "}
-                        <span className="text-blue-700 font-bold whitespace-nowrap">
-                          <FontAwesomeIcon icon={faList} className="px-0.5" />
-                          Payments
-                        </span>{" "}
-                        and click "Refund all payments marked as 'To Be Refunded'". Or, you can click the individual payments and refund each payment one by one.{" "}
-                      </p>
-                      <p>Due to seurity, employees are restricted from transferring funds. Therefore, they cannot make refunds.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/*--- Instructions, 4. Cash Out ---*/}
-            <div>
-              <div className="flex">
-                <div
-                  className="flex mb-1"
-                  onClick={() => {
-                    expand == "4" ? setExpand("") : setExpand("4");
-                  }}
-                >
-                  <div className="text-xl xs:text-lg font-bold">Cash out</div>
-                  <div className="relative mt-[5px] ml-2 w-[20px] h-[20px] rounded-full">
-                    <div className={`${expand == "4" ? "rotate-[90deg]" : ""} absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600 transition-all duration-500`}></div>
-                    <div className={`rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[12px] bg-blue-600`}></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={`${expand == "4" ? "max-h-[650px] drop-shadow-lg" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms]`}>
-                <div className="appInstructionsBody">
-                  {cashoutSettingsState.cex == "Coinbase Exchange" && (
-                    <div className="space-y-4">
-                      {/*--- cash out step 1 ---*/}
+                ) : (
+                  <div className="space-y-2">
+                    <div className="space-y-2">
                       <div className="flex">
                         <div className="mr-1">1.</div>
-                        <div>
-                          Sign up for a Coinbase account (
-                          <span
-                            className="link"
-                            onClick={() => {
-                              // setExchangeModal(true);
-                            }}
-                          >
-                            instructions
-                          </span>
-                          )
-                        </div>
+                        <div>Log into your {cashoutSettingsState.cex == "Other CEX" ? "CEX" : cashoutSettingsState.cex} account and find the USDC (Polygon) deposit address</div>
                       </div>
-                      {/*--- cash out step 2 ---*/}
                       <div className="flex">
                         <div className="mr-1">2.</div>
-                        <div>In Cash Out, click "Link your Coinbase account"</div>
+                        <div>Paste this address into the "CEX EVM Address" field in Settings</div>
                       </div>
-                      {/*--- cash out step 3 ---*/}
                       <div className="flex">
                         <div className="mr-1">3.</div>
-                        <div>Click "Transfer to Coinbase"</div>
+                        <div>
+                          In the <span className="font-bold">Cash Out</span> menu, click the "Transfer to{" "}
+                          {cashoutSettingsState.cex == "Other CEX" ? "CEX" : cashoutSettingsState.cex}" button and make a transfer
+                        </div>
                       </div>
-                      {/*--- cash out step 4 ---*/}
                       <div className="flex">
                         <div className="mr-1">4.</div>
                         <div>
-                          After 1-5 minutes, when your Coinbase Balance reflects the new balance, click "Transfer to Bank". USDC will be converted to{" "}
-                          {paymentSettingsState.merchantCurrency}, and the money transferred to your bank within 1-2 days.
+                          Log into your {cashoutSettingsState.cex == "Other CEX" ? "CEX" : cashoutSettingsState.cex} account, convert USDC to the local currency, and withdraw the
+                          money to your bank.
                         </div>
                       </div>
                     </div>
-                  )}
-                  {cashoutSettingsState.cex != "Coinbase Exchange" && (
-                    <div className="space-y-4">
-                      {/*--- cash out step 1 ---*/}
-                      <div className="flex">
-                        <div className="mr-1">1.</div>
-                        <div>
-                          Sign up for an account on {cashoutSettingsState.cex} (
-                          <span
-                            className="link"
-                            onClick={() => {
-                              // setExchangeModal(true);
-                            }}
-                          >
-                            instructions
-                          </span>
-                          )
-                        </div>
-                      </div>
-                      {/*--- cash out step 2 ---*/}
-                      <div className="flex">
-                        <div className="mr-1">2.</div>
-                        <div>
-                          In your {cashoutSettingsState.cex}, copy your USDC deposit address on the Polygon network (instructions) and paste it in the Cash Out Settings below
-                        </div>
-                      </div>
-                      {/*--- cash out step 3 ---*/}
-                      <div className="flex">
-                        <div className="mr-1">3.</div>
-                        <div>
-                          To cash out, go to the{" "}
-                          <span className="text-blue-700 font-bold whitespace-nowrap">
-                            <FontAwesomeIcon icon={faFileInvoiceDollar} className="pr-0.5" />
-                            Cash Out
-                          </span>{" "}
-                          menu tab and click the <span className="bg-blue-700 text-white font-bold text-xs px-1.5 py-0.5 xs:py-0 rounded-full whitespace-nowrap">
-                            Cash Out
-                          </span>{" "}
-                          button. This will send all USDC from your Flash App to your {cashoutSettingsState.cex}. Then, in your exchange, convert USDC to{" "}
-                          {paymentSettingsState.merchantCurrency}, and withdraw the money to your bank.
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {/*--- question 1 ---*/}
-                  <div className="mt-4 relative">
-                    <span className="group">
-                      <span className="link">What are the fees?</span>
-                      {/*---tooltip---*/}
-                      <div className="invisible group-hover:visible absolute bottom-[calc(100%+6px)] px-3 py-2 pointer-events-none bg-gray-100 border-gray-500 border rounded-lg z-10">
-                        Fees for transferring funds are near zero. It costs ~0.10 USDC to transfer USDC from Flash to Coinbase. There is no transfer fee from Coinbase to your bank.
-                      </div>
-                    </span>
                   </div>
-                  {/*--- question 2 ---*/}
-                  <div className="mt-4 relative">
-                    <span className="group">
-                      <span className="link">What is the USDC to {paymentSettingsState.merchantCurrency} rate?</span>
-                      {/*---tooltip---*/}
-                      <div className="invisible group-hover:visible absolute bottom-[calc(100%+6px)] px-3 py-2 pointer-events-none bg-gray-100 border-gray-500 border rounded-lg z-10">
-                        {paymentSettingsState.merchantCurrency == "USD"
-                          ? "USDC is converted to USD at a 1:1 rate with no fees."
-                          : `USDC is converted to ${paymentSettingsState.merchantCurrency} on the Coinbase orderbooks, which are highly liquid and usually offers a better rate than the USD to ${paymentSettingsState.merchantCurrency} rate at any bank, including Wise. The trading fee is negligible (0.01%).`}
-                      </div>
-                    </span>
-                  </div>
-                  {/*--- question 3 ---*/}
-                  <div className="mt-4 relative">
-                    <span className="group">
-                      <span className="link">Will I lose money from fluctuating rates?</span>
-                      {/*---tooltip---*/}
-                      <div className="invisible group-hover:visible absolute bottom-[calc(100%+6px)] px-3 py-2 pointer-events-none bg-gray-100 border-gray-500 border rounded-lg z-10">
-                        During payment, our interface adds 0.2% to the stablecoin-to-fiat rate on {cashoutSettingsState.cex} in favor of the business. Therefore, on average, you
-                        should not lose money from fluctuating rates if you cash out regularly (e.g., once a week).
-                      </div>
-                    </span>
-                  </div>
+                )}
+              </div>
+            </div>
+
+            {/*--- What are the fees? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "fees" ? setExpand("") : setExpand("fees");
+                }}
+              >
+                <div className="faqQuestionFont">What are the fees?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "fees" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
                 </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "fees" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                Flash charges no fees per transaction. When transferring funds from Flash to your {cashoutSettingsState.cex == "Other CEX" ? "CEX" : cashoutSettingsState.cex}{" "}
+                account, it will cost ~0.10 USDC. When transferring funds from your {cashoutSettingsState.cex == "Other CEX" ? "CEX" : cashoutSettingsState.cex} account to your
+                bank,{" "}
+                {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase"
+                  ? "there are no fees."
+                  : "the transfer may be free or have a fee. Please check your CEX's website."}
+              </div>
+            </div>
+
+            {/*--- Will I lose money from flucuating rates? ---*/}
+            <div className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""} faqContainer`}>
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "lose" ? setExpand("") : setExpand("lose");
+                }}
+              >
+                <div className="faqQuestionFont">Will I lose from fluctuating rates?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "lose" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "lose" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                On average, you will not lose money from fluctuating USDC to {paymentSettingsState.merchantCurrency} rates (in fact, you might earn a little). During payment, our
+                interface alters the USDC to fiat rate by 0.3% in favor of the business. This additional 0.3% that businesses earn is sufficient to buffer against losses due to
+                fluctuating rates.
+              </div>
+            </div>
+
+            {/*--- What is the USDC to fiat rate? ---*/}
+            <div className="faqContainer">
+              {/*--- question ---*/}
+              <div
+                className="flex items-center"
+                onClick={() => {
+                  expand == "rate" ? setExpand("") : setExpand("rate");
+                }}
+              >
+                <div className="faqQuestionFont">What is the USDC to {paymentSettingsState.merchantCurrency} rate?</div>
+                <div className="relative ml-2 w-[20px] h-[20px]">
+                  <div className={`${expand == "rate" ? "rotate-[90deg]" : ""} faqLine1`}></div>
+                  <div className="faqLine2"></div>
+                </div>
+              </div>
+              {/*--- answer ---*/}
+              <div className={`${expand == "rate" ? "max-h-[500px]" : "max-h-[0px]"} overflow-hidden transition-all duration-[500ms] textBase`}>
+                {paymentSettingsState.merchantCurrency == "USD"
+                  ? "USDC is converted to USD at a 1:1 rate with no fees."
+                  : `USDC is converted to ${paymentSettingsState.merchantCurrency} on ${
+                      cashoutSettingsState.cex == "Other CEX" ? "your CEX" : cashoutSettingsState.cex
+                    }, which usually offers a better rate than the USD to ${paymentSettingsState.merchantCurrency} rate at any bank.`}
               </div>
             </div>
           </div>
