@@ -283,7 +283,6 @@ const User = () => {
   // reason this is not in newuser component is because web3auth context already used here, don't want to use in another component
   const createNewUser = async () => {
     console.log("creating new user");
-    setPage("intro");
     // set merchantCountry, merchantCurrency, and cex
     try {
       const res = await axios.get("https://api.country.is");
@@ -311,6 +310,7 @@ const User = () => {
       console.log("new user created, doc:", doc);
       setPaymentSettingsState(doc.paymentSettings);
       setCashoutSettingsState(doc.cashoutSettings);
+      setPage("intro");
     } catch (error) {
       console.log("request to createUser api failed");
       setPage("login");
