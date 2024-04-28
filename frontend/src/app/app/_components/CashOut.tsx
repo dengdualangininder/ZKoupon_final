@@ -140,7 +140,7 @@ const CashOut = ({
   useEffect(() => {
     let totalCurrencyAmount = 0;
     let totalTokenAmount = 0;
-    if (transactionsState) {
+    if (transactionsState?.length) {
       for (const txn of transactionsState) {
         totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
         totalTokenAmount = totalTokenAmount + Number(txn.tokenAmount);

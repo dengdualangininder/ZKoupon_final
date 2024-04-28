@@ -262,7 +262,7 @@ const Payments = ({
   return (
     <section className="w-full flex flex-col items-center">
       {/*--- Table or "no payments" ---*/}
-      {transactionsState.length > 1 ? (
+      {transactionsState.length ? (
         <div className="w-full overflow-y-auto">
           <div className="landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] portrait:h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] flex justify-center select-none">
             <table
