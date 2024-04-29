@@ -133,7 +133,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
         <div className="mt-8 h-[50%] min-h-[250px] landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10">
           {/*--- FOR OWNERS ---*/}
           {userType == "owners" && (
-            <div className="w-full flex flex-col space-y-4 portrait:sm:space-y-8 landscape:lg:space-y-6 portrait:lg:space-y-8 landscape:xl:space-y-8">
+            <div className="w-full flex flex-col space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-6 portrait:lg:space-y-8 landscape:xl:space-y-8">
               {/*--- connectors: google, apple, line, phantom, metamask ---*/}
               {myConnectors.map<any>((i: any) => (
                 <div
