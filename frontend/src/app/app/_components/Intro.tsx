@@ -95,7 +95,7 @@ const Intro = ({
         setErrorModal(true);
       }
     };
-    // saveSettings();
+    saveSettings();
   }, [save]);
 
   const onClickSIWC = async () => {
