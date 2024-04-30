@@ -1,13 +1,18 @@
 "use client";
+// nextjs
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpFromBracket, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
-import { QRCodeSVG } from "qrcode.react";
+import { useRouter } from "next/navigation";
+// other
+import { v4 as uuidv4 } from "uuid";
+// components
+import Flow from "./Flow";
+import Flow2 from "./Flow2";
 import ErrorModal from "./modals/ErrorModal";
+// constants
 import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
+// types
+import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
 const Intro = ({
   paymentSettingsState,
@@ -36,12 +41,14 @@ const Intro = ({
   const [errorModal, setErrorModal] = useState(false);
   const [url, setUrl] = useState("");
   const [save, setSave] = useState(false);
-
   const [qrWidth, setQrWidth] = useState(0);
   const [monthlyRevenue, setMonthlyRevenue] = useState(20000);
   const [dailyTxn, setDailyTxn] = useState(100);
   const [feePercentage, setFeePercentage] = useState(0.027);
   const [feePerTxn, setFeePerTxn] = useState(0.1);
+
+  // hooks
+  const router = useRouter();
 
   useEffect(() => {
     // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
@@ -88,15 +95,24 @@ const Intro = ({
         setErrorModal(true);
       }
     };
-    saveSettings();
+    // saveSettings();
   }, [save]);
 
+  const onClickSIWC = async () => {
+    const cbRandomSecure = uuidv4() + "SUBSTATEfromIntro";
+    window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
+    const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
+    router.push(
+      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:buys:create,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read`
+    );
+  };
+
   return (
-    <div className="w-full h-screen flex items-center justify-center">
+    <div className="w-full h-screen flex items-center justify-center bg-[#F6F9FC]">
       <div className="w-full portrait:max-w-[500px] portrait:sm:max-w-none h-full flex justify-center items-center">
         {/*--- welcome ---*/}
         {step == "welcome" && (
-          <div className="introFont landscape:w-[350px] landscape:lg:w-[540px] portrait:w-[88%] portrait:sm:w-[540px] h-full portrait:sm:h-[90%] flex flex-col items-center">
+          <div className="introFontXl portrait:w-[88%] landscape:w-[350px] portrait:sm:w-[540px] landscape:lg:w-[540px] h-full portrait:sm:h-[90%] flex flex-col items-center">
             {/*--- content ---*/}
             <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-6 landscape:lg:space-y-24 portrait:space-y-16 portrait:sm:space-y-24">
               <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
@@ -119,7 +135,7 @@ const Intro = ({
         )}
         {/*--- how1 ---*/}
         {step == "how1" && (
-          <div className="w-full h-full flex portrait:flex-col introFont">
+          <div className="w-full h-full flex portrait:flex-col">
             {/*--- image ---*/}
             <div className="relative landscape:w-[50%] portrait:w-full landscape:h-[100%] portrait:h-[50%]">
               <Image
@@ -132,24 +148,27 @@ const Intro = ({
               />
             </div>
             {/*--- content + buttons---*/}
-            <div className="landscape:w-[50%] portrait:w-full portrait:h-[50%] flex justify-center ">
+            <div className="landscape:w-[50%] portrait:w-full portrait:h-[50%] introFontXl flex justify-center">
               <div className="w-[88%] sm:w-[92%] h-full flex flex-col items-center">
                 {/*--- content, targetHeight ---*/}
-                <div className="landscape:h-[80%] portrait:h-[calc(35/50*100%)] flex flex-col justify-center space-y-4 md:space-y-8 overflow-y-auto">
-                  <div>
-                    Customers pay you by scanning a QR code with their mobile camera and then entering the amount of {paymentSettingsState?.merchantCurrency ?? "USD"} for payment.
+                <div className="mt-4 md:mt-8 landscape:h-[80%] portrait:h-[calc(35/50*100%)] flex flex-col space-y-4 md:space-y-8 overflow-y-auto">
+                  <div className="relative">
+                    First, you print out and display a QR code. To pay, the customer scans your QR code, which will open their{" "}
+                    <span className="group">
+                      <span className="link">MetaMask App</span>
+                      <div className="w-full top-[calc(100%-32px)] left-0 tooltipIntro">MetaMask is used by 50+ million crypto users worldwide to send and receive tokens.</div>
+                    </span>
+                    . The customer will then enter the amount of {paymentSettingsState?.merchantCurrency} for payment.
                   </div>
                   <div className="relative">
                     <span className="group">
                       <span className="link">USDC tokens</span>
-                      <div className="bottom-[calc(100%+8px)] left-0 tooltipIntro">1 USDC token equals to 1 USD, as gauranteed by Circle</div>
+                      <div className="bottom-[calc(100%+8px)] left-0 tooltipIntro">
+                        USDC is a secure stablecoin used by almost every crypto user. 1 USDC token equals to 1 USD, as gauranteed by Circle.
+                      </div>
                     </span>{" "}
-                    equal in value to the amount of EUR entered will be sent from the customer's{" "}
-                    <span className="group">
-                      <span className="link">MetaMask</span>
-                      <div className="bottom-[calc(100%+8px)] left-0 tooltipIntro">MetaMask is an App that is used by 50+ million people worldwide to send and receive crypto</div>
-                    </span>{" "}
-                    to your Flash account (with 0% fees).
+                    equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered will be be sent to
+                    your Flash account.
                   </div>
                 </div>
                 {/*--- buttons ---*/}
@@ -200,37 +219,57 @@ const Intro = ({
               </button>
             </div>
           </div> */}
-        {/*--- HOW IT WORKS, 2 of 2 ---*/}
+        {/*--- how2 ---*/}
         {step == "how2" && (
-          <div className="introFont introPageContainer">
-            {/*--- content ---*/}
-            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-5 landscape:lg:space-y-10 portrait:space-y-12">
-              {/* <div className="flex text-base space-x-3">
-                <div>Customer</div>
-                <div className="relative">
-                  &#10230;<div className="absolute w-[50px] text-center text-xs font-bold bottom-[calc(100%-4px)] right-[calc(50%-25px)]">USDC</div>
+          <div className="introPageContainer">
+            <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
+            {/*--- TEXT ---*/}
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center text-xl portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed">
+              {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
+                <div>
+                  {paymentSettingsState.merchantCurrency == "USD" && (
+                    <div className="space-y-3">
+                      <div>To cash out to your bank, you will need a Coinbase account in order to convert USDC to USD (at 1:1 rate with no fees).</div>
+                      <div>You can link your Coinbase account to the Flash App, and conveniently transfer all customer payments to your bank with just a few clicks.</div>
+                      <div>
+                        There is a ~0.10 USDC fee when you transfer USDC to Coinbase. Flash does not charge any other fee over the entire payment flow (from the customer to your
+                        bank).
+                      </div>
+                    </div>
+                  )}
+                  {paymentSettingsState.merchantCurrency != "USD" && (
+                    <div className="space-y-3">
+                      <div>
+                        To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. To do this, we recommend getting a Coinbase account.
+                      </div>
+                      <div>In the Flash App, you can link your Coinbase account and cash out to your bank in just a few clicks.</div>
+                      <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
+                      <div>Flash charges zero fees over the entire payments flow. We do not make profit by giving suboptimal exchange rates.</div>
+                    </div>
+                  )}
                 </div>
-                <div>Flash</div>
-                <div className="relative">
-                  &#10230;<div className="absolute w-[50px] text-center text-xs font-bold bottom-[calc(100%-4px)] right-[calc(50%-25px)]">USDC</div>
+              )}
+              {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex != "Coinbase" && (
+                <div className="space-y-3">
+                  <div>
+                    To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. You can easily do this on {cashoutSettingsState.cex}{" "}
+                    Exchange.
+                  </div>
+                  <div>In you don't have a {cashoutSettingsState.cex} account, don't worry about it for now.</div>
+                  <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
+                  <div>Flash charges zero fees over the entire payments flow. No profits are made from exchange rates, so you are always gauranteed market rates.</div>
                 </div>
-                <div>Coinbase</div>
-                <div className="relative">
-                  &#10230;<div className="absolute w-[50px] text-center text-xs font-bold bottom-[calc(100%-4px)] right-[calc(50%-25px)]">EUR</div>
+              )}
+              {paymentSettingsState.merchantCountry == "Any country" && (
+                <div className="space-y-3">
+                  <div>
+                    To cash out to your bank, you will need to convert USDC to fiat on a cryptocurrency exchange. Ensure that you are allowed to withdraw fiat from the exchange you
+                    sign up for.
+                  </div>
+                  <div>In the Flash App, you can transfer USDC tokens (fee of ~0.10 USDC) to your cryptocurrency exchange with a few easy clicks.</div>
+                  <div>Flash charges no other fees over the entire payments flow. We do not make profit by giving suboptimal exchange rates.</div>
                 </div>
-                <div>Bank</div>
-              </div> */}
-              <div>
-                Cashing out from Flash to your bank costs {cashoutSettingsState.cex == "Coinbase" ? "~$0.10 per transfer" : "~$0.50 per transfer"}. Funds will appear in ~24 hours.
-              </div>
-              <div>
-                When you cash out, the USDC in your Flash account is converted to {paymentSettingsState.merchantCurrency} on{" "}
-                {cashoutSettingsState.cex == "Coinbase" ? "Coinbase" : "a cryptocurrency exchange"}. Flash is designed in such a way that you will not lose money from fluctuating
-                exchange rates.
-              </div>
-              <div>
-                To cash out, you will need a {cashoutSettingsState.cex == "Other CEX" ? "CEX" : cashoutSettingsState.cex} account. If you don't have one, don't worry about it now.
-              </div>
+              )}
             </div>
             {/*--- buttons ---*/}
             <div className="w-full h-[15%] sm:h-[20%] flex justify-between items-center">
@@ -245,7 +284,7 @@ const Intro = ({
         )}
         {/*--- name ---*/}
         {step == "name" && (
-          <div className="introFontLarge introPageContainer">
+          <div className="introFont3xl introPageContainer">
             {/*--- content ---*/}
             <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-8 landscape:lg:space-y-16 portrait:space-y-16">
               <div className="">Now, let's create your QR code. It'll only take 15 seconds.</div>
@@ -273,7 +312,7 @@ const Intro = ({
         )}
         {/*--- currency ---*/}
         {step == "currency" && (
-          <div className="introFontLarge introPageContainer">
+          <div className="introFont3xl introPageContainer">
             {/*--- content ---*/}
             <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-6 landscape:lg:space-y-16 portrait:sm:space-y-16">
               <div>Confirm (or select) your country / currency:</div>
@@ -282,7 +321,7 @@ const Intro = ({
                   onChange={(e) => {
                     const merchantCountryTemp = e.target.value.split(" / ")[0];
                     const merchantCurrencyTemp = e.target.value.split(" / ")[1];
-                    const cexTemp = countryData[merchantCountryTemp].CEXes[0];
+                    const cexTemp = merchantCountryTemp == "Any country" ? "" : countryData[merchantCountryTemp].CEXes[0];
                     setPaymentSettingsState({
                       ...paymentSettingsState,
                       merchantCountry: merchantCountryTemp,
@@ -313,7 +352,7 @@ const Intro = ({
         )}
         {/*--- email ---*/}
         {step == "email" && (
-          <div className="introFontLarge introPageContainer">
+          <div className="introFont3xl introPageContainer">
             {/*--- content ---*/}
             <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-8 landscape:lg:space-y-16 portrait:sm:space-y-16">
               <div>Confirm (or edit) your email:</div>
@@ -321,7 +360,7 @@ const Intro = ({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantEmail}
-                className="introFont sm:introFontLarge w-full max-w-[590px] border-b-2 outline-none font-bold"
+                className="introFontXl sm:introFont3xl w-full border-b-2 outline-none font-bold"
               ></input>
             </div>
             {/*--- buttons ---*/}
@@ -337,7 +376,7 @@ const Intro = ({
         )}
         {/*--- emailSent ---*/}
         {step == "emailSent" && (
-          <div className="introFontLarge introPageContainer">
+          <div className="introFont3xl introPageContainer">
             {/*--- content ---*/}
             <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
               <div>Your QR code was successfully created!</div>
@@ -353,9 +392,9 @@ const Intro = ({
             {/* <div>
                 <input
                   defaultValue={paymentSettingsState.merchantEmail}
-                  className="introFont w-full h-[54px] border-2 p-2 rounded-md outline-none placeholder:italic font-bold"
+                  className="introFontXl w-full h-[54px] border-2 p-2 rounded-md outline-none placeholder:italic font-bold"
                 ></input>
-                <button className="mt-4 w-full h-[54px] text-white font-medium bg-blue-500 introFont rounded-[4px]">Send Email</button>
+                <button className="mt-4 w-full h-[54px] text-white font-medium bg-blue-500 introFontXl rounded-[4px]">Send Email</button>
               </div> */}
 
             {/*--- buttons ---*/}
@@ -369,19 +408,21 @@ const Intro = ({
             </div>
           </div>
         )}
-        {/*--- link ---*/}
-        {step == "link" && (
-          <div className=" landscape:introFont landscape:lg:introFontLarge portrait:introFontLarge introPageContainer">
+        {/*--- link (if coinbase && not "Any country") ---*/}
+        {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
+          <div className="portrait:introFont3xl landscape:introFontXl landscape:lg:introFont3xl introPageContainer">
             {/*--- content ---*/}
-            <div className="w-full h-[85%] flex flex-col justify-center sm:h-[80%]">
-              <div className="flex flex-col items-center portrait:space-y-5 portrait:sm:space-y-16 landscape:space-y-8 landscape:lg:space-y-12 overflow-y-auto">
-                <div className="w-full">To transfer funds to your bank, you must link a cryptocurrency exchange to Flash.</div>
-                <div className="w-full">We recommend Coinbase, as they offer low fees and strong security.</div>
-                <button className="px-8 py-3 text-white font-medium bg-blue-500 border-2 border-blue-500 introFont rounded-full">Link Your Coinbase</button>
-                <div className="pt-3 w-full introFont leading-relaxed">
+            <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center overflow-y-auto">
+              <div className="flex flex-col items-center space-y-8 portrait:sm:space-y-16 landscape:lg:space-y-12">
+                <div className="">
+                  To transfer funds to your bank, you must link a cryptocurrency exchange to Flash. We recommend Coinbase, as they offer low fees and strong security.
+                </div>
+                <button onClick={onClickSIWC} className="introFontXl px-8 py-3 text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full">
+                  Link Your Coinbase
+                </button>
+                <div className="pt-3 w-full textXl leading-relaxed">
                   Don't have a Coinbase account? Skip this step and sign up for one later. You can link it in the Flash App at any time.
                 </div>
-                {/* <button className="mt-4 w-full h-[54px] text-gray-500 font-medium bg-white border-2 border-gray-500 introFont rounded-[4px]">Create Coinbase Account</button> */}
               </div>
             </div>
             {/*--- buttons ---*/}
@@ -390,17 +431,50 @@ const Intro = ({
                 Back
               </button>
               <button className="introNext" onClick={() => setStep("final")}>
-                Next
+                Skip
+              </button>
+            </div>
+          </div>
+        )}
+        {/*--- link (if not coinbase or if "Any country") ---*/}
+        {step == "link" && (paymentSettingsState.merchantCountry == "Any country" || cashoutSettingsState.cex != "Coinbase") && (
+          <div className="portrait:introFont2xl landscape:introFontXl landscape:lg:introFont2xl portrait:lg:introFont3xl introPageContainer">
+            {/*--- content ---*/}
+            <div className="w-full h-[85%] flex flex-col justify-center sm:h-[80%]">
+              <div className="flex flex-col items-center portrait:space-y-5 portrait:sm:space-y-16 landscape:space-y-8 landscape:lg:space-y-12 overflow-y-auto">
+                <div className="w-full space-y-6">
+                  <div>Enter the USDC (Polygon) deposit address of your cryptocurrency exchange account:</div>
+                  <input
+                    onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
+                    onBlur={() => setSave(!save)}
+                    value={cashoutSettingsState.cexEvmAddress}
+                    className="w-full portrait:text-[13px] landscape:text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl border-b-2 outline-none placeholder:text-lg md:placeholder:text-2xl lg:placeholder:text-3xl xs:font-medium"
+                    placeholder="Enter address here"
+                  ></input>
+                </div>
+                <div className="pt-3 w-full leading-relaxed">If you don't have one now, you can skip this step and add it later.</div>
+                <div className="pt-3 w-full leading-relaxed">The address is used to allow easy transfer of USDC from Flash to your cryptocurrency exchange.</div>
+              </div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="w-full h-[15%] sm:h-[20%] flex justify-between items-center">
+              <button className="introBack" onClick={() => setStep("emailSent")}>
+                Back
+              </button>
+              <button className="introNext" onClick={() => setStep("final")}>
+                Skip
               </button>
             </div>
           </div>
         )}
         {step == "final" && (
-          <div className="introFontLarge introPageContainer">
+          <div className="introFont3xl introPageContainer">
             {/*--- content ---*/}
             <div className="w-full h-[85%] sm:h-[80%] flex flex-col justify-center space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
               <p>Your Flash account is ready!</p>
-              <div>If you have questions, read to the FAQs under Settings or contact us.</div>
+              <div>
+                If you have questions, read to the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
+              </div>
             </div>
             {/*--- buttons ---*/}
             <div className="w-full h-[15%] sm:h-[20%] flex justify-between items-center">

@@ -597,8 +597,8 @@ const Settings = ({
             <span className="group">
               <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
               <div className="w-full left-0 bottom-[100%] tooltip text-black">
-                When filled, your business will be added to stablecoinmap.com, which is a map of places that accept crypto payments and allows crypto users to more easily find your
-                business.
+                Search for the "Google Place ID Finder" website. Find your Google Place ID and paste it here. When filled, your business will be added to stablecoinmap.com, which
+                is a map of places that accept crypto payments and allows crypto users to more easily find your business.
               </div>
             </span>
           </label>

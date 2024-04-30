@@ -269,6 +269,10 @@
     @apply w-full text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-700 active:opacity-50;
   }
 
+  .introPageContainer {
+    @apply w-[88%] portrait:sm:w-[590px] landscape:lg:w-[630px] portrait:lg:w-[630px] h-full portrait:sm:h-[90%] flex flex-col items-center;
+  }
+
   .introNext {
     @apply mr-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:lg:w-[140px] landscape:lg:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:lg:text-3xl portrait:sm:text-3xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
@@ -277,16 +281,20 @@
     @apply ml-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:lg:w-[140px] landscape:lg:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:lg:text-3xl portrait:sm:text-3xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
-  .introFont {
-    @apply text-xl landscape:lg:text-3xl landscape:lg:leading-relaxed portrait:sm:text-3xl portrait:sm:leading-relaxed;
+  .introFontLg {
+    @apply landscape:text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:lg:leading-relaxed portrait:sm:leading-relaxed;
   }
 
-  .introFontLarge {
+  .introFontXl {
+    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl portrait:lg:text-4xl landscape:xl:text-4xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
+  }
+
+  .introFont2xl {
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:leading-relaxed portrait:sm:leading-relaxed;
+  }
+
+  .introFont3xl {
     @apply text-3xl leading-relaxed landscape:lg:text-4xl landscape:lg:leading-[56px] portrait:sm:text-4xl portrait:sm:leading-[56px];
-  }
-
-  .introPageContainer {
-    @apply w-[88%] portrait:sm:w-[590px] landscape:lg:w-[630px] h-full portrait:sm:h-[90%] flex flex-col items-center;
   }
 
   /* ----UNUSED---- */
@@ -405,5 +413,13 @@
   }
   .animation-delay-4000 {
     animation-delay: 4s;
+  }
+
+  .flash {
+    width: 28px;
+    height: 55px;
+    border: 3px solid black;
+    background: white;
+    clip-path: polygon(87% 0%, 52% 44%, 100% 44%, 13% 100%, 48% 56%, 0% 56%);
   }
 }

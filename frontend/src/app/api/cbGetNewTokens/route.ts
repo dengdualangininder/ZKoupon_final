@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const POST = async (request: Request) => {
-  console.log("cbGetNewTokens api");
+  console.log("entered cbGetNewTokens api");
   const { code } = await request.json();
 
   try {
@@ -15,6 +15,6 @@ export const POST = async (request: Request) => {
     const { refresh_token, access_token } = res.data;
     return Response.json({ cbRefreshToken: refresh_token, cbAccessToken: access_token });
   } catch (err) {
-    return Response.json("error getting cb tokens");
+    return Response.json("failed getting cbTokens");
   }
 };

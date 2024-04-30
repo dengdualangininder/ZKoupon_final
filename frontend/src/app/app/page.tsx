@@ -2,7 +2,6 @@
 // nextjs
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
@@ -22,7 +21,6 @@ import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
-
 // import PullToRefresh from "pulltorefreshjs";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
@@ -30,20 +28,17 @@ import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserM
 const User = () => {
   console.log("/app, page.tsx rendered once");
 
-  // in case if someone needs to redirect to /app page with specific menu tab
-  const searchParams = useSearchParams();
-  const menuTemp = searchParams.get("menu");
-
   // db values
   const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>();
   const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>();
   const [transactionsState, setTransactionsState] = useState<Transaction[]>([]);
   // states
-  const [menu, setMenu] = useState(menuTemp ?? "payments"); // "payments" | "cashOut" | "settings"
+  const [menu, setMenu] = useState("payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" (default) | "login" | "saveToHome" | "intro" | "app"
   // modals
   const [signOutModal, setSignOutModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
+  const [coinbaseIntroModal, setCoinbaseIntroModal] = useState(false);
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
@@ -90,6 +85,8 @@ const User = () => {
   // useEffect ends and web3Auth even lsitener will log "connecting", and then "connected". /app will then be rendered twice (why??) but useEffect is not run
   // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
   useEffect(() => {
+    // setPage("intro");
+    // return;
     console.log("/app, page.tsx, useEffect run once");
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
@@ -227,7 +224,17 @@ const User = () => {
           setTransactionsState(data.doc.transactions);
           setIsAdmin(true);
           subscribePusher(data.doc.paymentSettings.merchantEvmAddress);
-          setPage("app"); // starthere
+          // check if redirected from Coinbase
+          const cbRandomSecure = window.sessionStorage.getItem("cbRandomSecure");
+          if (cbRandomSecure) {
+            console.log("substate logic");
+            const substate = cbRandomSecure.split("SUBSTATE")[1];
+            console.log("substate", substate);
+            substate == "cashOut" ? setMenu("cashOut") : null;
+            substate == "fromIntro" ? setCoinbaseIntroModal(true) : null;
+            window.sessionStorage.removeItem("cbRandomSecure");
+          }
+          setPage("intro"); // starthere
         }
         // if new user
         if (data == "create new user") {
@@ -335,7 +342,7 @@ const User = () => {
                     <div className="relative w-[340px] h-[50px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
                       <Image src="/loadingCircleBlack.svg" alt="loading" fill />
                     </div>
-                    <div className="mt-4 font-medium textLg2 text-black">Loading profile...</div>
+                    <div className="mt-4 font-medium textLg2 text-black">Loading...</div>
                   </div>
                 </div>
                 <div className="invisible text-center leading-relaxed">
@@ -500,6 +507,25 @@ const User = () => {
                 </div>
               </div>
               <div className="modalBlackout" onClick={() => setSignOutModal(false)}></div>
+            </div>
+          )}
+          {/*---coinbaseIntroModal---*/}
+          {coinbaseIntroModal && (
+            <div>
+              <div className="modal">
+                {/*---content---*/}
+                <div className="grow flex flex-col justify-center space-y-6 text-start">
+                  <p>Your Flash account is ready!</p>
+                  <div>
+                    If you have questions, read to the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
+                  </div>
+                </div>
+                {/*--- buttons ---*/}
+                <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonWhite">
+                  Close
+                </button>
+              </div>
+              <div className="modalBlackout" onClick={() => setCoinbaseIntroModal(false)}></div>
             </div>
           )}
         </div>

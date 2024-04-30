@@ -74,6 +74,7 @@ const CashOut = ({
     currentRate: 0,
     cashoutRate: 0,
   });
+
   // hooks
   const router = useRouter();
   const account = useAccount();
@@ -169,7 +170,7 @@ const CashOut = ({
   }, []);
 
   const onClickSIWC = async () => {
-    const cbRandomSecure = uuidv4();
+    const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
     router.push(

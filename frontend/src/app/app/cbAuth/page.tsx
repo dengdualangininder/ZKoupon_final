@@ -32,7 +32,7 @@ const cbAuth = () => {
             return;
           }
         }
-        // if not successful, remove items from local storage
+        // if not successful, remove items from storage
         window.sessionStorage.removeItem("cbRandomSecure");
         window.sessionStorage.removeItem("cbAccessToken");
         window.localStorage.removeItem("cbRefreshToken");
