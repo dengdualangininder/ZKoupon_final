@@ -354,9 +354,7 @@ const User = () => {
               </div>
               {/*--- buttons ---*/}
               <div className="invisible introButtonContainer justify-end">
-                <button className="introNext" onClick={() => setStep("how1")}>
-                  Start
-                </button>
+                <button className="introNext">Start</button>
               </div>
             </div>
           </div>
