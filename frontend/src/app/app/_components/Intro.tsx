@@ -153,7 +153,7 @@ const Intro = ({
             {/*--- text + buttons---*/}
             <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto">
               {/*--- text ---*/}
-              <div className="flex-1 portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 w-[92%] flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
                 <div className="w-full">First, you print and display a QR code.</div>
                 <div className="relative">
                   To pay, the customer scans your QR code, which will open their{" "}
@@ -177,7 +177,7 @@ const Intro = ({
                 </div>
               </div>
               {/*--- buttons ---*/}
-              <div className="pt-4 w-[88%] h-[108px] portrait:sm:h-[160px] landscape:lg:h-[160px] portrait:sm:w-[590px] portrait:lg:w-[630px] landscape:lg:w-[80%] flex justify-between flex-none bg-red-300">
+              <div className="introButtonContainer">
                 <button className="introBack" onClick={() => setStep("welcome")}>
                   Back
                 </button>
@@ -233,7 +233,7 @@ const Intro = ({
               <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
             </div>
             {/*--- text + button ---*/}
-            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto">
+            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto bg-gray-300">
               {/*--- text ---*/}
               <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
                 {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
@@ -281,7 +281,7 @@ const Intro = ({
                 )}
               </div>
               {/*--- buttons ---*/}
-              <div className="pt-4 w-[88%] h-[108px] portrait:sm:h-[160px] landscape:lg:h-[160px] portrait:sm:w-[590px] portrait:lg:w-[630px] landscape:lg:w-[80%] flex justify-between flex-none bg-red-300">
+              <div className="introButtonContainer">
                 <button className="introBack" onClick={() => setStep("how1")}>
                   Back
                 </button>

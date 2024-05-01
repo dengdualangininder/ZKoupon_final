@@ -286,7 +286,7 @@
   }
 
   .introButtonContainer {
-    @apply flex-none pt-4 introWidth portrait:h-[108px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
+    @apply flex-none pt-4 w-[85%] landscape:lg:w-[630px] portrait:lg:w-[630px] portrait:h-[116px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
   }
 
   .introNext {
