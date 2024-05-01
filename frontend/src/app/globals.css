@@ -46,7 +46,7 @@
   }
 
   .textLg {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl;
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg;
   }
 
   .textXl {
@@ -70,7 +70,7 @@
   }
 
   .textBase2 {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl;
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg;
   }
 
   .textLg2 {
@@ -286,7 +286,7 @@
   }
 
   .introButtonContainer {
-    @apply flex-none pt-4 w-[85%] landscape:lg:w-[630px] portrait:lg:w-[630px] portrait:h-[116px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
+    @apply flex-none pt-4 w-[82%] landscape:lg:w-[630px] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
   }
 
   .introNext {
@@ -298,11 +298,11 @@
   }
 
   .introTooltip {
-    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed invisible group-hover:visible absolute px-4 py-3 portrait:sm:px-6 portrait:sm:py-3 landscape:lg:px-6 landscape:lg:py-3 font-normal bg-gray-800 text-white rounded-lg z-[1];
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed invisible group-hover:visible absolute px-4 py-3 portrait:sm:px-6 portrait:sm:py-3 landscape:lg:px-6 landscape:lg:py-3 font-normal bg-gray-800 text-white rounded-lg z-[1];
   }
 
   .introFontHowTo {
-    @apply portrait:text-xl landscape:text-xl portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-relaxed landscape:leading-normal portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
+    @apply portrait:text-xl landscape:text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:desktop:text-2xl portrait:leading-relaxed landscape:leading-normal portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:lg:desktop:leading-relaxed;
   }
 
   .introFontButton {

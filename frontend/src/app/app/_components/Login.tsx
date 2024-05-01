@@ -101,19 +101,19 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
 
   return (
     <div className="w-full h-screen py-8 textLg flex justify-center overflow-y-auto">
-      <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] portrait:lg:w-[430px] landscape:xl:w-[430px] h-full">
+      <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] portrait:lg:w-[430px] landscape:xl:w-[430px] landscape:xl:desktop:w-[360px] h-full">
         {/*--- HEADER + MENU BAR ---*/}
         <div className="w-full h-[40%] min-h-[240px] landscape:lg:min-h-[300px] flex flex-col justify-end landscape:space-y-8 landscape:md:space-y-10 landscape:lg:space-y-12 portrait:space-y-12 portrait:sm:space-y-20">
           {/*--- logo ---*/}
           <div className="w-full flex flex-col items-center">
-            <div className="relative w-full h-[90px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:h-[110px] mr-1">
+            <div className="relative w-full h-[90px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:h-[110px] landscape:xl:desktop:h-[90px] mr-1">
               <Image src="/logo.svg" alt="logo" fill />
             </div>
           </div>
           {/*--- subheader ---*/}
           <div className="pb-2 textBase2 font-medium text-center">Fast global payments with 0% fees</div>
           {/*--- menu bar ---*/}
-          <div className="w-full h-[50px] portrait:sm:h-[60px] landscape:lg:h-[60px] portrait:lg:h-[64px] landscape:xl:h-[64px] flex justify-center font-medium bg-gray-200 rounded-full flex-none">
+          <div className="w-full h-[50px] portrait:sm:h-[60px] landscape:lg:h-[60px] portrait:lg:h-[64px] landscape:xl:h-[64px] landscape:xl:desktop:h-[50px] flex justify-center font-medium bg-gray-200 rounded-full flex-none">
             <div
               className={`${userType == "owners" ? "bg-blue-500 text-white" : ""} w-[50%] h-full cursor-pointer flex items-center justify-center rounded-full`}
               onClick={() => setUserType("owners")}
@@ -130,7 +130,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
         </div>
 
         {/*--- content below MENU ---*/}
-        <div className="mt-8 h-[50%] min-h-[250px] landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10">
+        <div className="mt-8 h-[50%] min-h-[250px] landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10 landscape:xl:desktop:text-base">
           {/*--- FOR OWNERS ---*/}
           {userType == "owners" && (
             <div className="w-full flex flex-col space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-6 portrait:lg:space-y-8 landscape:xl:space-y-8">
@@ -138,7 +138,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
               {myConnectors.map<any>((i: any) => (
                 <div
                   key={i.name}
-                  className="w-full h-[60px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                  className="w-full h-[60px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] landscape:xl:desktop:h-[60px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                   onClick={async () => {
                     console.log("login page, clicked connect, set page to Loading");
                     setPage("loading");
@@ -163,7 +163,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 <div className="font-medium">Email</div>
                 <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
                 {/*--password---*/}
-                <div className="mt-4 landscape:md:mt-4 landscape:lg:mt-6 portrait:sm:mt-6 font-medium">Password</div>
+                <div className="mt-4 portrait:sm:mt-6 landscape:lg:mt-6 landscape:xl:desktop:mt-3 font-medium">Password</div>
                 <div className="w-full relative">
                   <input
                     type={show ? "text" : "password"}
@@ -184,10 +184,10 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                   </div>
                 </div>
                 {/*--sign in button---*/}
-                <div className="mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 flex justify-center">
+                <div className="mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 flex justify-center">
                   <button
                     type="submit"
-                    className="w-full h-[56px] landscape:md:h-[64px] portrait:sm:h-[64px] text-white font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-[4px]"
+                    className="w-full h-[56px] landscape:md:h-[64px] portrait:sm:h-[64px] landscape:xl:desktop:h-[56px] text-white font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-[4px]"
                     onClick={employeeSubmit}
                   >
                     Sign in
@@ -195,7 +195,7 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                 </div>
               </div>
               <div
-                className="landscape:mt-8 portrait:mt-12 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link"
+                className="landscape:mt-8 portrait:mt-12 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link landscape:xl:desktop:text-base"
                 onClick={() => {
                   setForgotModal(true);
                   setModalState("initial");

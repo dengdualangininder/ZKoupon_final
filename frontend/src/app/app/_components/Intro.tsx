@@ -115,11 +115,13 @@ const Intro = ({
           <div className="w-full h-full flex flex-col items-center overflow-y-auto">
             {/*--- text ---*/}
             <div className="introTextContainer1">
-              <div className="introTextContainer2 portrait:space-y-16 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-20">
-                <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
+              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-16 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
+                <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] landscape:lg:desktop:h-[100px] mr-1">
                   <Image src="/logo.svg" alt="logo" fill />
                 </div>
-                <div className="text-3xl portrait:sm:text-4xl landscape:lg:text-4xl font-bold text-center animate-fadeInAnimation">Welcome to Flash!</div>
+                <div className="text-3xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:lg:desktop:text-3xl font-bold text-center animate-fadeInAnimation">
+                  Welcome to Flash!
+                </div>
                 <div className="introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
                   Let us give you a quick
                   <br />
@@ -140,7 +142,7 @@ const Intro = ({
         {step == "how1" && (
           <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
             {/*--- image ---*/}
-            <div className="relative portrait:w-[100vw] portrait:h-[100vw] portrait:xs:h-[calc(100vw*(3/4))] landscape:w-[50%] landscape:h-[100%] flex-none">
+            <div className="relative portrait:w-[100vw] portrait:h-[calc(100vw*(3/4))] landscape:w-[50%] landscape:h-[100%] flex-none">
               <Image
                 src="/intro-scan.png"
                 alt="scan"
@@ -151,9 +153,9 @@ const Intro = ({
               />
             </div>
             {/*--- text + buttons---*/}
-            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto">
+            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
               {/*--- text ---*/}
-              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+              <div className="flex-1 w-[92%] portrait:xs:w-[85%] portrait:lg:w-[700px] flex flex-col items-center landscape:xl:justify-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
                 <div className="w-full">First, you print and display a QR code.</div>
                 <div className="relative">
                   To pay, the customer scans your QR code, which will open their{" "}
@@ -177,7 +179,7 @@ const Intro = ({
                 </div>
               </div>
               {/*--- buttons ---*/}
-              <div className="introButtonContainer">
+              <div className="flex-none pt-4 w-[82%] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between">
                 <button className="introBack" onClick={() => setStep("welcome")}>
                   Back
                 </button>
@@ -229,13 +231,13 @@ const Intro = ({
         {step == "how2" && (
           <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
             {/*--- animation ---*/}
-            <div className="portrait:w-full landscape:w-[50%] landscape:h-full flex items-center justify-center flex-none">
+            <div className="portrait:w-full landscape:w-[50%] portrait:h-[35%] portrait:min-h-[300px] portrait:sm:min-h-[400px] landscape:h-full flex items-center justify-center flex-none">
               <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
             </div>
             {/*--- text + button ---*/}
-            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto bg-gray-300">
+            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
               {/*--- text ---*/}
-              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] flex flex-col items-center landscape:xl:justify-center introFontHowTo landscape:pt-4 landscape:lg:pt-8">
                 {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
                   <div className="flex flex-col items-center">
                     {paymentSettingsState.merchantCurrency == "USD" && (
@@ -281,7 +283,7 @@ const Intro = ({
                 )}
               </div>
               {/*--- buttons ---*/}
-              <div className="introButtonContainer">
+              <div className="flex-none pt-4 w-[82%] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between">
                 <button className="introBack" onClick={() => setStep("how1")}>
                   Back
                 </button>
@@ -433,15 +435,15 @@ const Intro = ({
 
         {/*--- link (if coinbase && not "Any country") ---*/}
         {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="introPageContainer overflow-y-auto portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
+          <div className="introPageContainer overflow-y-auto portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
             {/*--- content ---*/}
             <div className="introTextContainer1">
-              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-8 landscape:space-y-4 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:lg:desktop:space-y-4">
+              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-8 landscape:space-y-4 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:lg:desktop:space-y-8">
                 <div className="w-full">If you have a Coinbase account, you can link it to the Flash App now.</div>
                 <div>By linking it, you can transfer customer payments from Flash to your bank with just a few easy clicks!</div>
                 <button
                   onClick={onClickSIWC}
-                  className="px-8 py-3 portrait:sm:px-8 portrait:sm:py-4 landscape:lg:px-8 landscape:lg:py-4 landscape:lg:desktop:py-3 portrait:text-lg landscape:text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:lg:desktop:text-xl text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full"
+                  className="px-8 py-3 portrait:sm:px-8 portrait:sm:py-4 landscape:lg:px-8 landscape:lg:py-4 landscape:lg:desktop:py-2 portrait:text-lg landscape:text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:lg:desktop:text-lg text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full"
                 >
                   Link Your Coinbase
                 </button>
