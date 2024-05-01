@@ -108,7 +108,7 @@ const Intro = ({
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-grayblue">
+    <div className="w-full h-screen flex items-center justify-center bg-white">
       <div className="w-full portrait:max-w-[500px] portrait:sm:max-w-none h-full flex justify-center items-center">
         {/*--- welcome ---*/}
         {step == "welcome" && (
@@ -321,7 +321,7 @@ const Intro = ({
                     onBlur={() => setSave(!save)}
                     value={paymentSettingsState.merchantName}
                     placeholder="type name here"
-                    className="mt-4 w-full border-b-2 outline-none placeholder:italic placeholder:font-normal font-bold bg-grayblue"
+                    className="mt-4 w-full border-b-2 outline-none placeholder:italic placeholder:font-normal font-bold bg-white"
                   ></input>
                 </div>
               </div>
@@ -360,7 +360,7 @@ const Intro = ({
                       setSave(!save);
                     }}
                     value={paymentSettingsState.merchantCountry + " / " + paymentSettingsState.merchantCurrency}
-                    className="px-2 border-b-2 outline-none font-bold bg-grayblue"
+                    className="px-2 border-b-2 outline-none font-bold bg-white"
                   >
                     {countryCurrencyList.map((i, index) => (
                       <option key={index}>{i}</option>
@@ -392,7 +392,7 @@ const Intro = ({
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
                   value={paymentSettingsState.merchantEmail}
-                  className="introFontXl sm:introFont3xl w-full border-b-2 outline-none font-bold bg-grayblue"
+                  className="introFontXl sm:introFont3xl w-full border-b-2 outline-none font-bold bg-white"
                 ></input>
               </div>
             </div>
@@ -487,7 +487,7 @@ const Intro = ({
                     onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
                     onBlur={() => setSave(!save)}
                     value={cashoutSettingsState.cexEvmAddress}
-                    className="w-full portrait:text-[13px] landscape:text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl border-b-2 outline-none placeholder:text-lg placeholder:portrait:sm:text-2xl placeholder:landscape:lg:text-2xl xs:font-medium bg-grayblue"
+                    className="w-full portrait:text-[13px] landscape:text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl border-b-2 outline-none placeholder:text-lg placeholder:portrait:sm:text-2xl placeholder:landscape:lg:text-2xl xs:font-medium bg-white"
                     placeholder="Enter address here"
                   ></input>
                 </div>

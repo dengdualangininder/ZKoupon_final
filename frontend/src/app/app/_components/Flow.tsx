@@ -54,7 +54,7 @@ const Flow = ({ paymentSettingsState, cashoutSettingsState }: { paymentSettingsS
       <div></div>
       {/*--- arrow down---*/}
       <div className="h-[80px] relative flex items-center justify-center z-[0]">
-        <div className="absolute top-[-80px] w-[2px] h-[80px] bg-black animate-arrowDown"></div>
+        <div className="absolute top-[-79px] w-[2px] h-[78px] bg-black animate-arrowDown"></div>
         <div className="absolute left-[50px] pt-2 animate-usdc2">USDC</div>
       </div>
       {/*--- THIRD ROW ---*/}
@@ -78,7 +78,7 @@ const Flow = ({ paymentSettingsState, cashoutSettingsState }: { paymentSettingsS
       </div>
       {/*--- arrow left ---*/}
       <div className="h-[80px] relative flex items-center justify-center z-[0]">
-        <div className="absolute right-[-80px] w-[80px] h-[2px] bg-black animate-arrowLeft"></div>
+        <div className="absolute right-[-79px] w-[78px] h-[2px] bg-black animate-arrowLeft"></div>
         <div className="absolute w-full pb-6 animate-fiat">{paymentSettingsState.merchantCurrency}</div>
       </div>
       {/*--- cex ---*/}

@@ -327,33 +327,36 @@ const User = () => {
   return (
     <div className="pl-[calc(100vw-100%)] text-black">
       {page === "loading" && (
-        <div className="w-full h-screen flex items-center justify-center text-transparent">
+        <div className="w-full h-screen flex items-center justify-center">
+          <div className="w-full absolute flex flex-col items-center">
+            <div className="w-[340px] h-[50px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
+              <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+            </div>
+            <div className="mt-4 font-medium textLg">Loading...</div>
+          </div>
           <div className="w-full h-full flex justify-center items-center">
             {/*--- welcome ---*/}
-            <div className="introFont w-full h-full portrait:sm:h-[90%] flex flex-col items-center">
+            <div className="introPageContainer">
               {/*--- content ---*/}
-              <div className="w-full h-[85%] sm:h-[80%] flex flex-col items-center justify-center landscape:space-y-6 landscape:lg:space-y-24 portrait:space-y-16 portrait:sm:space-y-24">
-                <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
-                  <Image src="/logo.svg" alt="logo" fill />
-                </div>
-                <div className="w-full text-3xl landscape:lg:text-5xl portrait:sm:text-5xl font-bold text-center relative">
-                  XXX
-                  <div className="absolute top-0 left-0 w-full flex flex-col items-center">
-                    <div className="relative w-[340px] h-[50px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
-                      <Image src="/loadingCircleBlack.svg" alt="loading" fill />
-                    </div>
-                    <div className="mt-4 font-medium textLg2 text-black">Loading...</div>
+              <div className="introTextContainer1">
+                <div className="introTextContainer2 portrait:space-y-16 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-20">
+                  <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
+                    <Image src="/logo.svg" alt="logo" fill />
                   </div>
-                </div>
-                <div className="invisible text-center leading-relaxed">
-                  XXX
-                  <br />
-                  XXX
+
+                  <div className="invisible text-3xl portrait:sm:text-4xl landscape:lg:text-4xl font-bold text-center animate-fadeInAnimation">Welcome to Flash!</div>
+                  <div className="invisible introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
+                    Let us give you a quick
+                    <br />
+                    introduction of how it works
+                  </div>
                 </div>
               </div>
               {/*--- buttons ---*/}
-              <div className="invisible w-full h-[15%] sm:h-[20%]">
-                <button className="">XXX</button>
+              <div className="invisible introButtonContainer justify-end">
+                <button className="introNext" onClick={() => setStep("how1")}>
+                  Start
+                </button>
               </div>
             </div>
           </div>

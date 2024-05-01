@@ -1,8 +1,9 @@
 // afterning signing into Coinbase, it will redirect to this URL
 "use client";
+// nextjs
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 
 const cbAuth = () => {
   const router = useRouter();
@@ -43,8 +44,10 @@ const cbAuth = () => {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
-      <SpinningCircleGrayLarge />
-      <div className="mt-2">Connecting to Coinbase...</div>
+      <div className="w-[340px] h-[50px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
+        <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+      </div>
+      <div className="mt-4">Connecting To Coinbase...</div>
     </div>
   );
 };

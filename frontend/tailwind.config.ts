@@ -72,48 +72,48 @@ module.exports = {
       keyframes: {
         metamaskBox: {
           "27%, 93%": {
-            "background-color": "#F6F9FC",
+            "background-color": "white",
             filter: "drop-shadow(0px 0px 0px #ffffff)",
             transform: "scale(1)",
           },
           "100%, 0%, 20%": {
-            "background-color": "white",
+            "background-color": "#F6F9FC",
             filter: "drop-shadow(6px 6px 6px #d1d5db)",
             transform: "scale(1.2)",
           },
         },
         flashBox: {
           "0%, 7%, 52%, 100%": {
-            "background-color": "#F6F9FC",
+            "background-color": "white",
             filter: "drop-shadow(0px 0px 0px #ffffff)",
             transform: "scale(1)",
           },
           "14%, 45%": {
-            "background-color": "white",
+            "background-color": "#F6F9FC",
             filter: "drop-shadow(6px 6px 6px #d1d5db)",
             transform: "scale(1.2)",
           },
         },
         cexBox: {
           "0%, 32%, 77%, 100%": {
-            "background-color": "#F6F9FC",
+            "background-color": "white",
             filter: "drop-shadow(0px 0px 0px #ffffff)",
             transform: "scale(1)",
           },
           "39%, 70%": {
-            "background-color": "white",
+            "background-color": "#F6F9FC",
             filter: "drop-shadow(6px 6px 6px #d1d5db)",
             transform: "scale(1.2)",
           },
         },
         bankBox: {
           "91%, 0%, 57%, 100%": {
-            "background-color": "#F6F9FC",
+            "background-color": "white",
             filter: "drop-shadow(0px 0px 0px #ffffff)",
             transform: "scale(1)",
           },
           "64%, 84%": {
-            "background-color": "white",
+            "background-color": "#F6F9FC",
             filter: "drop-shadow(6px 6px 6px #d1d5db)",
             transform: "scale(1.2)",
           },
@@ -265,34 +265,43 @@ module.exports = {
         arrowRight: {
           "0%": {
             translate: "0px 0px",
+            opacity: "1",
           },
           "7%, 18%": {
             translate: "80px 0px",
+            opacity: "1",
           },
           "25%, 100%": {
             translate: "160px 0px",
+            opacity: "0",
           },
         },
         arrowDown: {
           "0%, 25%": {
             translate: "0px 0px",
+            opacity: "1",
           },
           "32%, 43%": {
             translate: "0px 80px",
+            opacity: "1",
           },
           "50%, 100%": {
             translate: "0px 160px",
+            opacity: "0",
           },
         },
         arrowLeft: {
           "0%, 50%": {
             translate: "0px 0px",
+            opacity: "1",
           },
           "57%, 68%": {
             translate: "-80px 0px",
+            opacity: "1",
           },
           "75%, 100%": {
             translate: "-160px 0px",
+            opacity: "0",
           },
         },
         usdc1: {
