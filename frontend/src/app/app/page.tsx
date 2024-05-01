@@ -329,7 +329,7 @@ const User = () => {
       {page === "loading" && (
         <div className="w-full h-screen flex items-center justify-center">
           <div className="w-full absolute flex flex-col items-center">
-            <div className="w-[340px] h-[50px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
+            <div className="w-[340px] h-[80px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
               <Image src="/loadingCircleBlack.svg" alt="loading" fill />
             </div>
             <div className="mt-4 font-medium textLg">Loading...</div>

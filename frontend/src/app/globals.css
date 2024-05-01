@@ -278,15 +278,15 @@
   }
 
   .introTextContainer1 {
-    @apply w-full portrait:h-[85%] landscape:h-[80%] py-4 flex flex-col items-center overflow-y-auto;
+    @apply flex-1 introWidth py-4 flex flex-col items-center;
   }
 
   .introTextContainer2 {
-    @apply introWidth flex flex-col items-center my-auto;
+    @apply my-auto;
   }
 
   .introButtonContainer {
-    @apply flex-none pt-4 introWidth portrait:h-[15%] landscape:h-[20%] min-h-[100px] flex justify-between;
+    @apply flex-none pt-4 introWidth portrait:h-[108px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
   }
 
   .introNext {
@@ -298,11 +298,11 @@
   }
 
   .introTooltip {
-    @apply invisible group-hover:visible absolute px-3 py-2 portrait:sm:px-6 portrait:sm:py-3 landscape:lg:px-6 landscape:lg:py-3 font-normal bg-gray-800 text-white rounded-lg z-[1] text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed;
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed invisible group-hover:visible absolute px-4 py-3 portrait:sm:px-6 portrait:sm:py-3 landscape:lg:px-6 landscape:lg:py-3 font-normal bg-gray-800 text-white rounded-lg z-[1];
   }
 
   .introFontHowTo {
-    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
+    @apply portrait:text-xl landscape:text-xl portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-relaxed landscape:leading-normal portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
   }
 
   .introFontButton {

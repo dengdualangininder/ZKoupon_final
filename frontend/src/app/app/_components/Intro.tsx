@@ -10,7 +10,7 @@ import Flow from "./Flow";
 import Flow2 from "./Flow2";
 import ErrorModal from "./modals/ErrorModal";
 // constants
-import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
+import { countryData, countryCurrencyList, currency2number, merchantType2data } from "@/utils/constants";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
@@ -112,8 +112,8 @@ const Intro = ({
       <div className="w-full portrait:max-w-[500px] portrait:sm:max-w-none h-full flex justify-center items-center">
         {/*--- welcome ---*/}
         {step == "welcome" && (
-          <div className="introPageContainer">
-            {/*--- content ---*/}
+          <div className="w-full h-full flex flex-col items-center overflow-y-auto">
+            {/*--- text ---*/}
             <div className="introTextContainer1">
               <div className="introTextContainer2 portrait:space-y-16 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-20">
                 <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
@@ -138,9 +138,9 @@ const Intro = ({
 
         {/*--- how1 ---*/}
         {step == "how1" && (
-          <div className="w-full h-full flex portrait:flex-col">
+          <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
             {/*--- image ---*/}
-            <div className="relative landscape:w-[50%] portrait:w-full landscape:h-[100%] portrait:h-[50%]">
+            <div className="relative portrait:w-[100vw] portrait:h-[100vw] portrait:xs:h-[calc(100vw*(3/4))] landscape:w-[50%] landscape:h-[100%] flex-none">
               <Image
                 src="/intro-scan.png"
                 alt="scan"
@@ -150,34 +150,34 @@ const Intro = ({
                 }}
               />
             </div>
-            {/*--- content + buttons---*/}
-            <div className="flex-none landscape:w-[50%] portrait:w-full portrait:h-[50%] landscape:h-full flex flex-col items-center">
-              {/*--- content ---*/}
-              <div className="portrait:h-[calc(35/50*100%)] landscape:h-[80%] py-4 flex flex-col items-center overflow-y-auto introFontHowTo">
-                <div className="w-[90%] portrait:sm:w-[600px] portrait:lg:w-[700px] flex flex-col space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 my-auto">
-                  <div>First, you print and display a QR code.</div>
-                  <div className="relative">
-                    To pay, the customer scans your QR code, which will open their{" "}
-                    <span className="group">
-                      <span className="link">MetaMask App</span>
-                      <div className="w-full top-[calc(100%-32px)] left-0 introTooltip">MetaMask is used by 50+ million crypto users worldwide to send and receive tokens.</div>
-                    </span>
-                    . The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment.
-                  </div>
-                  <div className="relative">
-                    <span className="group">
-                      <span className="link">USDC tokens</span>
-                      <div className="bottom-[calc(100%+8px)] left-0 introTooltip">
-                        USDC is a secure stablecoin used by almost all crypto users. 1 USDC equals to 1 USD, as gauranteed by Circle.
-                      </div>
-                    </span>{" "}
-                    equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered will be be sent to
-                    your Flash App.
-                  </div>
+            {/*--- text + buttons---*/}
+            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto">
+              {/*--- text ---*/}
+              <div className="flex-1 portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 w-[92%] flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                <div className="w-full">First, you print and display a QR code.</div>
+                <div className="relative">
+                  To pay, the customer scans your QR code, which will open their{" "}
+                  <span className="group">
+                    <span className="link">MetaMask App</span>
+                    <div className="w-full top-[calc(100%-32px)] left-0 introTooltip">
+                      MetaMask is currently the most popular App to send and receive tokens. It is used by 50+ million people worldwide.
+                    </div>
+                  </span>
+                  . The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment.
+                </div>
+                <div className="relative">
+                  <span className="group">
+                    <span className="link">USDC tokens</span>
+                    <div className="bottom-[calc(100%+8px)] left-0 introTooltip">
+                      USDC is a secure stablecoin used by almost all crypto users. 1 USDC equals to 1 USD, as gauranteed by Circle.
+                    </div>
+                  </span>{" "}
+                  equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered will be be sent to
+                  your Flash App.
                 </div>
               </div>
               {/*--- buttons ---*/}
-              <div className="pt-4 w-[88%] portrait:sm:w-[590px] portrait:lg:w-[630px] landscape:lg:w-[80%] portrait:h-[30%] landscape:h-[20%] min-h-[100px] flex justify-between flex-none">
+              <div className="pt-4 w-[88%] h-[108px] portrait:sm:h-[160px] landscape:lg:h-[160px] portrait:sm:w-[590px] portrait:lg:w-[630px] landscape:lg:w-[80%] flex justify-between flex-none bg-red-300">
                 <button className="introBack" onClick={() => setStep("welcome")}>
                   Back
                 </button>
@@ -227,81 +227,67 @@ const Intro = ({
 
         {/*--- how2 ---*/}
         {step == "how2" && (
-          <div className=" w-full h-full flex flex-col">
-            {/*--- content ---*/}
-            <div className="w-full portrait:h-[85%] landscape:h-[80%] flex flex-col items-center py-4 overflow-y-auto">
-              <div className="w-full flex portrait:flex-col portrait:h-full portrait:justify-evenly my-auto portrait:space-y-6">
-                {/*--- animation ---*/}
-                <div className="portrait:w-full landscape:w-[50%] landscape:h-full flex items-center justify-center">
-                  <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
-                </div>
-                {/*--- text ---*/}
-                <div className="portrait:w-full landscape:w-[50%] landscape:h-full flex flex-col items-center introFontHowTo">
-                  <div className="w-[90%] portrait:sm:w-[600px] portrait:lg:w-[700px] flex flex-col items-center">
-                    {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-                      <div className="flex flex-col items-center">
-                        {paymentSettingsState.merchantCurrency == "USD" && (
-                          <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
-                            <div>To cash out to your bank, you will need a Coinbase account in order to convert USDC to USD (at 1:1 rate with no fees).</div>
-                            <div>You can link your Coinbase account to the Flash App, and conveniently transfer all customer payments to your bank with just a few clicks.</div>
-                            <div>
-                              There is a ~0.10 USDC fee when you transfer USDC to Coinbase. Flash does not charge any other fee over the entire payment flow (from the customer to
-                              your bank).
-                            </div>
-                          </div>
-                        )}
-                        {paymentSettingsState.merchantCurrency != "USD" && (
-                          <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
-                            <div>
-                              To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. To do this, we recommend getting a Coinbase
-                              account.
-                            </div>
-                            <div>In the Flash App, you can link your Coinbase account and cash out to your bank in just a few clicks.</div>
-                            <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
-                            <div className="landscape:hidden">Flash charges zero fees over the entire payments flow. We do not profit by giving suboptimal exchange rates.</div>
-                          </div>
-                        )}
+          <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
+            {/*--- animation ---*/}
+            <div className="portrait:w-full landscape:w-[50%] landscape:h-full flex items-center justify-center flex-none">
+              <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
+            </div>
+            {/*--- text + button ---*/}
+            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto">
+              {/*--- text ---*/}
+              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] py-4 flex flex-col items-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
+                  <div className="flex flex-col items-center">
+                    {paymentSettingsState.merchantCurrency == "USD" && (
+                      <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
+                        <div>To cash out to your bank, you will need a Coinbase account in order to convert USDC to USD (at 1:1 rate with no fees).</div>
+                        <div>You can link your Coinbase account to the Flash App, and conveniently transfer all customer payments to your bank with just a few clicks.</div>
+                        <div>Flash does not charge any fees over the entire payment flow (from the customer to your bank).</div>
                       </div>
                     )}
-                    {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex != "Coinbase" && (
-                      <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                    {paymentSettingsState.merchantCurrency != "USD" && (
+                      <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
                         <div>
-                          To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. You can easily do this on {cashoutSettingsState.cex}{" "}
-                          Exchange.
+                          To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. To do this, you will need a Coinbase account. If you
+                          don't have one, please register an account.
                         </div>
-                        <div>In you don't have a {cashoutSettingsState.cex} account, don't worry about it for now.</div>
-                        <div>
-                          Flash is designed in such a way that you will not lose money from fluctuating exchange rates. If a customer pays 20{" "}
-                          {paymentSettingsState.merchantCurrency}, you should receive at least 20 {paymentSettingsState.merchantCurrency}.
-                        </div>
-                        <div>Flash charges zero fees over the entire payments flow. We do not profit by giving suboptimal exchange rates.</div>
-                      </div>
-                    )}
-                    {paymentSettingsState.merchantCountry == "Any country" && (
-                      <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
-                        <div>
-                          To cash out to your bank, you will need to convert USDC to fiat on a cryptocurrency exchange. Ensure that you are allowed to withdraw fiat from the
-                          exchange you sign up for.
-                        </div>
-                        <div>In the Flash App, you can easily transfer USDC to your cryptocurrency exchange with just a few easy clicks.</div>
-                        <div>Flash charges no fees over the entire payments flow. We do not make profit by giving suboptimal exchange rates.</div>
+                        <div>In the Flash App, you can link your Coinbase account and cash out to your bank in just a few clicks.</div>
+                        <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
+                        <div className="hidden">Flash charges zero fees over the entire payments flow. We do not profit by giving suboptimal exchange rates.</div>
                       </div>
                     )}
                   </div>
-                </div>
+                )}
+                {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex != "Coinbase" && (
+                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                    <div>
+                      To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. You can easily do this on {cashoutSettingsState.cex}{" "}
+                      Exchange. In you don't have a {cashoutSettingsState.cex} account, please sign up for one later.
+                    </div>
+                    <div>In the App, we will show you how to convert USDC to {paymentSettingsState.merchantCurrency}</div>
+                    <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
+                    <div className="hidden">Flash charges zero fees over the entire payments flow. We do not profit by giving suboptimal exchange rates.</div>
+                  </div>
+                )}
+                {paymentSettingsState.merchantCountry == "Any country" && (
+                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                    <div>
+                      To cash out to your bank, you will need to convert USDC to fiat on a cryptocurrency exchange (CEX). Please sign up for a CEX that allows you to withdraw fiat
+                      to your bank.
+                    </div>
+                    <div>In the Flash App, you can easily transfer USDC to your cryptocurrency exchange with just a few easy clicks.</div>
+                    <div className="">Flash charges no fees over the entire payments flow. We do not make profit by giving suboptimal exchange rates.</div>
+                  </div>
+                )}
               </div>
-            </div>
-            {/*--- buttons ---*/}
-            <div className="w-full portrait:h-[15%] landscape:h-[20%] min-h-[100px] flex justify-end flex-none">
-              <div className="portrait:w-full landscape:w-[50%] flex justify-center">
-                <div className="pt-4 w-[88%] portrait:sm:w-[590px] landscape:lg:w-[80%] portrait:lg:w-[630px] flex justify-between">
-                  <button className="introBack" onClick={() => setStep("how1")}>
-                    Back
-                  </button>
-                  <button className="introNext" onClick={() => setStep("name")}>
-                    Next
-                  </button>
-                </div>
+              {/*--- buttons ---*/}
+              <div className="pt-4 w-[88%] h-[108px] portrait:sm:h-[160px] landscape:lg:h-[160px] portrait:sm:w-[590px] portrait:lg:w-[630px] landscape:lg:w-[80%] flex justify-between flex-none bg-red-300">
+                <button className="introBack" onClick={() => setStep("how1")}>
+                  Back
+                </button>
+                <button className="introNext" onClick={() => setStep("name")}>
+                  Next
+                </button>
               </div>
             </div>
           </div>
@@ -447,21 +433,19 @@ const Intro = ({
 
         {/*--- link (if coinbase && not "Any country") ---*/}
         {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="introPageContainer portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
+          <div className="introPageContainer overflow-y-auto portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
             {/*--- content ---*/}
             <div className="introTextContainer1">
-              <div className="introTextContainer2 portrait:space-y-8 landscape:space-y-4 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:lg:desktop:space-y-4">
+              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-8 landscape:space-y-4 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:lg:desktop:space-y-4">
                 <div className="w-full">If you have a Coinbase account, you can link it to the Flash App now.</div>
-                <div className="w-full">By linking it, you can transfer customer payments from Flash to your bank with just a few easy clicks!</div>
+                <div>By linking it, you can transfer customer payments from Flash to your bank with just a few easy clicks!</div>
                 <button
                   onClick={onClickSIWC}
                   className="px-8 py-3 portrait:sm:px-8 portrait:sm:py-4 landscape:lg:px-8 landscape:lg:py-4 landscape:lg:desktop:py-3 portrait:text-lg landscape:text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:lg:desktop:text-xl text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full"
                 >
                   Link Your Coinbase
                 </button>
-                <div className="pt-1">
-                  If you don't have a Coinbase account, you will need to register for one. You can link your Coinbase account in the Flash App at any time.
-                </div>
+                <div>If you don't have a Coinbase account, you will need to register for one. You can link your Coinbase account in the Flash App at any time.</div>
               </div>
             </div>
             {/*--- buttons ---*/}
