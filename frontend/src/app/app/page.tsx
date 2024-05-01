@@ -234,7 +234,7 @@ const User = () => {
             substate == "fromIntro" ? setCoinbaseIntroModal(true) : null;
             window.sessionStorage.removeItem("cbRandomSecure");
           }
-          setPage("app"); // starthere
+          setPage("intro"); // starthere
         }
         // if new user
         if (data == "create new user") {

@@ -113,10 +113,6 @@
     @apply invisible group-hover:visible absolute px-3 py-2 text-base portrait:sm:text-xl landscape:lg:text-xl leading-snug font-normal bg-gray-100 border border-blue-500 rounded-lg z-[1];
   }
 
-  .tooltipIntro {
-    @apply invisible group-hover:visible absolute px-3 py-2 font-normal leading-snug bg-gray-100 border border-blue-500 rounded-lg z-[1];
-  }
-
   .learnContainer {
     @apply py-4 border-b-2 border-gray-300;
   }
@@ -269,32 +265,64 @@
     @apply w-full text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-700 active:opacity-50;
   }
 
+  .introWidth {
+    @apply portrait:w-[88%] landscape:w-[600px] portrait:sm:w-[590px] landscape:lg:w-[630px] portrait:lg:w-[630px] landscape:lg:desktop:w-[540px];
+  }
+
+  .introWidthHowTo {
+    @apply w-[88%] landscape:lg:w-[630px] portrait:lg:w-[630px];
+  }
+
   .introPageContainer {
-    @apply w-[88%] portrait:sm:w-[590px] landscape:lg:w-[630px] portrait:lg:w-[630px] h-full portrait:sm:h-[90%] flex flex-col items-center;
+    @apply w-full h-full flex flex-col items-center;
+  }
+
+  .introTextContainer1 {
+    @apply w-full portrait:h-[85%] landscape:h-[80%] py-4 flex flex-col items-center overflow-y-auto;
+  }
+
+  .introTextContainer2 {
+    @apply introWidth flex flex-col items-center my-auto;
+  }
+
+  .introButtonContainer {
+    @apply flex-none pt-4 introWidth portrait:h-[15%] landscape:h-[20%] min-h-[100px] flex justify-between;
   }
 
   .introNext {
-    @apply mr-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:lg:w-[140px] landscape:lg:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:lg:text-3xl portrait:sm:text-3xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply mr-2 w-[110px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[110px] landscape:desktop:xl:h-[60px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-2xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introBack {
-    @apply ml-2 landscape:w-[90px] landscape:h-[44px] portrait:w-[100px] portrait:h-[60px] landscape:lg:w-[140px] landscape:lg:h-[80px] portrait:sm:w-[140px] portrait:sm:h-[80px] text-xl landscape:lg:text-3xl portrait:sm:text-3xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply ml-2 w-[110px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[110px] landscape:desktop:xl:h-[60px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-2xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
-  .introFontLg {
-    @apply landscape:text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:lg:leading-relaxed portrait:sm:leading-relaxed;
+  .introTooltip {
+    @apply invisible group-hover:visible absolute px-3 py-2 portrait:sm:px-6 portrait:sm:py-3 landscape:lg:px-6 landscape:lg:py-3 font-normal bg-gray-800 text-white rounded-lg z-[1] text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed;
+  }
+
+  .introFontHowTo {
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
+  }
+
+  .introFontButton {
+    @apply;
   }
 
   .introFontXl {
-    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl portrait:lg:text-4xl landscape:xl:text-4xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
+    @apply text-xl portrait:sm:text-2xl landscape:lg:text-3xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
   }
 
   .introFont2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:leading-relaxed portrait:sm:leading-relaxed;
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl leading-relaxed landscape:lg:leading-relaxed portrait:sm:leading-relaxed;
   }
 
   .introFont3xl {
-    @apply text-3xl leading-relaxed landscape:lg:text-4xl landscape:lg:leading-[56px] portrait:sm:text-4xl portrait:sm:leading-[56px];
+    @apply portrait:text-3xl landscape:text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:lg:desktop:text-3xl portrait:leading-relaxed landscape:lg:leading-[56px] portrait:sm:leading-[56px] landscape:lg:desktop:leading-relaxed;
+  }
+
+  .introFontXl2 {
+    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl portrait:lg:text-4xl landscape:xl:text-4xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
   }
 
   /* ----UNUSED---- */

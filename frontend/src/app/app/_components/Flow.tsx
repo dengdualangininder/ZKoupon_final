@@ -5,7 +5,7 @@ import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
 const Flow = ({ paymentSettingsState, cashoutSettingsState }: { paymentSettingsState: PaymentSettings; cashoutSettingsState: CashoutSettings }) => {
   return (
-    <div className="my-8 w-[240px] h-[240px] grid grid-cols-[80px_80px_80px] text-xs [font-weight:600] text-center flex-none">
+    <div className="w-[240px] h-[240px] grid grid-cols-[80px_80px_80px] text-xs [font-weight:600] text-center flex-none portrait:sm:scale-125 portrait:sm:my-10 landscape:lg:scale-150">
       {/*--- metamask ---*/}
       <div className="flex flex-col items-center z-[1]">
         <div className="w-[80px] h-[80px] flex items-center justify-center relative">

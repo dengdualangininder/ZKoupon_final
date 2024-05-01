@@ -21,6 +21,7 @@ module.exports = {
         1500: "1500ms",
       },
       colors: {
+        grayblue: "#F6F9FC",
         primary: "#DFE8F8",
         bggrayone: "#F5F5F7",
         darkblue: "#140D6F",
@@ -445,6 +446,9 @@ module.exports = {
           "backface-visibility": "hidden",
         },
       });
+    }),
+    plugin(function ({ addVariant }) {
+      addVariant("desktop", ["@media (hover: hover)", "@media (pointer: fine)"]);
     }),
   ],
 };
