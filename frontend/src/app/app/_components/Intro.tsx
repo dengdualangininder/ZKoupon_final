@@ -231,7 +231,7 @@ const Intro = ({
         {step == "how2" && (
           <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
             {/*--- animation ---*/}
-            <div className="portrait:w-full landscape:w-[50%] portrait:h-[35%] portrait:min-h-[300px] portrait:sm:min-h-[400px] landscape:h-full flex items-center justify-center flex-none">
+            <div className="portrait:w-full landscape:w-[50%] portrait:h-[340px] portrait:min-h-[300px] portrait:sm:min-h-[400px] landscape:h-full flex items-center justify-center flex-none">
               <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
             </div>
             {/*--- text + button ---*/}
@@ -242,43 +242,52 @@ const Intro = ({
                   <div className="flex flex-col items-center">
                     {paymentSettingsState.merchantCurrency == "USD" && (
                       <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
-                        <div>To cash out to your bank, you will need a Coinbase account in order to convert USDC to USD (at 1:1 rate with no fees).</div>
-                        <div>You can link your Coinbase account to the Flash App, and conveniently transfer all customer payments to your bank with just a few clicks.</div>
-                        <div>Flash does not charge any fees over the entire payment flow (from the customer to your bank).</div>
+                        <div>
+                          To cash out funds to your bank, you must link a Coinbase account to Flash. Once linked,{" "}
+                          <span className="font-bold">cashing out on Flash is just a few easy clicks</span>.
+                        </div>
+                        <div>
+                          When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency} at a 1:1 rate (no fees). Deposits are made via ACH (no
+                          fees).
+                        </div>
+                        <div>So, from the customer to your bank, you keep all the money (0% fees).</div>
                       </div>
                     )}
                     {paymentSettingsState.merchantCurrency != "USD" && (
                       <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
                         <div>
-                          To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. To do this, you will need a Coinbase account. If you
-                          don't have one, please register an account.
+                          To cash out funds to your bank, you must link a Coinbase account to Flash. Once linked,{" "}
+                          <span className="font-bold">cashing out on Flash is just a few easy clicks</span>.
                         </div>
-                        <div>In the Flash App, you can link your Coinbase account and cash out to your bank in just a few clicks.</div>
-                        <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
-                        <div className="hidden">Flash charges zero fees over the entire payments flow. We do not profit by giving suboptimal exchange rates.</div>
+                        <div>
+                          When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency}. But, Flash is designed so that you will not lose money
+                          from changing rates.
+                        </div>
+                        <div>Flash charges zero fees and does not profit by giving you suboptimal rates.</div>
                       </div>
                     )}
                   </div>
                 )}
                 {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex != "Coinbase" && (
-                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 textLg">
+                    <div>To cash out funds to your bank, you will need an account on {cashoutSettingsState.cex} Exchange (or other CEX).</div>
                     <div>
-                      To cash out to your bank, you will need to convert USDC to {paymentSettingsState.merchantCurrency}. You can easily do this on {cashoutSettingsState.cex}{" "}
-                      Exchange. In you don't have a {cashoutSettingsState.cex} account, please sign up for one later.
+                      To cash out, you first transfer USDC from Flash to {cashoutSettingsState.cex}. Then, on {cashoutSettingsState.cex}, you can convert USDC to{" "}
+                      {paymentSettingsState.merchantCurrency} and transfer funds to your bank. Detailed instructions will be in the App.
                     </div>
-                    <div>In the App, we will show you how to convert USDC to {paymentSettingsState.merchantCurrency}</div>
-                    <div>Flash is designed in such a way that you will not lose money from fluctuating exchange rates.</div>
-                    <div className="hidden">Flash charges zero fees over the entire payments flow. We do not profit by giving suboptimal exchange rates.</div>
+                    <div>Flash is designed so that you will not lose money from changing rates.</div>
+                    <div>Flash charges zero fees. We do not profit by giving suboptimal exchange rates.</div>
                   </div>
                 )}
                 {paymentSettingsState.merchantCountry == "Any country" && (
-                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6">
+                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 textLg">
+                    <div>To cash out funds to your bank, you will need a cryptocurrency exchange (CEX). Please use a CEX that allows fiat withdrawals.</div>
                     <div>
-                      To cash out to your bank, you will need to convert USDC to fiat on a cryptocurrency exchange (CEX). Please sign up for a CEX that allows you to withdraw fiat
-                      to your bank.
+                      To cash out, you first transfer USDC from Flash to your CEX. Then, on your CEX, you can convert USDC to fiat and transfer funds to your bank. Detailed
+                      instructions will be in the App.
                     </div>
-                    <div>In the Flash App, you can easily transfer USDC to your cryptocurrency exchange with just a few easy clicks.</div>
-                    <div className="">Flash charges no fees over the entire payments flow. We do not make profit by giving suboptimal exchange rates.</div>
+                    <div>Flash is designed so that you will not lose money from changing rates.</div>
+                    <div>Flash charges zero fees. We do not profit by giving suboptimal exchange rates.</div>
                   </div>
                 )}
               </div>
@@ -447,7 +456,7 @@ const Intro = ({
                 >
                   Link Your Coinbase
                 </button>
-                <div>If you don't have a Coinbase account, you will need to register for one. You can link your Coinbase account in the Flash App at any time.</div>
+                <div>If you don't have a Coinbase account, please register an account. You can link your Coinbase account in the Flash App later.</div>
               </div>
             </div>
             {/*--- buttons ---*/}
@@ -478,7 +487,13 @@ const Intro = ({
                   ></input>
                 </div>
                 <div className="pt-3 w-full leading-relaxed">The address is used to allow easy transfer of USDC from Flash to your cryptocurrency exchange.</div>
-                <div className="pt-3 w-full leading-relaxed">If you don't have one now, you can skip this step and add it later.</div>
+                {cashoutSettingsState.cex ? (
+                  <div className="pt-3 w-full leading-relaxed">
+                    If you don't have one, please register an account on {cashoutSettingsState.cex} Exchange. You can skip this step for now.
+                  </div>
+                ) : (
+                  <div>If you don't have one, please register an account on a cryptocurrency exchange. You can skip this step for now.</div>
+                )}
               </div>
             </div>
             {/*--- buttons ---*/}
@@ -487,7 +502,7 @@ const Intro = ({
                 Back
               </button>
               <button className="introNext" onClick={() => setStep("final")}>
-                Skip
+                {cashoutSettingsState.cexEvmAddress ? "Next" : "Skip"}
               </button>
             </div>
           </div>
