@@ -328,12 +328,15 @@ const User = () => {
     <div className="pl-[calc(100vw-100%)] text-black">
       {page === "loading" && (
         <div className="w-full h-screen flex items-center justify-center">
+          {/* LOADING */}
+
           <div className="w-full absolute flex flex-col items-center">
-            <div className="w-[340px] h-[80px] portrait:sm:h-[80px] landscape:lg:h-[80px] animate-spin">
+            <div className="w-[340px] h-[80px] portrait:sm:h-[100px] landscape:lg:h-[100px] animate-spin">
               <Image src="/loadingCircleBlack.svg" alt="loading" fill />
             </div>
-            <div className="mt-4 font-medium textLg">Loading...</div>
+            <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
           </div>
+
           <div className="w-full h-full flex justify-center items-center">
             {/*--- welcome ---*/}
             <div className="introPageContainer">

@@ -158,14 +158,14 @@ const Intro = ({
               <div className="flex-1 w-[92%] portrait:xs:w-[85%] portrait:lg:w-[700px] flex flex-col items-center landscape:xl:justify-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
                 <div className="w-full">First, you print and display a QR code.</div>
                 <div className="relative">
-                  To pay, the customer scans your QR code, which will open their{" "}
+                  When a customer scans your QR code, their{" "}
                   <span className="group">
                     <span className="link">MetaMask App</span>
                     <div className="w-full top-[calc(100%-32px)] left-0 introTooltip">
                       MetaMask is currently the most popular App to send and receive tokens. It is used by 50+ million people worldwide.
                     </div>
-                  </span>
-                  . The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment.
+                  </span>{" "}
+                  will open. The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment.
                 </div>
                 <div className="relative">
                   <span className="group">
@@ -374,7 +374,7 @@ const Intro = ({
           <div className="introPageContainer introFont3xl">
             {/*--- content ---*/}
             <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-8 landscape:lg:space-y-16 portrait:sm:space-y-16">
+              <div className="w-full introTextContainer2 space-y-8 landscape:lg:space-y-16 portrait:sm:space-y-16">
                 <div className="w-full">Confirm (or edit) your email:</div>
                 <input
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
