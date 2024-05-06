@@ -44,7 +44,7 @@ const Inperson = ({
   setTokenAmount: any;
 }) => {
   return (
-    <div className="w-full h-full max-h-[560px] flex flex-col items-center justify-between text-2xl font-medium">
+    <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between text-2xl font-medium">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
