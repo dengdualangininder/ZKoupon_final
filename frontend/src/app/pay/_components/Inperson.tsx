@@ -53,11 +53,11 @@ const Inperson = ({
       {/*---Pay To---*/}
       <div className="text-center">
         <div className="text-base text-gray-400">PAY TO</div>
-        <div className="mt-2 line-clamp-1">{urlParams.merchantName}</div>
+        <div className="mt-1 line-clamp-1">{urlParams.merchantName}</div>
       </div>
       {/*--- currency amount ---*/}
       <div className="flex justify-center items-center text-4xl relative">
-        <div className="absolute right-[calc(100%+8px)] font-normal">{currency2symbol[urlParams.merchantCurrency]}</div>
+        <div className="absolute right-[calc(100%+8px)] border-b border-transparent">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           id="payCurrencyAmount"
           onChange={(e) => {
@@ -150,7 +150,7 @@ const Inperson = ({
         </div>
 
         {/*---SEND BUTTON---*/}
-        <div className={`${currencyAmount ? "" : "invisible"} mt-6 mb-8 flex justify-center w-full`}>
+        <div className={`${currencyAmount ? "" : "invisible"} my-6 flex justify-center w-full`}>
           <button onClick={send} className="w-full h-[56px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
             PAY
           </button>

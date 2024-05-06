@@ -43,7 +43,7 @@ const Pay = () => {
   const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
   const [payModal, setPayModal] = useState(false);
-  const [payModalMsg, setPayModalMsg] = useState("Please confirm transaction on MetaMask...");
+  const [payModalMsg, setPayModalMsg] = useState("Sending transaction...");
   const [isSendingComplete, setIsSendingComplete] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -202,7 +202,6 @@ const Pay = () => {
 
   const send = async () => {
     setPayModal(true);
-    setPayModalMsg("Please confirm transaction on MetaMask...");
 
     if (isNaN(Number(currencyAmount)) || Number(currencyAmount) <= 0) {
       setPayModal(false);
@@ -237,15 +236,13 @@ const Pay = () => {
     let contract = new ethers.Contract(tokenAddresses[selectedNetwork][selectedToken]["address"], erc20ABI, signer);
     try {
       const txResponse = await contract.transfer(merchantEvmAddress, ethers.parseUnits(tokenAmount, tokenAddresses[selectedNetwork][selectedToken]["decimals"]));
-      setPayModalMsg("Sending transaction...");
       const txReceipt = await txResponse.wait();
-      setPayModalMsg("Notifying the business...");
       txn.txnHash = txReceipt.hash;
     } catch (err: any) {
       console.log(err);
       setPayModal(false);
       setErrorModal(true);
-      if (err.reason === "execution reverted: ERC20: transfer amount exceeds balance") {
+      if (err.reason == "ERC20: transfer amount exceeds balance") {
         setErrorMsg("Payment amount exceeds your wallet balance");
       } else if (err.info.error.code == 4001) {
         setErrorMsg("Transaction rejected");
@@ -286,15 +283,6 @@ const Pay = () => {
       setErrorModal(true);
       setErrorMsg("Payment was successful. But, the payment data could not be sent to the server.");
     }
-  };
-
-  const clickDown = () => {
-    document.getElementById("modalbg")?.classList.remove("bg-white");
-    document.getElementById("modalbg")?.classList.add("bg-green-400");
-  };
-  const clickUp = () => {
-    document.getElementById("modalbg")?.classList.remove("bg-green-400");
-    document.getElementById("modalbg")?.classList.add("bg-white");
   };
 
   return (
@@ -395,7 +383,7 @@ const Pay = () => {
           <div className="modal">
             {/*---content---*/}
             <div className="grow flex flex-col justify-center space-y-8">
-              <div className="text-3xl text-center text-gray-400 font-bold">Error</div>
+              <div className="text-3xl text-center font-medium">Error</div>
               <div className="text-center">{errorMsg}</div>
             </div>
             {/*---close button---*/}
@@ -410,30 +398,26 @@ const Pay = () => {
       {/*---pay modal---*/}
       {payModal && (
         <div className="">
-          <div
-            id="modalbg"
-            className="py-10 w-[330px] h-[450px] bg-white rounded-3xl border-2 border-gray-500 fixed inset-1/2 -translate-y-1/2 -translate-x-1/2 z-[10]"
-            onPointerDown={clickDown}
-            onPointerUp={clickUp}
-          >
+          <div className="modal h-[480px]">
             {isSendingComplete ? (
-              <div className="w-full h-full flex flex-col items-center justify-between text-gray-700">
+              <div className="w-full h-full flex flex-col items-center justify-between">
                 {/*---store name---*/}
                 <div className="w-full flex flex-col items-center relative">
-                  <div className="text-xl text-gray-400 font-medium">PAYMENT COMPLETED</div>
-                  <Lottie animationData={circleCheck} loop={true} className="absolute left-[calc(50%-60px)] top-[6px] w-[120px] h-[120px]" />
+                  <Lottie animationData={circleCheck} loop={true} className="w-[60px] h-[60px]" />
+                  <div className="mt-4 text-xl font-medium">Payment successfully sent to</div>
+                  <div className="text-xl font-bold">{urlParams.merchantName}</div>
                 </div>
                 {/*---amount and time---*/}
-                <div className="mt-10 flex flex-col items-center">
-                  <div className="text-6xl flex items-center">
-                    {merchantCurrency === "USD" ? "$" : ""}
+                <div className="flex flex-col items-center">
+                  <div className="text-5xl font-medium flex items-center">
+                    {currency2symbol[urlParams.merchantCurrency!]}
                     {currencyAmount}
-                    <span className="ml-2 pt-2 text-2xl">{merchantCurrency === "USD" ? "" : merchantCurrency}</span>
                   </div>
-                  <div className="mt-4 text-4xl">{new Date().toLocaleString([], { timeStyle: "short" })}</div>
                 </div>
+                <div className="mt-4 text-2xl font-medium">{new Date().toLocaleString([], { timeStyle: "short" })}</div>
+
                 {/*---close---*/}
-                <div
+                <button
                   onPointerDown={(e) => {
                     e.stopPropagation();
                   }}
@@ -442,14 +426,16 @@ const Pay = () => {
                     setIsSendingComplete(false);
                     location.reload(); // TODO: leaving a txn receipt on page isntead of resetting
                   }}
-                  className="flex justify-center items-center py-3 mb-6 text-xl rounded-full w-[200px] bg-white text-gray-500 border border-gray-200 active:bg-gray-200 font-medium tracking-wide drop-shadow-lg"
+                  className="modalButtonWhite"
                 >
                   CLOSE
-                </div>
+                </button>
               </div>
             ) : (
               <div className="w-full h-full px-6 flex flex-col justify-center items-center">
-                <SpinningCircleGray />
+                <div className="w-full h-[50px] animate-spin">
+                  <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+                </div>
                 <div className="mt-4 text-center text-xl leading-relaxed">{payModalMsg}</div>
               </div>
             )}
