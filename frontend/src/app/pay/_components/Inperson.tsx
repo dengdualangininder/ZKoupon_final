@@ -67,8 +67,8 @@ const Inperson = ({
           placeholder="Enter Amount"
         ></input>
       </div> */}
-      <div className="flex justify-center items-end bg-red-300 relative">
-        <div className="absolute right-[calc(100%+8px)] text-4xl font-normal">{currency2symbol[urlParams.merchantCurrency]}</div>
+      <div className="flex justify-center items-end text-3xl relative">
+        <div className="absolute right-[calc(100%+8px)] font-normal">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           onChange={(e) => {
             setCurrencyAmount(e.currentTarget.value);
@@ -78,7 +78,7 @@ const Inperson = ({
           inputMode="decimal"
           value={currencyAmount}
           placeholder="0.00"
-          className="text-4xl w-[170px] outline-none text-center border-b focus:placeholder:text-transparent"
+          className="w-[160px] outline-none text-center border-b focus:placeholder:text-transparent bg-white"
         ></input>
       </div>
 
@@ -109,7 +109,7 @@ const Inperson = ({
       {/*---AMOUNT SENT + SAVINGS---*/}
       <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- AMOUNT SENT ---*/}
-        <div className="flex text-center">
+        <div className="flex text-center text-lg font-bold">
           Sending {tokenAmount} {selectedToken}
         </div>
         {/*--- SAVINGS ---*/}
@@ -161,7 +161,7 @@ const Inperson = ({
 
       {/*---SEND BUTTON---*/}
       <div className={`${currencyAmount ? "" : "invisible"} mb-4 flex justify-center w-full`}>
-        <button onClick={send} className="w-full py-4 text-white bg-blue-500 active:opacity-50 rounded-xl">
+        <button onClick={send} className="w-full h-[60px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
           PAY
         </button>
       </div>
