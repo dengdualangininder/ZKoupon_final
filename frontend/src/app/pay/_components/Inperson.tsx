@@ -1,5 +1,6 @@
 //next
 import Image from "next/image";
+import { useState } from "react";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,47 +44,37 @@ const Inperson = ({
   tokenAmount: string;
   setTokenAmount: any;
 }) => {
+  const [digits, setDigits] = useState(5);
+
   return (
-    <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between text-2xl font-medium">
+    <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between text-3xl font-medium">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
-      <div className="w-full flex flex-col items-center">
-        <div className="text-base font-normal">PAY TO</div>
-        <div className="mt-2 font-medium line-clamp-1">{urlParams.merchantName}</div>
+      <div className="text-center">
+        <div className="text-lg text-gray-400">PAY TO</div>
+        <div className="mt-2 line-clamp-1">{urlParams.merchantName}</div>
       </div>
-
-      {/*---payment amount---*/}
-      {/* <div className="relative w-full h-[66px] flex items-center border-2 border-blue-500 rounded-xl bg-white">
-        <label className="w-[90px] border-r border-gray-400 text-center flex-none">{urlParams.merchantCurrency}</label>
-        <input
-          className="w-[calc(100%-90px-90px)] text-center outline-none bg-transparent focus:placeholder:invisible placeholder:font-medium placeholder:text-xl"
-          type="number"
-          inputMode="decimal"
-          value={currencyAmount}
-          onChange={(e) => {
-            setCurrencyAmount(e.currentTarget.value);
-            setTokenAmount(((Number(e.currentTarget.value) / rates.usdcToLocal) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]));
-            // setShowNetwork(true);
-          }}
-          placeholder="Enter Amount"
-        ></input>
-      </div> */}
-      <div className="flex justify-center items-end text-3xl relative">
+      {/*--- currency amount ---*/}
+      <div className="flex justify-center items-center text-5xl relative">
         <div className="absolute right-[calc(100%+8px)] font-normal">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
+          id="payCurrencyAmount"
           onChange={(e) => {
             setCurrencyAmount(e.currentTarget.value);
             setTokenAmount(((Number(e.currentTarget.value) / rates.usdcToLocal) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]));
+            setDigits(e.currentTarget.value.toString().length > 5 ? e.currentTarget.value.toString().length : 5);
+            console.log(e.currentTarget.value.toString().length);
+            // setShowNetwork(true);
           }}
           type="number"
           inputMode="decimal"
           value={currencyAmount}
           placeholder="0.00"
-          className="w-[160px] outline-none text-center border-b focus:placeholder:text-transparent bg-white"
+          className={`outline-none text-center border-b focus:placeholder:text-transparent bg-white`}
+          style={{ width: `${digits * 29}px` }}
         ></input>
       </div>
-
       {/*---select network---*/}
       {/* <div className={`${showNetwork ? "" : "invisible"} w-[340px] flex flex-col items-center`}>
         <div className="text-xl font-bold">Select a network:</div>
@@ -107,7 +98,6 @@ const Inperson = ({
           </div>
         ))}
       </div> */}
-
       {/*---AMOUNT SENT + SAVINGS---*/}
       <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- AMOUNT SENT ---*/}
@@ -159,13 +149,12 @@ const Inperson = ({
             <div></div>
           )}
         </div>
-      </div>
-
-      {/*---SEND BUTTON---*/}
-      <div className={`${currencyAmount ? "" : "invisible"} mb-8 flex justify-center w-full`}>
-        <button onClick={send} className="w-full h-[60px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
-          PAY
-        </button>
+        {/*---SEND BUTTON---*/}
+        <div className={`${currencyAmount ? "" : "invisible"} mt-3 mb-8 flex justify-center w-full`}>
+          <button onClick={send} className="w-full h-[56px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
+            PAY
+          </button>
+        </div>
       </div>
     </div>
   );

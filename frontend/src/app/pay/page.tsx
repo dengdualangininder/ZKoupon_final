@@ -299,8 +299,8 @@ const Pay = () => {
 
   return (
     <div className="w-full h-[100dvh] flex flex-col justify-center items-center">
-      {/*--- banner ---*/}
-      {/* <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
+      <div className="w-[340px] h-full flex flex-col">
+        {/* <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
         <a href={`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}`} target="_blank" className="flex items-center">
           <div className="relative h-[36px] w-[80px] mr-2">
             <Image src="/logo.svg" alt="logo" fill />
@@ -308,10 +308,8 @@ const Pay = () => {
         </a>
         <div className="text-sm leading-tight font-medium">giving you better FX rates than any bank</div>
       </div> */}
-      {/*--- content below banner ---*/}
-      <div className="w-[340px] h-full flex flex-col">
-        {/*--- your balance ---*/}
-        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-6 h-[80px] w-full flex items-center justify-center text-lg bg-gray-200 rounded-xl`}>
+        {/*--- WALLET BOX ---*/}
+        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-4 h-[80px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-gray-200 rounded-xl`}>
           {USDCBalance ? (
             <div className="px-4 w-full flex justify-between">
               <div className="">
@@ -320,7 +318,7 @@ const Pay = () => {
               <div className="flex flex-col">
                 {/*--- usdc balance ---*/}
                 <div className="flex items-center relative">
-                  <div className="relative mr-[2px] w-[22px] h-[22px]">
+                  <div className="relative mr-[2px] w-[20px] h-[20px]">
                     <Image src="/usdc.svg" alt="usdc" fill />
                   </div>
                   <div>USDC {USDCBalance}</div>
