@@ -44,7 +44,9 @@ const Inperson = ({
   setTokenAmount: any;
 }) => {
   return (
-    <div className="w-full h-full max-h-[560px] flex flex-col items-center justify-evenly text-2xl font-medium">
+    <div className="w-full h-full max-h-[560px] flex flex-col items-center justify-between text-2xl font-medium">
+      {/*---blank---*/}
+      <div></div>
       {/*---Pay To---*/}
       <div className="w-full flex flex-col items-center">
         <div className="text-base font-normal">PAY TO</div>
@@ -160,7 +162,7 @@ const Inperson = ({
       </div>
 
       {/*---SEND BUTTON---*/}
-      <div className={`${currencyAmount ? "" : "invisible"} mb-4 flex justify-center w-full`}>
+      <div className={`${currencyAmount ? "" : "invisible"} mb-8 flex justify-center w-full`}>
         <button onClick={send} className="w-full h-[60px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
           PAY
         </button>

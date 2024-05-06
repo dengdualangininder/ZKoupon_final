@@ -311,7 +311,7 @@ const Pay = () => {
       {/*--- content below banner ---*/}
       <div className="w-[340px] h-full flex flex-col">
         {/*--- your balance ---*/}
-        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-6 h-[80px] w-full flex items-center justify-center text-xl bg-gray-200 rounded-xl`}>
+        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-6 h-[80px] w-full flex items-center justify-center text-lg bg-gray-200 rounded-xl`}>
           {USDCBalance ? (
             <div className="px-4 w-full flex justify-between">
               <div className="">
@@ -319,7 +319,7 @@ const Pay = () => {
               </div>
               <div className="flex flex-col">
                 {/*--- usdc balance ---*/}
-                <div className="flex items-center text-xl relative">
+                <div className="flex items-center relative">
                   <div className="relative mr-[2px] w-[22px] h-[22px]">
                     <Image src="/usdc.svg" alt="usdc" fill />
                   </div>
