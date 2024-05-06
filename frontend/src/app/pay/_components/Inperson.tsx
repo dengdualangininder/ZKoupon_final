@@ -47,16 +47,16 @@ const Inperson = ({
   const [digits, setDigits] = useState(5);
 
   return (
-    <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between text-3xl font-medium">
+    <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between text-2xl font-medium">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
       <div className="text-center">
-        <div className="text-lg text-gray-400">PAY TO</div>
+        <div className="text-base text-gray-400">PAY TO</div>
         <div className="mt-2 line-clamp-1">{urlParams.merchantName}</div>
       </div>
       {/*--- currency amount ---*/}
-      <div className="flex justify-center items-center text-5xl relative">
+      <div className="flex justify-center items-center text-4xl relative">
         <div className="absolute right-[calc(100%+8px)] font-normal">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           id="payCurrencyAmount"
@@ -72,7 +72,7 @@ const Inperson = ({
           value={currencyAmount}
           placeholder="0.00"
           className={`outline-none text-center border-b focus:placeholder:text-transparent bg-white`}
-          style={{ width: `${digits * 29}px` }}
+          style={{ width: `${digits * 21}px` }}
         ></input>
       </div>
       {/*---select network---*/}
@@ -104,14 +104,15 @@ const Inperson = ({
         <div className="flex text-center text-lg font-bold">
           Sending {tokenAmount} {selectedToken}
         </div>
+
         {/*--- SAVINGS ---*/}
-        <div className="w-full mt-2 flex justify-between text-sm text-gray-400 font-medium relative">
-          {/*--- FX Savings ---*/}
+        <div className="mt-4 w-full flex justify-between text-sm text-gray-400 font-medium relative">
+          {/*--- fx savings ---*/}
           {urlParams.merchantCurrency != "USD" && (
             <div className="flex items-center group">
               <div className="flex flex-col items-center">
                 <div>FX Savings</div>
-                <div className="font-bold text-green-500 text-base">{fxSavings}%</div>
+                <div className=" text-green-500 text-base">{fxSavings}%</div>
                 {/*--- tooltip ---*/}
                 <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start text-gray-800">
                   <p>
@@ -125,32 +126,31 @@ const Inperson = ({
               <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-gray-300" />
             </div>
           )}
-
           {/*--- instant cashback ---*/}
           <div className="flex items-center group">
             <div className="flex flex-col items-center text-center">
               <p>Instant Cashback</p>
-              <p className="font-bold text-green-500 text-base">2%</p>
+              <p className=" text-green-500 text-base">2%</p>
               {/*--- tooltip ---*/}
               <div className="w-full bottom-[calc(100%+2px)] tooltip text-start text-gray-800">The value of USDC sent is 2% less than the value of the payment amount</div>
             </div>
             <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-gray-300" />
           </div>
-
           {/*--- total savings ---*/}
           {urlParams.merchantCurrency != "USD" ? (
             <div className="flex flex-col items-center text-center">
               <p>You Save</p>
               <div>
-                <div className="font-bold text-green-500 text-base">{2 + Number(fxSavings)}%</div>
+                <div className=" text-green-500 text-base">{2 + Number(fxSavings)}%</div>
               </div>
             </div>
           ) : (
             <div></div>
           )}
         </div>
+
         {/*---SEND BUTTON---*/}
-        <div className={`${currencyAmount ? "" : "invisible"} mt-3 mb-8 flex justify-center w-full`}>
+        <div className={`${currencyAmount ? "" : "invisible"} mt-6 mb-8 flex justify-center w-full`}>
           <button onClick={send} className="w-full h-[56px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
             PAY
           </button>
