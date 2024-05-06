@@ -11,6 +11,9 @@ import Lottie from "lottie-react";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import circleCheck from "@/utils/lotties/circleCheck.json";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWallet } from "@fortawesome/free-solid-svg-icons";
 // components
 import Inperson from "./_components/Inperson";
 import Online from "./_components/Online";
@@ -297,32 +300,33 @@ const Pay = () => {
   return (
     <div className="w-full h-[100dvh] flex flex-col justify-center items-center">
       {/*--- banner ---*/}
-      <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
+      {/* <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
         <a href={`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}`} target="_blank" className="flex items-center">
           <div className="relative h-[36px] w-[80px] mr-2">
             <Image src="/logo.svg" alt="logo" fill />
           </div>
         </a>
         <div className="text-sm leading-tight font-medium">giving you better FX rates than any bank</div>
-      </div>
+      </div> */}
       {/*--- content below banner ---*/}
-      <div className="w-[340px] h-[94%] flex flex-col">
+      <div className="w-[340px] h-full flex flex-col">
         {/*--- your balance ---*/}
-        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-3 w-full h-[90px] flex items-center justify-center bg-gray-200 rounded-xl text-lg font-medium`}>
+        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-6 h-[80px] w-full flex items-center justify-center text-xl bg-gray-200 rounded-xl`}>
           {USDCBalance ? (
-            <div className="px-4 w-full h-full flex items-center justify-between">
-              <div>Your Wallet</div>
-              {/*--- balance ---*/}
-              <div className="text-xl flex flex-col items-end">
+            <div className="px-4 w-full flex justify-between">
+              <div className="">
+                <FontAwesomeIcon icon={faWallet} className="text-gray-500" /> Wallet
+              </div>
+              <div className="flex flex-col">
                 {/*--- usdc balance ---*/}
-                <div className="flex items-center">
+                <div className="flex items-center text-xl relative">
                   <div className="relative mr-[2px] w-[22px] h-[22px]">
                     <Image src="/usdc.svg" alt="usdc" fill />
                   </div>
                   <div>USDC {USDCBalance}</div>
                 </div>
                 {/*--- local currency balance ---*/}
-                <div>
+                <div className="text-end">
                   &#40;{currency2symbol[urlParams.merchantCurrency!]}
                   {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
                 </div>

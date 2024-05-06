@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 // types
 import { Rates } from "@/utils/types";
-import { currency2decimal } from "@/utils/constants";
+import { currency2decimal, currency2symbol } from "@/utils/constants";
 
 const Inperson = ({
   urlParams,
@@ -44,18 +44,18 @@ const Inperson = ({
   setTokenAmount: any;
 }) => {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-evenly text-2xl font-bold">
+    <div className="w-full h-full max-h-[560px] flex flex-col items-center justify-evenly text-2xl font-medium">
       {/*---Pay To---*/}
       <div className="w-full flex flex-col items-center">
-        <div className="text-base font-medium text-gray-400">PAY TO</div>
-        <div className="line-clamp-1">{urlParams.merchantName}</div>
+        <div className="text-base font-normal">PAY TO</div>
+        <div className="mt-2 font-medium line-clamp-1">{urlParams.merchantName}</div>
       </div>
 
       {/*---payment amount---*/}
-      <div className="relative w-full h-[66px] flex items-center border-2 border-blue-500 rounded-md bg-white">
-        <label className="w-[90px] border-r border-gray-400 text-center flex-none text-2xl font-bold">{urlParams.merchantCurrency}</label>
+      {/* <div className="relative w-full h-[66px] flex items-center border-2 border-blue-500 rounded-xl bg-white">
+        <label className="w-[90px] border-r border-gray-400 text-center flex-none">{urlParams.merchantCurrency}</label>
         <input
-          className="w-[calc(100%-90px-90px)] font-bold text-center text-2xl outline-none bg-transparent focus:placeholder:invisible placeholder:font-medium placeholder:text-xl"
+          className="w-[calc(100%-90px-90px)] text-center outline-none bg-transparent focus:placeholder:invisible placeholder:font-medium placeholder:text-xl"
           type="number"
           inputMode="decimal"
           value={currencyAmount}
@@ -65,6 +65,20 @@ const Inperson = ({
             // setShowNetwork(true);
           }}
           placeholder="Enter Amount"
+        ></input>
+      </div> */}
+      <div className="flex justify-center items-end bg-red-300 relative">
+        <div className="absolute right-[calc(100%+8px)] text-4xl font-normal">{currency2symbol[urlParams.merchantCurrency]}</div>
+        <input
+          onChange={(e) => {
+            setCurrencyAmount(e.currentTarget.value);
+            setTokenAmount(((Number(e.currentTarget.value) / rates.usdcToLocal) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]));
+          }}
+          type="number"
+          inputMode="decimal"
+          value={currencyAmount}
+          placeholder="0.00"
+          className="text-4xl w-[170px] outline-none text-center border-b focus:placeholder:text-transparent"
         ></input>
       </div>
 
@@ -96,16 +110,16 @@ const Inperson = ({
       <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- AMOUNT SENT ---*/}
         <div className="flex text-center">
-          {tokenAmount} {selectedToken} will be sent
+          Sending {tokenAmount} {selectedToken}
         </div>
         {/*--- SAVINGS ---*/}
-        <div className="w-full mt-2 flex justify-between text-sm text-gray-400 font-medium tracking-tighter relative">
+        <div className="w-full mt-2 flex justify-between text-sm text-gray-400 font-medium relative">
           {/*--- FX Savings ---*/}
           {urlParams.merchantCurrency != "USD" && (
             <div className="flex items-center group">
               <div className="flex flex-col items-center">
                 <div>FX Savings</div>
-                <div className="font-bold text-green-500">{fxSavings}%</div>
+                <div className="font-bold text-green-500 text-base">{fxSavings}%</div>
                 {/*--- tooltip ---*/}
                 <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start text-gray-800">
                   <p>
@@ -124,7 +138,7 @@ const Inperson = ({
           <div className="flex items-center group">
             <div className="flex flex-col items-center text-center">
               <p>Instant Cashback</p>
-              <p className="font-bold text-green-500">2%</p>
+              <p className="font-bold text-green-500 text-base">2%</p>
               {/*--- tooltip ---*/}
               <div className="w-full bottom-[calc(100%+2px)] tooltip text-start text-gray-800">The value of USDC sent is 2% less than the value of the payment amount</div>
             </div>
@@ -136,7 +150,7 @@ const Inperson = ({
             <div className="flex flex-col items-center text-center">
               <p>You Save</p>
               <div>
-                <div className="font-bold text-green-500">{2 + Number(fxSavings)}%</div>
+                <div className="font-bold text-green-500 text-base">{2 + Number(fxSavings)}%</div>
               </div>
             </div>
           ) : (
@@ -147,8 +161,8 @@ const Inperson = ({
 
       {/*---SEND BUTTON---*/}
       <div className={`${currencyAmount ? "" : "invisible"} mb-4 flex justify-center w-full`}>
-        <button onClick={send} className="w-[300px] py-5 text-white bg-blue-500 active:opacity-50 rounded-full">
-          SEND
+        <button onClick={send} className="w-full py-4 text-white bg-blue-500 active:opacity-50 rounded-xl">
+          PAY
         </button>
       </div>
     </div>
