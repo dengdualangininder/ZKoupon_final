@@ -155,7 +155,7 @@ const Intro = ({
             {/*--- text + buttons---*/}
             <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
               {/*--- text ---*/}
-              <div className="flex-1 w-[92%] portrait:xs:w-[85%] portrait:lg:w-[700px] flex flex-col items-center landscape:xl:justify-center introFontHowTo space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
+              <div className="flex-1 w-[92%] portrait:xs:w-[90%] portrait:lg:w-[80%] flex flex-col items-center landscape:lg:justify-center introFontHowTo space-y-3 portrait:md:space-y-4 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
                 <div className="w-full">First, you print and display a QR code.</div>
                 <div className="relative">
                   When a customer scans your QR code, their{" "}
@@ -165,7 +165,7 @@ const Intro = ({
                       MetaMask is currently the most popular App to send and receive tokens. It is used by 50+ million people worldwide.
                     </div>
                   </span>{" "}
-                  will open. The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment.
+                  will open. The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment and taps "PAY".
                 </div>
                 <div className="relative">
                   <span className="group">
@@ -231,13 +231,13 @@ const Intro = ({
         {step == "how2" && (
           <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
             {/*--- animation ---*/}
-            <div className="portrait:w-full landscape:w-[50%] portrait:h-[340px] portrait:min-h-[300px] portrait:sm:min-h-[400px] landscape:h-full flex items-center justify-center flex-none">
+            <div className="portrait:w-full landscape:w-[50%] portrait:h-[340px] portrait:min-h-[300px] portrait:sm:min-h-[40%] landscape:h-full flex items-center justify-center flex-none">
               <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
             </div>
             {/*--- text + button ---*/}
             <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
               {/*--- text ---*/}
-              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] flex flex-col items-center landscape:xl:justify-center introFontHowTo landscape:pt-4 landscape:lg:pt-8">
+              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] flex flex-col items-center landscape:lg:justify-center introFontHowTo landscape:pt-4 landscape:lg:pt-8">
                 {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
                   <div className="flex flex-col items-center">
                     {paymentSettingsState.merchantCurrency == "USD" && (
@@ -260,10 +260,10 @@ const Intro = ({
                           <span className="font-bold">cashing out on Flash is just a few easy clicks</span>.
                         </div>
                         <div>
-                          When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency}. But, Flash is designed so that you will not lose money
-                          from changing rates.
+                          When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency}. Flash is designed so that you will not lose money from
+                          changing conversion rates.
                         </div>
-                        <div>Flash charges zero fees and does not profit by giving you suboptimal rates.</div>
+                        <div className="hidden">Flash charges zero fees and does not profit by giving you suboptimal rates.</div>
                       </div>
                     )}
                   </div>
@@ -275,7 +275,7 @@ const Intro = ({
                       To cash out, you first transfer USDC from Flash to {cashoutSettingsState.cex}. Then, on {cashoutSettingsState.cex}, you can convert USDC to{" "}
                       {paymentSettingsState.merchantCurrency} and transfer funds to your bank. Detailed instructions will be in the App.
                     </div>
-                    <div>Flash is designed so that you will not lose money from changing rates.</div>
+                    <div>Flash is designed so that you will not lose money from changing conversion rates.</div>
                     <div>Flash charges zero fees. We do not profit by giving suboptimal exchange rates.</div>
                   </div>
                 )}
@@ -286,7 +286,7 @@ const Intro = ({
                       To cash out, you first transfer USDC from Flash to your CEX. Then, on your CEX, you can convert USDC to fiat and transfer funds to your bank. Detailed
                       instructions will be in the App.
                     </div>
-                    <div>Flash is designed so that you will not lose money from changing rates.</div>
+                    <div>Flash is designed so that you will not lose money from changing conversion rates.</div>
                     <div>Flash charges zero fees. We do not profit by giving suboptimal exchange rates.</div>
                   </div>
                 )}
@@ -296,10 +296,33 @@ const Intro = ({
                 <button className="introBack" onClick={() => setStep("how1")}>
                   Back
                 </button>
-                <button className="introNext" onClick={() => setStep("name")}>
+                <button className="introNext" onClick={() => setStep("how3")}>
                   Next
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {step == "how3" && (
+          <div className="introPageContainer introFontHowTo">
+            {/*--- content ---*/}
+            <div className="introTextContainer1">
+              <div className="introTextContainer2 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
+                <div className="w-full">
+                  Flash charges zero fees over the entire payments flow. Flash does not profit by giving you or your customers suboptimal conversion rates.
+                </div>
+                <div>With every transaction on Flash, you save money compared to other digital payment methods.</div>
+              </div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="introButtonContainer">
+              <button className="introBack" onClick={() => setStep("how2")}>
+                Back
+              </button>
+              <button className="introNext" onClick={() => setStep("name")}>
+                Next
+              </button>
             </div>
           </div>
         )}
@@ -444,19 +467,24 @@ const Intro = ({
 
         {/*--- link (if coinbase && not "Any country") ---*/}
         {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="introPageContainer overflow-y-auto portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
+          <div className="introPageContainer overflow-y-auto portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
             {/*--- content ---*/}
             <div className="introTextContainer1">
               <div className="introTextContainer2 flex flex-col items-center portrait:space-y-8 landscape:space-y-4 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:lg:desktop:space-y-8">
                 <div className="w-full">If you have a Coinbase account, you can link it to the Flash App now.</div>
-                <div>By linking it, you can transfer customer payments from Flash to your bank with just a few easy clicks!</div>
-                <button
-                  onClick={onClickSIWC}
-                  className="px-8 py-3 portrait:sm:px-8 portrait:sm:py-4 landscape:lg:px-8 landscape:lg:py-4 landscape:lg:desktop:py-2 portrait:text-lg landscape:text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:lg:desktop:text-lg text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full"
-                >
-                  Link Your Coinbase
-                </button>
-                <div>If you don't have a Coinbase account, please register an account. You can link your Coinbase account in the Flash App later.</div>
+                <div>By linking it, you can transfer funds from Flash to your bank with just a few easy clicks!</div>
+                <div className="pt-2 pb-4">
+                  <button
+                    onClick={onClickSIWC}
+                    className="px-8 py-3 portrait:sm:px-8 portrait:sm:py-4 landscape:lg:px-8 landscape:lg:py-4 landscape:lg:desktop:py-2 portrait:text-lg landscape:text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:lg:desktop:text-lg text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full"
+                  >
+                    Link Your Coinbase
+                  </button>
+                </div>
+                <div className="textLg2 px-4 py-3 portrait:md:px-7 portrait:md:py-5 landscape:lg:px-7 landscape:lg:py-5 landscape:xl:desktop:px-5 landscape:xl:desktop:py-3 bg-gray-200 rounded-xl border border-gray-300">
+                  <div className="font-bold">Don't have a Coinbase account?</div>
+                  <div className="mt-1">Skip this step and register for one later. In the Flash App, you can link your Coinbase account at any time.</div>
+                </div>
               </div>
             </div>
             {/*--- buttons ---*/}
