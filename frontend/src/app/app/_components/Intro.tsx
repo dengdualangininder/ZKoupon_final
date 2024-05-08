@@ -119,13 +119,13 @@ const Intro = ({
                 <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] landscape:lg:desktop:h-[100px] mr-1">
                   <Image src="/logo.svg" alt="logo" fill />
                 </div>
-                <div className="text-3xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:lg:desktop:text-3xl font-bold text-center animate-fadeInAnimation">
+                <div className="hidden text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:desktop:text-2xl font-medium text-center animate-fadeInAnimation">
                   Welcome to Flash!
                 </div>
                 <div className="introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
-                  Let us give you a quick
+                  Welcome to Flash! Here's a quick
                   <br />
-                  introduction of how it works
+                  tutorial of how Flash works
                 </div>
               </div>
             </div>
