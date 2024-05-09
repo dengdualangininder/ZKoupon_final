@@ -47,7 +47,7 @@ const Inperson = ({
   const [digits, setDigits] = useState(5);
 
   return (
-    <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between text-2xl font-medium">
+    <div className="w-full h-full flex flex-col items-center justify-between text-2xl font-medium">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
@@ -71,7 +71,7 @@ const Inperson = ({
           inputMode="decimal"
           value={currencyAmount}
           placeholder="0.00"
-          className={`outline-none text-center border-b focus:placeholder:text-transparent bg-white`}
+          className={`outline-none text-center border-b-2 border-gray-300 focus:placeholder:text-transparent bg-white`}
           style={{ width: `${digits * 21}px` }}
         ></input>
       </div>

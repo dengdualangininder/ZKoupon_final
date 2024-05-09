@@ -288,7 +288,7 @@ const Pay = () => {
   return (
     <div className="w-full h-[100dvh] flex flex-col justify-center items-center">
       {/*--- WALLET BOX ---*/}
-      <div className={`${USDCBalance ? "" : "animate-pulse"} px-3 h-[60px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-gray-200`}>
+      <div className={`${USDCBalance ? "" : "animate-pulse"} px-3 h-[64px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-gray-200`}>
         {USDCBalance ? (
           <div className="w-full flex justify-between">
             <div className="flex items-center">
