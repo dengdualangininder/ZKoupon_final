@@ -287,30 +287,6 @@ const Pay = () => {
 
   return (
     <div className="w-full h-[100dvh] flex flex-col justify-center items-center">
-      {/*--- WALLET BOX ---*/}
-      <div className={`${USDCBalance ? "" : "animate-pulse"} px-3 h-[60px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-gray-200`}>
-        {USDCBalance ? (
-          <div className="w-full flex justify-between">
-            <div className="flex items-center">
-              <FontAwesomeIcon icon={faWallet} className="text-gray-500 text-2xl mr-1" /> Wallet
-            </div>
-            <div className="flex">
-              {/*--- usdc balance ---*/}
-              <div className="flex items-center relative">
-                <div className="hidden relative mr-[2px] w-[20px] h-[20px]">
-                  <Image src="/usdc.svg" alt="usdc" fill />
-                </div>
-                <div>
-                  {USDCBalance} USDC &#40;{currency2symbol[urlParams.merchantCurrency!]}
-                  {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center">Connecting...</div>
-        )}
-      </div>
       <div className="w-[340px] h-full flex flex-col">
         {/* <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
         <a href={`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}`} target="_blank" className="flex items-center">
@@ -320,7 +296,32 @@ const Pay = () => {
         </a>
         <div className="text-sm leading-tight font-medium">giving you better FX rates than any bank</div>
       </div> */}
-
+        {/*--- WALLET BOX ---*/}
+        <div className={`${USDCBalance ? "" : "animate-pulse"} mt-4 h-[80px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-gray-200 rounded-xl`}>
+          {USDCBalance ? (
+            <div className="px-4 w-full flex justify-between">
+              <div className="">
+                <FontAwesomeIcon icon={faWallet} className="text-gray-500" /> Wallet
+              </div>
+              <div className="flex flex-col">
+                {/*--- usdc balance ---*/}
+                <div className="flex items-center relative">
+                  <div className="relative mr-[2px] w-[20px] h-[20px]">
+                    <Image src="/usdc.svg" alt="usdc" fill />
+                  </div>
+                  <div>USDC {USDCBalance}</div>
+                </div>
+                {/*--- local currency balance ---*/}
+                <div className="text-end">
+                  &#40;{currency2symbol[urlParams.merchantCurrency!]}
+                  {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">Connecting...</div>
+          )}
+        </div>
         {USDCBalance && (
           <div className="h-[calc(100%-90px)]">
             {Number(USDCBalance) > 0.01 ? (

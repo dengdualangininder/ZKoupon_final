@@ -53,7 +53,7 @@ const Inperson = ({
       {/*---Pay To---*/}
       <div className="text-center">
         <div className="text-base text-gray-400">PAY TO</div>
-        <div className="mt-1 line-clamp-1">{urlParams.merchantName}</div>
+        <div className="mt-2 line-clamp-1">{urlParams.merchantName}</div>
       </div>
       {/*--- currency amount ---*/}
       <div className="flex justify-center items-center text-4xl relative">
@@ -101,7 +101,7 @@ const Inperson = ({
       {/*---AMOUNT SENT + SAVINGS---*/}
       <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- AMOUNT SENT ---*/}
-        <div className="flex text-center text-lg font-bold">
+        <div className="flex text-center text-2xl font-medium">
           Sending {tokenAmount} {selectedToken}
         </div>
 
