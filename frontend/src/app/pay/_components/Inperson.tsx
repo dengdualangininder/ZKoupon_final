@@ -56,8 +56,9 @@ const Inperson = ({
         <div className="mt-2 line-clamp-1">{urlParams.merchantName}</div>
       </div>
       {/*--- currency amount ---*/}
-      <div className="flex justify-center items-center text-4xl relative">
-        <div className="absolute right-[calc(100%+8px)] border-b border-transparent">{currency2symbol[urlParams.merchantCurrency]}</div>
+      <div className="flex justify-center items-center text-5xl relative">
+        <div className="w-full h-[2px] bg-gray-400 absolute top-[calc(100%)]"></div>
+        <div className="absolute right-[calc(100%+8px)]">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           id="payCurrencyAmount"
           onChange={(e) => {
@@ -71,8 +72,8 @@ const Inperson = ({
           inputMode="decimal"
           value={currencyAmount}
           placeholder="0.00"
-          className={`outline-none text-center border-b-2 border-gray-300 focus:placeholder:text-transparent bg-white`}
-          style={{ width: `${digits * 21}px` }}
+          className={`outline-none text-center focus:placeholder:text-transparent bg-white placeholder:text-gray-400`}
+          style={{ width: `${digits * 28}px` }}
         ></input>
       </div>
       {/*---select network---*/}

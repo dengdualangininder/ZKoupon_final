@@ -322,7 +322,7 @@ const Pay = () => {
       </div> */}
 
         {USDCBalance && (
-          <div className="h-[calc(100%-90px)]">
+          <div className="h-full">
             {Number(USDCBalance) > 0.01 ? (
               <div className="h-full">
                 {paymentType == "inperson" && (
