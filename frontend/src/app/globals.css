@@ -19,17 +19,6 @@
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px rgb(255, 255, 255) inset !important;
   }
-
-  select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    /* padding: 0px 28px 0px 4px;
-    background-color: transparent;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 330 330'><path d='M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z'/></svg>");
-    background-repeat: no-repeat;
-    background-position: center right 8px;
-    background-size: 12px; */
-  }
 }
 
 @layer components {
@@ -290,11 +279,19 @@
   }
 
   .introNext {
-    @apply mr-2 w-[110px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply mr-2 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introBack {
-    @apply ml-2 w-[110px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply ml-2 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+  }
+
+  .introNext2 {
+    @apply mr-1 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-lg portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+  }
+
+  .introBack2 {
+    @apply ml-1 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-lg portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introTooltip {
@@ -302,7 +299,7 @@
   }
 
   .introFontHowTo {
-    @apply portrait:text-xl landscape:text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:desktop:text-2xl portrait:leading-relaxed landscape:leading-normal portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:lg:desktop:leading-relaxed;
+    @apply portrait:text-xl landscape:text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:lg:desktop:leading-relaxed;
   }
 
   .introFontButton {
@@ -344,14 +341,6 @@
 
   .startStartNow {
     @apply bg-blue-500 hover:bg-blue-700 py-1.5 px-3 rounded-md text-white font-bold cursor-pointer;
-  }
-
-  .gradientButton {
-    @apply text-white bg-gradient-to-l from-blue-700 from-20% via-pink-500 to-yellow-300 to-100% rounded-3xl hover:text-blue-400 animate-textTwo;
-  }
-
-  .gradientButtonSmall {
-    @apply text-xs md:text-sm text-white bg-gradient-to-l from-blue-700 from-20% via-pink-500 to-yellow-300 to-100% rounded-lg px-2 py-0 hover:text-black animate-textTwo;
   }
 
   .appButton {

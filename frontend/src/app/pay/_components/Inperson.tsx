@@ -57,7 +57,7 @@ const Inperson = ({
       </div>
       {/*--- currency amount ---*/}
       <div className="flex justify-center items-center text-5xl relative">
-        <div className="w-full h-[2px] bg-gray-400 absolute top-[calc(100%)]"></div>
+        <div className="w-full h-[2px] bg-gray-300 absolute top-[calc(100%)]"></div>
         <div className="absolute right-[calc(100%+8px)]">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           id="payCurrencyAmount"

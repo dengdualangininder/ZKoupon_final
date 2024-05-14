@@ -19,6 +19,8 @@ import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
+import Intro2 from "./_components/Intro2";
+
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
@@ -331,7 +333,7 @@ const User = () => {
           {/* LOADING */}
 
           <div className="w-full absolute flex flex-col items-center">
-            <div className="w-[340px] h-[80px] portrait:sm:h-[100px] landscape:lg:h-[100px] animate-spin">
+            <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] animate-spin">
               <Image src="/loadingCircleBlack.svg" alt="loading" fill />
             </div>
             <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
@@ -367,7 +369,7 @@ const User = () => {
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "intro" && (
-        <Intro
+        <Intro2
           isMobile={isMobile}
           page={page}
           setPage={setPage}

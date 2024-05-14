@@ -35,7 +35,7 @@ export default function Hero() {
         <button
           id="mobileStartButton"
           onClick={() => router.push("/signup")}
-          className=" text-white h-[52px] w-[168px] bg-gradient-to-br from-blue-400 from-10% via-pink-400 to-orange-400 to-100% rounded-[32px] transition-all duration-1000 flex flex-col justify-center items-center hover:animate-textTwo relative ease-in-out"
+          className=" text-white h-[52px] w-[168px] bg-gradient-to-br from-blue-400 from-10% via-pink-400 to-orange-400 to-100% rounded-[32px] transition-all duration-1000 flex flex-col justify-center items-center relative ease-in-out"
         >
           <div className="absolute top-[8px] text-xl font-bold leading-none pointer-events-none">Free Setup</div>
           <div className="absolute top-[28px] text-sm leading-tight pointer-events-none">(just 5 minutes)</div>

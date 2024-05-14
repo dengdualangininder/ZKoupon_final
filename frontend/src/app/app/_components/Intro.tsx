@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 // components
 import Flow from "./Flow";
 import Flow2 from "./Flow2";
+import Flow3 from "./Flow3";
 import ErrorModal from "./modals/ErrorModal";
 // constants
 import { countryData, countryCurrencyList, currency2number, merchantType2data } from "@/utils/constants";
@@ -115,17 +116,17 @@ const Intro = ({
           <div className="w-full h-full flex flex-col items-center overflow-y-auto">
             {/*--- text ---*/}
             <div className="introTextContainer1">
-              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-16 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
+              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
                 <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] landscape:lg:desktop:h-[100px] mr-1">
                   <Image src="/logo.svg" alt="logo" fill />
                 </div>
-                <div className="hidden text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:desktop:text-2xl font-medium text-center animate-fadeInAnimation">
-                  Welcome to Flash!
-                </div>
-                <div className="introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
-                  Welcome to Flash! Here's a quick
-                  <br />
-                  tutorial of how Flash works
+                <div className="">
+                  <div className="text2xl font-medium text-center animate-fadeInAnimation">Welcome to Flash!</div>
+                  <div className="mt-3 introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
+                    Here's a quick tutorial
+                    <br />
+                    of how Flash works
+                  </div>
                 </div>
               </div>
             </div>
@@ -165,17 +166,18 @@ const Intro = ({
                       MetaMask is currently the most popular App to send and receive tokens. It is used by 50+ million people worldwide.
                     </div>
                   </span>{" "}
-                  will open. The customer then enters the amount of {paymentSettingsState?.merchantCurrency} for payment and taps "PAY".
+                  will open. The customer then <span className="font-bold">enters the amount of {paymentSettingsState?.merchantCurrency} for payment</span>.
                 </div>
                 <div className="relative">
+                  When the customer submits the payment,{" "}
                   <span className="group">
                     <span className="link">USDC tokens</span>
                     <div className="bottom-[calc(100%+8px)] left-0 introTooltip">
-                      USDC is a secure stablecoin used by almost all crypto users. 1 USDC equals to 1 USD, as gauranteed by Circle.
+                      The USDC token is used by almost all crypto users. 1 USDC token equals to 1 USD, as gauranteed by Circle.
                     </div>
                   </span>{" "}
-                  equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered will be be sent to
-                  your Flash App.
+                  (equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered) will be be sent from
+                  the customer's MetaMask App to your Flash App.
                 </div>
               </div>
               {/*--- buttons ---*/}
@@ -230,9 +232,11 @@ const Intro = ({
         {/*--- how2 ---*/}
         {step == "how2" && (
           <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
+            {/*--- title ---*/}
+            <div className="mt-8 text2xl font-bold">Cashing Out</div>
             {/*--- animation ---*/}
-            <div className="portrait:w-full landscape:w-[50%] portrait:h-[340px] portrait:min-h-[300px] portrait:sm:min-h-[40%] landscape:h-full flex items-center justify-center flex-none">
-              <Flow paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
+            <div className="portrait:w-full landscape:w-[50%] portrait:h-[240px] portrait:min-h-[240px] portrait:sm:min-h-[40%] landscape:h-full flex items-center justify-center flex-none">
+              <Flow2 paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
             </div>
             {/*--- text + button ---*/}
             <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
@@ -261,7 +265,7 @@ const Intro = ({
                         </div>
                         <div>
                           When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency}. Flash is designed so that you will not lose money from
-                          changing conversion rates.
+                          this conversion, meaning if a customer pays 10 EUR, you will receive at least 10 EUR in the bank.
                         </div>
                         <div className="hidden">Flash charges zero fees and does not profit by giving you suboptimal rates.</div>
                       </div>
@@ -308,11 +312,21 @@ const Intro = ({
           <div className="introPageContainer introFontHowTo">
             {/*--- content ---*/}
             <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
+              <div className="introTextContainer2 space-y-6 portrait:sm:space-y-10 landscape:lg:space-y-10">
                 <div className="w-full">
-                  Flash charges zero fees over the entire payments flow. Flash does not profit by giving you or your customers suboptimal conversion rates.
+                  Flash uses <span className="font-bold">true peer-to-peer payments</span>. This means it is impossible for us to charge fees or skim profits by giving you or your
+                  customer suboptimal conversion rates, which is how most crypto payment platforms profit.
                 </div>
-                <div>With every transaction on Flash, you save money compared to other digital payment methods.</div>
+                <div className="w-full">For every transaction on Flash, you are saving money compared to all other payment methods.</div>
+                <div className="hidden">
+                  We are temporarily requiring merchants give a 2% instant discount to customers who pays using Flash. So, if a customer pays 10 EUR, you will receive 9.8 EUR in
+                  the bank and the customer will get back 0.2 EUR. All savings will be given to the customer, as Flash does not make any profit per transaction.
+                </div>
+                <div className="hidden">
+                  The reason for this is because credit cards charge businesses 3% and give 1% back to the customer, thus locking customers into using credit cards. We hope this
+                  discount will motivate customers to use crypto payments instead. You still save money compared to credit cards. And, we believe the discount will attract many
+                  crypto users to your business.
+                </div>
               </div>
             </div>
             {/*--- buttons ---*/}
