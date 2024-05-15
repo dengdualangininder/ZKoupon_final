@@ -40,13 +40,8 @@ const Intro = ({
   const [isSent, setIsSent] = useState(true);
   const [errorMsg, setErrorMsg] = useState<any>("");
   const [errorModal, setErrorModal] = useState(false);
-  const [url, setUrl] = useState("");
   const [save, setSave] = useState(false);
-  const [qrWidth, setQrWidth] = useState(0);
-  const [monthlyRevenue, setMonthlyRevenue] = useState(20000);
-  const [dailyTxn, setDailyTxn] = useState(100);
-  const [feePercentage, setFeePercentage] = useState(0.027);
-  const [feePerTxn, setFeePerTxn] = useState(0.1);
+  const [url, setUrl] = useState("");
 
   // hooks
   const router = useRouter();
@@ -120,13 +115,11 @@ const Intro = ({
                 <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] landscape:lg:desktop:h-[100px] mr-1">
                   <Image src="/logo.svg" alt="logo" fill />
                 </div>
-                <div className="">
-                  <div className="text2xl font-medium text-center animate-fadeInAnimation">Welcome to Flash!</div>
-                  <div className="mt-3 introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
-                    Here's a quick tutorial
-                    <br />
-                    of how Flash works
-                  </div>
+                <div className="text2xl font-medium text-center animate-fadeInAnimation">Welcome to Flash!</div>
+                <div className="mt-3 introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
+                  Get your store ready to start
+                  <br />
+                  accepting crypto payments
                 </div>
               </div>
             </div>
@@ -157,7 +150,7 @@ const Intro = ({
             <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
               {/*--- text ---*/}
               <div className="flex-1 w-[92%] portrait:xs:w-[90%] portrait:lg:w-[80%] flex flex-col items-center landscape:lg:justify-center introFontHowTo space-y-3 portrait:md:space-y-4 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
-                <div className="w-full">First, you print and display a QR code.</div>
+                <div className="w-full">First, you print and display a QR code (you'll create one later).</div>
                 <div className="relative">
                   When a customer scans your QR code, their{" "}
                   <span className="group">
@@ -192,42 +185,6 @@ const Intro = ({
             </div>
           </div>
         )}
-
-        {/* <div className="w-[88%] h-full flex flex-col items-center">
-            <div className="h-[85%] sm:h-[80%] text-xl flex flex-col justify-center">
-              <div className="text-2xl leading-[36px]">
-                <p className=""></p>
-                <p className="mt-4">
-                  <span className="font-bold">Flash charges 0% fees.</span> Estimate your savings over credit cards below:
-                </p>
-              </div>
-              <div className="mt-8 p-4 border-2 rounded-2xl text-lg">
-                <div className="text-lg leading-tight">
-                  <div className="flex items-center">
-                    <label className="w-full">Your Avg. Monthly Revenue</label>
-                    <span className=" text-2xl">$</span>
-                    <input placeholder="20000" className="ml-1 text-2xl px-1 w-[108px] h-[52px] border border-gray-300 rounded-[4px]"></input>
-                  </div>
-                  <div className="mt-2 flex items-center">
-                    <label className="w-full">Your Avg. Daily Transaction Count</label>
-                    <input placeholder="100" className="ml-1 text-2xl px-2 w-[108px] h-[52px] border border-gray-300 rounded-[4px]"></input>
-                  </div>
-                </div>
-                <div className="mt-6 text-lg">
-                  Based on a credit card fee of 2.7% + $0.10 per transaction, you will save{" "}
-                  <span className="font-bold">${(monthlyRevenue * feePercentage + feePerTxn * dailyTxn).toFixed(2)}</span> per month
-                </div>
-              </div>
-            </div>
-            <div className="w-full h-[15%] sm:h-[20%] flex justify-between items-center">
-              <button className="introBack" onClick={() => setStep("2")}>
-                Back
-              </button>
-              <button className="introNext" onClick={() => setStep("4")}>
-                Next
-              </button>
-            </div>
-          </div> */}
 
         {/*--- how2 ---*/}
         {step == "how2" && (
