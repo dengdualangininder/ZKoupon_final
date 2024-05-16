@@ -19,8 +19,8 @@ import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
-import IntroB2 from "./_components/IntroB2";
-import Intro2 from "./_components/Intro2";
+import Intro2B from "./_components/Intro2B";
+import Intro2A from "./_components/Intro2A";
 
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
@@ -370,7 +370,7 @@ const User = () => {
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "intro" && (
-        <IntroB2
+        <Intro2A
           isMobile={isMobile}
           page={page}
           setPage={setPage}
