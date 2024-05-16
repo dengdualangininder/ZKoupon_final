@@ -148,21 +148,20 @@ const Intro = ({
 
         {/*--- info ---*/}
         {step == "info" && (
-          <div className="w-full h-full flex flex-col items-center">
+          <div className="h-full flex flex-col">
             <div className="w-full h-[12%]">
               <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-3xl p-2">
                 &#10005;
               </div>
             </div>
             <div className="flex-1 space-y-6">
-              <div className="textXl">First, you need to create a QR code. Customers pay you by scanning your QR code with their phones.</div>
-              <div className="textXl">Fill out the form below to create your QR code:</div>
+              <div className="textXl">The first step is to create your QR code. To create one, fill out the form below:</div>
               <div>
-                <label className="w-full text-lg font-medium">Name of your business</label>
+                <label className="w-full text-lg font-medium">Your Business's Name</label>
                 <input
                   className="mt-1 w-full text-lg border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   placeholder="Type in your business name"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
+                  onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
                   value={paymentSettingsState.merchantName}
                 ></input>
@@ -224,9 +223,9 @@ const Intro = ({
               </div>
             </div>
             {/*--- text ---*/}
-            <div className="mt-10 flex-1 flex flex-col space-y-10">
-              <div className="textXl font-semibold">Your QR code was successfully created!</div>
-              <div className="textXl">Please check your email. We emailed it to you, along with instructions on how to print and display it for your customers.</div>
+            <div className="textXl mt-8 flex-1 flex flex-col space-y-8">
+              <div className="font-semibold">Your QR code was created!</div>
+              <div className="">We emailed it to you, along with instructions on how to print and display it.</div>
             </div>
             {/*--- buttons ---*/}
             <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between">
@@ -242,30 +241,38 @@ const Intro = ({
 
         {/*--- how1 ---*/}
         {step == "how1" && (
-          <div className="w-full h-full flex flex-col items-center">
-            {/*--- image ---*/}
-            <div className="relative portrait:w-[100vw] portrait:h-[calc(100vw*(3/4))] landscape:w-[40%] landscape:h-[100%] flex-none">
-              <Image
-                src="/intro-scan.png"
-                alt="scan"
-                fill
-                style={{
-                  objectFit: "cover",
-                }}
-              />
+          <div className="textXl w-full h-full flex flex-col items-center">
+            {/*--- close button ---*/}
+            <div className="w-full h-[8%] min-h-[70px]">
+              <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-3xl p-2">
+                &#10005;
+              </div>
             </div>
-            {/*--- text ---*/}
-            <div className="flex-1 flex flex-col items-center textXl space-y-3 portrait:md:space-y-4 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
-              <div className="font-bold text2xl py-2 font-semibold">How does a customer pay?</div>
+            {/*--- title + image + text ---*/}
+            <div className="flex-1 flex flex-col items-center space-y-4">
+              {/*--- title ---*/}
+              <div className="font-bold">How does a customer pay?</div>
+              {/*--- image ---*/}
+              <div className="relative w-full h-[calc(100vw*(3/4*0.89))] flex-none">
+                <Image
+                  src="/intro-scan.png"
+                  alt="scan"
+                  fill
+                  style={{
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+              {/*--- text ---*/}
               <div className="relative">
                 When a customer scans your QR code, their{" "}
                 <span className="group">
-                  <span className="link">MetaMask App</span>
+                  <span className="link">MetaMask</span>
                   <div className="w-full top-[calc(100%-32px)] left-0 introTooltip">
                     MetaMask is currently the most popular App to send and receive tokens. It is used by 50+ million people worldwide.
                   </div>
                 </span>{" "}
-                will open. The customer then <span className="font-semibold">enters the amount of {paymentSettingsState?.merchantCurrency} for payment</span>.
+                app will open. The customer then <span className="font-semibold">enters the amount of {paymentSettingsState?.merchantCurrency} for payment</span>.
               </div>
               <div className="relative">
                 When the customer submits the payment,{" "}
@@ -275,8 +282,8 @@ const Intro = ({
                     The USDC token is used by almost all crypto users. 1 USDC token equals to 1 USD, as gauranteed by Circle.
                   </div>
                 </span>{" "}
-                (equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered) will be be sent from
-                the customer's MetaMask App to your Flash App.
+                ({paymentSettingsState?.merchantCurrency == "USD" ? "" : "with a value "}equal to the amount of {paymentSettingsState?.merchantCurrency} entered) will be be sent
+                from the customer's MetaMask app to your Flash app.
               </div>
             </div>
             {/*--- buttons ---*/}
@@ -293,65 +300,70 @@ const Intro = ({
 
         {/*--- link (if coinbase && not "Any country") ---*/}
         {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="w-full h-full flex flex-col items-center">
-            <div className="w-full h-[7%]">
+          <div className="textXl w-full h-full flex flex-col items-center">
+            <div className="w-full h-[8%] min-h-[70px]">
               <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-lg font-medium p-2">
                 SKIP
               </div>
             </div>
-            {/*--- animation ---*/}
-            <div className="w-full h-[150px] flex items-center justify-center">
-              <Flow2 paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
+            <div className="space-y-8">
+              {/*--- title ---*/}
+              <div className="font-bold text-center">How do I cash out?</div>
+              {/*--- animation ---*/}
+              <div className="w-full flex items-center justify-center">
+                <Flow2 paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
+              </div>
+              {/*--- text ---*/}
+              <div className="space-y-4">
+                <div className="">To cash out funds to your bank, you must first link a Coinbase account to Flash. Then, simply click “Cash Out” in the Flash app.</div>
+                <div className="">
+                  When you cash out, USDC will be automatically converted to EUR. Flash is designed such that you will not lose money due to changing conversion rates. If a
+                  customer pays you 10 EUR, you will receive 10 EUR in the bank (there are no fees).
+                </div>
+                {/*--- buttons ---*/}
+                <div className="pt-1 space-y-5 textLg">
+                  <button className="w-full h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]" onClick={onClickSIWC}>
+                    Link Coinbase Account
+                  </button>
+                  <div className="w-full text-gray-600 font-medium underline underline-offset-[3px] text-center" onClick={() => setStep("nocoinbase")}>
+                    I don't have one
+                  </div>
+                </div>
+              </div>
             </div>
-            {/*--- text ---*/}
-            <div className="textXl">
-              To cash out funds to your bank, you will need to link a Coinbase account to Flash. Once linked, cashing out on Flash is just a few easy clicks and with no fees.
-            </div>
-            <div className="h-[2%]"></div>
-            <div className="textXl">
-              When you cash out, USDC will automatically be converted to EUR. Flash is designed so that you will not lose money from changing conversion rates, meaning if a
-              customer pays you 10 EUR, you will receive 10 EUR in the bank.
-            </div>
-            <div className="h-[3%]"></div>
-            {/*--- buttons ---*/}
-            <button className="w-full h-[60px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]" onClick={onClickSIWC}>
-              Link Coinbase Account
-            </button>
-            <div className="h-[3%]"></div>
-            <button className="w-full h-[60px] bg-white border-2 border-gray-500 text-gray-500 font-medium rounded-[4px]" onClick={() => setStep("nocoinbase")}>
-              I don't have one
-            </button>
           </div>
         )}
 
         {step == "nocoinbase" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="w-full h-full flex flex-col items-center">
-            <div className="w-full h-[12%]">
+          <div className="textXl w-full h-full flex flex-col items-center">
+            {/*--- skip button ---*/}
+            <div className="w-full h-[8%] min-h-[70px]">
               <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-lg font-medium p-2 cursor-pointer">
                 SKIP
               </div>
             </div>
-            <div className="text-center textLg font-bold">Don't Have a Coinbase Account?</div>
-            <div className="h-[6%]"></div>
-            {/*--- text ---*/}
-            <div className="textXl px-3">
-              No worries, it’s easy to create one and it only takes a couple of minutes. Click the button below to be redirected to Coinbase’s app. There, you can create an account
-              and return to Flash to link it later.
-            </div>
-            <div className="h-[6%]"></div>
-            {/*--- buttons ---*/}
-            <div className="w-full flex flex-col space-y-6 text-lg">
-              <a href="https://www.coinbase.com/signup" target="_blank">
-                <button className="w-full h-[60px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]">Create Account</button>
-              </a>
-              <div className="flex space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
-                <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
-                <div className="">
-                  <div className="">Can I use a different cryptocurrency exchange?</div>
-                  <div className={`${expand ? "max-h-[300px]" : "max-h-0"} overflow-hidden`}>
-                    <div className="py-2">
-                      Flash only supports Coinbase to cash out to your bank. If you prefer another exchange, you won't be able to use this feature and must cash out yourself using
-                      your preferred cryptocurrency exchange.
+            <div className="space-y-8">
+              {/*--- title ---*/}
+              <div className="text-center textLg font-bold">Don't Have a Coinbase Account?</div>
+              {/*--- text ---*/}
+              <div className="">
+                No worries, it’s easy to create one and it only takes a couple of minutes. Click the button below to be redirected to Coinbase’s app. There, you can create an
+                account and return to Flash to link it later.
+              </div>
+              {/*--- buttons ---*/}
+              <div className="w-full flex flex-col space-y-6">
+                <a href="https://www.coinbase.com/signup" target="_blank">
+                  <button className="textLg w-full h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]">Create Account</button>
+                </a>
+                <div className="text-sm flex space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
+                  <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
+                  <div className="">
+                    <div className="">Can I use a different cryptocurrency exchange?</div>
+                    <div className={`${expand ? "max-h-[300px]" : "max-h-0"} overflow-hidden`}>
+                      <div className="py-2">
+                        Currently, Coinbase is the only platform that can be integrated with Flash. If you prefer another exchange, you can transfer USDC tokens from Flash to your
+                        preferred platform. Then, log into that platform and cash out yourself.
+                      </div>
                     </div>
                   </div>
                 </div>
