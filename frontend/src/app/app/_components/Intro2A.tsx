@@ -12,6 +12,7 @@ import Flow from "./Flow";
 import Flow2 from "./Flow2";
 import Flow3 from "./Flow3";
 import ErrorModal from "./modals/ErrorModal";
+import SkipModal from "./modals/SkipModal";
 // constants
 import { countryData, countryCurrencyList, currency2number, merchantType2data } from "@/utils/constants";
 // images
@@ -20,6 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faCircleCheck, faPlus, faMinus, faX } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
+import { ResourceNotFoundRpcError } from "viem";
 
 const Intro = ({
   paymentSettingsState,
@@ -46,6 +48,7 @@ const Intro = ({
   const [isSent, setIsSent] = useState(true);
   const [errorMsg, setErrorMsg] = useState<any>("");
   const [errorModal, setErrorModal] = useState(false);
+  const [skipModal, setSkipModal] = useState(false);
   const [url, setUrl] = useState("");
   const [save, setSave] = useState(false);
   const [qrWidth, setQrWidth] = useState(0);
@@ -161,7 +164,7 @@ const Intro = ({
                 <label className="w-full text-lg font-medium">Your business's name</label>
                 <input
                   className="mt-1 w-full text-lg border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
-                  placeholder="Type in your business name"
+                  placeholder="Type in the name of your business"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
                   value={paymentSettingsState.merchantName}
@@ -180,7 +183,7 @@ const Intro = ({
                       merchantCountry: merchantCountryTemp,
                       merchantCurrency: merchantCurrencyTemp,
                     });
-                    setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "" }); // need to set blank as cex will change
+                    setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" }); // need to reset cexEvmAddress
                     e.target.closest("select")?.blur();
                     setSave(!save);
                   }}
@@ -207,7 +210,22 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("welcome")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("how1")}>
+              <button
+                className="introNext2"
+                onClick={() => {
+                  if (!paymentSettingsState.merchantName) {
+                    setErrorModal(true);
+                    setErrorMsg("Please enter the name of your business");
+                    return;
+                  }
+                  if (!paymentSettingsState.merchantEmail) {
+                    setErrorModal(true);
+                    setErrorMsg("Please enter a email address");
+                    return;
+                  }
+                  setStep("how1");
+                }}
+              >
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -253,7 +271,7 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between">
-              <button className="introBack2" onClick={() => setStep("emailSent")}>
+              <button className="introBack2" onClick={() => setStep("info")}>
                 &#10094;&nbsp; BACK
               </button>
               <button className="introNext2" onClick={() => setStep("link")}>
@@ -267,7 +285,7 @@ const Intro = ({
         {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
           <div className="textXl w-full h-full flex flex-col items-center">
             <div className="w-full h-[8%] min-h-[70px]">
-              <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-lg font-medium p-2">
+              <div onClick={() => setSkipModal(true)} className="absolute top-3 right-5 text-lg font-medium p-2">
                 SKIP
               </div>
             </div>
@@ -301,7 +319,7 @@ const Intro = ({
           <div className="textXl w-full h-full flex flex-col items-center">
             {/*--- skip button ---*/}
             <div className="w-full h-[8%] min-h-[70px]">
-              <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-lg font-medium p-2 cursor-pointer">
+              <div onClick={() => setSkipModal(true)} className="absolute top-3 right-5 text-lg font-medium p-2 cursor-pointer">
                 SKIP
               </div>
             </div>
@@ -318,7 +336,7 @@ const Intro = ({
                 <a href="https://www.coinbase.com/signup" target="_blank">
                   <button className="textLg w-full h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]">Create Account</button>
                 </a>
-                <div className="text-sm flex space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
+                <div className="flex space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
                   <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
                   <div className="">
                     <div className="">Can I use a different cryptocurrency exchange?</div>
@@ -363,12 +381,20 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
-              <button className="introBack2" onClick={() => setStep("emailSent")}>
+              <button className="introBack2" onClick={() => setStep("how1")}>
                 BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("final")}>
-                {cashoutSettingsState.cexEvmAddress ? "NEXT" : "Skip"}
-              </button>
+              <button
+                className="introNext2"
+                onClick={() => {
+                  if (cashoutSettingsState.cexEvmAddress) {
+                    setErrorModal(true);
+                    setErrorMsg("Please enter your CEX's deposit address for USDC on the Polygon network");
+                    return;
+                  }
+                  setStep("final");
+                }}
+              ></button>
             </div>
           </div>
         )}
@@ -397,6 +423,7 @@ const Intro = ({
         )}
       </div>
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      {skipModal && <SkipModal setSkipModal={setSkipModal} setPage={setPage} />}
     </div>
   );
 };

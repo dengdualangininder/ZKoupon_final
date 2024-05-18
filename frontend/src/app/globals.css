@@ -352,23 +352,27 @@
   }
 
   .cashoutContainer {
-    @apply w-full min-h-[240px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] flex flex-col justify-between px-6 portrait:sm:px-10 landscape:lg:px-10 py-4 portrait:sm:py-8 landscape:lg:py-8 rounded-xl bg-white border border-gray-400;
+    @apply w-full min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] flex flex-col px-7 portrait:sm:px-10 landscape:lg:px-10 py-5 portrait:sm:py-8 landscape:lg:py-8 rounded-xl bg-slate-200 border border-gray-300;
   }
 
   .cashoutContainerStats {
-    @apply px-6 py-4 rounded-xl bg-white border border-gray-400;
+    @apply px-6 py-4 rounded-xl bg-slate-200 border border-gray-300;
   }
 
   .cashoutHeader {
-    @apply text2xl font-bold;
+    @apply textXl font-medium;
   }
 
   .cashoutBalance {
-    @apply text4xl mt-3 portrait:sm:mt-6 landscape:lg:mt-6 font-medium;
+    @apply text2xl font-bold flex items-center;
   }
 
-  .cashoutDetails {
-    @apply textLg leading-relaxed font-medium w-[160px] portrait:sm:w-[220px] landscape:lg:w-[220px] portrait:lg:w-[260px] landscape:xl:w-[260px] mb-6 overflow-hidden transition-all duration-500 relative;
+  .cashoutDetailsContainer {
+    @apply textLg leading-relaxed font-medium w-[160px] portrait:sm:w-[220px] landscape:lg:w-[220px] portrait:lg:w-[260px] landscape:xl:w-[260px] overflow-hidden transition-all duration-500 relative;
+  }
+
+  .cashoutDetailsContainer2 {
+    @apply mt-3 mb-4 px-3 py-2 border bg-slate-100 rounded-md;
   }
 
   .cashoutShow {
@@ -384,7 +388,7 @@
   }
 
   .cashoutButton {
-    @apply textBase w-[220px] portrait:sm:w-[250px] landscape:lg:w-[250px] h-[44px] portrait:sm:h-[56px] landscape:lg:h-[56px] font-medium text-white bg-blue-500 active:opacity-50 rounded-full;
+    @apply textBase w-full portrait:sm:w-[250px] landscape:lg:w-[250px] h-[52px] portrait:sm:h-[56px] landscape:lg:h-[56px] font-medium text-white bg-blue-500 active:opacity-50 rounded-md;
   }
 
   .cashoutTooltip {

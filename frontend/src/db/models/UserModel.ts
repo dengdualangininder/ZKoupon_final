@@ -19,6 +19,7 @@ export type CashoutSettings = {
   cexEvmAddress: string;
   cexAccountName: string;
   isEmployeePass: boolean;
+  cashoutIntro: boolean;
 };
 
 export type Transaction = {
@@ -78,6 +79,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     cexEvmAddress: String,
     cexAccountName: String,
     isEmployeePass: Boolean,
+    cashoutIntro: Boolean,
   },
   transactions: [
     {

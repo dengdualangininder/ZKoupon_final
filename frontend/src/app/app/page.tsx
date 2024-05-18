@@ -21,6 +21,7 @@ import PWA from "./_components/PWA";
 import Intro from "./_components/Intro";
 import Intro2B from "./_components/Intro2B";
 import Intro2A from "./_components/Intro2A";
+import CashoutIntroModal from "./_components/modals/CashoutIntroModal";
 
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
@@ -42,6 +43,8 @@ const User = () => {
   const [signOutModal, setSignOutModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [coinbaseIntroModal, setCoinbaseIntroModal] = useState(false);
+  const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
+  const [cashbackModal, setCashbackModal] = useState(false);
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
@@ -237,7 +240,7 @@ const User = () => {
             substate == "fromIntro" ? setCoinbaseIntroModal(true) : null;
             window.sessionStorage.removeItem("cbRandomSecure");
           }
-          setPage("intro"); // starthere
+          setPage("app"); // starthere
         }
         // if new user
         if (data == "create new user") {
@@ -392,7 +395,7 @@ const User = () => {
                 ? [
                     { id: "qrCode", title: "QR Code", img: "/qr.svg" },
                     { id: "payments", title: "Payments", img: "/payments.svg" },
-                    { id: "cashOut", title: "Cash Out", img: "/cashout.svg" },
+                    { id: "cashOut", title: "Cash Out", img: "/cashout.svg", modal: "cashoutIntroModal" },
                     { id: "settings", title: "Settings", img: "/settings.svg" },
                   ]
                 : [
@@ -403,10 +406,25 @@ const User = () => {
                 <div
                   id={i.id}
                   key={i.id}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     setMenu(e.currentTarget.id);
                     if (i.modal == "signOutModal") {
                       setSignOutModal(true);
+                    }
+                    if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
+                      setCashoutIntroModal(true);
+                      setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
+                      const res = await fetch("/api/saveSettings", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: { ...cashoutSettingsState, cashoutIntro: false }, idToken, publicKey }),
+                      });
+                      const data = await res.json();
+                      if (data === "saved") {
+                        console.log("cashoutIntro settings saved");
+                      } else {
+                        console.log("error: cashoutIntro settings not saved");
+                      }
                     }
                   }}
                   className={`${!isAdmin || menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
@@ -522,19 +540,48 @@ const User = () => {
               <div className="modal">
                 {/*---content---*/}
                 <div className="grow flex flex-col justify-center space-y-6 text-start">
-                  <p>Your Flash account is ready!</p>
-                  <div>
-                    If you have questions, read to the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
-                  </div>
+                  <p>Your Coinbase account is linked!</p>
+                  <p>Your Flash account is ready.</p>
+                  <p>
+                    If you have questions, read the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
+                  </p>
                 </div>
                 {/*--- buttons ---*/}
                 <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonWhite">
                   Close
                 </button>
               </div>
-              <div className="modalBlackout" onClick={() => setCoinbaseIntroModal(false)}></div>
+              <div
+                className="modalBlackout"
+                onClick={() => {
+                  setCoinbaseIntroModal(false);
+                  setCashbackModal(true);
+                }}
+              ></div>
             </div>
           )}
+          {cashbackModal && (
+            <div>
+              <div className="modal">
+                {/*---content---*/}
+                <div className="grow flex flex-col justify-center space-y-6 text-start textBase">
+                  <p>Our journey together towards global payments with 0% fees is a long one.</p>
+                  <p>For one, credit cards charge businesses ~3% and gives ~1% back to customers. This locks customers into using credit cards.</p>
+                  <p>
+                    To be able to compete, we are requiring businesses give an instant 2% discount to customers. If a customer pays you 10 EUR, you will ultimately recieve 9.8 EUR
+                    in the bank. All savings go to customers (Flash makes zero profit per transaction).
+                  </p>
+                  <p>When crypto payments become more popular, we will make this 2% discount optional.</p>
+                </div>
+                {/*--- buttons ---*/}
+                <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonWhite">
+                  Close
+                </button>
+              </div>
+              <div className="modalBlackout" onClick={() => setCashbackModal(false)}></div>
+            </div>
+          )}
+          {cashoutIntroModal && <CashoutIntroModal setCashoutIntroModal={setCashoutIntroModal} />}
         </div>
       )}
     </div>

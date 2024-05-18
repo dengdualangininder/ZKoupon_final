@@ -32,11 +32,9 @@ export const POST = async (request: Request) => {
         "paymentSettings.employeePass": "",
         "cashoutSettings.cex": cex,
         "cashoutSettings.cexEvmAddress": "",
-        "cashoutSettings.cexApiKey": "",
-        "cashoutSettings.cexApiSecret": "",
         "cashoutSettings.cexAccountName": "",
+        "cashoutSettings.cashoutIntro": true,
         transactions: [],
-        intro: true,
       });
       return NextResponse.json(doc);
     }
