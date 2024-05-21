@@ -164,8 +164,10 @@ const User = () => {
     }
 
     // query localStorage to determine user logged into web3Auth (TODO: is sessionId sometimes invalid?)
-    const sessionIdObject = window.localStorage.getItem("openlogin_store");
-    if (!sessionIdObject || !JSON.parse(sessionIdObject).sessionId) {
+    const sessionIdObject = window.localStorage.getItem("openlogin_store") || "";
+    if (sessionIdObject && JSON.parse(sessionIdObject).sessionId) {
+      // web3Auth sessionId detected
+    } else {
       console.log("no web3Auth sessionId, page set to Login");
       setPage("login");
       return;

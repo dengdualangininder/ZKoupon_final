@@ -158,7 +158,7 @@ const CashOut = ({
       let totalCurrencyAmount = 0;
       let totalCurrencyAmountAfterCashback = 0;
       let totalTokenAmount = 0;
-      if (transactionsState != null && Array.isArray(transactionsState) && transactionsState?.length) {
+      if (transactionsState?.length > 0) {
         for (const txn of transactionsState) {
           totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
           totalCurrencyAmountAfterCashback = totalCurrencyAmountAfterCashback + Number(txn.currencyAmountAfterCashback ?? 0);
