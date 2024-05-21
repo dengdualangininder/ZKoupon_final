@@ -39,7 +39,7 @@ const CashOut = ({
   paymentSettingsState: PaymentSettings | null;
   cashoutSettingsState: CashoutSettings | null;
   setCashoutSettingsState: any;
-  transactionsState: Transaction[] | null;
+  transactionsState: Transaction[];
   isMobile: boolean;
   idToken: string;
   publicKey: string;
@@ -158,7 +158,7 @@ const CashOut = ({
       let totalCurrencyAmount = 0;
       let totalCurrencyAmountAfterCashback = 0;
       let totalTokenAmount = 0;
-      if (transactionsState?.length) {
+      if (transactionsState != null && Array.isArray(transactionsState) && transactionsState?.length) {
         for (const txn of transactionsState) {
           totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
           totalCurrencyAmountAfterCashback = totalCurrencyAmountAfterCashback + Number(txn.currencyAmountAfterCashback ?? 0);
@@ -660,7 +660,7 @@ const CashOut = ({
               </div>
             </div>
             {/*--- fee ---*/}
-            <div className="hidden w-full flex justify-end relative">
+            <div className="hidden w-full justify-end relative">
               <div className="flex items-center">
                 Fee: 0.10 USDC
                 <span className="group">
