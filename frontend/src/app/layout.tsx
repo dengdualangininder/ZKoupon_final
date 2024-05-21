@@ -27,6 +27,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script src="@/utils/maze.js"></script>
+      </head>
       <body className={inter.className}>
         <main className="relative overflow-hidden">{children}</main>
       </body>

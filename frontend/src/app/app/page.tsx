@@ -1,8 +1,6 @@
 "use client";
 // nextjs
 import { useState, useEffect, useRef } from "react";
-import Head from "next/head";
-import Script from "next/script";
 import Image from "next/image";
 import axios from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
@@ -363,9 +361,6 @@ const User = () => {
 
   return (
     <div className="pl-[calc(100vw-100%)] text-black">
-      <Head>
-        <Script src="@/utils/maze.js" />
-      </Head>
       {page === "loading" && (
         <div className="w-full h-screen flex items-center justify-center">
           {/* LOADING */}
