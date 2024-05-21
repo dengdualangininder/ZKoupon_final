@@ -1,6 +1,7 @@
 "use client";
 // nextjs
 import { useState, useEffect, useRef } from "react";
+import Head from "next/head";
 import Image from "next/image";
 import axios from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
@@ -91,8 +92,10 @@ const User = () => {
   // useEffect ends and web3Auth even lsitener will log "connecting", and then "connected". /app will then be rendered twice (why??) but useEffect is not run
   // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
   useEffect(() => {
-    // setPage("intro");
-    // return;
+    // usability test
+    setPage("intro");
+    return;
+
     console.log("/app, page.tsx, useEffect run once");
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
@@ -332,10 +335,12 @@ const User = () => {
 
   return (
     <div className="pl-[calc(100vw-100%)] text-black">
+      <Head>
+        <script type="text/javascript" src="@/utils/maze.js"></script>
+      </Head>
       {page === "loading" && (
         <div className="w-full h-screen flex items-center justify-center">
           {/* LOADING */}
-
           <div className="w-full absolute flex flex-col items-center">
             <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] animate-spin">
               <Image src="/loadingCircleBlack.svg" alt="loading" fill />
@@ -390,52 +395,47 @@ const User = () => {
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
           <div className="portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 z-[1] relative">
             {/*---menu---*/}
-            <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
-              {(isAdmin
-                ? [
-                    { id: "qrCode", title: "QR Code", img: "/qr.svg" },
-                    { id: "payments", title: "Payments", img: "/payments.svg" },
-                    { id: "cashOut", title: "Cash Out", img: "/cashout.svg", modal: "cashoutIntroModal" },
-                    { id: "settings", title: "Settings", img: "/settings.svg" },
-                  ]
-                : [
-                    { id: "payments", title: "Sign Out", img: "/signout.svg", modal: "signOutModal" },
-                    { id: "qrCode", title: "QR Code", img: "/qr.svg" },
-                  ]
-              ).map((i) => (
-                <div
-                  id={i.id}
-                  key={i.id}
-                  onClick={async (e) => {
-                    setMenu(e.currentTarget.id);
-                    if (i.modal == "signOutModal") {
-                      setSignOutModal(true);
-                    }
-                    if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
-                      setCashoutIntroModal(true);
-                      setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
-                      const res = await fetch("/api/saveSettings", {
-                        method: "POST",
-                        headers: { "content-type": "application/json" },
-                        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: { ...cashoutSettingsState, cashoutIntro: false }, idToken, publicKey }),
-                      });
-                      const data = await res.json();
-                      if (data === "saved") {
-                        console.log("cashoutIntro settings saved");
-                      } else {
-                        console.log("error: cashoutIntro settings not saved");
+            {isAdmin && (
+              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
+                {[
+                  { id: "payments", title: "PAYMENTS", clickedImg: "/payments-clicked.svg", unclickedImg: "/payments-unclicked.svg" },
+                  { id: "cashOut", title: "CASH OUT", clickedImg: "/cashout-clicked.svg", unclickedImg: "/cashout-unclicked.svg", modal: "cashoutIntroModal" },
+                  { id: "settings", title: "SETTINGS", clickedImg: "/settings-clicked.svg", unclickedImg: "/settings-unclicked.svg" },
+                ].map((i) => (
+                  <div
+                    className={`cursor-pointer flex flex-col items-center`}
+                    id={i.id}
+                    key={i.id}
+                    onClick={async (e) => {
+                      setMenu(e.currentTarget.id);
+                      if (i.modal == "signOutModal") {
+                        setSignOutModal(true);
                       }
-                    }
-                  }}
-                  className={`${!isAdmin || menu === i.id ? "opacity-100" : "opacity-50"} cursor-pointer xs:hover:opacity-100 lg:w-auto flex flex-col items-center`}
-                >
-                  <div className="relative w-[66px] h-[20px] portrait:sm:h-[36px] landscape:lg:h-[36px] point-events-none">
-                    <Image src={i.img} alt={i.title} fill />
+                      if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
+                        setCashoutIntroModal(true);
+                        setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
+                        const res = await fetch("/api/saveSettings", {
+                          method: "POST",
+                          headers: { "content-type": "application/json" },
+                          body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: { ...cashoutSettingsState, cashoutIntro: false }, idToken, publicKey }),
+                        });
+                        const data = await res.json();
+                        if (data === "saved") {
+                          console.log("cashoutIntro settings saved");
+                        } else {
+                          console.log("error: cashoutIntro settings not saved");
+                        }
+                      }
+                    }}
+                  >
+                    <div className="relative w-[66px] h-[24px] portrait:sm:h-[36px] landscape:lg:h-[36px] point-events-none">
+                      {menu === i.id ? <Image src={i.clickedImg} alt={i.title} fill /> : <Image src={i.unclickedImg} alt={i.title} fill />}
+                    </div>
+                    <div className="menuText">{i.title}</div>
                   </div>
-                  <div className="text-sm landscape:sm:text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:md:text-2xl font-medium pointer-events-none">{i.title}</div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
           {/*---menu pages---*/}
           {menu === "payments" && (

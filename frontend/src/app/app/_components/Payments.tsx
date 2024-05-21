@@ -11,6 +11,10 @@ import ErrorModal from "./modals/ErrorModal";
 // constants
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 import { currency2decimal, merchantType2data } from "@/utils/constants";
+// other
+import { addDays } from "date-fns";
+import { DateRange, DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 // images
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
@@ -38,13 +42,10 @@ const Payments = ({
   const [clickedTxnIndex, setClickedTxnIndex] = useState<null | number>();
   const [refundStatus, setRefundStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
   const [refundAllStatus, setRefundAllStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
-  const [refundNoteStatus, setRefundNoteStatus] = useState("processing"); // "false" | "processing" | "true"
+  const [toRefundStatus, setToRefundStatus] = useState("processing"); // "false" | "processing" | "true"
   const [pageNumber, setPageNumber] = useState(1);
   const [selectedStartMonth, setSelectedStartMonth] = useState("select");
   const [selectedEndMonth, setSelectedEndMonth] = useState("select");
-  const [searchedTxns, setSearchedTxns] = useState<Transaction[]>([]);
-  const [searchedChars, setSearchedChars] = useState("");
-  const [isSearch, setIsSearch] = useState(false);
   // modal states
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -52,6 +53,14 @@ const Payments = ({
   const [downloadModal, setDownloadModal] = useState(false);
   const [downloadDates, setDownloadDates] = useState<string[]>([]);
   const [refundAllModal, setRefundAllModal] = useState(false);
+  const [searchModal, setSearchModal] = useState(false);
+  // filter states
+  const [searchedTxns, setSearchedTxns] = useState<Transaction[]>([]);
+  const [last4Chars, setLast4Chars] = useState("");
+  const [showToRefund, setShowToRefund] = useState(false);
+  const [showRefunded, setShowRefunded] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [searchDate, setSearchDate] = useState<DateRange | undefined>(undefined);
 
   const [showToolsModal, setShowToolsModal] = useState(false);
   const [showQr, setShowQr] = useState(false);
@@ -92,7 +101,7 @@ const Payments = ({
     setDetailsModal(true);
     setClickedTxnIndex(clickedTxnIndexTemp);
     setClickedTxn(clickedTxnTemp);
-    setRefundNoteStatus(clickedTxnTemp.refundNote ? "true" : "false");
+    setToRefundStatus(clickedTxnTemp.toRefund ? "true" : "false");
   };
 
   const onClickRefund = async () => {
@@ -148,22 +157,22 @@ const Payments = ({
     }
   };
 
-  const onClickRefundNote = async () => {
-    console.log("onClickRefundNote, clickedTxn:", clickedTxn);
-    setRefundNoteStatus("processing");
+  const onClickToRefund = async () => {
+    console.log("onClickToRefund, clickedTxn:", clickedTxn);
+    setToRefundStatus("processing");
     // save to db
-    const res = await fetch("/api/refundNote", {
+    const res = await fetch("/api/toRefund", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ merchantEvmAddress: paymentSettingsState.merchantEvmAddress, txnHash: clickedTxn.txnHash, refundNote: clickedTxn.refundNote }),
+      body: JSON.stringify({ merchantEvmAddress: paymentSettingsState.merchantEvmAddress, txnHash: clickedTxn.txnHash, toRefund: clickedTxn.toRefund }),
     });
     const data = await res.json();
-    console.log("refundNote api response:", data);
+    console.log("toRefund api response:", data);
     // success or error
     if (data == "saved") {
-      setRefundNoteStatus(clickedTxn.refundNote ? "false" : "true");
+      setToRefundStatus(clickedTxn.toRefund ? "false" : "true");
       let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
-      transactionsStateTemp[clickedTxnIndex!].refundNote = !clickedTxn.refundNote;
+      transactionsStateTemp[clickedTxnIndex!].toRefund = !clickedTxn.toRefund;
       setTransactionsState(transactionsStateTemp);
     } else {
       if (data.status == "error") {
@@ -171,7 +180,7 @@ const Payments = ({
       } else {
         setErrorMsg("Refund status was not saved to database");
       }
-      setRefundNoteStatus(clickedTxn.refundNote ? "true" : "false");
+      setToRefundStatus(clickedTxn.toRefund ? "true" : "false");
       setErrorModal(true);
     }
   };
@@ -259,17 +268,120 @@ const Payments = ({
     setRefundAllModal(false);
   };
 
+  const clearFilter = () => {
+    setShowCalendar(false);
+    setSearchDate(undefined);
+    setLast4Chars("");
+  };
+
+  const search = async () => {
+    // if no search criteria selected and user clicks "Apply" button
+    if (!last4Chars && !showRefunded && !showToRefund && !searchDate?.to) {
+      setErrorModal(true);
+      setErrorMsg("Please select a search criteria");
+      return;
+    }
+
+    // filter search
+    let searchedTxnsTemp: Transaction[] = transactionsState;
+    if (last4Chars) {
+      searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == last4Chars.toLowerCase());
+    }
+    if (showToRefund) {
+      searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.toRefund == true);
+    }
+    if (showRefunded) {
+      searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.refund == true);
+    }
+    if (searchDate?.to) {
+      searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == last4Chars.toLowerCase());
+    }
+    setSearchedTxns(searchedTxnsTemp);
+  };
+
   return (
-    <section className="w-full flex flex-col items-center">
+    <section className="w-full">
+      {/*--- TOP BAR h-120px ---*/}
+      <div className="px-6 w-full portrait:md:max-w-[85%] landscape:lg:max-w-[75%] h-[120px] portrait:md:h-[120px] landscape:lg:h-[120px] landscape:xl:h-[140px] flex items-center justify-between relative">
+        {/*--- search button + download button ---*/}
+        <div className="h-full flex items-center space-x-8">
+          {/*--- filter button ---*/}
+          <div className="flex flex-col items-center" onClick={() => setSearchModal(!searchModal)}>
+            <div className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] bg-gray-200 rounded-full flex items-center justify-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none">
+              <div className="relative w-[22px] portrait:md:w-[36px] landscape:lg:w-[36px] h-full">
+                <Image src="/search.svg" alt="search" fill />
+              </div>
+            </div>
+            <div className="menuText">SEARCH</div>
+          </div>
+          {/*--- download button ---*/}
+          <div className="flex flex-col items-center">
+            <div
+              className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none"
+              onClick={() => {
+                createDownloadDates();
+                setDownloadModal(true);
+              }}
+            >
+              <div className="relative w-[22px] portrait:md:w-[36px] landscape:lg:w-[36px] h-full">
+                <Image src="/download.svg" alt="download" fill />
+              </div>
+            </div>
+            <div className="menuText">DOWNLOAD</div>
+          </div>
+        </div>
+        {/*--- qr code button ---*/}
+        <div className="flex flex-col items-center">
+          <div className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] flex justify-center items-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none">
+            <div className="relative w-[28px] h-[28px]">
+              <Image src="/qr.svg" alt="QR code" fill />
+            </div>
+          </div>
+          <div className="menuText">QR CODE</div>
+        </div>
+        {/*--- SEARCH BAR ---*/}
+        {/* <div className={`${isSearch ? "translate-x-[0px]" : "translate-x-[100vw]"} w-full h-full flex justify-center items-center absolute transition-transform duration-500`}>
+          <div className="w-[300px] portrait:sm:w-[420px] landscape:lg:w-[420px] pb-2 h-[68px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex flex-col justify-between">
+            <div className="w-full text-center textSm">Enter last 4 chars of the customer's address</div>
+            <div className="w-full h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] flex space-x-2 portrait:sm:space-x-4 landscape:lg:space-x-4">
+              <input
+                onChange={(e) => {
+                  setSearchedChars(e.currentTarget.value);
+                }}
+                value={searchedChars}
+                className="px-2 w-[50%] h-full inputOutline textXl border-gray-400"
+              ></input>
+              <button
+                onClick={() => {
+                  const searchedTxnsTemp = transactionsState?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == searchedChars.toLowerCase());
+                  setSearchedTxns(searchedTxnsTemp);
+                }}
+                className="w-[25%] textSm h-full text-white border border-blue-500 rounded-[4px] bg-blue-500"
+              >
+                Search
+              </button>
+              <button
+                onClick={() => {
+                  setSearchedTxns([]);
+                  setSearchedChars("");
+                  setIsSearch(false);
+                }}
+                className="w-[25%] textSm h-full border border-gray-500 rounded-[4px]"
+              >
+                Exit
+              </button>
+            </div>
+          </div>
+        </div> */}
+      </div>
+
       {/*--- Table or "no payments" ---*/}
       <div className="w-full overflow-y-auto">
-        <div className="landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] portrait:h-[calc(100vh-84px-74px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] flex flex-col items-center select-none">
-          <table
-            className={`${paymentSettingsState.merchantPaymentType == "inperson" ? "w-[90%] landscape:max-w-[70%] sm:portrait:max-w-[80%]" : ""} table-fixed text-left select-none`}
-          >
-            <thead className="text-base sm:portrait:text-2xl md:landscape:text-2xl">
+        <div className="portrait:h-[calc(100vh-84px-120px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] flex flex-col items-center select-none">
+          <table className={`w-[90%] landscape:max-w-[70%] sm:portrait:max-w-[80%] table-fixed text-left select-none`}>
+            <thead className="text-base portrait:md:text-2xl landscape:lg:text-2xl">
               {/*---headers, 40px---*/}
-              <tr className="h-[50px] sm:portrait:h-[70px] landscape:lg:h-[70px]">
+              <tr className="h-[28px] portrait:md:h-[32px] landscape:lg:h-[32px]">
                 <th className="">Time</th>
                 <th className="text-center">Customer</th>
                 {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
@@ -290,11 +402,11 @@ const Payments = ({
                 .slice((pageNumber - 1) * 6, (pageNumber - 1) * 6 + 6)
                 .map((txn: any, index: number) => (
                   <tr
-                    id={txn.txnHash}
-                    key={index}
                     className={`${
                       txn.refund ? "text-gray-400" : ""
-                    } portrait:h-[calc((100vh-84px-50px-74px-4px)/6)] landscape:h-[74px] portrait:sm:h-[calc((100vh-140px-70px-120px-4px)/6)] landscape:lg:h-[calc((100vh-70px-120px-4px)/6)] landscape:xl:h-[calc((100vh-70px-140px-4px)/6)] flex-none border-t lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer`}
+                    } portrait:h-[calc((100vh-84px-120px-28px-4px)/6)] landscape:h-[90px] portrait:md:h-[calc((100vh-140px-70px-120px-4px)/6)] landscape:lg:h-[calc((100vh-70px-120px-4px)/6)] landscape:xl:h-[calc((100vh-70px-140px-4px)/6)] flex-none border-t lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer`}
+                    id={txn.txnHash}
+                    key={index}
                     onClick={onClickTxn}
                   >
                     {/*---Time---*/}
@@ -358,7 +470,7 @@ const Payments = ({
                         </span>
                         <div
                           className={`${
-                            txn.refundNote && !txn.refund ? "" : "hidden"
+                            txn.toRefund && !txn.refund ? "" : "hidden"
                           } absolute top-[calc(100%)] pr-0.5 right-0 text-sm landscape:lg:text-lg portrait:sm:text-lg font-medium leading-none text-gray-400 whitespace-nowrap`}
                         >
                           To Be Refunded
@@ -367,130 +479,153 @@ const Payments = ({
                     </td>
                   </tr>
                 ))}
-              {pageNumber == maxPageNumber &&
-                Array.from(Array(6 - (transactionsState.length % 6)).keys()).map((i) => (
-                  <tr
-                    className={`h-[calc((100vh-84px-50px-74px-4px)/6)] sm:portrait:h-[calc((100vh-140px-70px-120px-4px)/6)] md:landscape:h-[calc((100vh-70px-120px-4px)/6)]`}
-                  ></tr>
-                ))}
             </tbody>
           </table>
-          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textXl">No payments</div>}
+          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textLg">No payments</div>}
         </div>
       </div>
 
-      {/*--- payments menu bar , w-full h-74px ---*/}
-      <div className="w-full sm:landscape:max-w-[75%] sm:portrait:max-w-[85%] h-[74px] portrait:sm:h-[120px] landscape:lg:h-[120px] landscape:xl:h-[140px] flex items-center flex-none border-t relative">
-        {/*--- MENU BAR ---*/}
-        <div
-          className={`${
-            isSearch ? "translate-x-[-100vw]" : ""
-          } translate-x-0 absolute px-6 w-full h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-center justify-between transition-transform duration-500`}
-        >
-          {/*--- download button ---*/}
+      {/*--- SEARCH MODAL ---*/}
+      <div
+        className={`${
+          searchModal ? "translate-y-[0%]" : "translate-y-[calc(100%+84px+4px)]"
+        } absolute bottom-0 w-full h-[560px] flex flex-col items-center rounded-tl-[32px] rounded-tr-[32px] bg-gray-200 z-[10] transition-transform duration-500`}
+      >
+        {/*--- header + close ---*/}
+        <div className={` w-full h-[80px] flex items-center justify-center flex-none`}>
+          <div className="textXl font-medium">{showCalendar ? "" : "SEARCH"}</div>
           <div
+            className="absolute right-5 text-2xl font-bold px-2 cursor-pointer"
             onClick={() => {
-              createDownloadDates();
-              setDownloadModal(true);
+              setSearchModal(!searchModal);
+              clearFilter();
             }}
-            className={`w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex justify-center items-ceneter text-xl font-bold cursor-pointer lg:hover:bg-gray-100 active:opacity-40 select-none`}
           >
-            <div className="relative w-[30px] portrait:sm:w-[36px] landscape:lg:w-[36px] h-full">
-              <Image src="/download.svg" alt="download" fill />
-            </div>
-          </div>
-          {/*--- navigation buttons ---*/}
-          <div className="h-full flex items-center justify-center">
-            <div
-              className="pb-1 text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer select-none"
-              onClick={() => (pageNumber === 1 ? "" : setPageNumber(pageNumber - 1))}
-            >
-              {"\u2039"}
-            </div>
-            <div className="text-xl sm:portrait:text-3xl md:landscape:text-3xl w-[28px] portrait:sm:w-[40px] landscape:lg:w-[40px] text-center select-none mx-2">{pageNumber}</div>
-
-            <div
-              className="pb-1 text-2xl sm:portrait:text-3xl md:landscape:text-3xl w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 rounded-md lg:hover:opacity-40 active:opacity-40 cursor-pointer select-none"
-              onClick={() => (pageNumber == maxPageNumber ? "" : setPageNumber(pageNumber + 1))}
-            >
-              {"\u203A"}
-            </div>
-          </div>
-          {/*--- search button ---*/}
-          <div
-            onClick={() => setIsSearch(true)}
-            className="relative w-[44px] portrait:sm:w-[64px] landscape:lg:w-[64px] h-full border border-gray-300 rounded-md flex items-center justify-center"
-          >
-            <FontAwesomeIcon icon={faSearch} className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl" />
+            &#10005;
           </div>
         </div>
-        {/*--- SEARCH BAR ---*/}
-        <div className={`${isSearch ? "translate-x-[0px]" : "translate-x-[100vw]"} w-full h-full flex justify-center items-center absolute transition-transform duration-500`}>
-          <div className="w-[300px] portrait:sm:w-[420px] landscape:lg:w-[420px] pb-2 h-[68px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex flex-col justify-between">
-            <div className="w-full text-center textSm">Enter last 4 chars of the customer's address</div>
-            <div className="w-full h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] flex space-x-2 portrait:sm:space-x-4 landscape:lg:space-x-4">
+        {/*--- filters ---*/}
+        {!showCalendar ? (
+          <div className="textLg flex-1 pl-3 pr-6 w-full flex flex-col justify-between">
+            {/*--- customer's address ---*/}
+            <div className="h-[25%] flex items-center justify-between border-b border-gray-300">
+              <div className="font-medium">Customer's Address</div>
               <input
+                className="w-[160px] h-[48px] px-3 text-end rounded-[4px] placeholder:italic placeholder:text-base border border-gray-700 outline-none focus:placeholder:text-transparent"
                 onChange={(e) => {
-                  setSearchedChars(e.currentTarget.value);
+                  setLast4Chars(e.currentTarget.value);
                 }}
-                value={searchedChars}
-                className="px-2 w-[50%] h-full inputOutline textXl border-gray-400"
-              ></input>
-              <button
-                onClick={() => {
-                  const searchedTxnsTemp = transactionsState?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == searchedChars.toLowerCase());
-                  setSearchedTxns(searchedTxnsTemp);
-                }}
-                className="w-[25%] textSm h-full text-white border border-blue-500 rounded-[4px] bg-blue-500"
+                value={last4Chars}
+                placeholder="Enter last 4 chars"
+              />
+            </div>
+            {/*--- "to refund" payments ---*/}
+            <div className="h-[25%] flex items-center justify-between border-b border-gray-300">
+              <div className="textLg font-medium">"To Refund" Payments</div>
+              <input type="checkbox" className="w-[30px] h-[30px] rounded-md border border-gray-400" />
+            </div>
+            {/*--- refunded payments ---*/}
+            <div className="h-[25%] flex items-center justify-between border-b border-gray-300">
+              <div className="textLg font-medium">Refunded Payments</div>
+              <input type="checkbox" className="w-[30px] h-[30px] rounded-md border border-gray-400" />
+            </div>
+            {/*--- date ---*/}
+            <div className="h-[25%] flex items-center justify-between">
+              <div className="textLg font-medium">Date</div>
+              <div
+                className={`${
+                  searchDate && searchDate.to ? "space-x-6 pl-3" : "textBase px-3 text-gray-400 italic justify-end cursor-pointer"
+                } min-w-[160px] h-[48px] flex items-center bg-white rounded-[4px] border border-gray-700`}
+                onClick={() => setShowCalendar(!showCalendar)}
               >
-                Search
+                <div>{searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "Select dates"}</div>
+                <div
+                  className={`${searchDate && searchDate.to ? "" : "hidden"} pl-1 pr-3 cursor-pointer`}
+                  onClick={(e) => {
+                    setSearchDate(undefined);
+                    e.stopPropagation();
+                  }}
+                >
+                  &#10005;
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col items-center mt-6 scale-[115%]">
+            <DayPicker mode="range" selected={searchDate} onSelect={setSearchDate} />
+            <div className="mt-2 text-sm font-semibold w-full h flex items-start justify-center space-x-4">
+              <button
+                className="px-6 py-3 border border-gray-500 text-gray-500 rounded-full"
+                onClick={() => {
+                  setShowCalendar(false);
+                  setSearchDate(undefined);
+                }}
+              >
+                Cancel
               </button>
-              <button
-                onClick={() => {
-                  setSearchedTxns([]);
-                  setSearchedChars("");
-                  setIsSearch(false);
-                }}
-                className="w-[25%] textSm h-full border border-gray-500 rounded-[4px]"
-              >
-                Exit
+              <button className=" bg-blue-500 rounded-full text-white py-3 px-6" onClick={() => setShowCalendar(false)}>
+                Confirm Dates
               </button>
             </div>
           </div>
-        </div>
+        )}
+        {/*--- button ---*/}
+        <button className={`${showCalendar ? "hidden" : ""} mt-8 mb-12 modalButtonBlue`} onClick={search}>
+          Apply
+        </button>
       </div>
 
-      {/*--- MODALS ---*/}
+      {/*--- DETAILS MODAL ---*/}
       {detailsModal && (
-        <div>
-          <div className="modal text-start portrait:sm:w-[480px] landscape:lg:w-[480px]">
-            {/*---content---*/}
-            <div className="flex flex-col space-y-2 portrait:sm:space-y-4 landscape:lg:space-y-4 font-medium textLg">
-              <p>
-                <span className="text-gray-400 mr-1">Time</span> {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date).time} {getLocalTime(clickedTxn.date).ampm}
-              </p>
-              <p>
-                <span className="text-gray-400 mr-1">Payment Value</span> {clickedTxn.currencyAmount} {clickedTxn.merchantCurrency}
-              </p>
-              <p>
-                <span className="text-gray-400 mr-1">Tokens Received</span> {clickedTxn.tokenAmount} USDC
-              </p>
-              <p>
-                <span className="text-gray-400 mr-1">Rate</span> {clickedTxn.blockRate}
-              </p>
-              <p>
-                <span className="text-gray-400 mr-1">Customer</span> <span className="break-all">{clickedTxn.customerAddress}</span>
-              </p>
+        <div className="w-full flex flex-col items-center h-screen absolute inset-0 bg-white overflow-y-auto z-[10]">
+          {/*--- title + close button ---*/}
+          <div className="w-full h-[10%] min-h-[60px] flex items-center justify-center">
+            <div className="textXl font-semibold">Payment Details</div>
+            <div className="absolute right-5 text-3xl p-2 cursor-pointer" onClick={() => setDetailsModal(false)}>
+              &#10005;
             </div>
-            {/*--- BUTTONS ---*/}
+          </div>
+          {/*--- details + button ---*/}
+          <div className="w-[340px] flex flex-col space-y-4 portrait:md:space-y-4 landscape:lg:space-y-4 font-medium textLg">
+            {/*--- details ---*/}
+            <div className="flex flex-col">
+              <div className="text-gray-400">Time</div>
+              <div className="font-normal textXl">
+                {getLocalDate(clickedTxn.date)} {getLocalTime(clickedTxn.date).time} {getLocalTime(clickedTxn.date).ampm}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-gray-400 mr-1">Payment Value</div>
+              <div className="font-normal textXl">
+                {clickedTxn.currencyAmount} {clickedTxn.merchantCurrency}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-gray-400 mr-1">Tokens Received</div>
+              <div className="font-normal textXl">{clickedTxn.tokenAmount} USDC</div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-gray-400 mr-1">Rate</div>
+              <div className="font-normal textXl">{clickedTxn.blockRate}</div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-gray-400 mr-1">Customer</div>
+              <div className="font-normal textXl break-all">{clickedTxn.customerAddress}</div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-gray-400 mr-1">Notes</div>
+              <div className="min-h-[50px]">{clickedTxn.refundNote}</div>
+            </div>
+            {/*--- button ---*/}
             {clickedTxn.refund || refundStatus === "refunded" ? (
-              <div className="text-center textLg font-bold text-gray-400">This payment has been refunded</div>
+              <div className="pt-4 text-center textLg font-bold text-gray-400">This payment has been refunded</div>
             ) : (
-              <div className="w-full">
+              <div className="pt-4 w-full">
                 {isAdmin ? (
                   <div className="w-full flex flex-col items-center space-y-6">
                     <button className="modalButtonBlue" onClick={onClickRefund}>
-                      {refundStatus === "initial" && clickedTxn.refund == false && <div>Refund Now</div>}
+                      {refundStatus === "initial" && clickedTxn.refund == false && <div>REFUND NOW</div>}
                       {refundStatus === "processing" && (
                         <div className="flex items-center justify-center">
                           <SpinningCircleGray />
@@ -498,28 +633,16 @@ const Payments = ({
                       )}
                       {(refundStatus === "processed" || clickedTxn.refund == true) && "Refunded"}
                     </button>
-                    <button className="modalButtonBlue" onClick={onClickRefundNote}>
-                      {refundNoteStatus == "processing" ? (
-                        <div className="flex items-center justify-center">
-                          <SpinningCircleWhite />
-                        </div>
-                      ) : (
-                        <div>
-                          {refundNoteStatus == "true" ? "Remove " : "Add "}
-                          "To Be Refunded" Note
-                        </div>
-                      )}
-                    </button>
                   </div>
                 ) : (
-                  <button className="modalButtonBlue" onClick={onClickRefundNote}>
-                    {refundNoteStatus == "processing" ? (
+                  <button className="modalButtonBlue" onClick={onClickToRefund}>
+                    {toRefundStatus == "processing" ? (
                       <div className="flex items-center justify-center">
                         <SpinningCircleWhite />
                       </div>
                     ) : (
                       <div>
-                        {refundNoteStatus == "true" ? "Remove " : "Add "}
+                        {toRefundStatus == "true" ? "Remove " : "Add "}
                         "To Be Refunded" Note
                       </div>
                     )}
@@ -528,9 +651,10 @@ const Payments = ({
               </div>
             )}
           </div>
-          <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
         </div>
       )}
+
+      {/*--- DOWNLOAD MODAL ---*/}
       {downloadModal && (
         <div>
           <div className="modal">

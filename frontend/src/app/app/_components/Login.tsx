@@ -140,6 +140,12 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                   key={i.name}
                   className="w-full h-[60px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] landscape:xl:desktop:h-[60px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                   onClick={async () => {
+                    // usability test
+                    setPage("loading");
+                    await new Promise((resolve) => setTimeout(resolve, 3000));
+                    setPage("app");
+                    return;
+
                     console.log("login page, clicked connect, set page to Loading");
                     setPage("loading");
                     await connectAsync({ connector: connectors[i.connectorIndex] });

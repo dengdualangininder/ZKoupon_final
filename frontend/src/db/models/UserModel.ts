@@ -36,8 +36,8 @@ export type Transaction = {
   cashRate: number;
   savings: string;
   refund: boolean;
-  refundNote: boolean;
-  archive: boolean;
+  toRefund: boolean;
+  refundNote: string;
   // online params
   customerEmail: string;
   item: string;
@@ -96,8 +96,8 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
       savings: String,
       merchantEvmAddress: String,
       refund: Boolean,
-      refundNote: Boolean,
-      archive: Boolean,
+      toRefund: Boolean,
+      refundNote: String,
       // online params
       customerEmail: String,
       item: String,

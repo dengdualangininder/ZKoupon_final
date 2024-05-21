@@ -2,17 +2,17 @@ import dbConnect from "@/db/dbConnect";
 import UserModel from "@/db/models/UserModel";
 
 export const POST = async (request: Request) => {
-  console.log("refundNote api");
+  console.log("toRefund api");
 
-  const { merchantEvmAddress, txnHash, refundNote } = await request.json();
-  console.log("merchantEvmAddress:", merchantEvmAddress, "| txnHash:", txnHash, "| refundNote:", refundNote);
+  const { merchantEvmAddress, txnHash, toRefund } = await request.json();
+  console.log("merchantEvmAddress:", merchantEvmAddress, "| txnHash:", txnHash, "| toRefund:", toRefund);
 
   await dbConnect();
 
   try {
     await UserModel.findOneAndUpdate(
       { "paymentSettings.merchantEvmAddress": merchantEvmAddress, "transactions.txnHash": txnHash },
-      { $set: { "transactions.$.refundNote": !refundNote } }
+      { $set: { "transactions.$.toRefund": !toRefund } }
     );
     console.log("saved");
     return Response.json("saved");

@@ -1,7 +1,3 @@
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="SVGRepo_bgCarrier" stroke-width="0"/>
-<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
-<g id="SVGRepo_iconCarrier"> <path d="M20 15V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18L4 15M8 11L12 15M12 15L16 11M12 15V3" stroke="#000000" stroke-width="1.56" stroke-linecap="round" stroke-linejoin="round"/> </g>
-</svg>
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.11104 28.4447V30.5558C3.11104 32.2356 3.77831 33.8465 4.96604 35.0342C6.15377 36.2219 7.76467 36.8892 9.44438 36.8892H30.5555C32.2352 36.8892 33.8461 36.2219 35.0338 35.0342C36.2216 33.8465 36.8888 32.2356 36.8888 30.5558V28.4447M28.4444 20.0003L19.9999 28.4447M19.9999 28.4447L11.5555 20.0003M19.9999 28.4447V3.1114" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

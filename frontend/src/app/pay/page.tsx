@@ -225,7 +225,8 @@ const Pay = () => {
       cashRate: rates.usdToLocal,
       savings: fxSavings,
       refund: false,
-      archive: false,
+      toRefund: false,
+      refundNote: "",
       txnHash: "", // will get later
     };
 

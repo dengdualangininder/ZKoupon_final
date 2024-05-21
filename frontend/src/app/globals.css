@@ -7,6 +7,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* input[type="checkbox"] {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -o-appearance: none;
+    outline: none;
+  } */
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -230,6 +237,10 @@
     @apply w-full font-medium px-1.5 py-2 xs:py-3 border border-gray-500 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
+  .menuText {
+    @apply mt-1 text-xs landscape:sm:text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:md:text-2xl font-medium pointer-events-none;
+  }
+
   .checkboxMobile {
     @apply w-6 h-6 xs:w-4 xs:h-4;
   }
@@ -392,7 +403,7 @@
   }
 
   .cashoutTooltip {
-    @apply invisible group-hover:visible absolute px-3 py-2 textXs leading-snug text-white bg-gray-700 rounded-lg z-[1];
+    @apply invisible group-hover:visible absolute px-3 py-2 leading-snug text-white bg-gray-700 rounded-lg z-[1];
   }
 
   .faqContainer {
