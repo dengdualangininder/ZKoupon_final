@@ -61,6 +61,9 @@ const Intro = ({
   const router = useRouter();
 
   useEffect(() => {
+    //usability test
+    return;
+
     // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
     // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
     // control when to specifically trigger this useEffect

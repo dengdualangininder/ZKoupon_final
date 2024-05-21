@@ -93,6 +93,31 @@ const User = () => {
   // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
   useEffect(() => {
     // usability test
+    const paymentSettings = {
+      merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      merchantEmail: "germany@gmail.com",
+      merchantName: "",
+      merchantCountry: "Germany",
+      merchantCurrency: "EUR",
+      merchantPaymentType: "inperson",
+      merchantWebsite: "",
+      merchantBusinessType: "",
+      merchantFields: [],
+      merchantGoogleId: "",
+      qrCodeUrl: "",
+    };
+    const cashoutSettings = {
+      cex: "Coinbase",
+      cexEvmAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+      cexAccountName: "Tester Account",
+      isEmployeePass: false,
+      cashoutIntro: true,
+    };
+    const transactions: Transaction[] = [];
+    setPaymentSettingsState(paymentSettings);
+    setCashoutSettingsState(cashoutSettings);
+    setTransactionsState(transactions);
+    setIsAdmin(true);
     setPage("intro");
     return;
 
@@ -388,6 +413,7 @@ const User = () => {
           setPaymentSettingsState={setPaymentSettingsState}
           cashoutSettingsState={cashoutSettingsState!}
           setCashoutSettingsState={setCashoutSettingsState}
+          setCoinbaseIntroModal={setCoinbaseIntroModal}
         />
       )}
       {page === "app" && (
@@ -414,6 +440,10 @@ const User = () => {
                       if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
                         setCashoutIntroModal(true);
                         setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
+
+                        // usability test
+                        return;
+
                         const res = await fetch("/api/saveSettings", {
                           method: "POST",
                           headers: { "content-type": "application/json" },
@@ -537,7 +567,7 @@ const User = () => {
           {/*---coinbaseIntroModal---*/}
           {coinbaseIntroModal && (
             <div>
-              <div className="modal">
+              <div className="w-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 textLg text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90]">
                 {/*---content---*/}
                 <div className="grow flex flex-col justify-center space-y-6 text-start">
                   <p>Your Coinbase account is linked!</p>

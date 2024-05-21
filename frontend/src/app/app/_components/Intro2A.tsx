@@ -33,6 +33,7 @@ const Intro = ({
   isMobile,
   idToken,
   publicKey,
+  setCoinbaseIntroModal,
 }: {
   paymentSettingsState: PaymentSettings;
   setPaymentSettingsState: any;
@@ -43,6 +44,7 @@ const Intro = ({
   isMobile: boolean;
   idToken: string;
   publicKey: string;
+  setCoinbaseIntroModal: any;
 }) => {
   const [step, setStep] = useState("welcome");
   const [isSent, setIsSent] = useState(true);
@@ -62,6 +64,9 @@ const Intro = ({
   const router = useRouter();
 
   useEffect(() => {
+    //usability test
+    return;
+
     // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
     // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
     // control when to specifically trigger this useEffect
@@ -110,6 +115,13 @@ const Intro = ({
   }, [save]);
 
   const onClickSIWC = async () => {
+    // usability test
+    setPage("loading");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setCoinbaseIntroModal(true);
+    setPage("app");
+    return;
+
     const cbRandomSecure = uuidv4() + "SUBSTATEfromIntro";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
