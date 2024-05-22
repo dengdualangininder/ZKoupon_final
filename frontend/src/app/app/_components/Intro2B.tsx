@@ -32,6 +32,7 @@ const Intro = ({
   isMobile,
   idToken,
   publicKey,
+  setCoinbaseIntroModal,
 }: {
   paymentSettingsState: PaymentSettings;
   setPaymentSettingsState: any;
@@ -42,20 +43,16 @@ const Intro = ({
   isMobile: boolean;
   idToken: string;
   publicKey: string;
+  setCoinbaseIntroModal: any;
 }) => {
   const [step, setStep] = useState("welcome");
-  const [isSent, setIsSent] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<any>("");
-  const [errorModal, setErrorModal] = useState(false);
-  const [skipModal, setSkipModal] = useState(true);
   const [url, setUrl] = useState("");
   const [save, setSave] = useState(false);
-  const [qrWidth, setQrWidth] = useState(0);
-  const [monthlyRevenue, setMonthlyRevenue] = useState(20000);
-  const [dailyTxn, setDailyTxn] = useState(100);
-  const [feePercentage, setFeePercentage] = useState(0.027);
-  const [feePerTxn, setFeePerTxn] = useState(0.1);
   const [expand, setExpand] = useState(false);
+  // modal states
+  const [errorMsg, setErrorMsg] = useState<any>("");
+  const [errorModal, setErrorModal] = useState(false);
+  const [skipModal, setSkipModal] = useState(false);
 
   // hooks
   const router = useRouter();
@@ -112,6 +109,13 @@ const Intro = ({
   }, [save]);
 
   const onClickSIWC = async () => {
+    // usability test
+    setPage("loading");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setCoinbaseIntroModal(true);
+    setPage("app");
+    return;
+
     const cbRandomSecure = uuidv4() + "SUBSTATEfromIntro";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
@@ -125,25 +129,25 @@ const Intro = ({
   };
 
   return (
-    <div className="w-full flex justify-center overflow-y-auto">
-      <div className="w-[89%] min-h-screen flex justify-center">
+    <div className="text-xl w-full h-screen flex justify-center overflow-y-auto">
+      <div className="w-[89%] max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px]">
         {/*--- welcome ---*/}
         {step == "welcome" && (
-          <div className="w-full flex flex-col items-center">
+          <div className="w-full h-full flex flex-col items-center">
             {/*--- text ---*/}
             <div className="flex-1 w-full flex flex-col items-center justify-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
-              <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] landscape:lg:desktop:h-[100px] mr-1">
+              <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
                 <Image src="/logo.svg" alt="logo" fill />
               </div>
-              <div className="text2xl font-medium text-center animate-fadeInAnimation">Welcome to Flash!</div>
-              <div className="mt-3 introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
+              <div className="text-2xl font-medium text-center animate-fadeInAnimation">Welcome to Flash!</div>
+              <div className="mt-3 text-center animate-fadeInAnimation">
                 Get your store ready to
                 <br />
                 accept crypto payments
               </div>
             </div>
             {/*--- buttons ---*/}
-            <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-end">
+            <div className="introButtonContainer2 justify-end">
               <button className="introNext2" onClick={() => setStep("info")}>
                 START &nbsp;&#10095;
               </button>
@@ -153,18 +157,20 @@ const Intro = ({
 
         {/*--- info ---*/}
         {step == "info" && (
-          <div className="h-full flex flex-col">
-            <div className="w-full h-[12%]">
-              <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-3xl p-2">
+          <div className="text-xl h-full flex flex-col">
+            {/*--- close button ---*/}
+            <div className="flex-none w-full h-[72px] flex justify-end items-center">
+              <div onClick={() => setPage("app")} className="xButton">
                 &#10005;
               </div>
             </div>
-            <div className="flex-1 space-y-6">
-              <div className="textXl">The first step is to create your QR code. To create one, fill out the form below:</div>
-              <div>
-                <label className="w-full text-lg font-medium">Your Business's Name</label>
+            {/*--- content ---*/}
+            <div className="mt-4 flex-1 space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 landscape:xl:desktop:space-y-8">
+              <div className="">To start accepting crypto payments, you will need a QR code. To create one, fill out the form below:</div>
+              <div className="flex flex-col">
+                <label className="w-full font-medium">Your Business's Name</label>
                 <input
-                  className="mt-1 w-full text-lg border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="mt-1 w-full max-w-[480px] px-3 py-3 border border-gray-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   placeholder="Type in the name of your business"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
@@ -172,9 +178,9 @@ const Intro = ({
                 ></input>
               </div>
               <div className="flex flex-col">
-                <label className="w-full text-lg font-medium">Your currency</label>
+                <label className="w-full font-medium">Your currency</label>
                 <select
-                  className="mt-1 w-full text-lg border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="mt-1 w-full max-w-[480px] border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
                     const merchantCountryTemp = e.target.value.split(" / ")[0];
                     const merchantCurrencyTemp = e.target.value.split(" / ")[1];
@@ -195,10 +201,10 @@ const Intro = ({
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="w-full text-lg font-medium">Your email address</label>
+              <div className="flex flex-col">
+                <label className="w-full font-medium">Your email address</label>
                 <input
-                  className="mt-1 w-full text-lg border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="mt-1 w-full max-w-[480px] border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   placeholder="Type in your email"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
@@ -207,7 +213,7 @@ const Intro = ({
               </div>
             </div>
             {/*--- buttons ---*/}
-            <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between">
+            <div className="introButtonContainer2">
               <button className="introBack2" onClick={() => setStep("welcome")}>
                 &#10094;&nbsp; BACK
               </button>
@@ -224,7 +230,7 @@ const Intro = ({
                     setErrorMsg("Please enter a email address");
                     return;
                   }
-                  setStep("how1");
+                  setStep("emailSent");
                 }}
               >
                 NEXT &nbsp;&#10095;
@@ -236,19 +242,19 @@ const Intro = ({
         {/*--- emailSent ---*/}
         {step == "emailSent" && (
           <div className="w-full h-full flex flex-col items-center">
-            {/*--- skip ---*/}
-            <div className="w-full h-[12%]">
-              <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-3xl p-2">
+            {/*--- close button ---*/}
+            <div className="w-full h-[72px] flex justify-end items-center">
+              <div onClick={() => setPage("app")} className="xButton">
                 &#10005;
               </div>
             </div>
             {/*--- text ---*/}
-            <div className="textXl mt-8 flex-1 flex flex-col space-y-8">
+            <div className="mt-4 flex-1 flex flex-col space-y-8">
               <div className="font-semibold">Your QR code was created!</div>
               <div className="">We emailed it to you, along with instructions on how to print and display it.</div>
             </div>
             {/*--- buttons ---*/}
-            <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between">
+            <div className="introButtonContainer2">
               <button className="introBack2" onClick={() => setStep("info")}>
                 &#10094;&nbsp; BACK
               </button>
@@ -261,10 +267,10 @@ const Intro = ({
 
         {/*--- how1 ---*/}
         {step == "how1" && (
-          <div className="textXl w-full h-full flex flex-col items-center">
+          <div className="text-xl w-full h-full flex flex-col items-center">
             {/*--- close button ---*/}
-            <div className="w-full h-[8%] min-h-[70px]">
-              <div onClick={() => setPage("app")} className="absolute top-3 right-5 text-3xl p-2">
+            <div className="flex-none w-full h-[72px] flex justify-end items-center">
+              <div onClick={() => setPage("app")} className="xButton">
                 &#10005;
               </div>
             </div>
@@ -273,7 +279,7 @@ const Intro = ({
               {/*--- title ---*/}
               <div className="font-bold">How does a customer pay?</div>
               {/*--- image ---*/}
-              <div className="relative w-full h-[calc(100vw*(3/4*0.89))] flex-none">
+              <div className="relative w-full max-w-[340px] h-[calc(100vw*(3/4*0.89))] max-h-[calc(340px*(3/4))] flex-none">
                 <Image
                   src="/intro-scan.png"
                   alt="scan"
@@ -307,7 +313,7 @@ const Intro = ({
               </div>
             </div>
             {/*--- buttons ---*/}
-            <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between">
+            <div className="introButtonContainer2">
               <button className="introBack2" onClick={() => setStep("emailSent")}>
                 &#10094;&nbsp; BACK
               </button>
@@ -320,13 +326,15 @@ const Intro = ({
 
         {/*--- link (if coinbase && not "Any country") ---*/}
         {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="textXl w-full h-full flex flex-col items-center">
-            <div className="w-full h-[8%] min-h-[70px]">
-              <div onClick={() => setSkipModal(true)} className="absolute top-3 right-5 text-lg font-medium p-2">
+          <div className="w-full h-full flex flex-col items-center">
+            {/*--- skip button ---*/}
+            <div className="flex-none w-full h-[72px] flex justify-end items-center">
+              <div onClick={() => setPage("app")} className="text-lg font-medium cursor-pointer">
                 SKIP
               </div>
             </div>
-            <div className="space-y-8">
+            {/*--- title + animation + text ---*/}
+            <div className="flex-1 flex flex-col space-y-6">
               {/*--- title ---*/}
               <div className="font-bold text-center">How do I cash out?</div>
               {/*--- animation ---*/}
@@ -334,20 +342,26 @@ const Intro = ({
                 <Flow2 paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
               </div>
               {/*--- text ---*/}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="">To cash out funds to your bank, you must first link a Coinbase account to Flash. Then, simply click “Cash Out” in the Flash app.</div>
                 <div className="">
                   When you cash out, USDC will be automatically converted to EUR. Flash is designed such that you will not lose money due to changing conversion rates. If a
                   customer pays you 10 EUR, you will receive 10 EUR in the bank (there are no fees).
                 </div>
-                {/*--- buttons ---*/}
-                <div className="pt-1 space-y-5 textLg">
-                  <button className="w-full h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]" onClick={onClickSIWC}>
-                    Link Coinbase Account
-                  </button>
-                  <div className="w-full text-gray-600 font-medium underline underline-offset-[3px] text-center" onClick={() => setStep("nocoinbase")}>
-                    I don't have one
-                  </div>
+              </div>
+              {/*--- buttons ---*/}
+              <div className="w-full pb-[44px] space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-8 textLg flex flex-col items-center">
+                <button
+                  className="w-full max-w-[350px] h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px] desktop:hover:bg-blue-700 active:opacity-50"
+                  onClick={onClickSIWC}
+                >
+                  Link Coinbase Account
+                </button>
+                <div
+                  className=" text-gray-600 font-medium underline underline-offset-[3px] text-center cursor-pointer desktop:hover:opacity-50 active:opacity-50"
+                  onClick={() => setStep("nocoinbase")}
+                >
+                  I don't have one
                 </div>
               </div>
             </div>

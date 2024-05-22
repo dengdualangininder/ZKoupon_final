@@ -47,18 +47,13 @@ const Intro = ({
   setCoinbaseIntroModal: any;
 }) => {
   const [step, setStep] = useState("welcome");
-  const [isSent, setIsSent] = useState(true);
+  const [url, setUrl] = useState("");
+  const [save, setSave] = useState(false);
+  const [expand, setExpand] = useState(false);
+  // modal states
   const [errorMsg, setErrorMsg] = useState<any>("");
   const [errorModal, setErrorModal] = useState(false);
   const [skipModal, setSkipModal] = useState(false);
-  const [url, setUrl] = useState("");
-  const [save, setSave] = useState(false);
-  const [qrWidth, setQrWidth] = useState(0);
-  const [monthlyRevenue, setMonthlyRevenue] = useState(20000);
-  const [dailyTxn, setDailyTxn] = useState(100);
-  const [feePercentage, setFeePercentage] = useState(0.027);
-  const [feePerTxn, setFeePerTxn] = useState(0.1);
-  const [expand, setExpand] = useState(false);
 
   // hooks
   const router = useRouter();

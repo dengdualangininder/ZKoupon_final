@@ -362,36 +362,32 @@ const User = () => {
   return (
     <div className="pl-[calc(100vw-100%)] text-black">
       {page === "loading" && (
-        <div className="w-full h-screen flex items-center justify-center">
-          {/* LOADING */}
-          <div className="w-full absolute flex flex-col items-center">
-            <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] animate-spin">
-              <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+        <div className="text-xl w-full h-screen flex justify-center overflow-y-auto">
+          <div className="w-[89%] max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
+            {/* LOADING */}
+            <div className="w-full h-full absolute flex flex-col items-center justify-center">
+              <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin">
+                <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+              </div>
+              <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
             </div>
-            <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
-          </div>
-
-          <div className="w-full h-full flex justify-center items-center">
             {/*--- welcome ---*/}
-            <div className="introPageContainer">
-              {/*--- content ---*/}
-              <div className="introTextContainer1">
-                <div className="introTextContainer2 portrait:space-y-16 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-20">
-                  <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] mr-1">
-                    <Image src="/logo.svg" alt="logo" fill />
-                  </div>
-
-                  <div className="invisible text-3xl portrait:sm:text-4xl landscape:lg:text-4xl font-bold text-center animate-fadeInAnimation">Welcome to Flash!</div>
-                  <div className="invisible introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
-                    Let us give you a quick
-                    <br />
-                    introduction of how it works
-                  </div>
+            <div className="w-full h-full flex flex-col items-center">
+              {/*--- text ---*/}
+              <div className="flex-1 w-full flex flex-col items-center justify-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
+                <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
+                  <Image src="/logo.svg" alt="logo" fill />
+                </div>
+                <div className="text-2xl font-medium text-center animate-fadeInAnimation invisible">Welcome to Flash!</div>
+                <div className="mt-3 text-center animate-fadeInAnimation invisible">
+                  Get your store ready to
+                  <br />
+                  accept crypto payments
                 </div>
               </div>
               {/*--- buttons ---*/}
-              <div className="invisible introButtonContainer justify-end">
-                <button className="introNext">Start</button>
+              <div className="invisible introButtonContainer2 justify-end">
+                <button className="introNext2">START &nbsp;&#10095;</button>
               </div>
             </div>
           </div>
@@ -401,7 +397,7 @@ const User = () => {
       {page === "saveToHome" && <PWA browser={browser} />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
       {page === "intro" && (
-        <Intro2A
+        <Intro2B
           isMobile={isMobile}
           page={page}
           setPage={setPage}
@@ -420,7 +416,7 @@ const User = () => {
           <div className="portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 z-[1] relative">
             {/*---menu---*/}
             {isAdmin && (
-              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:h-[680px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
+              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[400px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
                 {[
                   { id: "payments", title: "PAYMENTS", clickedImg: "/payments-clicked.svg", unclickedImg: "/payments-unclicked.svg" },
                   { id: "cashOut", title: "CASH OUT", clickedImg: "/cashout-clicked.svg", unclickedImg: "/cashout-unclicked.svg", modal: "cashoutIntroModal" },
@@ -456,7 +452,7 @@ const User = () => {
                       }
                     }}
                   >
-                    <div className="relative w-[66px] h-[24px] portrait:sm:h-[36px] landscape:lg:h-[36px] point-events-none">
+                    <div className="relative w-[66px] h-[24px] portrait:sm:h-[36px] landscape:lg:h-[36px] landscape:xl:desktop:h-[24px] point-events-none">
                       {menu === i.id ? <Image src={i.clickedImg} alt={i.title} fill /> : <Image src={i.unclickedImg} alt={i.title} fill />}
                     </div>
                     <div className="menuText">{i.title}</div>
@@ -513,6 +509,7 @@ const User = () => {
               </div>
             </div>
           )}
+
           {/*---bannerModal---*/}
           {transactionsState.length != 0 && (
             <div
@@ -536,6 +533,7 @@ const User = () => {
               </div>
             </div>
           )}
+
           {/*---signOutModal---*/}
           {signOutModal && (
             <div>
@@ -562,6 +560,7 @@ const User = () => {
               <div className="modalBlackout" onClick={() => setSignOutModal(false)}></div>
             </div>
           )}
+
           {/*---coinbaseIntroModal---*/}
           {coinbaseIntroModal && (
             <div>
@@ -588,6 +587,7 @@ const User = () => {
               ></div>
             </div>
           )}
+
           {cashbackModal && (
             <div>
               <div className="modal">
@@ -609,6 +609,7 @@ const User = () => {
               <div className="modalBlackout" onClick={() => setCashbackModal(false)}></div>
             </div>
           )}
+
           {cashoutIntroModal && <CashoutIntroModal setCashoutIntroModal={setCashoutIntroModal} />}
         </div>
       )}

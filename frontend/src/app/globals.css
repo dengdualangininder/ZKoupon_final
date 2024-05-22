@@ -30,55 +30,67 @@
 
 @layer components {
   .textXs {
-    @apply text-xs portrait:sm:text-sm landscape:lg:text-sm portrait:lg:text-base landscape:xl:text-base;
+    @apply text-xs portrait:sm:text-sm landscape:lg:text-sm landscape:xl:desktop:text-xs;
   }
 
   .textSm {
-    @apply text-sm portrait:sm:text-base landscape:lg:text-base;
+    @apply text-sm portrait:sm:text-base landscape:lg:text-base landscape:xl:desktop:text-sm;
   }
 
   .textBase {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg portrait:lg:text-xl landscape:xl:text-xl;
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-base;
   }
 
   .textLg {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg;
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg;
   }
 
   .textXl {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl;
+    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl;
+  }
+
+  .textXl-relaxed {
+    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
   }
 
   .text2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl;
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl;
   }
 
   .text3xl {
-    @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl portrait:lg:text-5xl landscape:xl:text-5xl;
+    @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-3xl;
   }
 
   .text4xl {
-    @apply text-4xl portrait:sm:text-5xl landscape:lg:text-5xl portrait:lg:text-5xl landscape:xl:text-5xl;
+    @apply text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
   }
 
   .textSm2 {
-    @apply text-sm portrait:sm:text-lg landscape:lg:text-lg portrait:lg:text-xl landscape:xl:text-xl;
+    @apply text-sm portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-base;
   }
 
   .textBase2 {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg;
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg;
   }
 
   .textLg2 {
-    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg;
+    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl;
   }
 
   .textXl2 {
-    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl;
+    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl;
+  }
+
+  .textXl2-relaxed {
+    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
   }
 
   .text2xl2 {
-    @apply text-2xl portrait:sm:text-4xl landscape:lg:text-4xl;
+    @apply text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-3xl;
+  }
+
+  .text3xl2 {
+    @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
   }
 
   .chainLogo {
@@ -238,7 +250,7 @@
   }
 
   .menuText {
-    @apply mt-1 text-xs landscape:sm:text-lg portrait:sm:text-2xl landscape:lg:text-2xl portrait:md:text-2xl font-medium pointer-events-none;
+    @apply mt-1 text-xs portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-medium pointer-events-none;
   }
 
   .checkboxMobile {
@@ -246,7 +258,7 @@
   }
 
   .modal {
-    @apply w-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 text-xl portrait:sm:text-2xl landscape:lg:text-2xl leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+    @apply w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 textXl-relaxed text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
 
   .modalBlackout {
@@ -254,11 +266,11 @@
   }
 
   .modalButtonBlue {
-    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-white bg-blue-500 border border-blue-500 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[56px] textLg font-medium text-white bg-blue-500 border border-blue-500 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
   }
 
   .modalButtonWhite {
-    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-700 bg-white border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[56px] textLg font-medium text-gray-700 bg-white border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
   }
 
   .modalButtonNoBorder {
@@ -289,48 +301,36 @@
     @apply flex-none pt-4 w-[82%] landscape:lg:w-[630px] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
   }
 
+  .introButtonContainer2 {
+    @apply w-full px-2 pt-[16px] pb-[44px] flex justify-between flex-none;
+  }
+
   .introNext {
-    @apply mr-2 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply mr-2 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:desktop:xl:text-xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introBack {
-    @apply ml-2 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply ml-2 w-[100px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:desktop:xl:text-xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introNext2 {
-    @apply mr-1 w-[110px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-lg portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply mr-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[110px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-lg font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introBack2 {
-    @apply ml-1 w-[110px] h-[60px] portrait:sm:w-[140px] portrait:sm:h-[72px] landscape:lg:w-[140px] landscape:lg:h-[72px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[52px] text-lg portrait:sm:text-3xl landscape:lg:text-3xl landscape:desktop:xl:text-xl font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply ml-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[110px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-lg font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+  }
+
+  .next {
+    @apply mr-1 w-[110px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+  }
+
+  .back {
+    @apply mr-1 w-[110px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introTooltip {
     @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed invisible group-hover:visible absolute px-4 py-3 portrait:sm:px-6 portrait:sm:py-3 landscape:lg:px-6 landscape:lg:py-3 font-normal bg-gray-800 text-white rounded-lg z-[1];
-  }
-
-  .introFontHowTo {
-    @apply portrait:text-xl landscape:text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:lg:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:lg:desktop:leading-relaxed;
-  }
-
-  .introFontButton {
-    @apply;
-  }
-
-  .introFontXl {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-3xl portrait:lg:text-3xl landscape:xl:text-3xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
-  }
-
-  .introFont2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl leading-relaxed landscape:lg:leading-relaxed portrait:sm:leading-relaxed;
-  }
-
-  .introFont3xl {
-    @apply portrait:text-3xl landscape:text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:lg:desktop:text-3xl portrait:leading-relaxed landscape:lg:leading-[56px] portrait:sm:leading-[56px] landscape:lg:desktop:leading-relaxed;
-  }
-
-  .introFontXl2 {
-    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl portrait:lg:text-4xl landscape:xl:text-4xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed;
   }
 
   /* ----UNUSED---- */
@@ -358,12 +358,16 @@
     @apply h-[56px] xs:h-[44px] bg-blue-500 lg:hover:bg-blue-600 active:bg-blue-300 text-white font-bold rounded-full text-lg;
   }
 
+  .xButton {
+    @apply text-3xl cursor-pointer desktop:hover:opacity-50;
+  }
+
   .buttonWhiteTextLg {
     @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
   }
 
   .cashoutContainer {
-    @apply w-full min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] flex flex-col px-7 portrait:sm:px-10 landscape:lg:px-10 py-5 portrait:sm:py-8 landscape:lg:py-8 rounded-xl bg-slate-200 border border-gray-300;
+    @apply w-full min-h-[230px] px-7 portrait:sm:px-10 landscape:lg:px-10 portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[230px] py-5 portrait:sm:py-8 landscape:lg:py-8 flex flex-col rounded-xl bg-slate-200 border border-gray-300;
   }
 
   .cashoutContainerStats {
@@ -399,7 +403,7 @@
   }
 
   .cashoutButton {
-    @apply textBase w-full portrait:sm:w-[250px] landscape:lg:w-[250px] h-[52px] portrait:sm:h-[56px] landscape:lg:h-[56px] font-medium text-white bg-blue-500 active:opacity-50 rounded-md;
+    @apply textBase w-full h-[52px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] font-medium text-white bg-blue-500 active:opacity-50 rounded-md hover:desktop:bg-blue-600;
   }
 
   .cashoutTooltip {

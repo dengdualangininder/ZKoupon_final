@@ -300,15 +300,15 @@ const Payments = ({
   };
 
   return (
-    <section className="w-full">
+    <section className="w-full flex flex-col items-center">
       {/*--- TOP BAR h-120px ---*/}
-      <div className="px-6 w-full portrait:md:max-w-[85%] landscape:lg:max-w-[75%] h-[120px] portrait:md:h-[120px] landscape:lg:h-[120px] landscape:xl:h-[140px] flex items-center justify-between relative">
+      <div className="w-[90%] portrait:sm:max-w-[80%] landscape:max-w-[720px] h-[120px] portrait:sm:h-[140px] landscape:lg:h-[140px] landscape:xl:desktotp:h-[120px] flex items-center justify-between relative">
         {/*--- search button + download button ---*/}
-        <div className="h-full flex items-center space-x-8">
+        <div className="h-full flex items-center space-x-8 portrait:sm:space-x-12 landscape:lg:space-x-12">
           {/*--- filter button ---*/}
           <div className="flex flex-col items-center" onClick={() => setSearchModal(!searchModal)}>
-            <div className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] bg-gray-200 rounded-full flex items-center justify-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none">
-              <div className="relative w-[22px] portrait:md:w-[36px] landscape:lg:w-[36px] h-full">
+            <div className="w-[48px] h-[48px] portrait:sm:w-[64px] portrait:sm:h-[64px] landscape:lg:w-[64px] landscape:lg:h-[64px] landscape:xl:desktop:w-[40px] landscape:xl:desktop:h-[40px] bg-gray-200 rounded-full flex items-center justify-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none">
+              <div className="relative w-[22px] portrait:sm:w-[28px] landscape:lg:w-[28px] landscape:xl:desktop:w-[20px] h-full">
                 <Image src="/search.svg" alt="search" fill />
               </div>
             </div>
@@ -317,13 +317,13 @@ const Payments = ({
           {/*--- download button ---*/}
           <div className="flex flex-col items-center">
             <div
-              className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none"
+              className="w-[48px] h-[48px] portrait:sm:w-[64px] portrait:sm:h-[64px] landscape:lg:w-[64px] landscape:lg:h-[64px] landscape:xl:desktop:w-[40px] landscape:xl:desktop:h-[40px] bg-gray-200 rounded-full flex justify-center items-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none"
               onClick={() => {
                 createDownloadDates();
                 setDownloadModal(true);
               }}
             >
-              <div className="relative w-[22px] portrait:md:w-[36px] landscape:lg:w-[36px] h-full">
+              <div className="relative w-[22px] portrait:sm:w-[28px] landscape:lg:w-[28px] landscape:xl:desktop:w-[20px] h-full">
                 <Image src="/download.svg" alt="download" fill />
               </div>
             </div>
@@ -332,8 +332,8 @@ const Payments = ({
         </div>
         {/*--- qr code button ---*/}
         <div className="flex flex-col items-center">
-          <div className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] flex justify-center items-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none">
-            <div className="relative w-[28px] h-[28px]">
+          <div className="w-[48px] h-[48px] portrait:sm:w-[64px] landscape:lg:w-[64px] landscape:xl:desktop:w-[40px] landscape:xl:desktop:h-[40px] flex justify-center items-center cursor-pointer lg:hover:opacity-50 active:opacity-50 select-none">
+            <div className="relative w-[32px] h-[32px] portrait:sm:w-[40px] portrait:sm:h-[40px] landscape:lg:w-[40px] landscape:lg:h-[40px] landscape:xl:desktop:w-[28px] landscape:xl:desktop:h-[28px]">
               <Image src="/qr.svg" alt="QR code" fill />
             </div>
           </div>
@@ -377,11 +377,11 @@ const Payments = ({
 
       {/*--- Table or "no payments" ---*/}
       <div className="w-full overflow-y-auto">
-        <div className="portrait:h-[calc(100vh-84px-120px-2px)] sm:portrait:h-[calc(100vh-140px-120px-2px)] landscape:min-h-[500px] landscape:lg:min-h-[660px] landscape:lg:h-[calc(100vh-120px-2px)] landscape:xl:h-[calc(100vh-140px-2px)] flex flex-col items-center select-none">
-          <table className={`w-[90%] landscape:max-w-[70%] sm:portrait:max-w-[80%] table-fixed text-left select-none`}>
-            <thead className="text-base portrait:md:text-2xl landscape:lg:text-2xl">
+        <div className="portrait:h-[calc(100vh-84px-120px-2px)] portrait:sm:h-[calc(100vh-140px-140px-2px)] landscape:lg:h-[calc(100vh-140px-2px)] flex flex-col items-center select-none">
+          <table className={`w-[90%] portrait:sm:max-w-[80%] landscape:max-w-[720px] table-fixed text-left select-none`}>
+            <thead className="text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg">
               {/*---headers, 40px---*/}
-              <tr className="h-[28px] portrait:md:h-[32px] landscape:lg:h-[32px]">
+              <tr className="h-[28px] portrait:sm:h-[32px] landscape:lg:h-[32px]">
                 <th className="">Time</th>
                 <th className="text-center">Customer</th>
                 {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
@@ -404,7 +404,7 @@ const Payments = ({
                   <tr
                     className={`${
                       txn.refund ? "text-gray-400" : ""
-                    } portrait:h-[calc((100vh-84px-120px-28px-4px)/6)] landscape:h-[90px] portrait:md:h-[calc((100vh-140px-70px-120px-4px)/6)] landscape:lg:h-[calc((100vh-70px-120px-4px)/6)] landscape:xl:h-[calc((100vh-70px-140px-4px)/6)] flex-none border-t lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer`}
+                    } portrait:h-[calc((100vh-84px-120px-28px-4px)/6)] portrait:sm:h-[calc((100vh-140px-140px-32px-4px)/6)] landscape:h-[90px] landscape:lg:h-[calc((100vh-140px-32px-4px)/6)] flex-none border-t lg:hover:bg-gray-200 active:bg-gray-200 lg:cursor-pointer`}
                     id={txn.txnHash}
                     key={index}
                     onClick={onClickTxn}
