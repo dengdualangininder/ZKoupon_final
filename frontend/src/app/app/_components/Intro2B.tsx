@@ -33,6 +33,7 @@ const Intro = ({
   idToken,
   publicKey,
   setCoinbaseIntroModal,
+  isUsabilityTest,
 }: {
   paymentSettingsState: PaymentSettings;
   setPaymentSettingsState: any;
@@ -44,6 +45,7 @@ const Intro = ({
   idToken: string;
   publicKey: string;
   setCoinbaseIntroModal: any;
+  isUsabilityTest: boolean;
 }) => {
   const [step, setStep] = useState("welcome");
   const [url, setUrl] = useState("");
@@ -59,7 +61,9 @@ const Intro = ({
 
   useEffect(() => {
     //usability test
-    return;
+    if (isUsabilityTest) {
+      return;
+    }
 
     // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
     // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
@@ -128,9 +132,10 @@ const Intro = ({
     setStep("emailSent");
   };
 
+  // max-w-420px to prevent signle word in ending line in "link" step
   return (
     <div className="text-xl w-full h-screen flex justify-center overflow-y-auto">
-      <div className="w-[89%] max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px]">
+      <div className="w-[89%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px]">
         {/*--- welcome ---*/}
         {step == "welcome" && (
           <div className="w-full h-full flex flex-col items-center">
@@ -164,8 +169,9 @@ const Intro = ({
                 &#10005;
               </div>
             </div>
+            <div className="w-full h-[2%]"></div>
             {/*--- content ---*/}
-            <div className="mt-4 flex-1 space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 landscape:xl:desktop:space-y-8">
+            <div className="flex-1 space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 landscape:xl:desktop:space-y-8">
               <div className="">To start accepting crypto payments, you will need a QR code. To create one, fill out the form below:</div>
               <div className="flex flex-col">
                 <label className="w-full font-medium">Your Business's Name</label>
@@ -243,7 +249,7 @@ const Intro = ({
         {step == "emailSent" && (
           <div className="w-full h-full flex flex-col items-center">
             {/*--- close button ---*/}
-            <div className="w-full h-[72px] flex justify-end items-center">
+            <div className="flex-none w-full h-[72px] flex justify-end items-center">
               <div onClick={() => setPage("app")} className="xButton">
                 &#10005;
               </div>
@@ -275,9 +281,9 @@ const Intro = ({
               </div>
             </div>
             {/*--- title + image + text ---*/}
-            <div className="flex-1 flex flex-col items-center space-y-4">
+            <div className="flex-1 w-full flex flex-col items-center space-y-4">
               {/*--- title ---*/}
-              <div className="font-bold">How does a customer pay?</div>
+              <div className="font-bold leading-none">How does a customer pay?</div>
               {/*--- image ---*/}
               <div className="relative w-full max-w-[340px] h-[calc(100vw*(3/4*0.89))] max-h-[calc(340px*(3/4))] flex-none">
                 <Image
@@ -309,7 +315,7 @@ const Intro = ({
                   </div>
                 </span>{" "}
                 ({paymentSettingsState?.merchantCurrency == "USD" ? "" : "with a value "}equal to the amount of {paymentSettingsState?.merchantCurrency} entered) will be be sent
-                from the customer's MetaMask app to your Flash app.
+                from the customer's MetaMask to your Flash app.
               </div>
             </div>
             {/*--- buttons ---*/}
@@ -329,7 +335,13 @@ const Intro = ({
           <div className="w-full h-full flex flex-col items-center">
             {/*--- skip button ---*/}
             <div className="flex-none w-full h-[72px] flex justify-end items-center">
-              <div onClick={() => setPage("app")} className="text-lg font-medium cursor-pointer">
+              <div
+                onClick={() => {
+                  setPage("app");
+                  setSkipModal(true);
+                }}
+                className="text-lg font-medium cursor-pointer"
+              >
                 SKIP
               </div>
             </div>
@@ -350,7 +362,7 @@ const Intro = ({
                 </div>
               </div>
               {/*--- buttons ---*/}
-              <div className="w-full pb-[44px] space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-8 textLg flex flex-col items-center">
+              <div className="w-full pb-[44px] space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 textLg flex flex-col items-center">
                 <button
                   className="w-full max-w-[350px] h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px] desktop:hover:bg-blue-700 active:opacity-50"
                   onClick={onClickSIWC}
@@ -368,36 +380,44 @@ const Intro = ({
           </div>
         )}
 
-        {step == "nocoinbase" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="textXl w-full h-full flex flex-col items-center">
+        {step == "nocoinbase" && (
+          <div className="w-full h-full flex flex-col items-center">
             {/*--- skip button ---*/}
-            <div className="w-full h-[8%] min-h-[70px]">
-              <div onClick={() => setSkipModal(true)} className="absolute top-3 right-5 text-lg font-medium p-2 cursor-pointer">
+            <div className="flex-none w-full h-[72px] flex justify-end items-center">
+              <div
+                onClick={() => {
+                  setPage("app");
+                  setSkipModal(true);
+                }}
+                className="text-lg font-medium cursor-pointer"
+              >
                 SKIP
               </div>
             </div>
-            <div className="space-y-8">
+            <div className="flex flex-col items-center space-y-8">
               {/*--- title ---*/}
-              <div className="text-center textLg font-bold">Don't Have a Coinbase Account?</div>
+              <div className="text-center font-bold">Don't Have a Coinbase Account?</div>
               {/*--- text ---*/}
               <div className="">
-                No worries, it’s easy to create one and it only takes a couple of minutes. Click the button below to be redirected to Coinbase’s app. There, you can create an
-                account and return to Flash to link it later.
+                No worries, creating one only takes a couple of minutes. Click the button below to {isMobile ? "download the Coinbase app" : "go to Coinbase's official website"}.
+                In the Flash app, you can link your Coinbase account at any time.
               </div>
-              {/*--- buttons ---*/}
-              <div className="w-full flex flex-col space-y-6">
-                <a href="https://www.coinbase.com/signup" target="_blank">
-                  <button className="textLg w-full h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px]">Create Account</button>
-                </a>
-                <div className="flex space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
-                  <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
-                  <div className="">
-                    <div className="">Can I use a different cryptocurrency exchange?</div>
-                    <div className={`${expand ? "max-h-[300px]" : "max-h-0"} overflow-hidden`}>
-                      <div className="py-2">
-                        Currently, Coinbase is the only platform that can be integrated with Flash. If you prefer another exchange, you can transfer USDC tokens from Flash to your
-                        preferred platform. Then, log into that platform and cash out yourself.
-                      </div>
+              {/*--- button ---*/}
+              <button
+                className="w-full max-w-[350px] h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px] desktop:hover:bg-blue-700 active:opacity-50"
+                onClick={() => window.open("https://www.coinbase.com/signup", "_blank")}
+              >
+                Create Account
+              </button>
+              {/*--- can I use another cex? ---*/}
+              <div className="flex max-w-[350px] space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
+                <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
+                <div className="">
+                  <div className="">Can I use a different cryptocurrency exchange?</div>
+                  <div className={`${expand ? "max-h-[300px]" : "max-h-0"} overflow-hidden`}>
+                    <div className="py-2">
+                      Currently, Coinbase is the only platform that can be integrated with Flash. If you prefer another exchange, you can transfer USDC tokens from Flash to your
+                      preferred platform. Then, log into that platform and cash out yourself.
                     </div>
                   </div>
                 </div>

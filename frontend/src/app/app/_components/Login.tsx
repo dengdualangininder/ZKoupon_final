@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
-const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
+const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setPage: any; isUsabilityTest: boolean }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
@@ -141,10 +141,12 @@ const Login = ({ isMobile, setPage }: { isMobile: boolean; setPage: any }) => {
                   className="w-full h-[60px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] landscape:xl:desktop:h-[60px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                   onClick={async () => {
                     // usability test
-                    setPage("loading");
-                    await new Promise((resolve) => setTimeout(resolve, 3000));
-                    setPage("app");
-                    return;
+                    if (isUsabilityTest) {
+                      setPage("loading");
+                      await new Promise((resolve) => setTimeout(resolve, 3000));
+                      setPage("intro");
+                      return;
+                    }
 
                     console.log("login page, clicked connect, set page to Loading");
                     setPage("loading");

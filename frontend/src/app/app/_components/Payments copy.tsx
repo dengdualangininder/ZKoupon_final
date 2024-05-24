@@ -300,9 +300,9 @@ const Payments = ({
   };
 
   return (
-    <section className="w-full flex-1 flex flex-col items-center">
-      {/*--- TOP BAR 120px/140px ---*/}
-      <div className="flex-none w-[90%] portrait:sm:max-w-[80%] landscape:max-w-[720px] h-[120px] portrait:sm:h-[140px] landscape:lg:h-[140px] landscape:xl:desktotp:h-[120px] flex items-center justify-between relative">
+    <section className="w-full flex flex-col items-center">
+      {/*--- TOP BAR h-120px ---*/}
+      <div className="w-[90%] portrait:sm:max-w-[80%] landscape:max-w-[720px] h-[120px] portrait:sm:h-[140px] landscape:lg:h-[140px] landscape:xl:desktotp:h-[120px] flex items-center justify-between relative">
         {/*--- search button + download button ---*/}
         <div className="h-full flex items-center space-x-8 portrait:sm:space-x-12 landscape:lg:space-x-12">
           {/*--- search ---*/}
@@ -376,13 +376,13 @@ const Payments = ({
       </div>
 
       {/*--- Table or "no payments" ---*/}
-      <div className="w-full h-[calc(100vh-84px-120px)] flex justify-center overflow-y-auto select-none">
-        <table className="h-full w-[90%] portrait:sm:max-w-[80%] landscape:max-w-[720px] table-fixed text-left relative">
-          {/*---headers, absolute, 28px/32px ---*/}
-          <thead className="sticky h-[28px] portrait:sm:h-[32px] landscape:lg:h-[32px] top-0 text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg z-[3] bg-white">
-            <tr className="h-full">
-              <th className="">Time</th>
-              <th className="text-center">Customer</th>
+      <div className="w-full select-none">
+        <table className="w-full table-fixed text-left">
+          {/*---headers, 28px/32px ---*/}
+          <thead className="w-full h-[28px] portrait:sm:h-[32px] landscape:lg:h-[32px] table text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg sticky z-[2]">
+            <tr className="w-[90%] portrait:sm:max-w-[80%] landscape:max-w-[720px] bg-red-300">
+              <th className="sticky">Time</th>
+              <th className="text-center sticky">Customer</th>
               {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
               {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
               {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
@@ -391,11 +391,11 @@ const Payments = ({
                 <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""}`}>Guests</th>
               )}
               {paymentSettingsState.merchantFields.includes("sku") && <th className="">SKU#</th>}
-              <th className="text-right pr-2">{paymentSettingsState.merchantCurrency}</th>
+              <th className="text-right pr-2 sticky">{paymentSettingsState.merchantCurrency}</th>
             </tr>
           </thead>
           {/*--- table body ---*/}
-          <tbody className="">
+          <tbody className="w-full portrait:h-[calc(100vh-84px-120px-28px-2px)] flex flex-col items-center overflow-y-auto">
             {(searchedTxns.length != 0 ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
               <tr
                 className={`${

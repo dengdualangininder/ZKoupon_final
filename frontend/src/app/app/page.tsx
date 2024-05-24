@@ -2,6 +2,7 @@
 // nextjs
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
@@ -12,6 +13,8 @@ import { useWeb3Auth } from "@/app/provider/ContextProvider";
 import Pusher from "pusher-js";
 import { getPublic } from "@toruslabs/eccrypto";
 import { QRCodeSVG } from "qrcode.react";
+// constants
+import { txns } from "@/utils/txns";
 // components
 import Login from "./_components/Login";
 import Payments from "./_components/Payments";
@@ -31,6 +34,7 @@ import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserM
 
 const User = () => {
   console.log("/app, page.tsx rendered once");
+  const searchParams = useSearchParams();
 
   // db values
   const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>();
@@ -49,6 +53,7 @@ const User = () => {
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
   const [browser, setBrowser] = useState<string>("Safari");
+  const [isUsabilityTest, setIsUsabilityTest] = useState(searchParams.get("test") == "true" ? true : false);
   // for verification
   const [idToken, setIdToken] = useState("");
   const [publicKey, setPublicKey] = useState("");
@@ -92,33 +97,36 @@ const User = () => {
   // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
   useEffect(() => {
     // usability test
-    const paymentSettings = {
-      merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-      merchantEmail: "germany@gmail.com",
-      merchantName: "",
-      merchantCountry: "Germany",
-      merchantCurrency: "EUR",
-      merchantPaymentType: "inperson",
-      merchantWebsite: "",
-      merchantBusinessType: "",
-      merchantFields: [],
-      merchantGoogleId: "",
-      qrCodeUrl: "",
-    };
-    const cashoutSettings = {
-      cex: "Coinbase",
-      cexEvmAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      cexAccountName: "Tester Account",
-      isEmployeePass: false,
-      cashoutIntro: true,
-    };
-    const transactions: Transaction[] = [];
-    setPaymentSettingsState(paymentSettings);
-    setCashoutSettingsState(cashoutSettings);
-    setTransactionsState(transactions);
-    setIsAdmin(true);
-    setPage("intro");
-    return;
+    if (isUsabilityTest) {
+      if (!paymentSettingsState) {
+        const paymentSettings = {
+          merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          merchantEmail: "germany@gmail.com",
+          merchantName: "",
+          merchantCountry: "Germany",
+          merchantCurrency: "EUR",
+          merchantPaymentType: "inperson",
+          merchantWebsite: "",
+          merchantBusinessType: "",
+          merchantFields: [],
+          merchantGoogleId: "",
+          qrCodeUrl: "",
+        };
+        const cashoutSettings = {
+          cex: "Coinbase",
+          cexEvmAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+          cexAccountName: "Tester Account",
+          isEmployeePass: false,
+          cashoutIntro: true,
+        };
+        setPaymentSettingsState(paymentSettings);
+        setCashoutSettingsState(cashoutSettings);
+        setTransactionsState(txns);
+        setIsAdmin(true);
+        setPage("login");
+      }
+      return;
+    }
 
     console.log("/app, page.tsx, useEffect run once");
 
@@ -395,7 +403,7 @@ const User = () => {
       )}
 
       {page === "saveToHome" && <PWA browser={browser} />}
-      {page === "login" && <Login isMobile={isMobile} setPage={setPage} />}
+      {page === "login" && <Login isMobile={isMobile} setPage={setPage} isUsabilityTest={isUsabilityTest} />}
       {page === "intro" && (
         <Intro2B
           isMobile={isMobile}
@@ -408,15 +416,16 @@ const User = () => {
           cashoutSettingsState={cashoutSettingsState!}
           setCashoutSettingsState={setCashoutSettingsState}
           setCoinbaseIntroModal={setCoinbaseIntroModal}
+          isUsabilityTest={isUsabilityTest}
         />
       )}
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
-          <div className="portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center flex-none portrait:border-t landscape:border-r border-gray-300 z-[1] relative">
+          <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center portrait:border-t landscape:border-r border-gray-300 z-[1] relative">
             {/*---menu---*/}
             {isAdmin && (
-              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[400px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
+              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[460px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
                 {[
                   { id: "payments", title: "PAYMENTS", clickedImg: "/payments-clicked.svg", unclickedImg: "/payments-unclicked.svg" },
                   { id: "cashOut", title: "CASH OUT", clickedImg: "/cashout-clicked.svg", unclickedImg: "/cashout-unclicked.svg", modal: "cashoutIntroModal" },
@@ -434,10 +443,10 @@ const User = () => {
                       if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
                         setCashoutIntroModal(true);
                         setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
-
                         // usability test
-                        return;
-
+                        if (isUsabilityTest) {
+                          return;
+                        }
                         const res = await fetch("/api/saveSettings", {
                           method: "POST",
                           headers: { "content-type": "application/json" },
@@ -474,6 +483,7 @@ const User = () => {
               isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}
+              isUsabilityTest={isUsabilityTest}
             />
           )}
           {menu === "settings" && isAdmin && (
@@ -485,6 +495,7 @@ const User = () => {
               isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}
+              isUsabilityTest={isUsabilityTest}
             />
           )}
           {menu === "qrCode" && (

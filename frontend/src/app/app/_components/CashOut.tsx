@@ -35,6 +35,7 @@ const CashOut = ({
   isMobile,
   idToken,
   publicKey,
+  isUsabilityTest,
 }: {
   paymentSettingsState: PaymentSettings | null;
   cashoutSettingsState: CashoutSettings | null;
@@ -43,6 +44,7 @@ const CashOut = ({
   isMobile: boolean;
   idToken: string;
   publicKey: string;
+  isUsabilityTest: boolean;
 }) => {
   console.log("CashOut component rendered");
 
@@ -101,11 +103,13 @@ const CashOut = ({
       }
 
       // usability test
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setFlashBalance("325.12");
-      setCexBalance("0.00");
-      setIsCexAccessible(true);
-      return;
+      if (isUsabilityTest) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setFlashBalance("325.12");
+        setCexBalance("0.00");
+        setIsCexAccessible(true);
+        return;
+      }
 
       // get flashBalance
       const flashBalanceBigInt = (await readContract(config, {
@@ -211,17 +215,19 @@ const CashOut = ({
 
   const onClickTransferToCexSubmit = async () => {
     // for usability test
-    setTransferState("sending");
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setTransferState("sent");
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setTransferToCexSuccessModal(true);
-    setFlashBalance((Number(flashBalance) - Number(usdcTransferToCex)).toFixed(2));
-    // update coinbase balance
-    const usdcTransferToCexTemp = usdcTransferToCex;
-    await new Promise((resolve) => setTimeout(resolve, 6000));
-    setCexBalance((Number(cexBalance) + Number(usdcTransferToCexTemp)).toFixed(2));
-    return;
+    if (isUsabilityTest) {
+      setTransferState("sending");
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setTransferState("sent");
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      setTransferToCexSuccessModal(true);
+      setFlashBalance((Number(flashBalance) - Number(usdcTransferToCex)).toFixed(2));
+      // update coinbase balance
+      const usdcTransferToCexTemp = usdcTransferToCex;
+      await new Promise((resolve) => setTimeout(resolve, 6000));
+      setCexBalance((Number(cexBalance) + Number(usdcTransferToCexTemp)).toFixed(2));
+      return;
+    }
 
     setTransferState("sending");
     try {
@@ -245,10 +251,11 @@ const CashOut = ({
 
   const onClickTransferToBank = async () => {
     // usability test
-    setCbBankAccountName("Chase Bank, North America\n****9073");
-    setTransferToBankModal(true);
-    return;
-
+    if (isUsabilityTest) {
+      setCbBankAccountName("Chase Bank, North America\n****9073");
+      setTransferToBankModal(true);
+      return;
+    }
     // coinbase
     if (cashoutSettingsState?.cex == "Coinbase") {
       // get access or refresh tokens
@@ -286,14 +293,16 @@ const CashOut = ({
 
   const onClickTransferToBankSubmit = async () => {
     // for usability test
-    setTransferState("sending");
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setTransferState("sent");
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setTransferToBankSuccessModal(true);
-    setFiatDeposited((Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(2));
-    setCexBalance((Number(cexBalance) - Number(usdcTransferToBank)).toFixed(2));
-    return;
+    if (isUsabilityTest) {
+      setTransferState("sending");
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setTransferState("sent");
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      setTransferToBankSuccessModal(true);
+      setFiatDeposited((Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(2));
+      setCexBalance((Number(cexBalance) - Number(usdcTransferToBank)).toFixed(2));
+      return;
+    }
 
     // setModalText("sending");
 

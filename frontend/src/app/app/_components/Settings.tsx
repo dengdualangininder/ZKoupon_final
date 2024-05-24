@@ -35,6 +35,7 @@ const Settings = ({
   isMobile,
   idToken,
   publicKey,
+  isUsabilityTest,
 }: {
   paymentSettingsState: PaymentSettings;
   setPaymentSettingsState: any;
@@ -43,6 +44,7 @@ const Settings = ({
   isMobile: boolean;
   idToken: string;
   publicKey: string;
+  isUsabilityTest: boolean;
 }) => {
   console.log("Settings, rendered once");
   // states

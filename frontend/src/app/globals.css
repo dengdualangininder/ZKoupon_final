@@ -302,7 +302,7 @@
   }
 
   .introButtonContainer2 {
-    @apply w-full px-2 pt-[16px] pb-[44px] flex justify-between flex-none;
+    @apply w-full px-2 pt-[16px] pb-[56px] flex justify-between flex-none;
   }
 
   .introNext {
@@ -314,11 +314,11 @@
   }
 
   .introNext2 {
-    @apply mr-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[110px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-lg font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply mr-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .introBack2 {
-    @apply ml-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[110px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-lg font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
+    @apply ml-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-medium text-gray-400 bg-white border-2 border-gray-400 active:opacity-50 lg:hover:opacity-50 rounded-[4px];
   }
 
   .next {
