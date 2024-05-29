@@ -70,7 +70,7 @@
   }
 
   .textBase2 {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg;
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base;
   }
 
   .textLg2 {
@@ -221,15 +221,19 @@
     @apply text-lg leading-snug lg:text-sm lg:leading-tight space-y-2 lg:space-y-1;
   }
 
-  .fieldContainer {
-    @apply w-full h-[64px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[90px] landscape:xl:h-[90px] textBase2 font-medium py-1 flex items-center justify-between border-t;
+  .settingsTitle {
+    @apply h-[64px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[90px] landscape:xl:h-[90px] text2xl font-bold flex items-center justify-center flex-none text-blue-700;
+  }
+
+  .settingsField {
+    @apply w-full h-[56px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[90px] landscape:xl:h-[90px] textBase2 font-medium py-1 flex items-center justify-between border-t;
   }
 
   .settingsLabelFont {
-    @apply flex-none h-full flex items-center text-gray-400 tracking-tight mr-3;
+    @apply flex-none h-full flex items-center text-gray-500 tracking-tight mr-3;
   }
 
-  .settingsInputFont {
+  .settingsValueFont {
     @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full px-3 text-end tracking-tight rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic placeholder:pr-[2px] focus:placeholder:text-transparent;
   }
 
@@ -246,11 +250,11 @@
   }
 
   .loginInputFont {
-    @apply w-full font-medium px-1.5 py-2 xs:py-3 border border-gray-500 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+    @apply w-full font-medium px-1.5 py-2 landscape:xl:desktop:h-[44px] xs:py-3 border border-gray-500 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
   .menuText {
-    @apply mt-1 text-xs portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-medium pointer-events-none;
+    @apply mt-1 text-xs portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-medium pointer-events-none select-none;
   }
 
   .checkboxMobile {
@@ -258,7 +262,7 @@
   }
 
   .modal {
-    @apply w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 textXl-relaxed text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+    @apply w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg text-center flex flex-col items-center rounded-2xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
 
   .modalBlackout {
@@ -266,11 +270,11 @@
   }
 
   .modalButtonBlue {
-    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[56px] textLg font-medium text-white bg-blue-500 border border-blue-500 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-medium text-white bg-blue-500 border border-blue-500 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
   }
 
   .modalButtonWhite {
-    @apply w-full max-w-[350px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[56px] textLg font-medium text-gray-700 bg-white border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-medium text-gray-700 bg-white border border-gray-700 rounded-[4px] lg:hover:opacity-50 active:opacity-50;
   }
 
   .modalButtonNoBorder {
@@ -303,6 +307,10 @@
 
   .introButtonContainer2 {
     @apply w-full px-2 pt-[16px] pb-[56px] flex justify-between flex-none;
+  }
+
+  .introNumber {
+    @apply flex-none mr-2 w-[28px] h-[28px] bg-blue-500 rounded-full flex justify-center items-center font-bold text-base text-white;
   }
 
   .introNext {
@@ -366,6 +374,50 @@
     @apply mb-2 py-3 active:bg-gray-200 rounded-full text-gray-500 bg-white border border-gray-200 drop-shadow-lg text-lg font-medium tracking-wide;
   }
 
+  .detailsModal {
+    @apply w-full portrait:sm:w-[460px] landscape:w-[460px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[420px] portrait:h-full landscape:h-[95%] portrait:sm:h-[80%] portrait:sm:max-h-[800px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:xl:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:rounded-2xl bg-white absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  }
+
+  .detailsHeaderText {
+    @apply text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:text-3xl landscape:xl:desktop:text-xl font-semibold;
+  }
+
+  .detailsContainer {
+    @apply h-[60%] min-h-[410px] max-h-[440px] portrait:lg:h-[540px] portrait:lg:max-h-none landscape:xl:h-[540px] landscape:xl:max-h-none landscape:xl:desktop:h-[400px] landscape:lg:desktop:min-h-[0px] flex flex-col justify-between;
+  }
+
+  .detailsLabelText {
+    @apply text-xl leading-snug portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg landscape:xl:desktop:leading-none font-medium;
+  }
+
+  .detailsValueText {
+    @apply text-xl leading-snug portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg text-gray-400;
+  }
+
+  .paymentsWidth {
+    @apply w-[85%] portrait:sm:w-[75%] portrait:max-w-[750px] landscape:max-w-[720px] landscape:desktop:max-w-[500px];
+  }
+
+  .settingsWidth {
+    @apply w-full portrait:sm:w-[75%] portrait:max-w-[750px] landscape:max-w-[720px] landscape:desktop:max-w-[500px];
+  }
+
+  .paymentsHeaderFont {
+    @apply text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl landscape:xl:desktop:text-lg;
+  }
+
+  .searchModalPortrait {
+    @apply bottom-0 sm:bottom-auto sm:right-0 sm:top-0 w-full sm:w-[440px] h-[560px] sm:h-full flex flex-col items-center rounded-tl-[32px] rounded-tr-[32px] sm:rounded-none;
+  }
+
+  .searchModalLandscape {
+    @apply right-0 w-[440px] h-screen flex flex-col items-center;
+  }
+
+  .sidebar {
+    @apply absolute left-0 w-full max-w-[450px] portrait:sm:max-w-none landscape:lg:max-w-none portrait:sm:w-[430px] landscape:lg:w-[430px] portrait:lg:w-[500px] landscape:xl:w-[500px] h-screen flex flex-col items-center overflow-y-auto bg-gray-200 z-[20] transition-all duration-500;
+  }
+
   .cashoutContainer {
     @apply w-full min-h-[230px] px-7 portrait:sm:px-10 landscape:lg:px-10 portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[230px] py-5 portrait:sm:py-8 landscape:lg:py-8 flex flex-col rounded-xl bg-slate-200 border border-gray-300;
   }
@@ -403,7 +455,7 @@
   }
 
   .cashoutButton {
-    @apply textBase w-full h-[52px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] font-medium text-white bg-blue-500 active:opacity-50 rounded-md hover:desktop:bg-blue-600;
+    @apply textBase w-full h-[56px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] font-medium text-white bg-blue-500 active:opacity-50 rounded-md hover:desktop:bg-blue-600;
   }
 
   .cashoutTooltip {

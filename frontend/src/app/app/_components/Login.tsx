@@ -4,19 +4,18 @@ import { useState } from "react";
 import Image from "next/image";
 // wagmi
 import { useConnect } from "wagmi";
+// components
+import ErrorModal from "./modals/ErrorModal";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
 const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setPage: any; isUsabilityTest: boolean }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [forgotModal, setForgotModal] = useState(false);
-  const [modalState, setModalState] = useState("");
   const [show, setShow] = useState(false);
   const [userType, setUserType] = useState("owners");
   const [moreOptionsModal, setMoreOptionsModal] = useState(false);
@@ -100,20 +99,19 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   };
 
   return (
-    <div className="w-full h-screen py-8 textLg flex justify-center overflow-y-auto">
-      <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] portrait:lg:w-[430px] landscape:xl:w-[430px] landscape:xl:desktop:w-[360px] h-full">
-        {/*--- HEADER + MENU BAR ---*/}
-        <div className="w-full h-[40%] min-h-[240px] landscape:lg:min-h-[300px] flex flex-col justify-end landscape:space-y-8 landscape:md:space-y-10 landscape:lg:space-y-12 portrait:space-y-12 portrait:sm:space-y-20">
+    <div className="w-full h-screen min-h-[667px] text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto">
+      <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] landscape:xl:desktop:w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
+        {/*--- logo + menu bar ---*/}
+        <div className="pt-6 w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-end">
           {/*--- logo ---*/}
-          <div className="w-full flex flex-col items-center">
+          <div className="pb-1 w-full flex flex-col items-center justify-center">
             <div className="relative w-full h-[90px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:h-[110px] landscape:xl:desktop:h-[90px] mr-1">
               <Image src="/logo.svg" alt="logo" fill />
             </div>
+            <div className="mt-8 mb-10 textBase2 font-medium text-center">Instant global payments with 0% fees</div>
           </div>
-          {/*--- subheader ---*/}
-          <div className="pb-2 textBase2 font-medium text-center">Fast global payments with 0% fees</div>
           {/*--- menu bar ---*/}
-          <div className="w-full h-[50px] portrait:sm:h-[60px] landscape:lg:h-[60px] portrait:lg:h-[64px] landscape:xl:h-[64px] landscape:xl:desktop:h-[50px] flex justify-center font-medium bg-gray-200 rounded-full flex-none">
+          <div className="w-full h-[50px] portrait:sm:h-[60px] landscape:lg:h-[60px] portrait:lg:h-[64px] landscape:xl:h-[64px] landscape:xl:desktop:h-[44px] flex justify-center font-medium bg-gray-200 rounded-full flex-none">
             <div
               className={`${userType == "owners" ? "bg-blue-500 text-white" : ""} w-[50%] h-full cursor-pointer flex items-center justify-center rounded-full`}
               onClick={() => setUserType("owners")}
@@ -130,10 +128,10 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
         </div>
 
         {/*--- content below MENU ---*/}
-        <div className="mt-8 h-[50%] min-h-[250px] landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10 landscape:xl:desktop:text-base">
+        <div className="pb-6 mt-8 w-full landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10 landscape:xl:desktop:text-base">
           {/*--- FOR OWNERS ---*/}
           {userType == "owners" && (
-            <div className="w-full flex flex-col space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-6 portrait:lg:space-y-8 landscape:xl:space-y-8">
+            <div className="w-full flex flex-col space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-6">
               {/*--- connectors: google, apple, line, phantom, metamask ---*/}
               {myConnectors.map<any>((i: any) => (
                 <div
@@ -165,7 +163,7 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
 
           {/*--FOR EMPLOYEES---*/}
           {userType == "employees" && (
-            <div className="w-full flex flex-col items-center">
+            <div className="px-0.5 w-full flex flex-col items-center">
               <div className="w-full">
                 {/*--email---*/}
                 <div className="font-medium">Email</div>
@@ -180,9 +178,9 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                     className="loginInputFont"
                     onBlur={(e) => setEmployeePass(e.target.value)}
                   ></input>
-                  <div className="absolute w-[68px] portrait:sm:w-[100px] landscape:md:w-[100px] h-full right-0 top-0 flex justify-center items-center">
+                  <div className="absolute h-full right-4 top-0 flex justify-center items-center z-[2]">
                     <div
-                      className="relative w-[28px] h-[28px] portrait:sm:w-[38px] portrait:sm:h-[38px] landscape:md:w-[38px] landscape:md:h-[38px] pointer-cursor"
+                      className="relative w-[28px] h-[28px] portrait:sm:w-[36px] portrait:sm:h-[36px] landscape:md:w-[36px] landscape:md:h-[36px] landscape:xl:desktop:w-[24px] landscape:xl:desktop:h-[24px] cursor-pointer"
                       onClick={() => {
                         show ? setShow(false) : setShow(true);
                       }}
@@ -195,7 +193,7 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                 <div className="mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 flex justify-center">
                   <button
                     type="submit"
-                    className="w-full h-[56px] landscape:md:h-[64px] portrait:sm:h-[64px] landscape:xl:desktop:h-[56px] text-white font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-[4px]"
+                    className="w-full h-[56px] landscape:md:h-[64px] portrait:sm:h-[64px] landscape:xl:desktop:h-[48px] text-white font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-md"
                     onClick={employeeSubmit}
                   >
                     Sign in
@@ -203,10 +201,10 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                 </div>
               </div>
               <div
-                className="landscape:mt-8 portrait:mt-12 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link landscape:xl:desktop:text-base"
+                className="landscape:mt-8 portrait:mt-10 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link landscape:xl:desktop:text-sm"
                 onClick={() => {
-                  setForgotModal(true);
-                  setModalState("initial");
+                  setErrorMsg("Please contact your employer. The person who created this Flash account can view the Employee Password or set a new one.");
+                  setErrorModal(true);
                 }}
               >
                 Forgot password?
@@ -217,59 +215,8 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
       </div>
 
       {/*---MODALS---*/}
-      {forgotModal && (
-        <div>
-          <div className="w-[330px] xs:w-[300px] h-[330px] xs:h-[270px] bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
-            {/*---content---*/}
-            {modalState === "initial" && (
-              <div className="flex flex-col h-full justify-between items-center px-6 py-6">
-                <div className="text-xl xs:text-base font-bold">Forgot your password?</div>
-                <div className="">
-                  <label className="font-bold">Your account email</label>
-                  <input id="forgotModalInput" className="w-full logininputfont"></input>
-                  {/* <div className="text-red-500 text-center font-bold">{errorMsg}</div> */}
-                </div>
-                <button onClick={sendEmail} className="w-4/5 xs:w-[150px] flex justify-center items-center loginbutton">
-                  Submit
-                </button>
-                <div onClick={() => setForgotModal(false)} className=" text-red-500 lg:hover:underline active:underline cursor-pointer text-lg">
-                  Cancel
-                </div>
-              </div>
-            )}
-            {modalState === "sending" && (
-              <div className="flex flex-col h-full justify-center items-center px-6 py-6">
-                <SpinningCircleGray />
-              </div>
-            )}
-            {modalState === "sent" && (
-              <div className="flex flex-col h-full justify-between items-center px-6 py-6">
-                <div className="h-full flex items-center text-lg">Please check your email</div>
-                <button onClick={() => setForgotModal(false)} className="flex-none w-4/5 loginbutton">
-                  DISMISS
-                </button>
-              </div>
-            )}
-          </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
-        </div>
-      )}
-      {errorModal && (
-        <div className="">
-          <div className="w-[270px] h-[270px] flex flex-col items-center px-6 py-6 bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">
-            {/*---content---*/}
-            <div className="h-full flex justify-center items-center">
-              {/*---msg---*/}
-              <div className="text-lg leading-tight md:text-base md:leading-snug">{errorMsg}</div>
-            </div>
-            {/*---close button---*/}
-            <button onClick={() => setErrorModal(false)} className="w-[160px] loginbutton tracking-wide">
-              DISMISS
-            </button>
-          </div>
-          <div className=" opacity-70 fixed inset-0 z-10 bg-black"></div>
-        </div>
-      )}
+      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+
       {moreOptionsModal && (
         <div className="">
           <div className="w-[340px] h-[360px] flex flex-col items-center justify-between px-6 py-10 bg-white rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-[90]">

@@ -110,7 +110,7 @@ const User = () => {
           merchantBusinessType: "",
           merchantFields: [],
           merchantGoogleId: "",
-          qrCodeUrl: "",
+          qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=inperson&merchantName=A%20Store%20In%20Europe&merchantCurrency=EUR&merchantEvmAddress=0xA206df5844dA81470C82d07AE1b797d139bE58C2`,
         };
         const cashoutSettings = {
           cex: "Coinbase",
@@ -371,7 +371,7 @@ const User = () => {
     <div className="pl-[calc(100vw-100%)] text-black">
       {page === "loading" && (
         <div className="text-xl w-full h-screen flex justify-center overflow-y-auto">
-          <div className="w-[89%] max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
+          <div className="w-[92%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
             {/* LOADING */}
             <div className="w-full h-full absolute flex flex-col items-center justify-center">
               <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin">
@@ -380,22 +380,20 @@ const User = () => {
               <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
             </div>
             {/*--- welcome ---*/}
-            <div className="w-full h-full flex flex-col items-center">
-              {/*--- text ---*/}
-              <div className="flex-1 w-full flex flex-col items-center justify-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              <div className="pb-16 w-full flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
                 <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
                   <Image src="/logo.svg" alt="logo" fill />
                 </div>
-                <div className="text-2xl font-medium text-center animate-fadeInAnimation invisible">Welcome to Flash!</div>
-                <div className="mt-3 text-center animate-fadeInAnimation invisible">
-                  Get your store ready to
+                <div className="pb-4 text-center animate-fadeInAnimation leading-relaxed invisible">
+                  Set up crypto payments
                   <br />
-                  accept crypto payments
+                  with 0% fees now
                 </div>
-              </div>
-              {/*--- buttons ---*/}
-              <div className="invisible introButtonContainer2 justify-end">
-                <button className="introNext2">START &nbsp;&#10095;</button>
+                {/*--- buttons ---*/}
+                <button className="invisible w-[240px] h-[60px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px] animate-fadeInAnimation">
+                  START &nbsp;&#10095;
+                </button>
               </div>
             </div>
           </div>
@@ -575,9 +573,9 @@ const User = () => {
           {/*---coinbaseIntroModal---*/}
           {coinbaseIntroModal && (
             <div>
-              <div className="w-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[330px] py-10 portrait:sm:py-16 landscape:lg:py-16 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 px-6 portrait:sm:px-10 landscape:lg:px-10 textLg text-center flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90]">
+              <div className="modal text-start">
                 {/*---content---*/}
-                <div className="grow flex flex-col justify-center space-y-6 text-start">
+                <div className="grow flex flex-col justify-center space-y-6">
                   <p>Your Coinbase account is linked!</p>
                   <p>Your Flash account is ready.</p>
                   <p>
@@ -585,8 +583,8 @@ const User = () => {
                   </p>
                 </div>
                 {/*--- buttons ---*/}
-                <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonWhite">
-                  Close
+                <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonBlue">
+                  Enter App
                 </button>
               </div>
               <div

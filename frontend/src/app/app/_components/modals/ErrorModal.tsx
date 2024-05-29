@@ -4,7 +4,7 @@ const ErrorModal = ({ errorMsg, setErrorModal }: { errorMsg: any; setErrorModal:
       <div className="modal">
         {/*---content---*/}
         <div className="grow flex flex-col justify-center">{errorMsg}</div>
-        {/*---content---*/}
+        {/*---button---*/}
         <button onClick={() => setErrorModal(false)} className="modalButtonWhite">
           Dismiss
         </button>

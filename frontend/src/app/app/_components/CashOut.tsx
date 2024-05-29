@@ -457,7 +457,7 @@ const CashOut = ({
         </div>
 
         {/*--- Your Savings ---*/}
-        <div className="hidden cashoutContainerStats cashoutStats">
+        <div className=" cashoutContainerStats cashoutStats">
           {/*--- header ---*/}
           <div className="w-full flex items-center justify-between">
             <div className="textBase font-bold">Your Savings</div>

@@ -7,7 +7,7 @@ const CashoutIntroModal = ({ setCashoutIntroModal }: { setCashoutIntroModal: any
     <div className="">
       <div className="w-[330px] portrait:sm:w-[420px] landscape:lg:w-[420px] min-h-[640px] flex flex-col items-center rounded-xl bg-white fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90]">
         {/*---close---*/}
-        <div className="w-full h-[50px] relative">
+        <div className="hidden w-full h-[50px] relative">
           <div onClick={() => setCashoutIntroModal(false)} className="absolute top-2 right-3 p-2 xButton">
             &#10005;
           </div>
