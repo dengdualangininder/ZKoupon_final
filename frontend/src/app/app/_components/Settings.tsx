@@ -221,8 +221,8 @@ const Settings = ({
   console.log("last render, paymentSettingsState:", paymentSettingsState);
   console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
-    <section className="w-full h-full flex flex-col items-center overflow-y-auto">
-      <div className="px-3 settingsWidth min-h-[700px">
+    <section className="settingsFont w-full h-full flex flex-col items-center overflow-y-auto">
+      <div className="px-3 settingsWidth">
         <div className="settingsTitle">Settings</div>
         <div className="hidden">
           <QRCodeSVG id="qrPlacard" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
@@ -233,7 +233,7 @@ const Settings = ({
           {/*---EVM Address---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Your EVM Address</label>
-            <div className="w-full max-w-[400px] landscape:lg:max-w-[400px] pr-1 h-full text-end tracking-tight flex items-center justify-end">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
               {paymentSettingsState.merchantEvmAddress.slice(0, 6)}...{paymentSettingsState.merchantEvmAddress.slice(-4)}{" "}
               <div className="ml-2 relative w-[20px] h-[20px]">
                 <Image src="/copySvg.svg" alt="copy" fill />
@@ -244,42 +244,38 @@ const Settings = ({
           {/*---email---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Email</label>
-            <div className="h-full flex items-center">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50" onClick={() => document.getElementById("settingsEmail")?.focus()}>
               <input
+                id="settingsEmail"
                 className="settingsValueFont peer"
                 onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantEmail}
                 placeholder="empty"
               ></input>
-              <div className="pt-0.5 text-lg">&#10095;</div>
-              <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                <Image src="/rightAngle.svg" alt="rightAngle" fill />
-              </div>
+              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
             </div>
           </div>
 
           {/*---merchantName---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Business Name</label>
-            <div className="h-full flex items-center">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50" onClick={() => document.getElementById("settingsName")?.focus()}>
               <input
+                id="settingsName"
                 className="settingsValueFont peer"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantName}
               ></input>
-              <div className="pt-0.5 text-lg">&#10095;</div>
-              <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                <Image src="/rightAngle.svg" alt="rightAngle" fill />
-              </div>
+              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
             </div>
           </div>
 
           {/*---merchantCountry & merchantCurrency---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Country / Currency</label>
-            <div className="h-full flex items-center">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
               <select
                 className="settingsSelectFont peer"
                 onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -298,13 +294,12 @@ const Settings = ({
                 value={`${paymentSettingsState.merchantCountry} / ${paymentSettingsState.merchantCurrency}`}
               >
                 {countryCurrencyList.map((i, index) => (
-                  <option key={index}>{i}</option>
+                  <option key={index} className="px-4">
+                    {i}
+                  </option>
                 ))}
               </select>
               <div className="pt-0.5 text-lg">&#10095;</div>
-              <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                <Image src="/rightAngle.svg" alt="rightAngle" fill />
-              </div>
             </div>
           </div>
 
@@ -497,7 +492,7 @@ const Settings = ({
           {paymentSettingsState.merchantCountry != "Any country" && (
             <div className={`${cashoutSettingsState.cex == "Coinbase" ? "border-bnot" : ""} settingsField`}>
               <label className="settingsLabelFont">Cash Out Platform</label>
-              <div className="h-full flex items-center">
+              <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
                 <select
                   className="settingsSelectFont peer"
                   onChange={(e) => {
@@ -513,9 +508,6 @@ const Settings = ({
                   ))}
                 </select>
                 <div className="pt-0.5 text-lg">&#10095;</div>
-                <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                  <Image src="/rightAngle.svg" alt="rightAngle" fill />
-                </div>
               </div>
             </div>
           )}
@@ -523,7 +515,7 @@ const Settings = ({
           {/*---cexEvmAddress---*/}
           <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField border-bnone`}>
             <label className="settingsLabelFont">CEX EVM Address</label>
-            <div className="h-full flex items-center">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
               <input
                 className="settingsValueFont peer"
                 onChange={(e) => {
@@ -534,17 +526,14 @@ const Settings = ({
                 autoComplete="none"
                 placeholder="empty"
               ></input>
-              <div className="pt-0.5 text-lg">&#10095;</div>
-              <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                <Image src="/rightAngle.svg" alt="rightAngle" fill />
-              </div>
+              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
             </div>
           </div>
 
           {/*---employee password---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Employee Password</label>
-            <div className="h-full flex items-center">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
               <div className="relative w-full max-w-[400px] landscape:lg:max-w-[400px] h-full">
                 <div id="employeePassMask" onClick={() => setEmployeePassModal(true)} className="absolute top-0 right-0 h-full w-full"></div>
                 <input
@@ -564,10 +553,7 @@ const Settings = ({
                   autoComplete="off"
                 ></input>
               </div>
-              <div className="pt-0.5 text-lg">&#10095;</div>
-              <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                <Image src="/rightAngle.svg" alt="rightAngle" fill />
-              </div>
+              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
             </div>
           </div>
 
@@ -585,15 +571,12 @@ const Settings = ({
                   </div>
                 </span>
               </label>
-              <div className="h-full flex items-center">
+              <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
                 <select className="settingsSelectFont peer pointer-events-none" onChange={(e) => {}}>
                   <option key="yes">Yes</option>
                   <option key="no">No</option>
                 </select>
                 <div className="pt-0.5 text-lg">&#10095;</div>
-                <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                  <Image src="/rightAngle.svg" alt="rightAngle" fill />
-                </div>
               </div>
             </div>
           )}
@@ -610,17 +593,17 @@ const Settings = ({
                 </div>
               </span>
             </label>
-            <div className="h-full flex items-center">
+            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
               <input
+                id="settingsGoogleId"
                 className="settingsValueFont peer"
                 onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantGoogleId}
                 placeholder="empty"
               ></input>
-              <div className="pt-0.5 text-lg">&#10095;</div>
-              <div className="hidden flex-none relative w-[16px] h-[24px] peer-focus:hidden">
-                <Image src="/rightAngle.svg" alt="rightAngle" fill />
+              <div className="peer-focus:hidden pt-0.5 text-lg" onClick={() => document.getElementById("settingsGoogleId")?.focus()}>
+                &#10095;
               </div>
             </div>
           </div>
@@ -628,28 +611,26 @@ const Settings = ({
           <div className="settingsTitle">Support</div>
 
           {/*--- FAQs ---*/}
-          <div className="settingsField">
-            <label className="settingsLabelFont text-black" onClick={() => setFaqModal(true)}>
-              Instructions
-            </label>
+          <div className="settingsField cursor-pointer desktop:hover:opacity-50 active:opacity-50" onClick={() => setFaqModal(true)}>
+            <label className="settingsLabelFont text-black">Instructions</label>
             <div className="pt-0.5 text-lg">&#10095;</div>
           </div>
-          <div className="settingsField border-b">
+          <div className="settingsField cursor-pointer desktop:hover:opacity-50 active:opacity-50">
             <label className="settingsLabelFont text-black">Contact Us</label>
             <div className="pt-0.5 text-lg">&#10095;</div>
           </div>
-          <div className="settingsField border-b">
+          <div className="settingsField cursor-pointer desktop:hover:opacity-50 active:opacity-50">
             <label className="settingsLabelFont text-black">Feedback</label>
             <div className="pt-0.5 text-lg">&#10095;</div>
           </div>
         </form>
 
-        <div className="min-h-[140px] flex flex-col justify-center">
+        <div className="mb-[20px] portrait:sm:mb-[40px] landscape:lg:mb-[40px] h-[120px] portrait:sm:h-[130px] landscape:lg:h-[130px] landscape:xl:desktop:h-[120px] flex flex-col justify-center">
           {/*---Sign Out---*/}
-          <div className="textBase2 flex items-center justify-center relative">
+          <div className="flex items-center justify-center relative">
             <button
               onClick={onClickSignOut}
-              className="textLg font-medium px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-3 landscape:lg:py-4 rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
+              className="px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-4 landscape:lg:py-4 landscape:xl:desktop:py-3 rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
             >
               Sign Out
             </button>

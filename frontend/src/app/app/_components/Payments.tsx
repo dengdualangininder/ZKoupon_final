@@ -308,7 +308,7 @@ const Payments = ({
       {/*--- TOP BAR h-120px/140px ---*/}
       <div className="flex-none paymentsWidth h-[120px] portrait:sm:h-[140px] landscape:lg:h-[140px] landscape:xl:desktotp:h-[120px] flex items-center justify-between relative">
         {/*--- search button + download button ---*/}
-        <div className="h-full flex items-center space-x-8 portrait:sm:space-x-12 landscape:lg:space-x-12">
+        <div className="h-full flex items-center space-x-8 portrait:sm:space-x-12 landscape:lg:space-x-12 portrait:lg:space-x-16 landscape:xl:space-x-16">
           {/*--- search ---*/}
           <div className="flex flex-col items-center desktop:hover:opacity-50 active:opacity-50 cursor-pointer" onClick={() => setSearchModal(true)}>
             <div className="w-[44px] h-[44px] portrait:sm:w-[60px] portrait:sm:h-[60px] landscape:lg:w-[60px] landscape:lg:h-[60px] landscape:xl:desktop:w-[40px] landscape:xl:desktop:h-[40px] bg-gray-200 rounded-full flex items-center justify-center">
@@ -488,102 +488,104 @@ const Payments = ({
       {/*--- SEARCH MODAL ---*/}
       <div className={`${searchModal ? "" : "hidden"} fixed inset-0 z-10`} onClick={() => setSearchModal(false)}></div>
       <div id="searchModal" className={`${searchModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebar`}>
-        {/*--- header + close ---*/}
-        <div className="flex-none w-full h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-end">
-          <div className={`w-full flex justify-center items-center`}>
-            {" "}
-            <div className="textXl font-medium">{showCalendar ? "" : "Search Payments By"}</div>
-            <div
-              className="absolute right-5 text-2xl font-bold px-2 cursor-pointer portrait:sm:hidden landscape:lg:hidden"
+        <div className="w-[88%]">
+          {/*--- header + close ---*/}
+          <div className="flex-none w-full h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] flex items-end">
+            <div className={`w-full flex justify-center items-center`}>
+              {" "}
+              <div className="textXl font-medium">{showCalendar ? "" : "Search Payments By"}</div>
+              <div
+                className="absolute right-5 text-2xl font-bold px-2 cursor-pointer portrait:sm:hidden landscape:lg:hidden"
+                onClick={() => {
+                  setSearchModal(false);
+                  clearFilter();
+                }}
+              >
+                &#10005;
+              </div>
+            </div>
+          </div>
+          {/*--- filters ---*/}
+          {!showCalendar ? (
+            <div className="flex-none mt-4 w-full h-[360px] textLg flex flex-col">
+              {/*--- customer's address ---*/}
+              <div className="h-[25%] flex items-center justify-between border-b border-gray-500">
+                <div className="font-medium">Customer's Address</div>
+                <input
+                  className="w-[158px] h-[48px] px-3 text-end rounded-[4px] placeholder:italic placeholder:text-base border border-gray-700 outline-none focus:placeholder:text-transparent"
+                  onChange={(e) => {
+                    setLast4Chars(e.currentTarget.value);
+                  }}
+                  value={last4Chars}
+                  placeholder="Enter last 4 chars"
+                />
+              </div>
+              {/*--- "to refund" payments ---*/}
+              <div className="h-[25%] flex items-center justify-between border-b border-gray-500">
+                <div className="textLg font-medium">"To Refund" Payments</div>
+                <input type="checkbox" className="w-[30px] h-[30px] rounded-md border border-gray-400" />
+              </div>
+              {/*--- refunded payments ---*/}
+              <div className="h-[25%] flex items-center justify-between border-b border-gray-500">
+                <div className="textLg font-medium">Refunded Payments</div>
+                <input type="checkbox" className="w-[30px] h-[30px] rounded-md border border-gray-400" />
+              </div>
+              {/*--- date ---*/}
+              <div className="h-[25%] flex items-center justify-between">
+                <div className="textLg font-medium">Date</div>
+                <div
+                  className={`${
+                    searchDate && searchDate.to ? "space-x-6 pl-3" : "textBase px-3 text-gray-400 italic justify-end cursor-pointer"
+                  } min-w-[158px] h-[48px] flex items-center bg-white rounded-[4px] border border-gray-700`}
+                  onClick={() => setShowCalendar(!showCalendar)}
+                >
+                  <div>{searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "Select dates"}</div>
+                  <div
+                    className={`${searchDate && searchDate.to ? "" : "hidden"} pl-1 pr-3 cursor-pointer`}
+                    onClick={(e) => {
+                      setSearchDate(undefined);
+                      e.stopPropagation();
+                    }}
+                  >
+                    &#10005;
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center mt-6 scale-[115%]">
+              <DayPicker mode="range" selected={searchDate} onSelect={setSearchDate} />
+              <div className="mt-2 text-sm font-semibold w-full h flex items-start justify-center space-x-4">
+                <button
+                  className="px-6 py-3 border border-gray-500 text-gray-500 rounded-full"
+                  onClick={() => {
+                    setShowCalendar(false);
+                    setSearchDate(undefined);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button className=" bg-blue-500 rounded-full text-white py-3 px-6" onClick={() => setShowCalendar(false)}>
+                  Confirm Dates
+                </button>
+              </div>
+            </div>
+          )}
+          {/*--- button ---*/}
+          <div className="mt-6 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex flex-col items-center space-y-12">
+            <button className={`${showCalendar ? "hidden" : ""} modalButtonBlue`} onClick={search}>
+              Apply
+            </button>
+            <button
+              className={`${showCalendar ? "hidden" : ""} hidden portrait:sm:block landscape:lg:block modalButtonWhite`}
               onClick={() => {
                 setSearchModal(false);
                 clearFilter();
               }}
             >
-              &#10005;
-            </div>
+              Close
+            </button>
           </div>
-        </div>
-        {/*--- filters ---*/}
-        {!showCalendar ? (
-          <div className="flex-none mt-4 h-[360px] textLg w-[88%] flex flex-col">
-            {/*--- customer's address ---*/}
-            <div className="h-[25%] flex items-center justify-between border-b border-gray-500">
-              <div className="font-medium">Customer's Address</div>
-              <input
-                className="w-[158px] h-[48px] px-3 text-end rounded-[4px] placeholder:italic placeholder:text-base border border-gray-700 outline-none focus:placeholder:text-transparent"
-                onChange={(e) => {
-                  setLast4Chars(e.currentTarget.value);
-                }}
-                value={last4Chars}
-                placeholder="Enter last 4 chars"
-              />
-            </div>
-            {/*--- "to refund" payments ---*/}
-            <div className="h-[25%] flex items-center justify-between border-b border-gray-500">
-              <div className="textLg font-medium">"To Refund" Payments</div>
-              <input type="checkbox" className="w-[30px] h-[30px] rounded-md border border-gray-400" />
-            </div>
-            {/*--- refunded payments ---*/}
-            <div className="h-[25%] flex items-center justify-between border-b border-gray-500">
-              <div className="textLg font-medium">Refunded Payments</div>
-              <input type="checkbox" className="w-[30px] h-[30px] rounded-md border border-gray-400" />
-            </div>
-            {/*--- date ---*/}
-            <div className="h-[25%] flex items-center justify-between">
-              <div className="textLg font-medium">Date</div>
-              <div
-                className={`${
-                  searchDate && searchDate.to ? "space-x-6 pl-3" : "textBase px-3 text-gray-400 italic justify-end cursor-pointer"
-                } min-w-[158px] h-[48px] flex items-center bg-white rounded-[4px] border border-gray-700`}
-                onClick={() => setShowCalendar(!showCalendar)}
-              >
-                <div>{searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "Select dates"}</div>
-                <div
-                  className={`${searchDate && searchDate.to ? "" : "hidden"} pl-1 pr-3 cursor-pointer`}
-                  onClick={(e) => {
-                    setSearchDate(undefined);
-                    e.stopPropagation();
-                  }}
-                >
-                  &#10005;
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex-1 flex flex-col items-center mt-6 scale-[115%]">
-            <DayPicker mode="range" selected={searchDate} onSelect={setSearchDate} />
-            <div className="mt-2 text-sm font-semibold w-full h flex items-start justify-center space-x-4">
-              <button
-                className="px-6 py-3 border border-gray-500 text-gray-500 rounded-full"
-                onClick={() => {
-                  setShowCalendar(false);
-                  setSearchDate(undefined);
-                }}
-              >
-                Cancel
-              </button>
-              <button className=" bg-blue-500 rounded-full text-white py-3 px-6" onClick={() => setShowCalendar(false)}>
-                Confirm Dates
-              </button>
-            </div>
-          </div>
-        )}
-        {/*--- button ---*/}
-        <div className="mt-6 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex flex-col items-center space-y-12">
-          <button className={`${showCalendar ? "hidden" : ""} modalButtonBlue`} onClick={search}>
-            Apply
-          </button>
-          <button
-            className={`${showCalendar ? "hidden" : ""} hidden portrait:sm:block landscape:lg:block modalButtonWhite`}
-            onClick={() => {
-              setSearchModal(false);
-              clearFilter();
-            }}
-          >
-            Close
-          </button>
         </div>
       </div>
 

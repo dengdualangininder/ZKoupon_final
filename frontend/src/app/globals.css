@@ -26,6 +26,35 @@
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px rgb(255, 255, 255) inset !important;
   }
+
+  .custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -webkit-border-radius: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f7f4ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c0a0b9;
+  }
 }
 
 @layer components {
@@ -221,12 +250,20 @@
     @apply text-lg leading-snug lg:text-sm lg:leading-tight space-y-2 lg:space-y-1;
   }
 
+  .settingsFont {
+    @apply font-medium text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-base;
+  }
+
+  .settingsWidth {
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] landscape:xl:desktop:w-[480px];
+  }
+
   .settingsTitle {
-    @apply h-[64px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[90px] landscape:xl:h-[90px] text2xl font-bold flex items-center justify-center flex-none text-blue-700;
+    @apply mt-2 h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] landscape:xl:h-[90px] text2xl font-bold flex items-center justify-center flex-none text-blue-700;
   }
 
   .settingsField {
-    @apply w-full h-[56px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[90px] landscape:xl:h-[90px] textBase2 font-medium py-1 flex items-center justify-between border-t;
+    @apply w-full h-[56px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[72px] landscape:xl:h-[72px] landscape:xl:desktop:h-[52px] py-1 flex items-center justify-between border-t;
   }
 
   .settingsLabelFont {
@@ -234,11 +271,11 @@
   }
 
   .settingsValueFont {
-    @apply w-full max-w-[400px] landscape:lg:max-w-[400px] h-full px-3 text-end tracking-tight rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic placeholder:pr-[2px] focus:placeholder:text-transparent;
+    @apply w-full max-w-[480px] landscape:lg:max-w-[480px] h-full px-3 text-end cursor-pointer focus:cursor-text focus:opacity-100 rounded-md outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms] placeholder:font-normal placeholder:italic placeholder:pr-[2px] focus:placeholder:text-transparent;
   }
 
   .settingsSelectFont {
-    @apply h-full px-3 textBase2 text-end bg-white rounded-md outline-transparent [text-align-last:right];
+    @apply h-full px-3 bg-white [text-align-last:right] outline-transparent cursor-pointer custom-select scrollbar;
   }
 
   .settingsInfo {
@@ -398,10 +435,6 @@
     @apply w-[85%] portrait:sm:w-[75%] portrait:max-w-[750px] landscape:max-w-[720px] landscape:desktop:max-w-[500px];
   }
 
-  .settingsWidth {
-    @apply w-full portrait:sm:w-[75%] portrait:max-w-[750px] landscape:max-w-[720px] landscape:desktop:max-w-[500px];
-  }
-
   .paymentsHeaderFont {
     @apply text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-3xl landscape:xl:text-3xl landscape:xl:desktop:text-lg;
   }
@@ -415,7 +448,7 @@
   }
 
   .sidebar {
-    @apply absolute left-0 w-full max-w-[450px] portrait:sm:max-w-none landscape:lg:max-w-none portrait:sm:w-[430px] landscape:lg:w-[430px] portrait:lg:w-[500px] landscape:xl:w-[500px] h-screen flex flex-col items-center overflow-y-auto bg-gray-200 z-[20] transition-all duration-500;
+    @apply absolute left-0 w-full max-w-[450px] portrait:sm:max-w-none landscape:lg:max-w-none portrait:sm:w-[430px] landscape:lg:w-[430px] portrait:lg:w-[530px] landscape:xl:w-[530px] landscape:xl:desktop:w-[400px] h-screen flex flex-col items-center overflow-y-auto bg-gray-200 z-[20] transition-all duration-500;
   }
 
   .cashoutContainer {
