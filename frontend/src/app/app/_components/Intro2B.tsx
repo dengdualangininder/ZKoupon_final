@@ -11,7 +11,7 @@ import { QRCodeSVG } from "qrcode.react";
 import Flow from "./Flow";
 import Flow2 from "./Flow2";
 import Flow3 from "./Flow3";
-import ErrorModal from "./modals/ErrorModal";
+import IntroErrorModal from "./modals/IntroErrorModal";
 import SkipModal from "./modals/SkipModal";
 // constants
 import { countryData, countryCurrencyList, currency2number, merchantType2data } from "@/utils/constants";
@@ -53,7 +53,7 @@ const Intro = ({
   const [expand, setExpand] = useState(false);
   // modal states
   const [errorMsg, setErrorMsg] = useState<any>("");
-  const [errorModal, setErrorModal] = useState(false);
+  const [introErrorModal, setIntroErrorModal] = useState(false);
   const [skipModal, setSkipModal] = useState(false);
 
   // hooks
@@ -102,11 +102,11 @@ const Intro = ({
           console.log("settings saved");
         } else {
           setErrorMsg("Internal server error. Data was not saved.");
-          setErrorModal(true);
+          setIntroErrorModal(true);
         }
       } catch (e) {
         setErrorMsg("Server request error. Data was not saved.");
-        setErrorModal(true);
+        setIntroErrorModal(true);
       }
     };
     saveSettings();
@@ -133,7 +133,7 @@ const Intro = ({
   };
 
   return (
-    <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light2 dark:bg-dark1 text-lightText1 dark:darkText1">
+    <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light2 text-black">
       <div className="w-[85%] min-w-[354px] max-w-[420px] desktop:max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px]">
         {/*--- welcome ---*/}
         {step == "welcome" && (
@@ -222,12 +222,12 @@ const Intro = ({
                 className="introNext"
                 onClick={() => {
                   if (!paymentSettingsState.merchantName) {
-                    setErrorModal(true);
+                    setIntroErrorModal(true);
                     setErrorMsg("Please enter the name of your business");
                     return;
                   }
                   if (!paymentSettingsState.merchantEmail) {
-                    setErrorModal(true);
+                    setIntroErrorModal(true);
                     setErrorMsg("Please enter a email address");
                     return;
                   }
@@ -369,7 +369,7 @@ const Intro = ({
               </div>
               {/*--- buttons ---*/}
               <div className="w-full pt-2 pb-[44px] space-y-8 portrait:sm:space-y-8 landscape:lg:space-y-8 textLg flex flex-col items-center">
-                <button className="buttonPrimary bg-black text-white" onClick={onClickSIWC}>
+                <button className="buttonPrimary dark:bg-black dark:border-black" onClick={onClickSIWC}>
                   Link Coinbase Account
                 </button>
                 <div
@@ -401,7 +401,7 @@ const Intro = ({
               </div>
               {/*--- button ---*/}
               <button
-                className="buttonPrimary bg-black text-white"
+                className="buttonPrimary dark:bg-black dark:border-black"
                 onClick={() => {
                   window.open("https://www.coinbase.com/signup", "_blank");
                   setPage("app");
@@ -495,7 +495,7 @@ const Intro = ({
           </div>
         )}
       </div>
-      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      {introErrorModal && <IntroErrorModal errorMsg={errorMsg} setIntroErrorModal={setIntroErrorModal} />}
       {skipModal && <SkipModal setSkipModal={setSkipModal} setPage={setPage} />}
     </div>
   );

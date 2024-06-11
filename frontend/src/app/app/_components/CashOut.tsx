@@ -11,7 +11,6 @@ import { parseUnits, formatUnits } from "viem";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useTheme } from "next-themes";
-
 // constants
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
@@ -51,7 +50,7 @@ const CashOut = ({
   console.log("CashOut component rendered");
 
   const [flashBalance, setFlashBalance] = useState("325.55");
-  const [cexBalance, setCexBalance] = useState("0.00");
+  const [cexBalance, setCexBalance] = useState("");
   const [isCexAccessible, setIsCexAccessible] = useState(true);
   const [txnHash, setTxnHash] = useState("");
   const [usdcTransferToCex, setUsdcTransferToCex] = useState("");
@@ -68,9 +67,9 @@ const CashOut = ({
   const [savingsDetails, setSavingsDetails] = useState(false);
   // modal states
   const [transferToCexModal, setTransferToCexModal] = useState(false);
+  const [transferToBankModal, setTransferToBankModal] = useState(false);
   const [transferToCexSuccessModal, setTransferToCexSuccessModal] = useState(false);
   const [transferToBankSuccessModal, setTransferToBankSuccessModal] = useState(false);
-  const [transferToBankModal, setTransferToBankModal] = useState(false);
   const [transferState, setTransferState] = useState("initial"); // "initial" | "sending" | "sent"
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState<any>();
@@ -206,7 +205,7 @@ const CashOut = ({
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     setIsCexAccessible(false);
-    setCexBalance("");
+    setCexBalance(null);
   };
 
   const onClickTransferToCex = async () => {
@@ -249,7 +248,6 @@ const CashOut = ({
       console.log(txnHashTemp);
       setTxnHash(txnHashTemp);
       setTransferState("sent");
-      await new Promise((resolve) => setTimeout(resolve, 300));
       setTransferToCexSuccessModal(true);
     } catch (err) {
       console.log(err);
@@ -439,7 +437,7 @@ const CashOut = ({
                   </div>
                 </div>
               ) : (
-                <div className="cashoutBalance text-transparent w-[150px] bg-light4 animate-pulse rounded-md">0000</div>
+                <div className="cashoutBalance text-transparent w-[150px] bg-slate-200 dark:bg-dark4 animate-pulse rounded-md">0000</div>
               )}
               {/*---details---*/}
               <div className={`${cexDetails ? "max-h-[120px]" : "max-h-[0px]"} ${isCexAccessible ? "" : "hidden"} cashoutDetailsContainer`}>
@@ -477,12 +475,10 @@ const CashOut = ({
           )}
           {/*--- button ---*/}
           <div className="cashoutButtonContainer">
-            {cexBalance ? (
+            {cexBalance && (
               <button className="cashoutButton" onClick={onClickTransferToBank}>
                 Transfer to Bank
               </button>
-            ) : (
-              <button className={`${isCexAccessible ? "" : "hidden"} cashoutButton text-transparent bg-light4 animate-pulse`}>0000</button>
             )}
           </div>
         </div>
@@ -595,10 +591,10 @@ const CashOut = ({
         </div>
       </div>
 
-      {/*--- 3 modals---*/}
+      {/*--- 5 modals---*/}
       {transferToCexModal && (
         <div className="">
-          <div className="detailsModal dark:bg-dark2  landscape:xl:desktop:w-[400px]">
+          <div className="transferModal">
             {/*--- HEADER ---*/}
             <div className="detailsModalHeaderContainer">
               {/*--- header ---*/}
@@ -706,7 +702,7 @@ const CashOut = ({
                     Transfer To Coinbase
                   </button>
                 ) : (
-                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-500">
+                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
                     <SpinningCircleGray />
                     &nbsp; Transferring...
                   </div>
@@ -727,7 +723,7 @@ const CashOut = ({
 
       {transferToBankModal && (
         <div className="">
-          <div className="detailsModal dark:bg-dark2  landscape:xl:desktop:w-[400px]">
+          <div className="transferModal">
             {/*--- HEADER ---*/}
             <div className="detailsModalHeaderContainer">
               {/*--- header ---*/}
@@ -824,7 +820,7 @@ const CashOut = ({
                     Transfer To Bank
                   </button>
                 ) : (
-                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-500">
+                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
                     <SpinningCircleGray />
                     &nbsp; Transferring...
                   </div>
@@ -837,12 +833,31 @@ const CashOut = ({
       )}
 
       {transferToCexSuccessModal && (
-        <div className="w-full flex flex-col items-center h-screen absolute inset-0 bg-white z-[110]">
-          <div className="flex-1 w-[88%] max-w-[330px] flex flex-col items-center space-y-8">
-            {/*--- close button ---*/}
-            <div className="w-full h-[10%] min-h-[60px] flex items-center justify-end">
-              <div
-                className="xButton"
+        <div className="transferModal">
+          {/*--- HEADER ---*/}
+          <div className="transferSuccessModalHeaderContainer">
+            <div
+              className="xButtonContainerNotHidden"
+              onClick={() => {
+                setTransferState("initial");
+                setTransferToCexSuccessModal(false);
+                setTransferToCexModal(false);
+                setUsdcTransferToCex("");
+              }}
+            >
+              <div className="xButton">&#10005;</div>
+            </div>
+          </div>
+          {/*--- CONTENT ---*/}
+          <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
+            <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
+            <div className="text3xl font-medium">Transfer successful!</div>
+            <div className="text2xl font-bold">{usdcTransferToCex} USDC</div>
+            <div className="textLg text-center">was sent to your Coinbase account. Please wait a few minutes for your Coinbase balance to update.</div>
+            {/*--- button ---*/}
+            <div className="w-full py-8">
+              <button
+                className="buttonSecondary"
                 onClick={() => {
                   setTransferState("initial");
                   setTransferToCexSuccessModal(false);
@@ -850,36 +865,47 @@ const CashOut = ({
                   setUsdcTransferToCex("");
                 }}
               >
-                &#10005;
-              </div>
+                CLOSE
+              </button>
             </div>
-            {/*--- content ---*/}
-            <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
-            <div className="text3xl font-medium">Transfer successful!</div>
-            <div className="text2xl font-bold">{usdcTransferToCex} USDC</div>
-            <div className="textLg text-center">was sent to your Coinbase account. Please wait a few minutes for your Coinbase balance to update.</div>
           </div>
-          <button
-            className="mb-20 buttonSecondary"
-            onClick={() => {
-              setTransferState("initial");
-              setTransferToCexSuccessModal(false);
-              setTransferToCexModal(false);
-              setUsdcTransferToCex("");
-            }}
-          >
-            CLOSE
-          </button>
         </div>
       )}
 
       {transferToBankSuccessModal && (
-        <div className="w-full flex flex-col items-center h-screen absolute inset-0 bg-white z-[110]">
-          <div className="flex-1 w-[88%] max-w-[330px] flex flex-col items-center space-y-8">
-            {/*--- close button ---*/}
-            <div className="w-full h-[10%] min-h-[60px] flex items-center justify-end">
-              <div
-                className="xButton"
+        <div className="transferModal">
+          {/*--- HEADER ---*/}
+          <div className="transferSuccessModalHeaderContainer">
+            <div
+              className="xButtonContainerNotHidden"
+              onClick={() => {
+                setTransferState("initial");
+                setTransferToBankSuccessModal(false);
+                setTransferToBankModal(false);
+                setUsdcTransferToBank("");
+              }}
+            >
+              <div className="xButton">&#10005;</div>
+            </div>
+          </div>
+
+          {/*--- CONTENT ---*/}
+          <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
+            <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
+            <div className="text3xl font-medium">Deposit successful!</div>
+            <div className="text2xl font-bold">{usdcTransferToBank} USDC</div>
+            <div className="textLg text-center">
+              was converted to{" "}
+              <span className="font-bold">
+                {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {fiatDeposited}
+              </span>
+              , and the money deposited to your bank. You should see the deposit within 1-2 business days.
+            </div>
+            {/*--- button ---*/}
+            <div className="w-full py-8">
+              <button
+                className="buttonSecondary"
                 onClick={() => {
                   setTransferState("initial");
                   setTransferToBankSuccessModal(false);
@@ -887,35 +913,10 @@ const CashOut = ({
                   setUsdcTransferToBank("");
                 }}
               >
-                &#10005;
-              </div>
-            </div>
-            {/*--- content ---*/}
-            <div className="flex-1 w-[90%] max-w-[500px] flex flex-col items-center space-y-8">
-              <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
-              <div className="text3xl font-medium">Deposit successful!</div>
-              <div className="text2xl font-bold">{usdcTransferToBank} USDC</div>
-              <div className="textLg text-center">
-                was converted to{" "}
-                <span className="font-bold">
-                  {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                  {fiatDeposited}
-                </span>
-                , and the money deposited to your bank. You should see the deposit within 1-2 business days.
-              </div>
+                CLOSE
+              </button>
             </div>
           </div>
-          <button
-            className="mb-20 buttonSecondary"
-            onClick={() => {
-              setTransferState("initial");
-              setTransferToBankSuccessModal(false);
-              setTransferToBankModal(false);
-              setUsdcTransferToBank("");
-            }}
-          >
-            CLOSE
-          </button>
         </div>
       )}
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}

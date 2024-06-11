@@ -56,6 +56,8 @@ const Settings = ({
   const [faqModal, setFaqModal] = useState(false);
   const [employeePassModal, setEmployeePassModal] = useState(false);
   const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
+  const [contactUsModal, setContactUsModal] = useState(false);
+  const [feedbackModal, setFeedbackModal] = useState(false);
   // consider removing
   const [qrModal, setQrModal] = useState(false);
   const [apiModal, setApiModal] = useState(false);
@@ -68,7 +70,6 @@ const Settings = ({
 
   // listens to changes in save and saves the states to db
   useEffect(() => {
-    return;
     // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
     // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
     // control when to specifically trigger this useEffect
@@ -213,7 +214,7 @@ const Settings = ({
           <div className="settingsField">
             <label className="settingsLabelFont">Your EVM Address</label>
             <div className="relative h-full" onClick={copyAddress}>
-              <div className="h-full flex items-center cursor-pointer desktop:hover:text-slate-500">
+              <div className="h-full flex items-center cursor-pointer desktop:hover:text-slate-500 transition-all duration-[300ms]">
                 {paymentSettingsState.merchantEvmAddress.slice(0, 7)}...{paymentSettingsState.merchantEvmAddress.slice(-5)}{" "}
                 <div className="ml-2 relative w-[20px] h-[20px]">
                   <Image src={theme == "dark" ? "/copyWhite.svg" : "/copyBlack.svg"} alt="copy" fill />
@@ -267,7 +268,7 @@ const Settings = ({
             <label className="settingsLabelFont">Country / Currency</label>
             <div className="h-full flex items-center cursor-pointer">
               <select
-                className="settingsSelectFont peer [-webkit-appearance:none]"
+                className="settingsSelectFont peer"
                 onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
                   const merchantCountryTemp = e.target.value.split(" / ")[0];
                   const merchantCurrencyTemp = e.target.value.split(" / ")[1];
@@ -594,11 +595,22 @@ const Settings = ({
           </div>
 
           {/*--- APPEARANCE  ---*/}
-          <div className="settingsTitle">Apperance</div>
+          <div className="settingsTitle">Display</div>
           <div className="settingsField">
             <label className="settingsLabelFont">Dark Mode</label>
             {/*--- toggle ---*/}
-            <div className="mt-1 desktop:mt-2 w-[56px] h-[30px] flex items-center relative cursor-pointer" onClick={() => (theme == "dark" ? setTheme("light") : setTheme("dark"))}>
+            <div
+              className="mt-1 desktop:mt-2 w-[56px] h-[30px] flex items-center relative cursor-pointer"
+              onClick={() => {
+                if (theme == "dark") {
+                  setTheme("light");
+                  window.localStorage.setItem("theme", "light");
+                } else {
+                  setTheme("dark");
+                  window.localStorage.setItem("theme", "dark");
+                }
+              }}
+            >
               <input type="checkbox" checked={theme == "dark" ? true : false} className="sr-only peer" />
               <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
               <div className="w-[26px] h-[26px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
@@ -608,18 +620,27 @@ const Settings = ({
           {/*--- SUPPORT ---*/}
           <div className="settingsTitle">Support</div>
           {/*--- FAQs ---*/}
-          <div className="settingsField cursor-pointer group" onClick={() => setFaqModal(true)}>
-            <label className="settingsLabelFont text-lightText1 dark:text-darkText1 cursor-pointer desktop:group-hover:opacity-70 group-active:opacity-70">Instructions</label>
-            <div className="pt-0.5 text-lg desktop:group-hover:opacity-70 group-active:opacity-70">&#10095;</div>
+          <div
+            className="settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 active:text-slate-500 dark:desktop:hover:text-slate-500 dark:active:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            onClick={() => setFaqModal(true)}
+          >
+            <div className="settingsLabelFontSupport cursor-pointer">Instructions</div>
+            <div className="pt-0.5 text-lg">&#10095;</div>
           </div>
           {/*--- Contact Us ---*/}
-          <div className="settingsField cursor-pointer group">
-            <label className="settingsLabelFont text-lightText1 dark:text-darkText1 cursor-pointer desktop:group-hover:opacity-70 group-active:opacity-70">Contact Us</label>
-            <div className="pt-0.5 text-lg desktop:group-hover:opacity-70 group-active:opacity-70">&#10095;</div>
+          <div
+            className="settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 active:text-slate-500 dark:desktop:hover:text-slate-500 dark:active:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            onClick={() => setContactUsModal(true)}
+          >
+            <div className="settingsLabelFontSupport cursor-pointer">Contact Us</div>
+            <div className="pt-0.5 text-lg ">&#10095;</div>
           </div>
           {/*--- Feedback ---*/}
-          <div className="hidden settingsField cursor-pointer desktop:hover:brightness-[1.2] active:brightness-[1.2]">
-            <label className="settingsLabelFont text-lightText1 dark:text-darkText1 cursor-pointer">Feedback</label>
+          <div
+            className="hidden settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 active:text-slate-500 dark:desktop:hover:text-slate-500 dark:active:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            onClick={() => setFeedbackModal(true)}
+          >
+            <div className="settingsLabelFontSupport cursor-pointer">Feedback</div>
             <div className="pt-0.5 text-lg">&#10095;</div>
           </div>
         </form>
@@ -629,7 +650,7 @@ const Settings = ({
           <div className="flex items-center justify-center relative">
             <button
               onClick={onClickSignOut}
-              className="px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-4 landscape:lg:py-4 landscape:xl:desktop:py-3 rounded-full buttonPrimaryColor"
+              className="px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-4 landscape:lg:py-4 landscape:xl:desktop:py-3 rounded-full font-medium buttonPrimaryColor"
             >
               Sign Out
             </button>

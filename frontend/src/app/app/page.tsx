@@ -66,7 +66,7 @@ const User = () => {
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
 
   // hooks
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const account = useAccount();
   const { data: walletClient } = useWalletClient();
   let web3Auth = useWeb3Auth();
@@ -104,6 +104,18 @@ const User = () => {
   useEffect(() => {
     // usability test
     if (isUsabilityTest) {
+      // detect and set light/dark mode
+      if (window.localStorage.theme) {
+        if (window.localStorage.theme == "dark") {
+          setTheme("dark");
+        } else if (window.localStorage.theme == "light") {
+          setTheme("light");
+        }
+      } else {
+        window.localStorage.setItem("theme", "dark");
+        setTheme("dark");
+      }
+
       if (!paymentSettingsState) {
         const paymentSettings = {
           merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -168,6 +180,18 @@ const User = () => {
       // return;
     }
 
+    // detect and set light/dark mode
+    if (window.localStorage.theme) {
+      if (window.localStorage.theme == "dark") {
+        setTheme("dark");
+      } else if (window.localStorage.theme == "light") {
+        setTheme("light");
+      }
+    } else {
+      window.localStorage.setItem("theme", "dark");
+      setTheme("dark");
+    }
+
     // check if employee login
     const jwt = getCookie("jwt");
     console.log("jwt:", jwt);
@@ -202,6 +226,7 @@ const User = () => {
       initialized.current = true;
       verifyAndGetData();
     }
+
     console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);
   // if you use web3Auth in dependency array, web3Auth.status will show "connected" but walletClient will still be undefined
@@ -426,7 +451,7 @@ const User = () => {
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT (w120/160/200px) or BOTTOM (h-84/140px) ---*/}
-          <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-6px_0px_30px_0px_rgb(0,0,0,0.15)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
+          <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
             {/*---menu---*/}
             {isAdmin && (
               <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] flex landscape:flex-col items-center justify-around portrait:pb-[10px] portrait:px-1">

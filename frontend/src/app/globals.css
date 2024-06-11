@@ -26,17 +26,27 @@
 
   /* custom scrollbar */
   .scrollbar::-webkit-scrollbar {
-    width: 16px;
+    width: 4px;
     height: 20px;
   }
   .scrollbar::-webkit-scrollbar-track {
     border-radius: 100vh;
     background: #f7f4ed;
   }
+
+  .dark .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #35343b;
+  }
   .scrollbar::-webkit-scrollbar-thumb {
     background: #e0cbcb;
     border-radius: 100vh;
-    border: 3px solid #f6f7ed;
+    border: 0px;
+  }
+  .dark .scrollbar::-webkit-scrollbar-thumb {
+    background: #6a6d73;
+    border-radius: 100vh;
+    border: 0px;
   }
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: #c0a0b9;
@@ -79,11 +89,11 @@
   }
 
   .text2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl;
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-xl;
   }
 
   .text3xl {
-    @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-3xl;
+    @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl;
   }
 
   .text4xl {
@@ -143,7 +153,7 @@
   }
 
   .tooltip {
-    @apply invisible group-hover:visible absolute px-3 py-2 portrait:sm:px-5 landscape:lg:px-5 landscape:xl:desktop:px-3 portrait:sm:py-3 landscape:lg:py-3 landscape:xl:desktop:py-2 text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-sm font-normal text-white bg-gray-800 rounded-lg z-[1];
+    @apply invisible group-hover:visible absolute px-3 py-2 portrait:sm:px-5 landscape:lg:px-5 landscape:xl:desktop:px-3 portrait:sm:py-3 landscape:lg:py-3 landscape:xl:desktop:py-2 text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-sm font-normal text-white bg-gray-700 rounded-lg z-[1];
   }
 
   .copiedText {
@@ -287,11 +297,15 @@
   }
 
   .settingsField {
-    @apply w-full h-[56px] portrait:sm:h-[68px] landscape:lg:h-[68px] portrait:lg:h-[72px] landscape:xl:h-[72px] landscape:xl:desktop:h-[52px] py-2 flex items-center justify-between border-t;
+    @apply w-full h-[64px] portrait:sm:h-[72px] landscape:lg:h-[72px] landscape:xl:desktop:h-[56px] py-2 flex items-center justify-between border-t border-slate-300 dark:border-dark6;
   }
 
   .settingsLabelFont {
-    @apply flex-none flex items-center text-darkText2 dark:text-darkText2 tracking-tight mr-3;
+    @apply flex-none flex items-center tracking-tight mr-3 text-slate-500;
+  }
+
+  .settingsLabelFontSupport {
+    @apply flex-none flex items-center tracking-tight mr-3;
   }
 
   .settingsValueFont {
@@ -299,7 +313,7 @@
   }
 
   .settingsSelectFont {
-    @apply settingsFont scrollbar h-full leading-none px-3 bg-none [text-align-last:right] cursor-pointer rounded-md outline-none bg-transparent focus:bg-white dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms];
+    @apply settingsFont scrollbar h-full px-3 bg-none [text-align-last:right] cursor-pointer rounded-md outline-none bg-transparent focus:bg-white dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms];
   }
 
   .settingsRightAngle {
@@ -330,18 +344,6 @@
     @apply w-6 h-6 xs:w-4 xs:h-4;
   }
 
-  .modal {
-    @apply modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[20];
-  }
-
-  .modalColor {
-    @apply bg-white dark:bg-dark3 border-2 border-light5 dark:border-dark4;
-  }
-
-  .modalFullColor {
-    @apply bg-white dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark4;
-  }
-
   .modalContent {
     @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-6 portrait:sm:space-y-16 landscape:lg:space-y-16;
   }
@@ -358,16 +360,74 @@
     @apply w-full portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[80%] portrait:sm:max-h-[850px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:lg:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 pb-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl bg-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
 
-  .detailsModal {
-    @apply detailsModalSize modalFullColor flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  .modal {
+    @apply modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[20];
+  }
+
+  .modalBase {
+    @apply flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  }
+
+  .modalBaseUp {
+    @apply flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[20];
+  }
+
+  .modalFullBase {
+    @apply pb-6 portrait:sm:rounded-2xl landscape:lg:rounded-2xl flex flex-col items-center absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  }
+
+  .modalColor {
+    @apply bg-white dark:bg-dark3 border-2 border-light5 dark:border-dark4;
+  }
+
+  .modalFullColor {
+    @apply bg-white dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
+  }
+
+  .errorModalSize {
+    @apply w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8;
   }
 
   .detailsModalSize {
-    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[360px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+  }
+
+  .instructionsModalSize {
+    @apply w-full portrait:sm:w-[590px] landscape:lg:w-[590px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+  }
+
+  .cashoutIntroModalSize {
+    @apply w-[350px] portrait:sm:w-[410px] landscape:lg:w-[410px] h-[560px] portrait:sm:h-[640px] landscape:lg:h-[640px] landscape:xl:desktop:h-[560px];
+  }
+
+  /* specific modals */
+
+  .errorModal {
+    @apply modalBaseUp modalColor errorModalSize;
+  }
+
+  .cashoutIntroModal {
+    @apply modalBase modalColor cashoutIntroModalSize;
+  }
+
+  .detailsModal {
+    @apply modalFullBase modalFullColor detailsModalSize;
+  }
+
+  .transferModal {
+    @apply modalFullBase modalFullColor detailsModalSize dark:bg-dark2 landscape:xl:desktop:w-[400px];
+  }
+
+  .instructionsModal {
+    @apply modalFullBase modalFullColor instructionsModalSize;
   }
 
   .detailsModalHeaderContainer {
-    @apply flex-none w-full h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[90px] flex justify-center items-center relative;
+    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 px-12 portrait:sm:px-24 landscape:lg:px-24 landscape:xl:px-20 w-full h-[80px] landscape:xl:desktop:h-[60px] flex justify-center relative;
+  }
+
+  .transferSuccessModalHeaderContainer {
+    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 w-full h-[50px] landscape:xl:desktop:h-[60px] relative;
   }
 
   .detailsModalHeader {
@@ -475,7 +535,11 @@
   }
 
   .xButtonContainer {
-    @apply absolute right-6 w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
+    @apply absolute right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
+  }
+
+  .xButtonContainerNotHidden {
+    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
   }
 
   .xButtonContainerSmall {
@@ -487,7 +551,7 @@
   }
 
   .mobileBack {
-    @apply absolute left-2 text-2xl font-medium p-2 portrait:sm:hidden landscape:lg:hidden;
+    @apply absolute left-2 top-[-4px] leading-none text-2xl font-medium p-2 portrait:sm:hidden landscape:lg:hidden;
   }
 
   .placeholderColor {

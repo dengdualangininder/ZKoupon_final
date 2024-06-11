@@ -43,8 +43,8 @@ const cbAuth = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center">
-      <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] animate-spin">
+    <div className="w-full h-screen flex flex-col justify-center items-center bg-light2 text-black">
+      <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin">
         <Image src="/loadingCircleBlack.svg" alt="loading" fill />
       </div>
       <div className="mt-4 textLg">Connecting To Coinbase...</div>

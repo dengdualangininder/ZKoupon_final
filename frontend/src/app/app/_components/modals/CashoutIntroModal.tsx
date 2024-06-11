@@ -22,7 +22,7 @@ const CashoutIntroModal = ({
   const [step, setStep] = useState("one");
   return (
     <div className="">
-      <div className="modalColor w-[350px] portrait:sm:w-[410px] landscape:lg:w-[410px] h-[560px] portrait:sm:h-[640px] landscape:lg:h-[640px] landscape:xl:desktop:h-[560px] flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90]">
+      <div className="cashoutIntroModal">
         {/*---close---*/}
         <div className="hidden w-full h-[50px] relative">
           <div onClick={() => setCashoutIntroModal(false)} className="absolute top-2 right-3 p-2 xButton">
