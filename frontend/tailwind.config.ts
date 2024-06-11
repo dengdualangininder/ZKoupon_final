@@ -21,8 +21,36 @@ module.exports = {
         1500: "1500ms",
       },
       colors: {
-        grayblue: "#F6F9FC",
-        primary: "#DFE8F8",
+        light1: "#FFFFFF",
+        light2: "#EEF3F7",
+        light3: "#E2E8F0",
+        light4: "#CBD5E1",
+        light5: "#B0BDCD",
+        lightButton: "#000000",
+        lightButtonHover: "#2C2B31",
+        lightText1: "#000000",
+        lightText2: "#94A3B8",
+        dualGray: "#94A3B8",
+        dark1: "#000000",
+        dark2: "#111114",
+        dark3: "#1A1A1F",
+        dark4: "#222127",
+        dark5: "#2E2D35",
+        dark6: "#35343B",
+        darkButton: "#5370A7",
+        darkButtonHover: "#6983B2",
+        darkText1: "#FFFFFF",
+        darkText2: "#94A3B8",
+        darkText3: "#6A6D73",
+        darkText4: "#53565C",
+        dark0: "#9795A5",
+        light0: "#9795A5",
+        background: "#9795A5",
+        primary: "#9795A5",
+        buttonDark: "#9795A5",
+        buttonDark2: "#9795A5",
+        buttonLight1: "#9795A5",
+        buttonLight2: "#9795A5",
         bggrayone: "#F5F5F7",
         darkblue: "#140D6F",
         darkbluelight: "#2A21A4",
@@ -226,6 +254,7 @@ module.exports = {
       xl: "1250px",
     },
   },
+  darkMode: "class",
   plugins: [
     plugin(function ({ addUtilities, addComponents, e, config }) {
       addUtilities({
@@ -240,5 +269,6 @@ module.exports = {
     plugin(function ({ addVariant }) {
       addVariant("desktop", ["@media (hover: hover)", "@media (pointer: fine)"]);
     }),
+    require("@tailwindcss/forms"),
   ],
 };

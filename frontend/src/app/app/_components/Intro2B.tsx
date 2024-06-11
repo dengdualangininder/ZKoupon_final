@@ -133,7 +133,7 @@ const Intro = ({
   };
 
   return (
-    <div className="text-xl w-full h-screen flex justify-center overflow-y-auto">
+    <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light2 dark:bg-dark1 text-lightText1 dark:darkText1">
       <div className="w-[85%] min-w-[354px] max-w-[420px] desktop:max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px]">
         {/*--- welcome ---*/}
         {step == "welcome" && (
@@ -142,16 +142,13 @@ const Intro = ({
               <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
                 <Image src="/logo.svg" alt="logo" fill />
               </div>
-              <div className="pb-4 text-center animate-fadeInAnimation leading-relaxed">
+              <div className="pb-4 text-center animate-fadeInAnimation leading-relaxed font-medium">
                 Set up crypto payments
                 <br />
                 with 0% fees now
               </div>
               {/*--- buttons ---*/}
-              <button
-                className="w-[240px] h-[60px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-medium text-white bg-blue-500 border-2 border-blue-500 active:opacity-50 lg:hover:opacity-50 rounded-[4px] animate-fadeInAnimation"
-                onClick={() => setStep("info")}
-              >
+              <button className="buttonStart" onClick={() => setStep("info")}>
                 START
               </button>
             </div>
@@ -173,7 +170,7 @@ const Intro = ({
               <div className="flex flex-col">
                 <label className="w-full font-medium">Your business's name</label>
                 <input
-                  className="mt-1 w-full max-w-[480px] px-3 py-3 border border-gray-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="mt-1 w-full max-w-[480px] px-3 py-3 border bg-white border-gray-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   placeholder="Enter the name of your business"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
@@ -183,7 +180,7 @@ const Intro = ({
               <div className="flex flex-col">
                 <label className="w-full font-medium">Your country / currency</label>
                 <select
-                  className="mt-1 w-full max-w-[480px] border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="mt-1 w-full max-w-[480px] border bg-white border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
                     const merchantCountryTemp = e.target.value.split(" / ")[0];
                     const merchantCurrencyTemp = e.target.value.split(" / ")[1];
@@ -207,7 +204,7 @@ const Intro = ({
               <div className="flex flex-col">
                 <label className="w-full font-medium">Your email address</label>
                 <input
-                  className="mt-1 w-full max-w-[480px] border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="mt-1 w-full max-w-[480px] bg-white border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
                   placeholder="Type in your email"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
@@ -218,11 +215,11 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer2">
-              <button className="introBack2" onClick={() => setStep("welcome")}>
+              <button className="introBack" onClick={() => setStep("welcome")}>
                 &#10094;&nbsp; BACK
               </button>
               <button
-                className="introNext2"
+                className="introNext"
                 onClick={() => {
                   if (!paymentSettingsState.merchantName) {
                     setErrorModal(true);
@@ -255,10 +252,10 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer2">
-              <button className="introBack2" onClick={() => setStep("info")}>
+              <button className="introBack" onClick={() => setStep("info")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("how")}>
+              <button className="introNext" onClick={() => setStep("how")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -313,9 +310,7 @@ const Intro = ({
                       <span className="link">
                         USDC tokens<sup>?</sup>
                       </span>
-                      <div className="bottom-[calc(100%+8px)] left-0 introTooltip">
-                        The USDC token is used by almost all crypto users. 1 USDC token equals to 1 USD, as gauranteed by Circle.
-                      </div>
+                      <div className="bottom-[calc(100%+8px)] left-0 introTooltip">1 USDC token equals to 1 USD, as gauranteed by Circle. Almost all crypto users have USDC.</div>
                     </span>{" "}
                     ({paymentSettingsState?.merchantCurrency == "USD" ? "" : "with a value "}equal to the amount of {paymentSettingsState?.merchantCurrency} entered) will be sent
                     from their MetaMask to your Flash app
@@ -325,10 +320,10 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer2">
-              <button className="introBack2" onClick={() => setStep("emailSent")}>
+              <button className="introBack" onClick={() => setStep("emailSent")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("link")}>
+              <button className="introNext" onClick={() => setStep("link")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -352,8 +347,13 @@ const Intro = ({
                   <div className="introNumber">1</div>
                   <div>
                     Link a{" "}
-                    <span className="link">
-                      Coinbase<sup>?</sup>
+                    <span className="group">
+                      <span className="link">
+                        Coinbase<sup>?</sup>
+                      </span>
+                      <div className="w-full left-0 introTooltip">
+                        Coinbase is a platform where USDC can be exchanged for {paymentSettingsState.merchantCurrency} and where you can link a bank account.
+                      </div>
                     </span>{" "}
                     account to the Flash app
                   </div>
@@ -369,10 +369,7 @@ const Intro = ({
               </div>
               {/*--- buttons ---*/}
               <div className="w-full pt-2 pb-[44px] space-y-8 portrait:sm:space-y-8 landscape:lg:space-y-8 textLg flex flex-col items-center">
-                <button
-                  className="w-full max-w-[350px] h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px] desktop:hover:bg-blue-700 active:opacity-50"
-                  onClick={onClickSIWC}
-                >
+                <button className="buttonPrimary bg-black text-white" onClick={onClickSIWC}>
                   Link Coinbase Account
                 </button>
                 <div
@@ -390,7 +387,7 @@ const Intro = ({
           <div className="w-full h-full flex flex-col items-center">
             {/*--- skip ---*/}
             <div className="flex-none w-full h-[72px] flex justify-end items-center">
-              <div onClick={() => setSkipModal(true)} className="text-lg font-medium cursor-pointer px-3 py-2 desktop:hover:bg-gray-200 active:bg-gray-200 rounded-[4px]">
+              <div onClick={() => setPage("app")} className="text-lg font-medium cursor-pointer px-3 py-2 desktop:hover:bg-gray-200 active:bg-gray-200 rounded-[4px]">
                 SKIP
               </div>
             </div>
@@ -404,7 +401,7 @@ const Intro = ({
               </div>
               {/*--- button ---*/}
               <button
-                className="w-full max-w-[350px] h-[56px] bg-blue-500 border-2 border-blue-500 text-white font-medium rounded-[4px] desktop:hover:bg-blue-700 active:opacity-50"
+                className="buttonPrimary bg-black text-white"
                 onClick={() => {
                   window.open("https://www.coinbase.com/signup", "_blank");
                   setPage("app");
@@ -421,14 +418,14 @@ const Intro = ({
                 )}
               </button>
               {/*--- can I use another cex? ---*/}
-              <div className="flex max-w-[350px] space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
+              <div className="w-full flex space-x-3 bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
                 <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
                 <div className="">
                   <div className="">Can I use a different cryptocurrency exchange?</div>
                   <div className={`${expand ? "max-h-[300px]" : "max-h-0"} overflow-hidden`}>
                     <div className="py-2">
-                      If you prefer another exchange, you can transfer USDC tokens from Flash to any EVM address, including the one associated with your preferred platform. Then,
-                      log into that platform and cash out yourself.
+                      To cash out from the Flash app, you must use Coinbase. If you prefer another exchange, you can transfer USDC tokens from Flash to any EVM address, including
+                      the one associated with your preferred platform. Then, log into that platform and cash out yourself.
                     </div>
                   </div>
                 </div>
@@ -465,10 +462,10 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
-              <button className="introBack2" onClick={() => setStep("emailSent")}>
+              <button className="introBack" onClick={() => setStep("emailSent")}>
                 BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("final")}>
+              <button className="introNext" onClick={() => setStep("final")}>
                 {cashoutSettingsState.cexEvmAddress ? "NEXT" : "Skip"}
               </button>
             </div>
@@ -488,10 +485,10 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
-              <button className="introBack2" onClick={() => setStep("link")}>
+              <button className="introBack" onClick={() => setStep("link")}>
                 BACK
               </button>
-              <button className="introNext2" onClick={() => setPage("app")}>
+              <button className="introNext" onClick={() => setPage("app")}>
                 Done
               </button>
             </div>

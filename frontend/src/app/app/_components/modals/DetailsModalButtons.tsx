@@ -108,7 +108,7 @@ const DetailsModal = ({
           </div>
           {/*--- CLOSE BUTTON ---*/}
           <div className="w-full flex items-center">
-            <button className="modalButtonWhite" onClick={() => setDetailsModal(false)}>
+            <button className="buttonSecondary" onClick={() => setDetailsModal(false)}>
               CLOSE
             </button>
           </div>
@@ -121,7 +121,7 @@ const DetailsModal = ({
           <div className="hidden pt-4 w-full">
             {isAdmin ? (
               <div className="w-full flex flex-col items-center space-y-6">
-                <button className="modalButtonBlue" onClick={onClickRefund}>
+                <button className="buttonPrimary" onClick={onClickRefund}>
                   {refundStatus === "initial" && clickedTxn?.refund == false && <div>REFUND NOW</div>}
                   {refundStatus === "processing" && (
                     <div className="flex items-center justify-center">
@@ -132,7 +132,7 @@ const DetailsModal = ({
                 </button>
               </div>
             ) : (
-              <button className="modalButtonBlue" onClick={onClickToRefund}>
+              <button className="buttonPrimary" onClick={onClickToRefund}>
                 {toRefundStatus == "processing" ? (
                   <div className="flex items-center justify-center">
                     <SpinningCircleWhite />

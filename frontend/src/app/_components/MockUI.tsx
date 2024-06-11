@@ -114,61 +114,61 @@ const MockUI = ({
                 {/*---email---*/}
                 <div className={`${merchantFields.includes("email") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none">Email</div>
-                  <div className="w-full h-[18px] rounded-[4px] border border-slate-300"></div>
+                  <div className="w-full h-[18px] rounded-[4px] border border-light4"></div>
                 </div>
                 {/*---daterange---*/}
                 <div className={`${merchantFields.includes("daterange") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">Dates</div>
                   <div className="flex">
-                    <div className="w-[70px] font-normal text-slate-400 rounded-[4px] border border-slate-300 px-1 text-center">Start Date</div>
+                    <div className="w-[70px] font-normal text-dualGray rounded-[4px] border border-light4 px-1 text-center">Start Date</div>
                     <div className="mx-1">to</div>
-                    <div className="w-[70px] font-normal text-slate-400 rounded-[4px] border border-slate-300 px-1 text-center">End Date</div>
+                    <div className="w-[70px] font-normal text-dualGray rounded-[4px] border border-light4 px-1 text-center">End Date</div>
                     <div></div>
                   </div>
                 </div>
                 {/*---date---*/}
                 <div className={`${merchantFields.includes("date") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">Date</div>
-                  <div className="w-full h-[18px] rounded-[4px] border border-slate-300"></div>
+                  <div className="w-full h-[18px] rounded-[4px] border border-light4"></div>
                 </div>
                 {/*---time---*/}
                 <div className={`${merchantFields.includes("time") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">Time</div>
-                  <div className="w-full h-[18px] rounded-[4px] border border-slate-300"></div>
+                  <div className="w-full h-[18px] rounded-[4px] border border-light4"></div>
                 </div>
                 {/*---guests---*/}
                 <div className={`${merchantFields.includes("count") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">Guests</div>
                   <div className="flex items-center">
-                    <div className="w-[16px] h-[16px] border border-slate-300 rounded-full flex justify-center items-center text-slate-400">&ndash;</div>
+                    <div className="w-[16px] h-[16px] border border-light4 rounded-full flex justify-center items-center text-dualGray">&ndash;</div>
                     <div className="mx-1 flex items-center leading-none font-normal">
                       <div className="font-bold">2</div>
                       <div className="ml-0.5 text-[10px]">adults</div>
                     </div>
-                    <div className="w-[16px] h-[16px] border border-slate-300 rounded-full flex justify-center items-center text-slate-400">+</div>
+                    <div className="w-[16px] h-[16px] border border-light4 rounded-full flex justify-center items-center text-dualGray">+</div>
                     <div className="w-[12px]"></div>
-                    <div className="w-[16px] h-[16px] border border-slate-300 rounded-full flex justify-center items-center text-slate-400">&ndash;</div>
+                    <div className="w-[16px] h-[16px] border border-light4 rounded-full flex justify-center items-center text-dualGray">&ndash;</div>
                     <div className="mx-1 flex items-center leading-none font-normal">
                       <div className="font-bold">2</div>
                       <div className="ml-0.5 text-[10px]">kids</div>
                     </div>
-                    <div className="w-[16px] h-[16px] border border-slate-300 rounded-full flex justify-center items-center text-slate-400">+</div>
+                    <div className="w-[16px] h-[16px] border border-light4 rounded-full flex justify-center items-center text-dualGray">+</div>
                   </div>
                 </div>
                 {/*---item name---*/}
                 <div className={`${merchantFields.includes("item") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">{merchantPaymentType === "online" ? merchantType2data[merchantBusinessType]["itemlabel"] : "Item Name"}</div>
-                  <div className="w-full h-[18px] rounded-[4px] text-sm border border-slate-300"></div>
+                  <div className="w-full h-[18px] rounded-[4px] text-sm border border-light4"></div>
                 </div>
                 {/*---SKU---*/}
                 <div className={`${merchantFields.includes("sku") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">SKU#</div>
-                  <div className="w-1/4 h-[18px] rounded-[4px] text-sm border border-slate-300"></div>
+                  <div className="w-1/4 h-[18px] rounded-[4px] text-sm border border-light4"></div>
                 </div>
                 {/*---shipping address---*/}
                 <div className={`${merchantFields.includes("shipping") ? "" : "hidden"} mt-1 flex items-center`}>
                   <div className="w-[54px] flex-none leading-none">Shipping Address</div>
-                  <div className="w-full h-[44px] rounded-[4px] text-sm border border-slate-300"></div>
+                  <div className="w-full h-[44px] rounded-[4px] text-sm border border-light4"></div>
                 </div>
               </div>
             )}

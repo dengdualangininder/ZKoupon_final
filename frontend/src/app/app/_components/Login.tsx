@@ -99,7 +99,7 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   };
 
   return (
-    <div className="w-full h-screen min-h-[667px] text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto">
+    <div className="w-full h-screen min-h-[667px] font-medium text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto bg-light2 text-black">
       <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] landscape:xl:desktop:w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
         {/*--- logo + menu bar ---*/}
         <div className="pt-6 w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-end">
@@ -108,18 +108,24 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
             <div className="relative w-full h-[90px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:h-[110px] landscape:xl:desktop:h-[90px] mr-1">
               <Image src="/logo.svg" alt="logo" fill />
             </div>
-            <div className="mt-8 mb-10 textBase2 font-medium text-center">Instant global payments with 0% fees</div>
+            <div className="mt-8 mb-10 textBase2 text-center">Crypto payments with 0% fees</div>
           </div>
+
           {/*--- menu bar ---*/}
-          <div className="w-full h-[50px] portrait:sm:h-[60px] landscape:lg:h-[60px] portrait:lg:h-[64px] landscape:xl:h-[64px] landscape:xl:desktop:h-[44px] flex justify-center font-medium bg-gray-200 rounded-full flex-none">
+          <div className="w-full h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px] flex items-center justify-center flex-none relative">
+            <div className="absolute w-full h-[48px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[40px] rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
             <div
-              className={`${userType == "owners" ? "bg-blue-500 text-white" : ""} w-[50%] h-full cursor-pointer flex items-center justify-center rounded-full`}
+              className={`${
+                userType == "owners" ? "bg-black w-[54%] drop-shadow-md text-white" : "bg-transparent text-gray-500 w-[46%]"
+              } h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
               onClick={() => setUserType("owners")}
             >
               Owners
             </div>
             <div
-              className={`${userType == "employees" ? "bg-blue-500 text-white" : "text-gray-700"} w-[50%] h-full cursor-pointer flex items-center justify-center rounded-full`}
+              className={`${
+                userType == "employees" ? "bg-black w-[54%] drop-shadow-md text-white" : "bg-transparent text-gray-500 w-[46%]"
+              }  h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
               onClick={() => setUserType("employees")}
             >
               Employees
@@ -131,12 +137,12 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
         <div className="pb-6 mt-8 w-full landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10 landscape:xl:desktop:text-base">
           {/*--- FOR OWNERS ---*/}
           {userType == "owners" && (
-            <div className="w-full flex flex-col space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-6">
+            <div className="w-full flex flex-col space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-6">
               {/*--- connectors: google, apple, line, phantom, metamask ---*/}
               {myConnectors.map<any>((i: any) => (
                 <div
                   key={i.name}
-                  className="w-full h-[60px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] landscape:xl:desktop:h-[60px] flex items-center text-gray-700 bg-white rounded-md font-medium lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                  className="w-full h-[64px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] landscape:xl:desktop:h-[60px] flex items-center text-gray-700 bg-white rounded-md lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                   onClick={async () => {
                     // usability test
                     if (isUsabilityTest) {
@@ -166,10 +172,10 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
             <div className="px-0.5 w-full flex flex-col items-center">
               <div className="w-full">
                 {/*--email---*/}
-                <div className="font-medium">Email</div>
+                <div className="">Email</div>
                 <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
                 {/*--password---*/}
-                <div className="mt-4 portrait:sm:mt-6 landscape:lg:mt-6 landscape:xl:desktop:mt-3 font-medium">Password</div>
+                <div className="mt-4 portrait:sm:mt-6 landscape:lg:mt-6 landscape:xl:desktop:mt-3">Password</div>
                 <div className="w-full relative">
                   <input
                     type={show ? "text" : "password"}
@@ -190,15 +196,13 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                   </div>
                 </div>
                 {/*--sign in button---*/}
-                <div className="mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 flex justify-center">
-                  <button
-                    type="submit"
-                    className="w-full h-[56px] landscape:md:h-[64px] portrait:sm:h-[64px] landscape:xl:desktop:h-[48px] text-white font-medium bg-blue-500 border-2 border-blue-500 lg:hover:opacity-50 active:opacity-50 rounded-md"
-                    onClick={employeeSubmit}
-                  >
-                    Sign in
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="buttonPrimary mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 text-white"
+                  onClick={employeeSubmit}
+                >
+                  Sign in
+                </button>
               </div>
               <div
                 className="landscape:mt-8 portrait:mt-10 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link landscape:xl:desktop:text-sm"
@@ -238,7 +242,7 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                   <div className="relative w-[40px] h-[36px]">
                     <Image src={i.img} alt={i.name} fill />
                   </div>
-                  <div className="xs:text-xl font-medium">{i.name}</div>
+                  <div className="xs:text-xl">{i.name}</div>
                 </div>
               ))}
             </div>

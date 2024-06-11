@@ -149,7 +149,7 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-end">
-              <button className="introNext2" onClick={() => setStep("info")}>
+              <button className="introNext" onClick={() => setStep("info")}>
                 START &nbsp;&#10095;
               </button>
             </div>
@@ -218,7 +218,7 @@ const Intro = ({
                 &#10094;&nbsp; BACK
               </button>
               <button
-                className="introNext2"
+                className="introNext"
                 onClick={() => {
                   if (!paymentSettingsState.merchantName) {
                     setErrorModal(true);
@@ -281,7 +281,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("info")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("link")}>
+              <button className="introNext" onClick={() => setStep("link")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -392,7 +392,7 @@ const Intro = ({
                 BACK
               </button>
               <button
-                className="introNext2"
+                className="introNext"
                 onClick={() => {
                   if (cashoutSettingsState.cexEvmAddress) {
                     setErrorModal(true);
@@ -422,7 +422,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("link")}>
                 BACK
               </button>
-              <button className="introNext2" onClick={() => setPage("app")}>
+              <button className="introNext" onClick={() => setPage("app")}>
                 Done
               </button>
             </div>

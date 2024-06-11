@@ -141,7 +141,7 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-end">
-              <button className="introNext2" onClick={() => setStep("how1")}>
+              <button className="introNext" onClick={() => setStep("how1")}>
                 START &nbsp;&#10095;
               </button>
             </div>
@@ -168,7 +168,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("welcome")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("how2")}>
+              <button className="introNext" onClick={() => setStep("how2")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -232,7 +232,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("how1")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("how3")}>
+              <button className="introNext" onClick={() => setStep("how3")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -267,7 +267,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("how2")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("name")}>
+              <button className="introNext" onClick={() => setStep("name")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -326,7 +326,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("how3")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("email")}>
+              <button className="introNext" onClick={() => setStep("email")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -386,7 +386,7 @@ const Intro = ({
             </div>
             {/*--- buttons ---*/}
             <div className="w-full portrait:h-[100px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-end">
-              <button className="introNext2" onClick={() => setStep("link")}>
+              <button className="introNext" onClick={() => setStep("link")}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>
@@ -486,7 +486,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("emailSent")}>
                 BACK
               </button>
-              <button className="introNext2" onClick={() => setStep("final")}>
+              <button className="introNext" onClick={() => setStep("final")}>
                 {cashoutSettingsState.cexEvmAddress ? "NEXT" : "Skip"}
               </button>
             </div>
@@ -509,7 +509,7 @@ const Intro = ({
               <button className="introBack2" onClick={() => setStep("link")}>
                 BACK
               </button>
-              <button className="introNext2" onClick={() => setPage("app")}>
+              <button className="introNext" onClick={() => setPage("app")}>
                 Done
               </button>
             </div>

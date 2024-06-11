@@ -7,8 +7,9 @@ import axios from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
 import { useAccount, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
-// web3Auth
+// react hooks
 import { useWeb3Auth } from "@/app/provider/ContextProvider";
+import { useTheme } from "next-themes";
 // others
 import Pusher from "pusher-js";
 import { getPublic } from "@toruslabs/eccrypto";
@@ -25,10 +26,14 @@ import Intro from "./_components/Intro";
 import Intro2B from "./_components/Intro2B";
 import Intro2A from "./_components/Intro2A";
 import CashoutIntroModal from "./_components/modals/CashoutIntroModal";
-
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
+// images
+import { IconContext } from "react-icons";
+import { PaymentsIcon, CashOutIcon, SettingsIcon } from "@/utils/components/DynamicIcons";
+import { FaListUl, FaDollarSign, FaGear } from "react-icons/fa6";
+
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
 
@@ -37,8 +42,8 @@ const User = () => {
   const searchParams = useSearchParams();
 
   // db values
-  const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>();
-  const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>();
+  const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>(null);
+  const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>(null);
   const [transactionsState, setTransactionsState] = useState<Transaction[]>([]);
   // states
   const [menu, setMenu] = useState("payments"); // "payments" | "cashOut" | "settings"
@@ -61,6 +66,7 @@ const User = () => {
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
 
   // hooks
+  const { theme } = useTheme();
   const account = useAccount();
   const { data: walletClient } = useWalletClient();
   let web3Auth = useWeb3Auth();
@@ -368,9 +374,9 @@ const User = () => {
   };
 
   return (
-    <div className="pl-[calc(100vw-100%)] text-black">
+    <div className="pl-[calc(100vw-100%)] bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1">
       {page === "loading" && (
-        <div className="text-xl w-full h-screen flex justify-center overflow-y-auto">
+        <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light2">
           <div className="w-[92%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
             {/* LOADING */}
             <div className="w-full h-full absolute flex flex-col items-center justify-center">
@@ -419,18 +425,20 @@ const User = () => {
       )}
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
-          {/*---MENU: LEFT or BOTTOM (md 900px breakpoint) ---*/}
-          <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center portrait:border-t landscape:border-r border-gray-300 z-[1] relative">
+          {/*---MENU: LEFT (w120/160/200px) or BOTTOM (h-84/140px) ---*/}
+          <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-6px_0px_30px_0px_rgb(0,0,0,0.15)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
             {/*---menu---*/}
             {isAdmin && (
-              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[460px] flex landscape:flex-col items-center justify-around portrait:pb-[14px] portrait:px-1">
+              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] flex landscape:flex-col items-center justify-around portrait:pb-[10px] portrait:px-1">
                 {[
-                  { id: "payments", title: "PAYMENTS", clickedImg: "/payments-clicked.svg", unclickedImg: "/payments-unclicked.svg" },
-                  { id: "cashOut", title: "CASH OUT", clickedImg: "/cashout-clicked.svg", unclickedImg: "/cashout-unclicked.svg", modal: "cashoutIntroModal" },
-                  { id: "settings", title: "SETTINGS", clickedImg: "/settings-clicked.svg", unclickedImg: "/settings-unclicked.svg" },
+                  { id: "payments", title: "PAYMENTS", imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },
+                  { id: "cashOut", title: "CASH OUT", imgWhite: "/cashOutWhite.svg", imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
+                  { id: "settings", title: "SETTINGS", imgWhite: "/settingsWhite.svg", imgBlack: "/settingsBlack.svg" },
                 ].map((i) => (
                   <div
-                    className={`cursor-pointer flex flex-col items-center`}
+                    className={`cursor-pointer flex flex-col items-center justify-center ${
+                      menu == i.id ? "opacity-100" : "opacity-50"
+                    } desktop:hover:opacity-100 active:opacity-100`}
                     id={i.id}
                     key={i.id}
                     onClick={async (e) => {
@@ -459,8 +467,8 @@ const User = () => {
                       }
                     }}
                   >
-                    <div className="relative w-[66px] h-[24px] portrait:sm:h-[36px] landscape:lg:h-[36px] landscape:xl:desktop:h-[24px] point-events-none">
-                      {menu === i.id ? <Image src={i.clickedImg} alt={i.title} fill /> : <Image src={i.unclickedImg} alt={i.title} fill />}
+                    <div className="relative w-[22px] h-[22px] portrait:sm:w-[28px] portrait:sm:h-[28px] landscape:lg:w-[28px] landscape:lg:h-[28px]">
+                      <Image src={theme == "dark" ? i.imgWhite : i.imgBlack} alt={i.id} fill />
                     </div>
                     <div className="menuText">{i.title}</div>
                   </div>
@@ -546,7 +554,7 @@ const User = () => {
           {/*---signOutModal---*/}
           {signOutModal && (
             <div>
-              <div className="modal">
+              <div className="modal text-center textLg">
                 {/*---content---*/}
                 <div className="grow flex flex-col justify-center">Do you want to sign out?</div>
                 {/*--- buttons ---*/}
@@ -557,11 +565,11 @@ const User = () => {
                       deleteCookie("jwt");
                       setPage("login");
                     }}
-                    className="mt-10 modalButtonBlue"
+                    className="mt-10 buttonPrimary"
                   >
                     Confirm
                   </button>
-                  <button onClick={() => setSignOutModal(false)} className="modalButtonWhite">
+                  <button onClick={() => setSignOutModal(false)} className="buttonSecondary">
                     Cancel
                   </button>
                 </div>
@@ -573,19 +581,21 @@ const User = () => {
           {/*---coinbaseIntroModal---*/}
           {coinbaseIntroModal && (
             <div>
-              <div className="modal text-start">
+              <div className="modal">
                 {/*---content---*/}
-                <div className="grow flex flex-col justify-center space-y-6">
+                <div className="modalContent text-start">
                   <p>Your Coinbase account is linked!</p>
                   <p>Your Flash account is ready.</p>
                   <p>
                     If you have questions, read the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
                   </p>
                 </div>
-                {/*--- buttons ---*/}
-                <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonBlue">
-                  Enter App
-                </button>
+                {/*--- button ---*/}
+                <div className="modalButtonContainer">
+                  <button onClick={() => setCoinbaseIntroModal(false)} className="buttonPrimary bg-black text-white">
+                    ENTER APP
+                  </button>
+                </div>
               </div>
               <div
                 className="modalBlackout"
@@ -599,7 +609,7 @@ const User = () => {
 
           {cashbackModal && (
             <div>
-              <div className="modal">
+              <div className="modal textLg">
                 {/*---content---*/}
                 <div className="grow flex flex-col justify-center space-y-6 text-start textBase">
                   <p>Our journey together towards global payments with 0% fees is a long one.</p>
@@ -611,7 +621,7 @@ const User = () => {
                   <p>When crypto payments become more popular, we will make this 2% discount optional.</p>
                 </div>
                 {/*--- buttons ---*/}
-                <button onClick={() => setCoinbaseIntroModal(false)} className="modalButtonWhite">
+                <button onClick={() => setCoinbaseIntroModal(false)} className="buttonSecondary">
                   Close
                 </button>
               </div>
@@ -619,7 +629,9 @@ const User = () => {
             </div>
           )}
 
-          {cashoutIntroModal && <CashoutIntroModal setCashoutIntroModal={setCashoutIntroModal} />}
+          {cashoutIntroModal && (
+            <CashoutIntroModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setCashoutIntroModal={setCashoutIntroModal} />
+          )}
         </div>
       )}
     </div>

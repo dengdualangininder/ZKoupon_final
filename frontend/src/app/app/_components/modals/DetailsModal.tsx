@@ -1,6 +1,10 @@
+import { useState } from "react";
 // constants
 import { getLocalTime, getLocalDate } from "../Payments";
 // images
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faFileInvoiceDollar, faList, faXmark } from "@fortawesome/free-solid-svg-icons";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 // types
@@ -25,79 +29,99 @@ const DetailsModal = ({
   onClickRefund: any;
   onClickToRefund: any;
 }) => {
+  const [showNote, setShowNote] = useState(false);
+
   return (
-    <div className="textBase">
-      <div className="detailsModal overflow-y-auto">
-        {/*--- TITLE + CLOSE ---*/}
-        <div className="flex-none w-full h-[90px] desktop:h-[70px] flex items-center">
-          <div className="w-full detailsHeaderText text-center">Payment Details</div>
-          <div
-            className="w-[56px] h-[56px] flex items-center justify-center rounded-full border border-transparent absolute right-4 desktop:hover:bg-gray-200 active:opacity-50 cursor-pointer select-none"
-            onClick={() => setDetailsModal(false)}
-          >
-            <div className="text-3xl">&#10005;</div>
+    <div className="">
+      <div className="detailsModal">
+        {/*--- HEADER ---*/}
+        <div className="detailsModalHeaderContainer">
+          {/*--- header ---*/}
+          <div className="detailsModalHeader">Payment Details</div>
+          {/*--- mobile back ---*/}
+          <div className="mobileBack">
+            <FontAwesomeIcon icon={faAngleLeft} onClick={() => setDetailsModal(false)} />
+          </div>
+          {/*--- tablet/desktop close ---*/}
+          <div className="xButtonContainer" onClick={() => setDetailsModal(false)}>
+            <div className="xButton">&#10005;</div>
           </div>
         </div>
-        {/*--- DETAILS ---*/}
-        <div className="detailsContainer">
-          <div className="flex flex-col">
-            <div className="detailsLabelText">Time</div>
-            <div className="detailsValueText">
-              {getLocalDate(clickedTxn?.date)} {getLocalTime(clickedTxn?.date).time} {getLocalTime(clickedTxn?.date).ampm}
+        {/*--- CONTENT ---*/}
+        <div className="flex-1 w-full max-h-[560px] portrait:sm:max-h-[660px] landscape:lg:max-h-[660px] flex justify-center overflow-y-auto scrollbar">
+          <div className="landscape:max-w-[400px] landscape:lg:max-w-none flex flex-col justify-between gap-3 px-8 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8">
+            {/*--- details ---*/}
+            <div className="flex flex-col">
+              <div className="detailsLabelText">Time</div>
+              <div className="detailsValueText">
+                {getLocalDate(clickedTxn?.date)} {getLocalTime(clickedTxn?.date).time} {getLocalTime(clickedTxn?.date).ampm}
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="detailsLabelText">Payment Value</div>
-            <div className="detailsValueText">
-              {clickedTxn?.currencyAmount} {clickedTxn?.merchantCurrency}
+            <div className="flex flex-col">
+              <div className="detailsLabelText">Payment Value</div>
+              <div className="detailsValueText">
+                {clickedTxn?.currencyAmount} {clickedTxn?.merchantCurrency}
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="detailsLabelText">Tokens Received</div>
-            <div className="detailsValueText">{clickedTxn?.tokenAmount} USDC</div>
-          </div>
-          <div className="flex flex-col">
-            <div className="detailsLabelText">Rate</div>
-            <div className="detailsValueText">
-              1 USDC = {clickedTxn?.blockRate} {clickedTxn?.merchantCurrency}
+            <div className="flex flex-col">
+              <div className="detailsLabelText">Tokens Received</div>
+              <div className="detailsValueText">{clickedTxn?.tokenAmount} USDC</div>
             </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="detailsLabelText">Customer's Address</div>
-            <div className="detailsValueText break-all">{clickedTxn?.customerAddress}</div>
-          </div>
-          <div className="flex flex-col">
-            <div className="detailsLabelText">"To Refund" Label?</div>
-            {/*--- toggle ---*/}
-            <div className="mt-1 desktop:mt-2 w-[56px] h-[30px] flex items-center relative">
-              <input type="checkbox" checked={clickedTxn?.toRefund} className="sr-only peer" />
-              <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 rounded-full" onClick={onClickToRefund}></div>
-              <div className="w-[26px] h-[26px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+            <div className="flex flex-col">
+              <div className="detailsLabelText">Rate</div>
+              <div className="detailsValueText">
+                1 USDC = {clickedTxn?.blockRate} {clickedTxn?.merchantCurrency}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="detailsLabelText">Customer's Address</div>
+              <div className="detailsValueText break-all">{clickedTxn?.customerAddress}</div>
+            </div>
+            <div className="flex flex-col">
+              <div className="detailsLabelText">"To Refund" Label?</div>
+              {/*--- toggle ---*/}
+              <div className="mt-1 desktop:mt-2 w-[56px] h-[30px] flex items-center relative cursor-pointer">
+                <input type="checkbox" checked={clickedTxn?.toRefund} className="sr-only peer" />
+                <div className="w-full h-full bg-gray-200 dark:bg-dualGray peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full" onClick={onClickToRefund}></div>
+                <div className="w-[26px] h-[26px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+              </div>
+            </div>
+
+            {/* <div className="flex flex-col">
+              <div className="detailsLabelText">
+                Notes{" "}
+                <span className="link font-normal" onClick={() => setShowNote(!showNote)}>
+                  {showNote ? "\u25B2" : "\u25BC"}
+                </span>
+              </div>
+              <div className={`detailsValueText ${showNote ? "" : "line-clamp-2"} text-base`}>{clickedTxn?.note}</div>
+            </div> */}
+
+            {/*--- refund button ---*/}
+            <div className="flex-0 pb-4 min-h-[130px] flex items-center">
+              {clickedTxn?.refund ? (
+                <div>Payment has been refunded</div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  {isAdmin ? (
+                    <button className="buttonPrimary landscape:xl:desktop:text-base" onClick={() => setDetailsModal(false)}>
+                      Refund Now
+                    </button>
+                  ) : null}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/*--- refund button ---*/}
-        {clickedTxn?.refund ? (
-          <div>Payment has been refunded</div>
-        ) : (
-          <div className="grow w-full min-h-[160px] flex justify-center items-center">
-            {isAdmin ? (
-              <button className="modalButtonWhite portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-lg" onClick={() => setDetailsModal(false)}>
-                REFUND NOW
-              </button>
-            ) : null}
-          </div>
-        )}
-
-        {/*--- button ---*/}
+        {/*--- NEED TO DELETE ---*/}
         {clickedTxn?.refund || refundStatus === "refunded" ? (
           <div className="hidden pt-4 text-center textLg font-bold text-gray-400">This payment has been refunded</div>
         ) : (
           <div className="hidden pt-4 w-full">
             {isAdmin ? (
               <div className="w-full flex flex-col items-center space-y-6">
-                <button className="modalButtonBlue" onClick={onClickRefund}>
+                <button className="buttonPrimary" onClick={onClickRefund}>
                   {refundStatus === "initial" && clickedTxn?.refund == false && <div>REFUND NOW</div>}
                   {refundStatus === "processing" && (
                     <div className="flex items-center justify-center">
@@ -108,7 +132,7 @@ const DetailsModal = ({
                 </button>
               </div>
             ) : (
-              <button className="modalButtonBlue" onClick={onClickToRefund}>
+              <button className="buttonPrimary" onClick={onClickToRefund}>
                 {toRefundStatus == "processing" ? (
                   <div className="flex items-center justify-center">
                     <SpinningCircleWhite />

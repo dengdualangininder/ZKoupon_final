@@ -387,7 +387,7 @@ const Pay = () => {
               <div className="text-center">{errorMsg}</div>
             </div>
             {/*---close button---*/}
-            <button onClick={() => setErrorModal(false)} className="modalButtonWhite">
+            <button onClick={() => setErrorModal(false)} className="buttonSecondary">
               DISMISS
             </button>
           </div>
@@ -398,7 +398,7 @@ const Pay = () => {
       {/*---pay modal---*/}
       {payModal && (
         <div className="">
-          <div className="modal h-[480px]">
+          <div className="modal textXl text-center">
             {isSendingComplete ? (
               <div className="w-full h-full flex flex-col items-center justify-between">
                 {/*---store name---*/}
@@ -426,7 +426,7 @@ const Pay = () => {
                     setIsSendingComplete(false);
                     location.reload(); // TODO: leaving a txn receipt on page isntead of resetting
                   }}
-                  className="modalButtonWhite"
+                  className="buttonSecondary"
                 >
                   CLOSE
                 </button>

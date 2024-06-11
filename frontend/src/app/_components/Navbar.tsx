@@ -69,7 +69,7 @@ const Navbar = () => {
   return (
     <div
       className={`${
-        isScrollTop ? "h-[92px]" : "h-[52px] bg-slate-100/70 border-b"
+        isScrollTop ? "h-[92px]" : "h-[52px] bg-light2/70 border-b"
       } fixed px-4 w-full flex items-center justify-between z-50 backdrop-blur-md transition-all duration-1000`}
     >
       {/*---LOGO---*/}

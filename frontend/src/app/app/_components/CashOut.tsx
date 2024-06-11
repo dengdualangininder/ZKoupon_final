@@ -10,6 +10,8 @@ import { parseUnits, formatUnits } from "viem";
 // other
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { useTheme } from "next-themes";
+
 // constants
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
@@ -20,7 +22,7 @@ import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faArrowDown, faCircleQuestion, faInfinity, faAngleDown, faAngleUp, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import Lottie from "lottie-react";
 import checkSimple from "@/utils/lotties/checkSimple.json";
 // types
@@ -58,10 +60,12 @@ const CashOut = ({
   const [cbBankAccountName, setCbBankAccountName] = useState<any>("");
   const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
   const [fiatDeposited, setFiatDeposited] = useState("");
+  const [cexMoreOptions, setCexMoreOptions] = useState(false);
+  const [blockchainFee, setBlockchainFee] = useState(0.05); // in USDC
   // accordion states
   const [flashDetails, setFlashDetails] = useState(false);
   const [cexDetails, setCexDetails] = useState(false);
-  const [statDetails, setStatDetails] = useState(false);
+  const [savingsDetails, setSavingsDetails] = useState(false);
   // modal states
   const [transferToCexModal, setTransferToCexModal] = useState(false);
   const [transferToCexSuccessModal, setTransferToCexSuccessModal] = useState(false);
@@ -85,6 +89,7 @@ const CashOut = ({
   const router = useRouter();
   const account = useAccount();
   const config = useConfig();
+  const { theme } = useTheme();
 
   // get Flash and CEX balance
   useEffect(() => {
@@ -185,6 +190,8 @@ const CashOut = ({
   }, []);
 
   const onClickSIWC = async () => {
+    setIsCexAccessible(true);
+    return;
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
@@ -194,6 +201,8 @@ const CashOut = ({
   };
 
   const onClickUnlink = () => {
+    setIsCexAccessible(false);
+    return;
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     setIsCexAccessible(false);
@@ -317,18 +326,23 @@ const CashOut = ({
     console.log(data);
   };
 
+  const hideCexMoreOptions = () => {
+    setCexMoreOptions(false);
+    document.removeEventListener("click", hideCexMoreOptions);
+  };
+
   console.log("before render", "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible, "\ncexBalance:", cexBalance);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="py-8 portrait:sm:py-8 landscape:lg:py-8 portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto bg-white">
+    <section className="py-6 portrait:sm:py-8 landscape:lg:py-8 portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto">
       {/*---Flash Account + Coinbase Account + Statistics ---*/}
-      <div className="w-[88%] max-w-[390px] portrait:sm:w-[70%] landscape:lg:w-[70%] flex flex-col space-y-5 portrait:sm:space-y-8 landscape:lg:space-y-8">
-        {/*---Flash Account---*/}
+      <div className="w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[500px] flex flex-col space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8">
+        {/*---FLASH CARD ---*/}
         <div className="cashoutContainer">
           {/*--- title ---*/}
-          <div className="cashoutHeader">Flash Account</div>
+          <div className="cashoutHeader h-[36px] flex items-center">Flash Account</div>
           {/*--- balance + details ---*/}
-          <div className="flex-1 flex flex-col mt-5 portrait:sm:mt-6 landscape:lg:mt-6">
+          <div className="cashoutBalanceContainer">
             {/*--- balance ---*/}
             {flashBalance ? (
               <div className={`cashoutBalance`}>
@@ -336,15 +350,13 @@ const CashOut = ({
                   {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
                   <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}</span>
                 </div>
-                <div
-                  className="ml-4 w-[36px] h-[24px] flex items-center justify-center bg-slate-300 rounded-sm cursor-pointer active:opacity-50"
-                  onClick={() => setFlashDetails(!flashDetails)}
-                >
-                  <FontAwesomeIcon icon={faAngleDown} className="pt-0.5 text-xl" />
+                {/*--- down arrow ---*/}
+                <div className="cashoutArrowContainer" onClick={() => setFlashDetails(!flashDetails)}>
+                  <FontAwesomeIcon icon={flashDetails ? faAngleUp : faAngleDown} className="cashoutArrow" />
                 </div>
               </div>
             ) : (
-              <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 animate-pulse rounded-md">0000</div>
+              <div className="cashoutBalance text-transparent w-[150px] bg-light4 animate-pulse rounded-md">0000</div>
             )}
             {/*---details---*/}
             <div className={`${flashDetails ? "max-h-[120px]" : "max-h-[0px]"} cashoutDetailsContainer`}>
@@ -364,7 +376,7 @@ const CashOut = ({
                   <div className="flex items-center">
                     Rate
                     <div className="group flex items-center">
-                      <FontAwesomeIcon icon={faCircleInfo} className="px-2 text-gray-400 textXs" />
+                      <FontAwesomeIcon icon={faCircleInfo} className="px-2 info" />
                       <div className="w-full top-0 left-0 cashoutTooltip">The USDC to EUR rate if you cash out now</div>
                     </div>
                   </div>
@@ -374,13 +386,15 @@ const CashOut = ({
             </div>
           </div>
           {/*--- button ---*/}
-          {flashBalance ? (
-            <button className="cashoutButton" onClick={onClickTransferToCex}>
-              Transfer to {cashoutSettingsState?.cex ?? "CEX"}
-            </button>
-          ) : (
-            <button className="cashoutButton text-transparent bg-slate-300 animate-pulse">0000</button>
-          )}
+          <div className="cashoutButtonContainer">
+            {flashBalance ? (
+              <button className="cashoutButton" onClick={onClickTransferToCex}>
+                Transfer to {cashoutSettingsState?.cex ?? "CEX"}
+              </button>
+            ) : (
+              <button className="cashoutButton text-transparent bg-light4 animate-pulse">0000</button>
+            )}
+          </div>
         </div>
 
         {/*---CEX---*/}
@@ -388,13 +402,31 @@ const CashOut = ({
           {/*--- header + unlink ---*/}
           <div className="w-full flex justify-between items-center">
             <div className="cashoutHeader">Coinbase Account</div>
-            <div className={`${isCexAccessible ? "" : "hidden"} link underline underline-offset-2`} onClick={onClickUnlink}>
-              {isCexAccessible ? "unlink" : ""}
+            <div
+              className={`${isCexAccessible ? "" : "hidden"} ${
+                cexMoreOptions ? "bg-gray-200" : ""
+              } cursor-pointer relative w-[36px] h-[36px] rounded-full flex items-center justify-center translate-x-[8px] landscape:xl:desktop:hover:bg-gray-200`}
+              onClick={() => {
+                setCexMoreOptions(!cexMoreOptions);
+                if (!cexMoreOptions) {
+                  document.addEventListener("click", hideCexMoreOptions);
+                }
+              }}
+            >
+              {/* <FontAwesomeIcon icon={faEllipsisVertical} className="hidden textXl" /> */}
+              <div
+                className={`${
+                  cexMoreOptions ? "absolute" : "hidden"
+                } top-[calc(100%+8px)] right-0 px-4 py-1 textLg rounded-md border border-gray-300 desktop:hover:bg-gray-200 active:bg-gray-200`}
+                onClick={onClickUnlink}
+              >
+                Unlink
+              </div>
             </div>
           </div>
           {/*---balance + details ---*/}
           {isCexAccessible ? (
-            <div className="flex-1 flex flex-col mt-5 portrait:sm:mt-6 landscape:lg:mt-6">
+            <div className="cashoutBalanceContainer">
               {/*--- balance ---*/}
               {cexBalance ? (
                 <div className="cashoutBalance">
@@ -402,15 +434,12 @@ const CashOut = ({
                     {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
                     {(Number(cexBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
                   </div>
-                  <div
-                    className="ml-4 w-[36px] h-[24px] flex items-center justify-center bg-slate-300 rounded-sm cursor-pointer active:opacity-50"
-                    onClick={() => setCexDetails(!cexDetails)}
-                  >
-                    <FontAwesomeIcon icon={faAngleDown} className="pt-0.5 text-xl" />
+                  <div className="cashoutArrowContainer" onClick={() => setCexDetails(!cexDetails)}>
+                    <FontAwesomeIcon icon={cexDetails ? faAngleUp : faAngleDown} className="cashoutArrow" />
                   </div>
                 </div>
               ) : (
-                <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 animate-pulse rounded-md">0000</div>
+                <div className="cashoutBalance text-transparent w-[150px] bg-light4 animate-pulse rounded-md">0000</div>
               )}
               {/*---details---*/}
               <div className={`${cexDetails ? "max-h-[120px]" : "max-h-[0px]"} ${isCexAccessible ? "" : "hidden"} cashoutDetailsContainer`}>
@@ -446,24 +475,24 @@ const CashOut = ({
               </div>
             </div>
           )}
-          {/*---transfer to bank ---*/}
-          {cexBalance ? (
-            <button className="cashoutButton" onClick={onClickTransferToBank}>
-              Transfer to Bank
-            </button>
-          ) : (
-            <button className={`${isCexAccessible ? "" : "hidden"} cashoutButton text-transparent bg-slate-300 animate-pulse`}>0000</button>
-          )}
+          {/*--- button ---*/}
+          <div className="cashoutButtonContainer">
+            {cexBalance ? (
+              <button className="cashoutButton" onClick={onClickTransferToBank}>
+                Transfer to Bank
+              </button>
+            ) : (
+              <button className={`${isCexAccessible ? "" : "hidden"} cashoutButton text-transparent bg-light4 animate-pulse`}>0000</button>
+            )}
+          </div>
         </div>
 
         {/*--- Your Savings ---*/}
-        <div className=" cashoutContainerStats cashoutStats">
+        <div className="hidden cashoutContainer min-h-0">
           {/*--- header ---*/}
-          <div className="w-full flex items-center justify-between">
-            <div className="textBase font-bold">Your Savings</div>
-            <div className="cashoutShow" onClick={() => setStatDetails(!statDetails)}>
-              {statDetails ? "hide" : "show"} details
-            </div>
+          <div className="flex items-center">
+            <span className="cashoutHeader">Your Savings</span>
+            <FontAwesomeIcon icon={savingsDetails ? faAngleUp : faAngleDown} className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
           </div>
           {/*--- earnings ---*/}
           <div className="mt-2 px-2 flex justify-between">
@@ -475,7 +504,7 @@ const CashOut = ({
           </div>
 
           {/*--- Flash costs ---*/}
-          <div className={`${statDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
+          <div className={`${savingsDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
             <div className="cashoutStats2">Flash Costs</div>
             <div className="p-2 border border-gray-400 rounded-md">
               {/*---Cashback Given = totalCurrencyAmount - totalCurrencyAmountAfterCashback ---*/}
@@ -523,7 +552,7 @@ const CashOut = ({
           </div>
 
           {/*--- credit card costs ---*/}
-          <div className={`${statDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
+          <div className={`${savingsDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
             <div className="cashoutStats2">Credit Card Costs</div>
             <div className="p-2 border border-gray-400 rounded-md">
               <div className="flex justify-between">
@@ -552,299 +581,258 @@ const CashOut = ({
             </div>
           </div>
         </div>
+
+        {/*--- Transfer History ---*/}
+        <div className="hidden cashoutContainer min-h-0">
+          {/*--- header ---*/}
+          <div className="cashoutHeader">Transfer History</div>
+          {/*--- table ---*/}
+          <div className="mt-2 px-2 flex justify-between">
+            <table>
+              <th></th>
+            </table>
+          </div>
+        </div>
       </div>
 
       {/*--- 3 modals---*/}
       {transferToCexModal && (
-        <div className="w-full flex flex-col items-center h-screen absolute inset-0 bg-white z-[100]">
-          {/*--- title + close button ---*/}
-          <div className="w-[330px] h-[10%] min-h-[80px] textXl flex justify-center items-center relative">
-            <div className="textXl font-semibold text-2xl">Transfer USDC</div>
-            {/*--- info  ---*/}
-            <div className="group">
-              <FontAwesomeIcon icon={faCircleInfo} className="ml-3 text-lg text-gray-400" />
-              <div className="cashoutTooltip w-[330px] left-[calc((100vw-330px)/2)] top-[100%] text-base">
-                To cash out your earnings to your bank, you must first transfer USDC from Flash to{" "}
-                {cashoutSettingsState ? (cashoutSettingsState?.cex == "Coinbase" ? "Coinbase" : cashoutSettingsState?.cex) : "a platform where you can convert USDC to fiat"}.
+        <div className="">
+          <div className="detailsModal dark:bg-dark2  landscape:xl:desktop:w-[400px]">
+            {/*--- HEADER ---*/}
+            <div className="detailsModalHeaderContainer">
+              {/*--- header ---*/}
+              <div className="detailsModalHeader">Transfer To Coinbase</div>
+              {/*--- mobile back ---*/}
+              <div className="mobileBack">
+                <FontAwesomeIcon
+                  icon={faAngleLeft}
+                  onClick={() => {
+                    setTransferToCexModal(false);
+                    setUsdcTransferToCex("");
+                  }}
+                />
+              </div>
+              {/*--- tablet/desktop close ---*/}
+              <div
+                className="xButtonContainer"
+                onClick={() => {
+                  setTransferToCexModal(false);
+                  setUsdcTransferToCex("");
+                }}
+              >
+                <div className="xButton">&#10005;</div>
               </div>
             </div>
-            {/*--- close button  ---*/}
-            <div
-              className="absolute right-0 xButton"
-              onClick={() => {
-                setTransferToCexModal(false);
-                setUsdcTransferToCex("");
-              }}
-            >
-              &#10005;
-            </div>
-            {/*--- loading bar ---*/}
-            <div
-              className={`absolute left-0 bottom-0 h-[10%] bg-blue-500 animate-pulse ease-linear ${transferState == "initial" ? "w-[0%]" : ""} ${
-                transferState == "sending" ? "w-[80%] duration-[3000ms]" : ""
-              } ${transferState == "sent" ? "w-[100%] duration-[300ms]" : ""} transition-all`}
-            ></div>
-          </div>
 
-          {/*--- CONTENT ---*/}
-          <div className="mt-10 w-[330px] flex flex-col space-y-12">
-            {/*--- FROM & TO ---*/}
-            <div className="w-full flex flex-col items-center">
+            {/*--- CONTENT ---*/}
+            <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] flex flex-col items-center overflow-y-auto landscape:xl:desktop:h-[500px]">
               {/*--- FROM container ---*/}
-              <div className="w-full flex flex-col items-center relative">
-                {/*--- FROM content ---*/}
+              <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
+                {/*--- info ---*/}
                 <div className="w-full flex items-center">
-                  <div className="relative w-[60px] h-[60px] overflow-hidden rounded-lg">
-                    <Image src="/logoBlackBgNoText.svg" alt="flash" fill />
+                  <div className="transferIcon">
+                    <Image src="/logoBlackBgNoText.svg" alt="coinbase" fill />
                   </div>
-                  <div className="ml-4 flex flex-col">
-                    <div className="text-lg leading-tight font-medium">From: Flash</div>
-                    <div className="text-base leading-tight text-gray-500">{paymentSettingsState?.merchantName}</div>
-                    <div className="break-all text-base leading-tight text-gray-500">
+                  <div className="textBase ml-3 flex flex-col">
+                    <div className="leading-none font-medium">From: Flash</div>
+                    <div className="leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
+                    <div className="leading-tight break-all text-slate-500">
                       {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/*--- ARROW ---*/}
-              {/* <FontAwesomeIcon icon={faArrowDown} className="hidden my-2 text-3xl landscape:xl:desktop:text-2xl text-slate-500" /> */}
-              <div className="w-full">
-                <div className="w-[60px] h-[40px] flex justify-center">
-                  <div className="w-[2px] bg-black h-full"></div>
-                </div>
-              </div>
-
-              {/*--- TO container ---*/}
-              <div className="w-full flex flex-col items-center">
-                {/*--- TO content ---*/}
-                <div className="w-full flex items-center">
-                  <div className="relative w-[60px] h-[60px]">
-                    <Image src="/coinbase.svg" alt="coinbase" fill />
-                  </div>
-                  <div className="ml-4 flex flex-col">
-                    <div className="text-lg leading-tight font-medium">To: Coinbase</div>
-                    <div className="text-base leading-tight text-gray-500">{cashoutSettingsState?.cexAccountName}</div>
-                    <div className="break-all text-base leading-tight text-gray-500">
-                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/*--- AMOUNT ---*/}
-            <div className="w-full">
-              <div className="hidden mb-6 textXl font-semibold text-center underline underline-offset-[3px]">Enter Amount USDC</div>
-              {/*--- label + balance ---*/}
-              <div className="w-full text-base flex justify-between relative">
-                <div className="font-semibold">Amount</div>
-                <div className="">Balance: {flashBalance} USDC</div>
-              </div>
-              {/*--- input box ---*/}
-              <div className="my-1 w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] flex items-center justify-between bg-white border border-gray-400 rounded-md">
-                <div className="flex-1">
+                {/*--- from amount ---*/}
+                <div className="mt-4 w-full flex items-center relative">
                   <input
-                    className="w-full px-4 font-bold text-2xl outline-none focus:border-blue-500 duration-300 focus:placeholder:invisible"
+                    className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
                     type="number"
                     inputMode="decimal"
                     onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
                     value={usdcTransferToCex}
                     placeholder="0"
                   />
-                </div>
-                <div className="flex items-center">
-                  <div className="relative w-[22px] h-[22px]">
-                    <Image src="/usdc.svg" alt="USDC" fill />
-                  </div>
-                  <div className="ml-1 text-xl font-medium leading-none">USDC</div>
-                </div>
-                <div className="mx-4 py-1 text-base font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
-                  max
-                </div>
-              </div>
-              {/*--- fee ---*/}
-              <div className="hidden w-full justify-end relative">
-                <div className="flex items-center">
-                  Fee: 0.10 USDC
-                  <span className="group">
-                    <FontAwesomeIcon icon={faCircleInfo} className="ml-1 pt-0.5 text-sm text-gray-400" />
-                    <div className="w-full left-0 top-[100%] cashoutTooltip textBase">
-                      This fee is used to pay the transaction fee on the Polygon network. Flash does not charge any fees.
+                  {/*--- max + USDC ---*/}
+                  <div className="h-full right-0 absolute flex space-x-4 items-center">
+                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
+                      max
                     </div>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/*--- buttons ---*/}
-            {transferState == "initial" ? (
-              <div className="w-full flex flex-col items-center space-y-10">
-                {/*--- transfer button ---*/}
-                <button onClick={onClickTransferToCexSubmit} className="modalButtonBlue rounded-md">
-                  TRANSFER
-                </button>
-                {/*--- cancel button ---*/}
-                <button
-                  onClick={() => {
-                    setTransferToCexModal(false);
-                    setUsdcTransferToCex("");
-                  }}
-                  className={`underline underline-offset-2 font-medium textLg`}
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-500">
-                <SpinningCircleGray />
-                &nbsp; Transferring...
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {transferToBankModal && (
-        <div className="w-full flex flex-col items-center h-screen absolute inset-0 bg-white z-[100]">
-          <div className="w-full max-w-[400px] flex flex-col items-center">
-            {/*--- title + close button ---*/}
-            <div className="w-full h-[10%] min-h-[80px] textXl flex justify-center items-center relative">
-              <div className="textXl font-semibold text-2xl">Cash Out</div>
-              <div
-                className="absolute right-5 portrait:sm:right-0 landscape:lg:right-0 xButton"
-                onClick={() => {
-                  setTransferToBankModal(false);
-                  setUsdcTransferToBank("");
-                }}
-              >
-                &#10005;
-              </div>
-              {/*--- loading bar ---*/}
-              <div
-                className={`absolute left-0 bottom-0 h-[10%] bg-blue-500 animate-pulse ease-linear ${transferState == "initial" ? "w-[0%]" : ""} ${
-                  transferState == "sending" ? "w-[80%] duration-[3000ms]" : ""
-                } ${transferState == "sent" ? "w-[100%] duration-[300ms]" : ""} transition-all`}
-              ></div>
-            </div>
-
-            {/*--- content ---*/}
-            <div className="textSm w-[400px] flex flex-col items-center">
-              {/*--- FROM container ---*/}
-              <div className="w-full pt-8 pb-12 space-y-[20px] flex flex-col items-center bg-slate-200 relative">
-                <div className="w-[330px] flex flex-col items-center space-y-8">
-                  {/*--- info ---*/}
-                  {cashoutSettingsState?.cex == "Coinbase" && (
-                    <div className="w-full flex items-center">
-                      <div className="relative w-[52px] h-[52px]">
-                        <Image src="/coinbase.svg" alt="coinbase" fill />
-                      </div>
-                      <div className="ml-3 flex flex-col">
-                        <div className="textBase leading-tight font-medium">From: Coinbase</div>
-                        <div className="testSm leading-tight text-gray-500">{cashoutSettingsState?.cexAccountName}</div>
-                        <div className="break-all leading-tight text-gray-500">
-                          {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {cashoutSettingsState?.cex != "Coinbase" && <div className="mt-2 w-full text-gray-400"></div>}
-                  {/*--- amount ---*/}
-                  <div className="w-full">
-                    {/*--- label + balance ---*/}
-                    <div className="pl-2 pr-1 w-full flex justify-between">
-                      <div className="font-medium textBase">Amount</div>
-                      <div className="text-base">
-                        Balance <span className={` text-blue-600`}>{cexBalance}</span>
-                      </div>
-                    </div>
-                    {/*--- input box ---*/}
-                    <div className="w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] flex items-center justify-between bg-white border border-gray-400 rounded-md">
-                      <div className="flex-1">
-                        <input
-                          className="w-full px-4 font-bold text-2xl outline-none focus:border-blue-500 duration-300 focus:placeholder:invisible"
-                          type="number"
-                          inputMode="decimal"
-                          onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
-                          value={usdcTransferToBank}
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="flex items-center">
-                        <div className="relative w-[20px] h-[20px] mt-0.5">
-                          <Image src="/usdc.svg" alt="USDC" fill />
-                        </div>
-                        <div className="ml-0.5 text-xl font-medium leading-none">USDC</div>
-                      </div>
-                      <div className="mx-4 py-1 text-base font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
-                        max
-                      </div>
-                    </div>
+                    <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
                   </div>
                 </div>
-                {/*--- ARROW ---*/}
-                <div className="absolute bottom-[-20px] w-[40px] h-[40px] flex items-center justify-center rounded-full bg-slate-500 z-[2]">
-                  <FontAwesomeIcon icon={faArrowDown} className="text-2xl text-white" />
+                {/*--- balance ---*/}
+                <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
+                  Balance: <span className="">{flashBalance}</span> USDC
+                </div>
+              </div>
+
+              {/*--- ARROW ---*/}
+              <div className="w-full h-[24px] flex justify-center relative z-[1]">
+                <div className="w-[200px] h-[70px] landscape:xl:desktop:w-[160px] landscape:xl:desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light1 dark:bg-dark3 border border-slate-500 dark:border-slate-600 z-[2]">
+                  <FontAwesomeIcon icon={faArrowDown} className="text-4xl landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1" />
+                  <div className="textBase ml-2 leading-tight">
+                    {blockchainFee} USDC <br />
+                    blockchain fee
+                  </div>
                 </div>
               </div>
 
               {/*--- TO container ---*/}
-              <div className="w-full pt-12 pb-8 space-y-[20px] flex flex-col items-center bg-slate-100 relative">
-                <div className="w-[330px] flex flex-col items-center space-y-8">
-                  {/*--- TO content ---*/}
-                  <div className="w-full flex items-center">
-                    <div className="w-[60px] h-[60px] bg-slate-300 flex justify-center items-center rounded-[8px]">
-                      <div className="relative w-[44px] h-[44px]">
-                        <Image src="/ani-bank-solid.svg" alt="bank" fill />
-                      </div>
-                    </div>
-                    <div className="ml-4 flex flex-col">
-                      <div className="textBase leading-tight font-medium">To: Bank</div>
-                      <div className="textSm leading-tight text-gray-500">{cbBankAccountName.split("\n")[0]}</div>
-                      <div className="textSm leading-tight text-gray-500">{cbBankAccountName.split("\n")[1]}</div>
-                    </div>
+              <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
+                {/*--- info ---*/}
+                <div className="w-full flex items-center">
+                  <div className="transferIcon">
+                    <Image src="/coinbase.svg" alt="coinbase" fill />
                   </div>
-                  {/*--- TO amount ---*/}
-                  <div className="w-full">
-                    <div className="text-2xl font-bold">
-                      {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
-                      {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                  <div className="textBase ml-3 flex flex-col">
+                    <div className="leading-none font-medium">From: Coinbase</div>
+                    <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                    <div className="leading-tight break-all text-slate-500">
+                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
                     </div>
-                    <div className="px-1 h-[1px] bg-gray-400"></div>
                   </div>
                 </div>
-                {/*--- rate ---*/}
-                <div className="mt-1 flex justify-center items-center">
-                  1 USDC = {rates.usdcToLocal} {paymentSettingsState?.merchantCurrency}
+                {/*--- to amount ---*/}
+                <div className="transferAmountToBox">
+                  <div className="">{usdcTransferToCex ? Number(usdcTransferToCex) - blockchainFee : "0"}</div>
+                  <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
                 </div>
               </div>
 
               {/*--- buttons ---*/}
-              {transferState == "initial" ? (
-                <div className="mt-6 w-full flex flex-col items-center space-y-6">
-                  {/*--- transfer button ---*/}
-                  <button onClick={onClickTransferToBankSubmit} className="modalButtonBlue rounded-md">
-                    CASH OUT
+              <div className="flex-none mt-8 portrait:sm:mt-12 landscape:lg:mt-12 landscape:xl:desktop:mt-6 w-full pb-4">
+                {transferState == "initial" ? (
+                  <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
+                    Transfer To Coinbase
                   </button>
-                  {/*--- cancel button ---*/}
-                  <button
-                    onClick={() => {
-                      setTransferToBankModal(false);
-                      setUsdcTransferToBank("");
-                    }}
-                    className="underline underline-offset-2 font-medium textLg"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-500">
-                  <SpinningCircleGray />
-                  &nbsp; Transferring...
-                </div>
-              )}
+                ) : (
+                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-500">
+                    <SpinningCircleGray />
+                    &nbsp; Transferring...
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+          <div className="modalBlackout"></div>
+        </div>
+      )}
+
+      {/*--- loading bar ---*/}
+      {/* <div
+              className={`hidden absolute left-0 bottom-0 h-[10%] bg-blue-500 animate-pulse ease-linear ${transferState == "initial" ? "w-[0%]" : ""} ${
+                transferState == "sending" ? "w-[80%] duration-[3000ms]" : ""
+              } ${transferState == "sent" ? "w-[100%] duration-[300ms]" : ""} transition-all`}
+            ></div> */}
+
+      {transferToBankModal && (
+        <div className="">
+          <div className="detailsModal dark:bg-dark2  landscape:xl:desktop:w-[400px]">
+            {/*--- HEADER ---*/}
+            <div className="detailsModalHeaderContainer">
+              {/*--- header ---*/}
+              <div className="detailsModalHeader">Transfer To Bank</div>
+              {/*--- mobile back ---*/}
+              <div className="mobileBack">
+                <FontAwesomeIcon icon={faAngleLeft} onClick={() => setTransferToBankModal(false)} />
+              </div>
+              {/*--- tablet/desktop close ---*/}
+              <div className="xButtonContainer" onClick={() => setTransferToBankModal(false)}>
+                <div className="xButton">&#10005;</div>
+              </div>
+            </div>
+
+            {/*--- CONTENT ---*/}
+            <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] flex flex-col items-center overflow-y-auto landscape:xl:desktop:h-[500px]">
+              {/*--- FROM container ---*/}
+              <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
+                {/*--- info ---*/}
+                <div className="w-full flex items-center">
+                  <div className="relative w-[52px] h-[52px]">
+                    <Image src="/coinbase.svg" alt="coinbase" fill />
+                  </div>
+                  <div className="textBase ml-3 flex flex-col">
+                    <div className="leading-none font-medium">From: Coinbase</div>
+                    <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                    <div className="leading-tight break-all text-slate-500">
+                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                    </div>
+                  </div>
+                </div>
+                {/*--- from amount ---*/}
+                <div className="mt-4 w-full flex items-center relative">
+                  <input
+                    className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
+                    type="number"
+                    inputMode="decimal"
+                    onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
+                    value={usdcTransferToBank}
+                    placeholder="0"
+                  />
+                  {/*--- max + USDC ---*/}
+                  <div className="h-full right-0 absolute flex space-x-4 items-center">
+                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
+                      max
+                    </div>
+                    <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
+                  </div>
+                </div>
+                {/*--- balance ---*/}
+                <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
+                  Balance: <span className="">{cexBalance}</span> USDC
+                </div>
+              </div>
+
+              {/*--- ARROW ---*/}
+              <div className="w-full h-[24px] flex justify-center relative z-[1]">
+                <div className="w-[200px] h-[70px] landscape:xl:desktop:w-[160px] landscape:xl:desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light1 dark:bg-dark3 border border-slate-500 dark:border-slate-600 z-[2]">
+                  <FontAwesomeIcon icon={faArrowDown} className="text-4xl landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1" />
+                  <div className="textBase ml-2 leading-tight">
+                    1 USDC =<br />
+                    {rates.usdcToLocal} {paymentSettingsState?.merchantCurrency}
+                  </div>
+                </div>
+              </div>
+
+              {/*--- TO container ---*/}
+              <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
+                {/*--- info ---*/}
+                <div className="w-full flex items-center">
+                  <div className="transferIcon border border-dualGray dark:border-dark6">
+                    <Image src={theme == "dark" ? "/bankDark.svg" : "/bankLight.svg"} alt="bank" fill />
+                  </div>
+                  <div className="textBase ml-3 flex flex-col">
+                    <div className="leading-none font-medium">To: Bank</div>
+                    <div className="leading-tight text-slate-500 line-clamp-1">{cbBankAccountName.split("\n")[0]}</div>
+                    <div className="leading-none text-slate-500 line-clamp-1">{cbBankAccountName.split("\n")[1]}</div>
+                  </div>
+                </div>
+                {/*--- to amount ---*/}
+                <div className="transferAmountToBox">
+                  <div className="">
+                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
+                    {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                  </div>
+                  <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none"></div>
+                </div>
+              </div>
+
+              {/*--- buttons ---*/}
+              <div className="flex-none mt-8 portrait:sm:mt-12 landscape:lg:mt-12 landscape:xl:desktop:mt-6 w-full pb-4">
+                {transferState == "initial" ? (
+                  <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
+                    Transfer To Bank
+                  </button>
+                ) : (
+                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] text-lg portrait:sm:text-xl landscape:lg:text-xl font-medium text-gray-500">
+                    <SpinningCircleGray />
+                    &nbsp; Transferring...
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="modalBlackout"></div>
         </div>
       )}
 
@@ -872,7 +860,7 @@ const CashOut = ({
             <div className="textLg text-center">was sent to your Coinbase account. Please wait a few minutes for your Coinbase balance to update.</div>
           </div>
           <button
-            className="mb-20 modalButtonWhite"
+            className="mb-20 buttonSecondary"
             onClick={() => {
               setTransferState("initial");
               setTransferToCexSuccessModal(false);
@@ -918,7 +906,7 @@ const CashOut = ({
             </div>
           </div>
           <button
-            className="mb-20 modalButtonWhite"
+            className="mb-20 buttonSecondary"
             onClick={() => {
               setTransferState("initial");
               setTransferToBankSuccessModal(false);

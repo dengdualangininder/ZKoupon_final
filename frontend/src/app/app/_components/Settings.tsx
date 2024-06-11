@@ -4,18 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { deleteCookie } from "cookies-next";
-// qr code
+// other
 import { QRCodeSVG } from "qrcode.react";
-import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
-import { saveAs } from "file-saver";
+import { useTheme } from "next-themes";
 import { Buffer } from "buffer";
 // wagmi
 import { useDisconnect } from "wagmi";
 // components
-import Placard from "./placard/Placard";
 import FaqModal from "./modals/FaqModal";
 import ErrorModal from "./modals/ErrorModal";
-import EmployeePassModal from "./modals/EmployeePassModal";
 // import APIModal from "./modals/ApiKeyModal";
 // import QrModal from "./modals/QrModal";
 // constants
@@ -23,7 +20,7 @@ import { countryData, countryCurrencyList, merchantType2data } from "@/utils/con
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
@@ -50,6 +47,7 @@ const Settings = ({
   // states
   const [popup, setPopup] = useState("");
   const [save, setSave] = useState(false);
+  const [employeePassMask, setEmployeePassMask] = useState(true);
   // modal states
   const [figmaModal, setFigmaModal] = useState(false);
   const [merchantBusinessTypeModal, setMerchantBusinessTypeModal] = useState(false);
@@ -57,11 +55,14 @@ const Settings = ({
   const [errorModal, setErrorModal] = useState(false);
   const [faqModal, setFaqModal] = useState(false);
   const [employeePassModal, setEmployeePassModal] = useState(false);
+  const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
   // consider removing
   const [qrModal, setQrModal] = useState(false);
   const [apiModal, setApiModal] = useState(false);
   const [depositAddressModal, setDepositAddressModal] = useState(false);
 
+  // hooks
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const { disconnectAsync } = useDisconnect();
 
@@ -154,48 +155,30 @@ const Settings = ({
     }
   };
 
-  const downloadQrCode = async () => {
-    const el = document.getElementById("qrPlacard");
-    const blob = await pdf(
-      <Document>
-        <Page size="A5" style={{ position: "relative" }}>
-          <View>
-            <Placard />
-          </View>
-          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
-            {/* @ts-ignore */}
-            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* @ts-ignore */}
-              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
-              {/* @ts-ignore */}
-              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
-            </Svg>
-          </View>
-        </Page>
-      </Document>
-    ).toBlob();
-    saveAs(blob, "MyPlacard");
-  };
-
-  const onClickPaymentLink = () => {
-    if (missingInfo() === false) {
-      setPopup("copyLinkButton");
-      setTimeout(() => setPopup(""), 2000);
-      navigator.clipboard.writeText(paymentSettingsState.qrCodeUrl.replace("metamask.app.link/dapp/", ""));
-    }
+  const copyAddress = () => {
+    setPopup("copyAddress");
+    setTimeout(() => setPopup(""), 1500);
+    navigator.clipboard.writeText(paymentSettingsState.merchantEvmAddress);
   };
 
   const saveEmployeePass = async (e: React.FocusEvent<HTMLInputElement, Element>) => {
     try {
+      const employeePass = e.target.value;
+      (document.getElementById("employeePass") as HTMLInputElement).value = "";
+      employeePass ? setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: true }) : setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: false });
+      // if (employeePass) {
+      //   setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: true });
+      // } else {
+      //   setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: false });
+      // }
       const res = await fetch("/api/saveEmployeePass", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ employeePass: e.target.value, idToken, publicKey }),
+        body: JSON.stringify({ employeePass: employeePass, idToken, publicKey }),
       });
       const data = await res.json();
       if (data === "saved") {
         console.log("employeePass saved");
-        setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: true });
       } else {
         setErrorMsg("Internal server error. Data was not saved.");
         setErrorModal(true);
@@ -221,30 +204,34 @@ const Settings = ({
   console.log("last render, paymentSettingsState:", paymentSettingsState);
   console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
-    <section className="settingsFont w-full h-full flex flex-col items-center overflow-y-auto">
-      <div className="px-3 settingsWidth">
+    <section className="w-full h-full flex flex-col items-center overflow-y-auto">
+      <div className="settingsFont px-3 settingsWidth">
         <div className="settingsTitle">Settings</div>
-        <div className="hidden">
-          <QRCodeSVG id="qrPlacard" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
-        </div>
-
         {/*---form ---*/}
         <form className="w-full max-w-[640px]">
           {/*---EVM Address---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Your EVM Address</label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
-              {paymentSettingsState.merchantEvmAddress.slice(0, 6)}...{paymentSettingsState.merchantEvmAddress.slice(-4)}{" "}
-              <div className="ml-2 relative w-[20px] h-[20px]">
-                <Image src="/copySvg.svg" alt="copy" fill />
+            <div className="relative h-full" onClick={copyAddress}>
+              <div className="h-full flex items-center cursor-pointer desktop:hover:text-slate-500">
+                {paymentSettingsState.merchantEvmAddress.slice(0, 7)}...{paymentSettingsState.merchantEvmAddress.slice(-5)}{" "}
+                <div className="ml-2 relative w-[20px] h-[20px]">
+                  <Image src={theme == "dark" ? "/copyWhite.svg" : "/copyBlack.svg"} alt="copy" fill />
+                </div>
               </div>
+              {popup == "copyAddress" && (
+                <div className="copiedText absolute left-[50%] bottom-[calc(100%-4px)] translate-x-[-50%] px-2 py-1 bg-slate-700 text-white font-normal rounded-[4px]">copied</div>
+              )}
             </div>
           </div>
 
           {/*---email---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Email</label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50" onClick={() => document.getElementById("settingsEmail")?.focus()}>
+            <div
+              className="w-full max-w-[300px] portrait:sm:max-w-[470px] landscape:lg:max-w-[400px] landscape:xl:desktop:max-w-[360px] h-full flex items-center cursor-pointer"
+              onClick={() => document.getElementById("settingsEmail")?.focus()}
+            >
               <input
                 id="settingsEmail"
                 className="settingsValueFont peer"
@@ -253,14 +240,17 @@ const Settings = ({
                 value={paymentSettingsState.merchantEmail}
                 placeholder="empty"
               ></input>
-              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
+              <div className="settingsRightAngle">&#10095;</div>
             </div>
           </div>
 
           {/*---merchantName---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Business Name</label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50" onClick={() => document.getElementById("settingsName")?.focus()}>
+            <div
+              className="w-full h-full max-w-[280px] portrait:sm:max-w-[380px] landscape:lg:max-w-[380px] landscape:xl:desktop:max-w-[320px] flex items-center cursor-pointer"
+              onClick={() => document.getElementById("settingsName")?.focus()}
+            >
               <input
                 id="settingsName"
                 className="settingsValueFont peer"
@@ -268,16 +258,16 @@ const Settings = ({
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantName}
               ></input>
-              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
+              <div className="settingsRightAngle">&#10095;</div>
             </div>
           </div>
 
           {/*---merchantCountry & merchantCurrency---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">Country / Currency</label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
+            <div className="h-full flex items-center cursor-pointer">
               <select
-                className="settingsSelectFont peer"
+                className="settingsSelectFont peer [-webkit-appearance:none]"
                 onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
                   const merchantCountryTemp = e.target.value.split(" / ")[0];
                   const merchantCurrencyTemp = e.target.value.split(" / ")[1];
@@ -299,7 +289,7 @@ const Settings = ({
                   </option>
                 ))}
               </select>
-              <div className="pt-0.5 text-lg">&#10095;</div>
+              <div className="settingsRightAngle">&#10095;</div>
             </div>
           </div>
 
@@ -346,9 +336,9 @@ const Settings = ({
             <div className="settingsLabelFont">
               <span className="group">
                 <label className="">
-                  Your Website <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline  text-slate-300" />
+                  Your Website <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline  text-light4" />
                 </label>
-                <div className="invisible group-hover:visible pointer-events-none absolute bottom-[calc(100%-6px)] w-[330px] px-3 py-1 text-base font-normal  leading-tight bg-slate-100 border border-slate-300 rounded-lg z-[1]">
+                <div className="invisible group-hover:visible pointer-events-none absolute bottom-[calc(100%-6px)] w-[330px] px-3 py-1 text-base font-normal  leading-tight bg-light2 border border-light4 rounded-lg z-[1]">
                   <p>- start with "http(s)"</p>
                   <p>- this website is where customers look up item names & prices</p>
                 </div>
@@ -386,7 +376,7 @@ const Settings = ({
               {/*---container with width matching text width---*/}
               <div className="flex group relative">
                 <div className="settingsLabelFont">
-                  Fields <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline  text-slate-300" />
+                  Fields <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline text-light4" />
                 </div>
                 {/*---tooltip---*/}
                 <div className="bottom-6 w-[306px] tooltip">
@@ -492,7 +482,7 @@ const Settings = ({
           {paymentSettingsState.merchantCountry != "Any country" && (
             <div className={`${cashoutSettingsState.cex == "Coinbase" ? "border-bnot" : ""} settingsField`}>
               <label className="settingsLabelFont">Cash Out Platform</label>
-              <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
+              <div className="h-full flex items-center cursor-pointer">
                 <select
                   className="settingsSelectFont peer"
                   onChange={(e) => {
@@ -507,7 +497,7 @@ const Settings = ({
                     <option key={index}>{i}</option>
                   ))}
                 </select>
-                <div className="pt-0.5 text-lg">&#10095;</div>
+                <div className="settingsRightAngle">&#10095;</div>
               </div>
             </div>
           )}
@@ -515,7 +505,7 @@ const Settings = ({
           {/*---cexEvmAddress---*/}
           <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField border-bnone`}>
             <label className="settingsLabelFont">CEX EVM Address</label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
+            <div className="h-full flex items-center cursor-pointer">
               <input
                 className="settingsValueFont peer"
                 onChange={(e) => {
@@ -526,34 +516,42 @@ const Settings = ({
                 autoComplete="none"
                 placeholder="empty"
               ></input>
-              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
+              <div className="settingsRightAngle">&#10095;</div>
             </div>
           </div>
 
           {/*---employee password---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Employee Password</label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
-              <div className="relative w-full max-w-[400px] landscape:lg:max-w-[400px] h-full">
-                <div id="employeePassMask" onClick={() => setEmployeePassModal(true)} className="absolute top-0 right-0 h-full w-full"></div>
+            <label className="settingsLabelFont">
+              Employee Password
+              <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" onClick={() => setInfoModal("employeePassword")} />
+            </label>
+            <div className="relative w-full max-w-[280px] landscape:xl:desktop:max-w-[240px] h-full">
+              {/*--- mask ---*/}
+              <div className={`${employeePassMask ? "" : "hidden"} absolute w-full h-full flex items-center cursor-pointer z-[1]`} onClick={() => setEmployeePassModal(true)}>
+                <div
+                  id="employeePassMask"
+                  className="peer w-full h-full px-3 text-end rounded-md flex items-center justify-end desktop:hover:text-slate-500 transition-all duration-[300ms]"
+                >
+                  {cashoutSettingsState.isEmployeePass ? (
+                    "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                  ) : (
+                    <div className="italic pr-[2px] font-normal text-slate-400 dark:text-slate-600">empty</div>
+                  )}
+                </div>
+                <div className="pt-0.5 text-lg desktop:peer-hover:text-slate-500 transition-all duration-[300ms]">&#10095;</div>
+              </div>
+              <div className={`w-full h-full flex items-center cursor-pointer`}>
                 <input
                   id="employeePass"
-                  className="settingsValueFont peer"
-                  onBlur={async (e) => {
-                    document.getElementById("employeePassMask")?.classList.remove("hidden");
-                    await saveEmployeePass(e);
-                    if (e.target.value) {
-                      (document.getElementById("employeePass") as HTMLInputElement).value = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
-                    } else {
-                      (document.getElementById("employeePass") as HTMLInputElement).value = "";
-                    }
+                  className="settingsValueFont"
+                  onBlur={(e) => {
+                    saveEmployeePass(e);
+                    setEmployeePassMask(true);
                   }}
-                  defaultValue={cashoutSettingsState.isEmployeePass ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" : ""}
-                  placeholder="empty"
                   autoComplete="off"
                 ></input>
               </div>
-              <div className="peer-focus:hidden pt-0.5 text-lg">&#10095;</div>
             </div>
           </div>
 
@@ -562,21 +560,14 @@ const Settings = ({
             <div className="settingsField relative">
               <label className="settingsLabelFont">
                 Give 2% Cashback?
-                <span className="group">
-                  <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
-                  <div className="w-full left-0 bottom-[100%] tooltip text-black">
-                    Because credit cards charge businesses ~3% and give ~1% to customers, customers have few incentives to use other payment methods. Therefore, we are temporarily
-                    requiring businesses give a 2% discount to customers. Because Flash charges 0% fees, businesses will still save ~1% compared to credit cards. Furthermore, the
-                    discount can may motivate new customers to go to your business. When blockchain payments become more popular, we will make this cashback optional.
-                  </div>
-                </span>
+                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" onClick={() => setInfoModal("cashback")} />
               </label>
-              <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
-                <select className="settingsSelectFont peer pointer-events-none" onChange={(e) => {}}>
+              <div className="h-full flex items-center cursor-pointer">
+                <select className="settingsSelectFont peer" onChange={(e) => {}}>
                   <option key="yes">Yes</option>
-                  <option key="no">No</option>
+                  {/* <option key="no">No</option> */}
                 </select>
-                <div className="pt-0.5 text-lg">&#10095;</div>
+                <div className="settingsRightAngle">&#10095;</div>
               </div>
             </div>
           )}
@@ -585,15 +576,9 @@ const Settings = ({
           <div className="settingsField border-b relative">
             <label className="settingsLabelFont">
               Google Place ID
-              <span className="group">
-                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
-                <div className="w-full left-0 bottom-[100%] tooltip text-black">
-                  Search for the "Google Place ID Finder" website. Find your Google Place ID and paste it here. When filled, your business will be added to stablecoinmap.com, which
-                  is a map of places that accept crypto payments and allows crypto users to more easily find your business.
-                </div>
-              </span>
+              <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" onClick={() => setInfoModal("googleId")} />
             </label>
-            <div className="h-full flex items-center cursor-pointer desktop:hover:opacity-50 active:opacity-50">
+            <div className="h-full flex items-center cursor-pointer">
               <input
                 id="settingsGoogleId"
                 className="settingsValueFont peer"
@@ -602,25 +587,39 @@ const Settings = ({
                 value={paymentSettingsState.merchantGoogleId}
                 placeholder="empty"
               ></input>
-              <div className="peer-focus:hidden pt-0.5 text-lg" onClick={() => document.getElementById("settingsGoogleId")?.focus()}>
+              <div className="settingsRightAngle" onClick={() => document.getElementById("settingsGoogleId")?.focus()}>
                 &#10095;
               </div>
             </div>
           </div>
 
-          <div className="settingsTitle">Support</div>
+          {/*--- APPEARANCE  ---*/}
+          <div className="settingsTitle">Apperance</div>
+          <div className="settingsField">
+            <label className="settingsLabelFont">Dark Mode</label>
+            {/*--- toggle ---*/}
+            <div className="mt-1 desktop:mt-2 w-[56px] h-[30px] flex items-center relative cursor-pointer" onClick={() => (theme == "dark" ? setTheme("light") : setTheme("dark"))}>
+              <input type="checkbox" checked={theme == "dark" ? true : false} className="sr-only peer" />
+              <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
+              <div className="w-[26px] h-[26px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+            </div>
+          </div>
 
+          {/*--- SUPPORT ---*/}
+          <div className="settingsTitle">Support</div>
           {/*--- FAQs ---*/}
-          <div className="settingsField cursor-pointer desktop:hover:opacity-50 active:opacity-50" onClick={() => setFaqModal(true)}>
-            <label className="settingsLabelFont text-black">Instructions</label>
-            <div className="pt-0.5 text-lg">&#10095;</div>
+          <div className="settingsField cursor-pointer group" onClick={() => setFaqModal(true)}>
+            <label className="settingsLabelFont text-lightText1 dark:text-darkText1 cursor-pointer desktop:group-hover:opacity-70 group-active:opacity-70">Instructions</label>
+            <div className="pt-0.5 text-lg desktop:group-hover:opacity-70 group-active:opacity-70">&#10095;</div>
           </div>
-          <div className="settingsField cursor-pointer desktop:hover:opacity-50 active:opacity-50">
-            <label className="settingsLabelFont text-black">Contact Us</label>
-            <div className="pt-0.5 text-lg">&#10095;</div>
+          {/*--- Contact Us ---*/}
+          <div className="settingsField cursor-pointer group">
+            <label className="settingsLabelFont text-lightText1 dark:text-darkText1 cursor-pointer desktop:group-hover:opacity-70 group-active:opacity-70">Contact Us</label>
+            <div className="pt-0.5 text-lg desktop:group-hover:opacity-70 group-active:opacity-70">&#10095;</div>
           </div>
-          <div className="settingsField cursor-pointer desktop:hover:opacity-50 active:opacity-50">
-            <label className="settingsLabelFont text-black">Feedback</label>
+          {/*--- Feedback ---*/}
+          <div className="hidden settingsField cursor-pointer desktop:hover:brightness-[1.2] active:brightness-[1.2]">
+            <label className="settingsLabelFont text-lightText1 dark:text-darkText1 cursor-pointer">Feedback</label>
             <div className="pt-0.5 text-lg">&#10095;</div>
           </div>
         </form>
@@ -630,7 +629,7 @@ const Settings = ({
           <div className="flex items-center justify-center relative">
             <button
               onClick={onClickSignOut}
-              className="px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-4 landscape:lg:py-4 landscape:xl:desktop:py-3 rounded-full text-white bg-blue-500 active:bg-blue-300 hover:bg-blue-600"
+              className="px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-4 landscape:lg:py-4 landscape:xl:desktop:py-3 rounded-full buttonPrimaryColor"
             >
               Sign Out
             </button>
@@ -638,7 +637,91 @@ const Settings = ({
         </div>
       </div>
 
-      {/*---6 MODALS---*/}
+      {/*---5 MODALS---*/}
+      {infoModal && (
+        <div>
+          <div className="settingsInfoModal overflow-y-auto">
+            {/*--- desktop close button ---*/}
+            <div className="hidden landscape:xl:desktop:flex absolute right-[12px] top-[12px] xButtonContainer" onClick={() => setInfoModal(null)}>
+              <div className="xButton">&#10005;</div>
+            </div>
+            {/*--- TITLE ---*/}
+            <div className="modalHeaderXl flex-none landscape:xl:desktop:w-[calc(100%-80px)] h-[90px] portrait:sm:h-[110px] landscape:lg:h-[110px] landscape:xl:desktop:h-[100px] flex justify-center items-center relative">
+              {infoModal == "employeePassword" && <div>What is the Employee Password?</div>}
+              {infoModal == "cashback" && <div>What is the 2% Cashback?</div>}
+              {infoModal == "googleId" && <div>What is the Google ID?</div>}
+            </div>
+            {/*--- CONTENT ---*/}
+            <div className="textBase2 flex-1 flex flex-col">
+              {infoModal == "employeePassword" && (
+                <div className="space-y-3">
+                  <p>
+                    When an employee signs into the Flash app using your email ({paymentSettingsState.merchantEmail}) and the{" "}
+                    <span className="font-semibold">Employee Password</span>, they will have access to the <span className="font-semibold">Payments</span> menu tab in your Flash
+                    app. This allows employees to confirm payments when a customer pays.
+                  </p>
+                  <p className="pt-2 font-semibold">Can employees make refunds?</p>
+                  <p className="">
+                    Because employees do not have access to the funds in Flash, they cannot make refunds. However, employees can label/unlabel payments with the "To Refund" tag.
+                    You (the owner) can then later refund all payments with this label in a single click.
+                  </p>
+                </div>
+              )}
+              {infoModal == "cashback" && (
+                <div className="space-y-3">
+                  <p>
+                    We are temporarily requiring businesses give customers a 2% discount, which is automatically applied at the time of payment. As always, Flash makes zero profit
+                    per transaction.
+                  </p>
+                  <p>
+                    Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and
+                    credit cards charge &gt; 3% fees, you still save money when using Flash. Furthermore, the discount may attract new customers to your business.
+                  </p>
+                  <p>When crypto payments become more popular, we will make this cashback optional.</p>
+                </div>
+              )}
+              {infoModal == "googleId" && (
+                <div>
+                  Search "Google Place ID Finder" and go to the Google Place ID Finder website. Find your Google Place ID and paste it here. When you do, your business will be
+                  added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments, thus allowing crypto users to more easily find your business.
+                </div>
+              )}
+            </div>
+            {/*---button---*/}
+            <button onClick={() => setInfoModal(null)} className="my-8 buttonSecondary landscape:xl:desktop:hidden">
+              CLOSE
+            </button>
+          </div>
+          <div className="modalBlackout" onClick={() => setInfoModal(null)}></div>
+        </div>
+      )}
+      {employeePassModal && (
+        <div>
+          <div className="modal">
+            {/*---content---*/}
+            <div className="modalContent">Do you want to change the Employee Password?</div>
+            {/*---buttons---*/}
+            <div className="modalButtonContainer">
+              <button
+                onClick={() => {
+                  setEmployeePassMask(false);
+                  setEmployeePassModal(false);
+                  (document.getElementById("employeePass") as HTMLInputElement).value = "";
+                  document.getElementById("employeePass")?.focus();
+                  // no need to set PaymentSettingsState
+                }}
+                className="buttonPrimary"
+              >
+                Change Password
+              </button>
+              <button onClick={() => setEmployeePassModal(false)} className="buttonSecondary">
+                Cancel
+              </button>
+            </div>
+          </div>
+          <div className="modalBlackout"></div>
+        </div>
+      )}
       {merchantBusinessTypeModal && (
         <div>
           <div className="flex flex-col items-center justify-between bg-white w-[350px] xs:w-[400px] h-[420px] py-[28px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-20">
@@ -674,12 +757,11 @@ const Settings = ({
               CLOSE
             </button>
           </div>
-          <div className=" opacity-60 fixed inset-0 z-10 bg-black"></div>
+          <div className="opacity-60 fixed inset-0 z-10 bg-black"></div>
         </div>
       )}
       {faqModal && <FaqModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setFaqModal={setFaqModal} />}
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
-      {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} />}
     </section>
   );
 };

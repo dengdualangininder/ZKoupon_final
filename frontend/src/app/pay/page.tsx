@@ -387,7 +387,7 @@ const Pay = () => {
               <div className="text-center">{errorMsg}</div>
             </div>
             {/*---close button---*/}
-            <button onClick={() => setErrorModal(false)} className="modalButtonWhite">
+            <button onClick={() => setErrorModal(false)} className="buttonSecondary">
               DISMISS
             </button>
           </div>
@@ -426,7 +426,7 @@ const Pay = () => {
                     setIsSendingComplete(false);
                     location.reload(); // TODO: leaving a txn receipt on page isntead of resetting
                   }}
-                  className="modalButtonWhite"
+                  className="buttonSecondary"
                 >
                   CLOSE
                 </button>
