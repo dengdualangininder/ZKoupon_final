@@ -190,8 +190,8 @@ const CashOut = ({
   }, []);
 
   const onClickSIWC = async () => {
-    setIsCexAccessible(true);
-    return;
+    // setIsCexAccessible(true);
+    // return;
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
@@ -201,8 +201,8 @@ const CashOut = ({
   };
 
   const onClickUnlink = () => {
-    setIsCexAccessible(false);
-    return;
+    // setIsCexAccessible(false);
+    // return;
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     setIsCexAccessible(false);
