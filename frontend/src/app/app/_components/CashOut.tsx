@@ -205,7 +205,7 @@ const CashOut = ({
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     setIsCexAccessible(false);
-    setCexBalance(null);
+    setCexBalance("");
   };
 
   const onClickTransferToCex = async () => {
