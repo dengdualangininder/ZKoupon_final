@@ -244,40 +244,41 @@ const CashOut = ({
 
     setTransferState("sending");
 
-    // sign EIP712 permit and make Gelato Relay API call
-    const usdcAddress = "";
-    const tokenContract = "";
-    const tokenName = await tokenContract.name();
-    const tokenVersion = await tokenContract.EIP712_VERSION();
-    const nonce = 1;
-    const chainId = 137;
-    const flashAddress = "";
-    const deadline = "";
+    // // sign EIP712 permit and make Gelato Relay API call
+    // const usdcAddress = "";
+    // const tokenContract = "";
+    // const tokenName = await tokenContract.name();
+    // const tokenVersion = await tokenContract.EIP712_VERSION();
+    // const nonce = 1;
+    // const chainId = 137;
+    // const flashAddress = "";
+    // const deadline = "";
 
-    // sign EIP712 permit
-    const permitDomain = { name: tokenName, version: tokenVersion, chainId: chainId, verifyingContract: flashAddress };
-    const permitTypes = {
-      Permit: [
-        { name: "owner", type: "address" },
-        { name: "spender", type: "address" },
-        { name: "value", type: "uint256" },
-        { name: "nonce", type: "uint256" },
-        { name: "deadline", type: "uint256" },
-      ],
-    };
-    const permitValues = { owner: paymentSettingsState?.merchantEvmAddress, spender: flashAddress, value: usdcTransferToCex, nonce: nonce, deadline: deadline };
-    // get ethers provider
-    const provider = clientToProvider(client);
-    //@ts-ignore
-    const typedSignature = await signer._signTypedData(permitDomain, permitTypes, permitValues); // sign
-    const permitSignature = ethers.utils.splitSignature(typedSignature); // format signature
+    // // sign EIP712 permit
+    // const permitDomain = { name: tokenName, version: tokenVersion, chainId: chainId, verifyingContract: flashAddress };
+    // const permitTypes = {
+    //   Permit: [
+    //     { name: "owner", type: "address" },
+    //     { name: "spender", type: "address" },
+    //     { name: "value", type: "uint256" },
+    //     { name: "nonce", type: "uint256" },
+    //     { name: "deadline", type: "uint256" },
+    //   ],
+    // };
+    // const permitValues = { owner: paymentSettingsState?.merchantEvmAddress, spender: flashAddress, value: usdcTransferToCex, nonce: nonce, deadline: deadline };
+    // // get ethers provider
+    // const provider = clientToProvider(client);
+    // //@ts-ignore
+    // const typedSignature = await signer._signTypedData(permitDomain, permitTypes, permitValues); // sign
+    // const permitSignature = ethers.utils.splitSignature(typedSignature); // format signature
 
-    // make Gelato Relay API call
-    const payCallDataNotEncoded = { from: flashAddress, to: cashoutSettingsState?.cexEvmAddress, amount: usdcTransferToCex, permitData: { deadline: deadline, signature: permitSignature } };
-    const payCallData = encodeFunctionData("pay", [payCallDataNotEncoded]);
-    const gelatoRelay = new GelatoRelay();
-    const { taskId } = await gelatoRelay.callWithSyncFee({ chainId: chainId, target: flashAddress, data: payCallData, feeToken: usdcAddress, isRelayContext: true });
-    return;
+    // // make Gelato Relay API call
+    // const payCallDataNotEncoded = { from: flashAddress, to: cashoutSettingsState?.cexEvmAddress, amount: usdcTransferToCex, permitData: { deadline: deadline, signature: permitSignature } };
+    // const payCallData = encodeFunctionData("pay", [payCallDataNotEncoded]);
+    // const gelatoRelay = new GelatoRelay();
+    // const { taskId } = await gelatoRelay.callWithSyncFee({ chainId: chainId, target: flashAddress, data: payCallData, feeToken: usdcAddress, isRelayContext: true });
+    // return;
+
     // normal txn
     try {
       const txnHashTemp = await writeContract(config, {
