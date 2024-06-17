@@ -47,18 +47,19 @@ const Inperson = ({
   const [digits, setDigits] = useState(5);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-between text-2xl font-medium">
+    <div className="w-full h-full max-h-[540px] flex flex-col items-center justify-between">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
       <div className="text-center">
-        <div className="text-base text-gray-400">PAY TO</div>
-        <div className="mt-2 line-clamp-1">{urlParams.merchantName}</div>
+        <div className="text-lg font-bold text-slate-500">PAY TO</div>
+        <div className="mt-2 text-2xl font-semibold line-clamp-1">{urlParams.merchantName}</div>
       </div>
-      {/*--- currency amount ---*/}
-      <div className="flex justify-center items-center text-5xl relative">
-        <div className="w-full h-[2px] bg-gray-300 absolute top-[calc(100%)]"></div>
-        <div className="absolute right-[calc(100%+8px)]">{currency2symbol[urlParams.merchantCurrency]}</div>
+
+      {/*--- AMOUNT BOX ---*/}
+      <div className="flex justify-center items-center relative">
+        <div className="w-full h-[2px] bg-slate-300 absolute top-[calc(100%)]"></div>
+        <div className="absolute right-[calc(100%+8px)] text-4xl">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           id="payCurrencyAmount"
           onChange={(e) => {
@@ -72,10 +73,11 @@ const Inperson = ({
           inputMode="decimal"
           value={currencyAmount}
           placeholder="0.00"
-          className={`outline-none text-center focus:placeholder:text-transparent bg-white placeholder:text-gray-400`}
+          className={`outline-none focus:outline-none focus:ring-0 border-none focus:border-none text-4xl text-center focus:placeholder:text-transparent bg-white placeholder:text-slate-400`}
           style={{ width: `${digits * 28}px` }}
         ></input>
       </div>
+
       {/*---select network---*/}
       {/* <div className={`${showNetwork ? "" : "invisible"} w-[340px] flex flex-col items-center`}>
         <div className="text-xl font-bold">Select a network:</div>
@@ -102,18 +104,18 @@ const Inperson = ({
       {/*---AMOUNT SENT + SAVINGS---*/}
       <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- AMOUNT SENT ---*/}
-        <div className="flex text-center text-2xl font-medium">
+        <div className="flex text-center text-2xl font-semibold">
           Sending {tokenAmount} {selectedToken}
         </div>
 
         {/*--- SAVINGS ---*/}
-        <div className="mt-4 w-full flex justify-between text-sm text-gray-400 font-medium relative">
+        <div className="mt-4 w-full flex justify-between text-base text-slate-500 font-medium relative">
           {/*--- fx savings ---*/}
           {urlParams.merchantCurrency != "USD" && (
             <div className="flex items-center group">
               <div className="flex flex-col items-center">
                 <div>FX Savings</div>
-                <div className=" text-green-500 text-base">{fxSavings}%</div>
+                <div className=" text-green-500 text-lg">{fxSavings}%</div>
                 {/*--- tooltip ---*/}
                 <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start text-gray-800">
                   <p>
@@ -124,25 +126,25 @@ const Inperson = ({
                   </p>
                 </div>
               </div>
-              <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-gray-300" />
+              <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-slate-400" />
             </div>
           )}
           {/*--- instant cashback ---*/}
           <div className="flex items-center group">
             <div className="flex flex-col items-center text-center">
               <p>Instant Cashback</p>
-              <p className=" text-green-500 text-base">2%</p>
+              <p className=" text-green-500 text-lg">2%</p>
               {/*--- tooltip ---*/}
               <div className="w-full bottom-[calc(100%+2px)] tooltip text-start text-gray-800">The value of USDC sent is 2% less than the value of the payment amount</div>
             </div>
-            <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-gray-300" />
+            <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-slate-400" />
           </div>
           {/*--- total savings ---*/}
           {urlParams.merchantCurrency != "USD" ? (
             <div className="flex flex-col items-center text-center">
               <p>You Save</p>
               <div>
-                <div className=" text-green-500 text-base">{2 + Number(fxSavings)}%</div>
+                <div className=" text-green-500 text-lg">{2 + Number(fxSavings)}%</div>
               </div>
             </div>
           ) : (
@@ -151,8 +153,8 @@ const Inperson = ({
         </div>
 
         {/*---SEND BUTTON---*/}
-        <div className={`${currencyAmount ? "" : "invisible"} my-6 flex justify-center w-full`}>
-          <button onClick={send} className="w-full h-[56px] text-white bg-blue-500 active:opacity-50 rounded-xl text-xl">
+        <div className={`${currencyAmount ? "" : "invisible"} px-3 my-6 flex justify-center w-full`}>
+          <button onClick={send} className="w-full h-[56px] font-semibold text-white bg-[#0376C9] active:brightness-[1.1] rounded-full text-xl">
             PAY
           </button>
         </div>

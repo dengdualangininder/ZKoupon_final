@@ -461,9 +461,7 @@ const User = () => {
                   { id: "settings", title: "SETTINGS", imgWhite: "/settingsWhite.svg", imgBlack: "/settingsBlack.svg" },
                 ].map((i) => (
                   <div
-                    className={`cursor-pointer flex flex-col items-center justify-center ${
-                      menu == i.id ? "opacity-100" : "opacity-50"
-                    } desktop:hover:opacity-100 active:opacity-100`}
+                    className={`cursor-pointer flex flex-col items-center justify-center ${menu == i.id ? "opacity-100" : "opacity-50"} desktop:hover:opacity-100 active:opacity-100`}
                     id={i.id}
                     key={i.id}
                     onClick={async (e) => {
@@ -502,9 +500,7 @@ const User = () => {
             )}
           </div>
           {/*---menu pages---*/}
-          {menu === "payments" && (
-            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />
-          )}
+          {menu === "payments" && <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />}
           {menu === "cashOut" && isAdmin && (
             <CashOut
               paymentSettingsState={paymentSettingsState!}
@@ -557,19 +553,18 @@ const User = () => {
             <div
               className={`${
                 bannerModal ? "top-4" : "-top-[92px] portrait:sm:-top-[128px] landscape:lg:-top-[128px]"
-              } w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[88px] portrait:sm:h-[120px] landscape:lg:h-[120px] flex justify-center fixed right-0 z-[90] transition-[top] duration-500`}
+              } w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[88px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center fixed right-0 z-[90] transition-[top] duration-500`}
             >
-              <div className="pl-[4%] w-[92%] landscape:lg:max-w-[560px] landscape:xl:max-w-[700px] portrait:sm:max-w-[560px] portrait:lg:max-w-[700px] flex items-center justify-between rounded-xl bg-gray-200 border border-gray-400">
+              <div className="pl-[4%] bannerWidth flex items-center justify-between rounded-xl bg-lightButton dark:bg-darkButton">
                 {/*---content---*/}
                 <div className=" flex-col justify-center">
-                  <div className="text-base landscape:lg:text-lg landscape:xl:text-xl portrait:sm:text-lg portrait:lg:text-xl font-bold text-gray-500 pb-1">NEW PAYMENT</div>
-                  <div className="text-2xl landscape:lg:text-4xl landscape:xl:text-5xl portrait:sm:text-4xl portrait:lg:text-5xl">
-                    {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])} {paymentSettingsState?.merchantCurrency}{" "}
-                    from {transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
+                  <div className="pb-1 text-base portrait:sm:text-lg landscape:lg:text-lg font-medium text-white">NEW PAYMENT</div>
+                  <div className="font-semibold text-[22px] portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl">
+                    {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])} {paymentSettingsState?.merchantCurrency} from ..{transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
                   </div>
                 </div>
                 {/*--- buttons ---*/}
-                <button onClick={() => setBannerModal(false)} className="w-[20%] h-full text-4xl portrait:sm:text-5xl landscape:lg:text-5xl">
+                <button onClick={() => setBannerModal(false)} className="p-2 mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl">
                   &#10005;
                 </button>
               </div>
@@ -640,8 +635,8 @@ const User = () => {
                   <p>Our journey together towards global payments with 0% fees is a long one.</p>
                   <p>For one, credit cards charge businesses ~3% and gives ~1% back to customers. This locks customers into using credit cards.</p>
                   <p>
-                    To be able to compete, we are requiring businesses give an instant 2% discount to customers. If a customer pays you 10 EUR, you will ultimately recieve 9.8 EUR
-                    in the bank. All savings go to customers (Flash makes zero profit per transaction).
+                    To be able to compete, we are requiring businesses give an instant 2% discount to customers. If a customer pays you 10 EUR, you will ultimately recieve 9.8 EUR in the bank. All savings go to customers (Flash makes zero profit per
+                    transaction).
                   </p>
                   <p>When crypto payments become more popular, we will make this 2% discount optional.</p>
                 </div>
@@ -654,9 +649,7 @@ const User = () => {
             </div>
           )}
 
-          {cashoutIntroModal && (
-            <CashoutIntroModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setCashoutIntroModal={setCashoutIntroModal} />
-          )}
+          {cashoutIntroModal && <CashoutIntroModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setCashoutIntroModal={setCashoutIntroModal} />}
         </div>
       )}
     </div>

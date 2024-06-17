@@ -3,15 +3,19 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-// wagmi & viem
-import { useConfig, useAccount } from "wagmi";
+// wagmi & viem & ethers
+import { useConfig, useAccount, useClient } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";
-import { parseUnits, formatUnits } from "viem";
+import { parseUnits, formatUnits, encodeFunctionData } from "viem";
+import { ethers } from "ethers";
 // other
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useTheme } from "next-themes";
-// constants
+import { GelatoRelay } from "@gelatonetwork/relay-sdk";
+
+// constants and functions
+import { clientToProvider } from "@/utils/functions";
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
 // components
@@ -88,6 +92,7 @@ const CashOut = ({
   const router = useRouter();
   const account = useAccount();
   const config = useConfig();
+  const client = useClient();
   const { theme } = useTheme();
 
   // get Flash and CEX balance
@@ -238,6 +243,42 @@ const CashOut = ({
     }
 
     setTransferState("sending");
+
+    // sign EIP712 permit and make Gelato Relay API call
+    const usdcAddress = "";
+    const tokenContract = "";
+    const tokenName = await tokenContract.name();
+    const tokenVersion = await tokenContract.EIP712_VERSION();
+    const nonce = 1;
+    const chainId = 137;
+    const flashAddress = "";
+    const deadline = "";
+
+    // sign EIP712 permit
+    const permitDomain = { name: tokenName, version: tokenVersion, chainId: chainId, verifyingContract: flashAddress };
+    const permitTypes = {
+      Permit: [
+        { name: "owner", type: "address" },
+        { name: "spender", type: "address" },
+        { name: "value", type: "uint256" },
+        { name: "nonce", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+    };
+    const permitValues = { owner: paymentSettingsState?.merchantEvmAddress, spender: flashAddress, value: usdcTransferToCex, nonce: nonce, deadline: deadline };
+    // get ethers provider
+    const provider = clientToProvider(client);
+    //@ts-ignore
+    const typedSignature = await signer._signTypedData(permitDomain, permitTypes, permitValues); // sign
+    const permitSignature = ethers.utils.splitSignature(typedSignature); // format signature
+
+    // make Gelato Relay API call
+    const payCallDataNotEncoded = { from: flashAddress, to: cashoutSettingsState?.cexEvmAddress, amount: usdcTransferToCex, permitData: { deadline: deadline, signature: permitSignature } };
+    const payCallData = encodeFunctionData("pay", [payCallDataNotEncoded]);
+    const gelatoRelay = new GelatoRelay();
+    const { taskId } = await gelatoRelay.callWithSyncFee({ chainId: chainId, target: flashAddress, data: payCallData, feeToken: usdcAddress, isRelayContext: true });
+    return;
+    // normal txn
     try {
       const txnHashTemp = await writeContract(config, {
         address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
@@ -401,9 +442,7 @@ const CashOut = ({
           <div className="w-full flex justify-between items-center">
             <div className="cashoutHeader">Coinbase Account</div>
             <div
-              className={`${isCexAccessible ? "" : "hidden"} ${
-                cexMoreOptions ? "bg-gray-200" : ""
-              } cursor-pointer relative w-[36px] h-[36px] rounded-full flex items-center justify-center translate-x-[8px] landscape:xl:desktop:hover:bg-gray-200`}
+              className={`${isCexAccessible ? "" : "hidden"} ${cexMoreOptions ? "bg-gray-200" : ""} cursor-pointer relative w-[36px] h-[36px] rounded-full flex items-center justify-center translate-x-[8px] landscape:xl:desktop:hover:bg-gray-200`}
               onClick={() => {
                 setCexMoreOptions(!cexMoreOptions);
                 if (!cexMoreOptions) {
@@ -412,12 +451,7 @@ const CashOut = ({
               }}
             >
               {/* <FontAwesomeIcon icon={faEllipsisVertical} className="hidden textXl" /> */}
-              <div
-                className={`${
-                  cexMoreOptions ? "absolute" : "hidden"
-                } top-[calc(100%+8px)] right-0 px-4 py-1 textLg rounded-md border border-gray-300 desktop:hover:bg-gray-200 active:bg-gray-200`}
-                onClick={onClickUnlink}
-              >
+              <div className={`${cexMoreOptions ? "absolute" : "hidden"} top-[calc(100%+8px)] right-0 px-4 py-1 textLg rounded-md border border-gray-300 desktop:hover:bg-gray-200 active:bg-gray-200`} onClick={onClickUnlink}>
                 Unlink
               </div>
             </div>
@@ -806,8 +840,7 @@ const CashOut = ({
                 {/*--- to amount ---*/}
                 <div className="transferAmountToBox">
                   <div className="">
-                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
-                    {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                    {currency2symbol[paymentSettingsState?.merchantCurrency!]} {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
                   </div>
                   <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none"></div>
                 </div>

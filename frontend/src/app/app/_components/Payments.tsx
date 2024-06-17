@@ -47,17 +47,7 @@ export const getLocalDate = (mongoDate: string) => {
   return `${date[2]}-${date[1]}-${date[0]}`;
 };
 
-const Payments = ({
-  transactionsState,
-  setTransactionsState,
-  paymentSettingsState,
-  isAdmin,
-}: {
-  transactionsState: Transaction[];
-  setTransactionsState: any;
-  paymentSettingsState: PaymentSettings;
-  isAdmin: boolean;
-}) => {
+const Payments = ({ transactionsState, setTransactionsState, paymentSettingsState, isAdmin }: { transactionsState: Transaction[]; setTransactionsState: any; paymentSettingsState: PaymentSettings; isAdmin: boolean }) => {
   console.log("Payments component rendered");
 
   // states
@@ -322,9 +312,7 @@ const Payments = ({
       {/*--- TOP BAR h-140px/180px/160px ---*/}
       <div className="flex-none w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] landscape:xl:desktop:h-[160px] flex flex-col">
         {/*--- shaded region ---*/}
-        <div
-          className={`flex-1 flex flex-col items-center bg-gradient-to-br from-[15%] to-[85%] from-light2 to-light4 dark:from-dark2 dark:to-dark4 landscape:dark:to-dark1 landscape:dark:from-dark1 pr-[${scrollWidth}px]`}
-        >
+        <div className={`flex-1 flex flex-col items-center bg-gradient-to-br from-[15%] to-[85%] from-light2 to-light4 dark:from-dark2 dark:to-dark4 landscape:dark:to-dark1 landscape:dark:from-dark1 pr-[${scrollWidth}px]`}>
           {/*--- buttons ---*/}
           <div className="px-2 paymentsWidth h-[65%] flex items-center justify-between">
             {/*--- left buttons ---*/}
@@ -357,9 +345,9 @@ const Payments = ({
           {/*--- Table Headers ---*/}
           <div className="w-full flex-1 flex justify-center items-end pb-1 portrait:sm:pb-3 landscape:lg:pb-3">
             <div className="paymentsWidth paymentsHeaderFont grid grid-cols-[28%_35%_37%] pb-2 landscape:dark:border-b-2 landscape:dark:border-dark5">
-              <div className="portrait:pl-2 portrait:sm:pl-0 text-start font-semibold">Time</div>
-              <div className="text-end font-semibold">{paymentSettingsState.merchantCurrency}</div>
-              <div className="text-end font-semibold">Customer</div>
+              <div className="portrait:pl-2 portrait:sm:pl-0 text-start">Time</div>
+              <div className="text-end">{paymentSettingsState.merchantCurrency}</div>
+              <div className="text-end">Customer</div>
               {/* {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
               {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
               {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
@@ -426,7 +414,7 @@ const Payments = ({
               onClick={onClickTxn}
             >
               {/*---Time---*/}
-              <td className="bg-gra-800 portrait:pl-2 portrait:sm:pl-0 w-[28%]">
+              <td className="portrait:pl-2 portrait:sm:pl-0 w-[28%]">
                 {/*--- "to refund" ---*/}
                 {txn.toRefund && (
                   <div
@@ -447,13 +435,9 @@ const Payments = ({
                 </div>
               </td>
               {/*---currencyAmount---*/}
-              <td className="bg-gra-700 w-[35%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
-                {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
-              </td>
+              <td className="w-[35%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">{txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}</td>
               {/*---Customer---*/}
-              <td className="bg-gra-800 w-[37%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
-                ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
-              </td>
+              <td className="w-[37%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</td>
 
               {/*---Online Options---*/}
               {/* {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
@@ -488,10 +472,7 @@ const Payments = ({
             </tr>
           ))}
           {fillerRows?.map((txn: any, index: number) => (
-            <tr
-              className={`flex-none w-full portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)] landscape:lg:h-[calc((100vh-140px-32px)/6)]`}
-              key={index}
-            ></tr>
+            <tr className={`flex-none w-full portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)] landscape:lg:h-[calc((100vh-140px-32px)/6)]`} key={index}></tr>
           ))}
         </table>
         {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textLg">No payments</div>}
@@ -568,9 +549,7 @@ const Payments = ({
               <div className="h-[25%] flex items-center justify-between">
                 <div className="textLg font-medium">Date</div>
                 <div
-                  className={`${
-                    searchDate && searchDate.to ? "" : " text-dualGray dark:text-[#53565C] font-medium italic"
-                  } inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
+                  className={`${searchDate && searchDate.to ? "" : " text-dualGray dark:text-[#53565C] font-medium italic"} inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
                   onClick={() => setShowCalendar(!showCalendar)}
                 >
                   {searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "select dates"}

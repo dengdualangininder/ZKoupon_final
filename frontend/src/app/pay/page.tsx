@@ -287,24 +287,26 @@ const Pay = () => {
   };
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col justify-center items-center">
-      {/*--- WALLET BOX ---*/}
-      <div className={`${USDCBalance ? "" : "animate-pulse"} px-4 h-[64px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-gray-200`}>
+    <div className="w-full h-[100dvh] flex flex-col justify-center items-center bg-white dark:bg-white text-black dark:text-black">
+      {/*--- WALLET ---*/}
+      <div className="px-4 h-[100px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-[#0376C9] text-white">
         {USDCBalance ? (
-          <div className="w-full flex justify-between">
-            <div className="flex items-center">
-              <FontAwesomeIcon icon={faWallet} className="text-gray-500 text-2xl mr-1" /> Wallet
-            </div>
-            <div className="flex">
+          <div className="w-full flex flex-col">
+            {/*--- 1st row ---*/}
+            <div className="w-full flex items-center justify-between">
+              {/*--- icon + wallet ---*/}
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faWallet} className="text-white text-2xl mr-2" />
+                <div className="text-2xl">Wallet</div>
+              </div>
               {/*--- usdc balance ---*/}
-              <div className="flex items-center relative">
-                <div className="hidden relative mr-[2px] w-[20px] h-[20px]">
-                  <Image src="/usdc.svg" alt="usdc" fill />
-                </div>
-                <div>
-                  {USDCBalance} USDC &#40;{currency2symbol[urlParams.merchantCurrency!]}
-                  {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
-                </div>
+              <div className="text-2xl">USDC {USDCBalance}</div>
+            </div>
+            {/*--- 2nd row, fiat balance ---*/}
+            <div className="flex flex-col">
+              <div className="text-end text-xl">
+                &#40;{currency2symbol[urlParams.merchantCurrency!]}
+                {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
               </div>
             </div>
           </div>
@@ -312,16 +314,7 @@ const Pay = () => {
           <div className="text-center">Connecting...</div>
         )}
       </div>
-      <div className="w-[340px] h-full flex flex-col">
-        {/* <div className="w-full h-[6%] flex items-center justify-center border-b-2 border-gray-300">
-        <a href={`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}`} target="_blank" className="flex items-center">
-          <div className="relative h-[36px] w-[80px] mr-2">
-            <Image src="/logo.svg" alt="logo" fill />
-          </div>
-        </a>
-        <div className="text-sm leading-tight font-medium">giving you better FX rates than any bank</div>
-      </div> */}
-
+      <div className="w-[356px] h-full flex flex-col">
         {USDCBalance && (
           <div className="h-full">
             {Number(USDCBalance) > 0.01 ? (
@@ -369,8 +362,8 @@ const Pay = () => {
               </div>
             ) : (
               <div className="mt-6 w-full h-full flex flex-col items-center text-2xl leading-relaxed space-y-4">
-                <p>You need USDC (on the Polygon network) in your MetaMask for payment.</p>
-                <p>A common way to get USDC into your MetaMask is to send USDC from a cryptocurrency exchange (e.g., Coinbase) to your Metamask via the Polygon network.</p>
+                <p>You need native USDC on the Polygon network for payment.</p>
+                <p>A common way to achieve this is to get USDC from a cryptocurrency exchange (e.g., Coinbase), and then send it to your Metamask (using the Polygon network).</p>
               </div>
             )}
           </div>

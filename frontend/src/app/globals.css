@@ -208,6 +208,10 @@
     @apply w-[91%] portrait:sm:w-[540px] landscape:lg:w-[540px] portrait:lg:w-[600px] landscape:xl:w-[600px] landscape:xl:desktop:w-[440px];
   }
 
+  .bannerWidth {
+    @apply w-[92%] portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[620px] landscape:xl:w-[620px] landscape:xl:desktop:w-[500px] landscape:xl:desktop:translate-x-[16px];
+  }
+
   .paymentsIconContainer {
     @apply w-[44px] h-[44px] portrait:sm:w-[56px] portrait:sm:h-[56px] landscape:lg:w-[56px] landscape:lg:h-[56px] landscape:xl:desktop:w-[48px] landscape:xl:desktop:h-[48px] bg-light1 dark:bg-darkButton shadow-[0px_1px_10px_0px_rgb(0,0,0,0.08)] rounded-full flex items-center justify-center desktop:hover:brightness-[1.2] active:brightness-[1.2] cursor-pointer;
   }
@@ -217,7 +221,7 @@
   }
 
   .paymentsHeaderFont {
-    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg;
+    @apply font-semibold text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg;
   }
 
   .modalContainer {
