@@ -16,11 +16,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
 // components
 import Inperson from "./_components/Inperson";
-import Online from "./_components/Online";
+import ErrorModal from "../app/_components/modals/ErrorModal";
 // constants
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
+import { getLocalDateWords, getLocalTime, getLocalDate } from "../app/_components/Payments";
 // types
 import { Rates } from "@/utils/types";
 
@@ -35,6 +36,7 @@ const Pay = () => {
   const urlParams = { paymentType: paymentType, merchantName: merchantName, merchantCurrency: merchantCurrency, merchantEvmAddress: merchantEvmAddress };
 
   //inperson states
+  const [date, setDate] = useState<any>();
   const [currencyAmount, setCurrencyAmount] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [selectedToken, setSelectedToken] = useState("USDC");
@@ -42,9 +44,7 @@ const Pay = () => {
   const [tokenAmount, setTokenAmount] = useState("0");
   const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
-  const [payModal, setPayModal] = useState(false);
-  const [payModalMsg, setPayModalMsg] = useState("Sending transaction...");
-  const [isSendingComplete, setIsSendingComplete] = useState(false);
+  const [isSending, setIsSending] = useState("initial"); // initial | sending | complete
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   // pay form states
@@ -201,18 +201,21 @@ const Pay = () => {
   };
 
   const send = async () => {
-    setPayModal(true);
+    setIsSending("sending");
 
     if (isNaN(Number(currencyAmount)) || Number(currencyAmount) <= 0) {
-      setPayModal(false);
+      setIsSending("initial");
       setErrorModal(true);
       setErrorMsg("Please enter a valid payment amount");
       return;
     }
 
+    const dateTemp = new Date();
+    setDate(dateTemp);
+
     // define txn object, except "customerAddress" and "txnHash"
     let txn = {
-      date: new Date(),
+      date: dateTemp,
       merchantEvmAddress: urlParams.merchantEvmAddress,
       currencyAmount: Number(currencyAmount),
       currencyAmountAfterCashBack: Number((Number(currencyAmount) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency!])),
@@ -240,8 +243,7 @@ const Pay = () => {
       const txReceipt = await txResponse.wait();
       txn.txnHash = txReceipt.hash;
     } catch (err: any) {
-      console.log(err);
-      setPayModal(false);
+      setIsSending("initial");
       setErrorModal(true);
       if (err.reason == "ERC20: transfer amount exceeds balance") {
         setErrorMsg("Payment amount exceeds your wallet balance");
@@ -250,10 +252,12 @@ const Pay = () => {
       } else {
         setErrorMsg("unknown error");
       }
+      console.log("Error:", err);
+
       return;
     }
 
-    // call payInperson API, which saves db and pushes notification
+    // call payInperson API, which saves txn to db and pushes notification
     try {
       const res = await fetch("/api/payInperson", {
         method: "POST",
@@ -261,35 +265,35 @@ const Pay = () => {
         headers: { "content-type": "application/json" },
       });
       const data = await res.json();
-      console.log(data);
+      console.log("payInperson API response:", data);
       if (data == "success") {
         console.log("saved and pushed");
-        setIsSendingComplete(true); // show "Payment Complete" page on customer side
+        setIsSending("complete"); // show "Payment Complete" page on customer side
       } else if (data == "not verified") {
-        setPayModal(false);
+        setIsSending("initial");
         setErrorModal(true);
         setErrorMsg("A transaction was sent. But, the payment could not be verified.");
       } else if (data == "not saved") {
-        setPayModal(false);
+        setIsSending("complete");
         setErrorModal(true);
-        setErrorMsg("Payment was successful. But, the payment data was not saved to the database.");
+        setErrorMsg("Payment was successful. But, the payment was not saved to the database.");
       } else if (data == "not pushed") {
-        setPayModal(false);
+        setIsSending("complete");
         setErrorModal(true);
         setErrorMsg("Payment was successful. But, the payment did not trigger a notification to the merchant.");
-        setIsSendingComplete(true); // show "Payment Complete" page on customer side ONLY if txn saved to db
+        setIsSending("complete"); // show "Payment Complete" page on customer side ONLY if txn saved to db
       }
     } catch (err) {
-      setPayModal(false);
+      setIsSending("initial");
       setErrorModal(true);
-      setErrorMsg("Payment was successful. But, the payment data could not be sent to the server.");
+      setErrorMsg("A payment was made. But, the payment data could not be verified.");
     }
   };
 
   return (
     <div className="w-full h-[100dvh] flex flex-col justify-center items-center bg-white dark:bg-white text-black dark:text-black">
       {/*--- WALLET ---*/}
-      <div className="px-4 h-[100px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-[#0376C9] text-white">
+      <div className="px-4 h-[90px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-[#0376C9] text-white">
         {USDCBalance ? (
           <div className="w-full flex flex-col">
             {/*--- 1st row ---*/}
@@ -314,12 +318,15 @@ const Pay = () => {
           <div className="text-center">Connecting...</div>
         )}
       </div>
-      <div className="w-[356px] h-full flex flex-col">
+
+      {/*--- dynamic content ---*/}
+      <div className="flex-1 w-[356px] flex flex-col">
+        {/*--- payment interface ---*/}
         {USDCBalance && (
           <div className="h-full">
             {Number(USDCBalance) > 0.01 ? (
               <div className="h-full">
-                {paymentType == "inperson" && (
+                {isSending == "initial" && (
                   <Inperson
                     urlParams={urlParams}
                     currencyAmount={currencyAmount}
@@ -339,25 +346,52 @@ const Pay = () => {
                     setTokenAmount={setTokenAmount}
                   />
                 )}
-                {paymentType == "online" && (
-                  <Online
-                    urlParams={urlParams}
-                    currencyAmount={currencyAmount}
-                    setCurrencyAmount={setCurrencyAmount}
-                    showNetwork={showNetwork}
-                    setShowNetwork={setShowNetwork}
-                    merchantNetworks={merchantNetworks}
-                    selectedNetwork={selectedNetwork}
-                    selectedToken={selectedToken}
-                    onClickNetwork={onClickNetwork}
-                    rates={rates}
-                    isGettingBalance={isGettingBalance}
-                    USDCBalance={USDCBalance}
-                    send={send}
-                    fxSavings={fxSavings}
-                    tokenAmount={tokenAmount}
-                    setTokenAmount={setTokenAmount}
-                  />
+                {isSending == "sending" && (
+                  <div className="h-full flex flex-col justify-center items-center">
+                    <div className="w-full h-[50px] animate-spin">
+                      <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+                    </div>
+                    <div className="mt-4 mb-20 text-xl font-medium">Sending transaction...</div>
+                  </div>
+                )}
+                {isSending == "complete" && (
+                  <div className="w-full h-full max-h-[480px] flex flex-col items-center justify-between">
+                    <div></div>
+                    {/*---payment completed! ---*/}
+                    <div className="w-full flex flex-col items-center relative">
+                      <Lottie animationData={circleCheck} loop={true} className="w-[70px] h-[70px]" />
+                      <div className="mt-3 text-3xl font-medium">Payment Completed!</div>
+                    </div>
+                    {/*---details---*/}
+                    <div className="w-[340px] flex flex-col items-center text-xl space-y-4">
+                      <div className="w-full">
+                        <span className="font-semibold">Time</span>: {getLocalDateWords(date.toString())} | {getLocalTime(date.toString()).time} {getLocalTime(date.toString()).ampm}
+                      </div>
+                      <div className="w-full">
+                        <span className="font-semibold">To</span>: {urlParams.merchantName}
+                      </div>
+                      <div className="w-full">
+                        <span className="font-semibold">Payment Amount:</span>: {currency2symbol[urlParams.merchantCurrency!]}
+                        {currencyAmount}
+                      </div>
+                      <div className="w-full">
+                        <span className="font-semibold">USDC Sent</span>: {tokenAmount}
+                      </div>
+                      <div className="w-full">
+                        <span className="font-semibold">Total Savings</span>: {2 + Number(fxSavings)}%
+                      </div>
+                    </div>
+
+                    {/*---close---*/}
+                    <div
+                      onClick={() => {
+                        location.reload();
+                      }}
+                      className="w-full text-xl font-semibold link text-end"
+                    >
+                      Make another payment &#129122;
+                    </div>
+                  </div>
                 )}
               </div>
             ) : (
@@ -372,68 +406,18 @@ const Pay = () => {
 
       {/*---error modal---*/}
       {errorModal && (
-        <div className="">
-          <div className="modal">
+        <div>
+          <div className="modal dark:bg-white dark:text-black">
             {/*---content---*/}
-            <div className="grow flex flex-col justify-center space-y-8">
-              <div className="text-3xl text-center font-medium">Error</div>
-              <div className="text-center">{errorMsg}</div>
+            <div className="modalContent">{errorMsg}</div>
+            {/*---button---*/}
+            <div className="modalButtonContainer">
+              <button onClick={() => setErrorModal(false)} className="buttonSecondary">
+                Dismiss
+              </button>
             </div>
-            {/*---close button---*/}
-            <button onClick={() => setErrorModal(false)} className="buttonSecondary">
-              DISMISS
-            </button>
           </div>
-          <div className="modalBlackout"></div>
-        </div>
-      )}
-
-      {/*---pay modal---*/}
-      {payModal && (
-        <div className="">
-          <div className="modal h-[480px]">
-            {isSendingComplete ? (
-              <div className="w-full h-full flex flex-col items-center justify-between">
-                {/*---store name---*/}
-                <div className="w-full flex flex-col items-center relative">
-                  <Lottie animationData={circleCheck} loop={true} className="w-[60px] h-[60px]" />
-                  <div className="mt-4 text-xl font-medium">Payment successfully sent to</div>
-                  <div className="text-xl font-bold">{urlParams.merchantName}</div>
-                </div>
-                {/*---amount and time---*/}
-                <div className="flex flex-col items-center">
-                  <div className="text-5xl font-medium flex items-center">
-                    {currency2symbol[urlParams.merchantCurrency!]}
-                    {currencyAmount}
-                  </div>
-                </div>
-                <div className="mt-4 text-2xl font-medium">{new Date().toLocaleString([], { timeStyle: "short" })}</div>
-
-                {/*---close---*/}
-                <button
-                  onPointerDown={(e) => {
-                    e.stopPropagation();
-                  }}
-                  onClick={(e) => {
-                    setPayModal(false);
-                    setIsSendingComplete(false);
-                    location.reload(); // TODO: leaving a txn receipt on page isntead of resetting
-                  }}
-                  className="buttonSecondary"
-                >
-                  CLOSE
-                </button>
-              </div>
-            ) : (
-              <div className="w-full h-full px-6 flex flex-col justify-center items-center">
-                <div className="w-full h-[50px] animate-spin">
-                  <Image src="/loadingCircleBlack.svg" alt="loading" fill />
-                </div>
-                <div className="mt-4 text-center text-xl leading-relaxed">{payModalMsg}</div>
-              </div>
-            )}
-          </div>
-          <div className="opacity-70 fixed inset-0 bg-black"></div>
+          <div className="modalBlackout" onClick={() => setErrorModal(false)}></div>
         </div>
       )}
     </div>
