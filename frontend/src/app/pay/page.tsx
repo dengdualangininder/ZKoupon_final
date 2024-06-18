@@ -44,7 +44,7 @@ const Pay = () => {
   const [tokenAmount, setTokenAmount] = useState("0");
   const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
-  const [isSending, setIsSending] = useState("complete"); // initial | sending | complete
+  const [isSending, setIsSending] = useState("initial"); // initial | sending | complete
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   // pay form states
