@@ -44,7 +44,7 @@ const Pay = () => {
   const [tokenAmount, setTokenAmount] = useState("0");
   const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
-  const [isSending, setIsSending] = useState("initial"); // initial | sending | complete
+  const [isSending, setIsSending] = useState("complete"); // initial | sending | complete
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   // pay form states
@@ -367,10 +367,9 @@ const Pay = () => {
       )}
 
       {isSending == "complete" && (
-        <div className="w-full h-full max-h-[500px] flex flex-col items-center justify-between">
-          <div></div>
+        <div className="w-full h-full max-h-[600px] flex flex-col items-center justify-between">
           {/*---payment completed! ---*/}
-          <div className="w-full flex flex-col items-center relative">
+          <div className="mt-12 w-full flex flex-col items-center relative">
             <Lottie animationData={circleCheck} loop={true} className="w-[70px] h-[70px]" />
             <div className="mt-3 text-3xl font-medium">Payment Completed!</div>
           </div>
@@ -394,15 +393,7 @@ const Pay = () => {
             </div>
           </div>
 
-          {/*---close---*/}
-          <div
-            onClick={() => {
-              location.reload();
-            }}
-            className="w-full text-xl font-semibold link text-end"
-          >
-            Make another payment &#129122;
-          </div>
+          <div className="mt-16 mb-8">You may close this window.</div>
         </div>
       )}
 
