@@ -47,7 +47,7 @@ const Inperson = ({
   const [digits, setDigits] = useState(5);
 
   return (
-    <div className="w-full h-full max-h-[540px] flex flex-col items-center justify-between">
+    <div className="w-[356px] h-full max-h-[540px] flex flex-col items-center justify-between">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
@@ -57,11 +57,12 @@ const Inperson = ({
       </div>
 
       {/*--- AMOUNT BOX ---*/}
-      <div className="flex justify-center items-center relative">
+      <div className="mb-4 flex justify-center items-center relative">
         <div className="w-full h-[2px] bg-slate-300 absolute top-[calc(100%)]"></div>
-        <div className="absolute right-[calc(100%+8px)] text-4xl">{currency2symbol[urlParams.merchantCurrency]}</div>
+        <div className="absolute right-[calc(100%+4px)] text-5xl">{currency2symbol[urlParams.merchantCurrency]}</div>
         <input
           id="payCurrencyAmount"
+          className={`text-5xl font-medium p-0 text-center focus:placeholder:text-transparent bg-white outline-none focus:outline-none focus:ring-0 border-none focus:border-none placeholder:text-slate-400`}
           onChange={(e) => {
             setCurrencyAmount(e.currentTarget.value);
             setTokenAmount(((Number(e.currentTarget.value) / rates.usdcToLocal) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]));
@@ -73,7 +74,6 @@ const Inperson = ({
           inputMode="decimal"
           value={currencyAmount}
           placeholder="0.00"
-          className={`outline-none focus:outline-none focus:ring-0 border-none focus:border-none text-4xl text-center focus:placeholder:text-transparent bg-white placeholder:text-slate-400`}
           style={{ width: `${digits * 28}px` }}
         ></input>
       </div>
@@ -117,12 +117,12 @@ const Inperson = ({
                 <div>FX Savings</div>
                 <div className=" text-green-500 text-lg">{fxSavings}%</div>
                 {/*--- tooltip ---*/}
-                <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start text-gray-800">
+                <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start dark:bg:slate-700 dark:text-white">
                   <p>
                     Your Rate: 1 {selectedToken} &rarr; {rates.usdcToLocal} {urlParams.merchantCurrency}
                   </p>
                   <p>
-                    Bank Rate: 1 USD &rarr; {rates.usdToLocal} {urlParams.merchantCurrency}
+                    Wise Rate: 1 USD &rarr; {rates.usdToLocal} {urlParams.merchantCurrency}
                   </p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ const Inperson = ({
               <p>Instant Cashback</p>
               <p className=" text-green-500 text-lg">2%</p>
               {/*--- tooltip ---*/}
-              <div className="w-full bottom-[calc(100%+2px)] tooltip text-start text-gray-800">The value of USDC sent is 2% less than the value of the payment amount</div>
+              <div className="w-full left-0 bottom-[calc(100%+2px)] tooltip text-start dark:bg:slate-700 dark:text-white">The value of USDC sent is 2% less than the value of the {urlParams.merchantCurrency} amount entered</div>
             </div>
             <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-slate-400" />
           </div>

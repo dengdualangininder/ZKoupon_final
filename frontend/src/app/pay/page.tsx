@@ -36,7 +36,7 @@ const Pay = () => {
   const urlParams = { paymentType: paymentType, merchantName: merchantName, merchantCurrency: merchantCurrency, merchantEvmAddress: merchantEvmAddress };
 
   //inperson states
-  const [date, setDate] = useState<any>();
+  const [date, setDate] = useState<any>(new Date());
   const [currencyAmount, setCurrencyAmount] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [selectedToken, setSelectedToken] = useState("USDC");
@@ -291,118 +291,120 @@ const Pay = () => {
   };
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col justify-center items-center bg-white dark:bg-white text-black dark:text-black">
-      {/*--- WALLET ---*/}
-      <div className="px-4 h-[90px] w-full flex items-center justify-center text-lg font-medium leading-snug bg-[#0376C9] text-white">
-        {USDCBalance ? (
-          <div className="w-full flex flex-col">
-            {/*--- 1st row ---*/}
-            <div className="w-full flex items-center justify-between">
-              {/*--- icon + wallet ---*/}
-              <div className="flex items-center">
-                <FontAwesomeIcon icon={faWallet} className="text-white text-2xl mr-2" />
-                <div className="text-2xl">Wallet</div>
-              </div>
-              {/*--- usdc balance ---*/}
-              <div className="text-2xl">USDC {USDCBalance}</div>
-            </div>
-            {/*--- 2nd row, fiat balance ---*/}
-            <div className="flex flex-col">
-              <div className="text-end text-xl">
-                &#40;{currency2symbol[urlParams.merchantCurrency!]}
-                {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center">Connecting...</div>
-        )}
-      </div>
-
+    <div className="w-full h-[100dvh] bg-white dark:bg-white text-black dark:text-black">
       {/*--- dynamic content ---*/}
-      <div className="flex-1 w-[356px] flex flex-col">
-        {/*--- payment interface ---*/}
-        {USDCBalance && (
-          <div className="h-full">
-            {Number(USDCBalance) > 0.01 ? (
-              <div className="h-full">
-                {isSending == "initial" && (
-                  <Inperson
-                    urlParams={urlParams}
-                    currencyAmount={currencyAmount}
-                    setCurrencyAmount={setCurrencyAmount}
-                    showNetwork={showNetwork}
-                    setShowNetwork={setShowNetwork}
-                    merchantNetworks={merchantNetworks}
-                    selectedNetwork={selectedNetwork}
-                    selectedToken={selectedToken}
-                    onClickNetwork={onClickNetwork}
-                    rates={rates}
-                    isGettingBalance={isGettingBalance}
-                    USDCBalance={USDCBalance}
-                    send={send}
-                    fxSavings={fxSavings}
-                    tokenAmount={tokenAmount}
-                    setTokenAmount={setTokenAmount}
-                  />
-                )}
-                {isSending == "sending" && (
-                  <div className="h-full flex flex-col justify-center items-center">
-                    <div className="w-full h-[50px] animate-spin">
-                      <Image src="/loadingCircleBlack.svg" alt="loading" fill />
-                    </div>
-                    <div className="mt-4 mb-20 text-xl font-medium">Sending transaction...</div>
+      {isSending == "initial" && (
+        <div className="w-full h-full flex flex-col items-center">
+          {/*--- WALLET ---*/}
+          <div className="px-4 h-[90px] w-full flex items-center justify-center border-b border-slate-400 bg-slate-300">
+            {USDCBalance ? (
+              <div className="w-full flex flex-col">
+                {/*--- 1st row ---*/}
+                <div className="w-full flex items-center justify-between">
+                  {/*--- icon + wallet ---*/}
+                  <div className="flex items-center">
+                    <FontAwesomeIcon icon={faWallet} className="text-slate-500 text-2xl mr-2" />
+                    <div className="text-2xl font-medium">Wallet</div>
                   </div>
-                )}
-                {isSending == "complete" && (
-                  <div className="w-full h-full max-h-[480px] flex flex-col items-center justify-between">
-                    <div></div>
-                    {/*---payment completed! ---*/}
-                    <div className="w-full flex flex-col items-center relative">
-                      <Lottie animationData={circleCheck} loop={true} className="w-[70px] h-[70px]" />
-                      <div className="mt-3 text-3xl font-medium">Payment Completed!</div>
+                  {/*--- usdc balance ---*/}
+                  <div className="flex items-center text-2xl font-medium">
+                    <div className="relative w-[22px] h-[22px] mr-0.5">
+                      <Image src="/usdc.svg" alt="usdc" fill />
                     </div>
-                    {/*---details---*/}
-                    <div className="w-[340px] flex flex-col items-center text-xl space-y-4">
-                      <div className="w-full">
-                        <span className="font-semibold">Time</span>: {getLocalDateWords(date.toString())} | {getLocalTime(date.toString()).time} {getLocalTime(date.toString()).ampm}
-                      </div>
-                      <div className="w-full">
-                        <span className="font-semibold">To</span>: {urlParams.merchantName}
-                      </div>
-                      <div className="w-full">
-                        <span className="font-semibold">Payment Amount:</span>: {currency2symbol[urlParams.merchantCurrency!]}
-                        {currencyAmount}
-                      </div>
-                      <div className="w-full">
-                        <span className="font-semibold">USDC Sent</span>: {tokenAmount}
-                      </div>
-                      <div className="w-full">
-                        <span className="font-semibold">Total Savings</span>: {2 + Number(fxSavings)}%
-                      </div>
-                    </div>
-
-                    {/*---close---*/}
-                    <div
-                      onClick={() => {
-                        location.reload();
-                      }}
-                      className="w-full text-xl font-semibold link text-end"
-                    >
-                      Make another payment &#129122;
-                    </div>
+                    <div className="mr-2">USDC</div>
+                    <div>{USDCBalance}</div>
                   </div>
-                )}
+                </div>
+                {/*--- 2nd row, fiat balance ---*/}
+                <div className="flex flex-col">
+                  <div className="text-end text-xl leading-none">
+                    &#40;{currency2symbol[urlParams.merchantCurrency!]}
+                    {(Number(USDCBalance) * rates.usdcToLocal).toFixed(currency2decimal[urlParams.merchantCurrency!])}&#41;
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="mt-6 w-full h-full flex flex-col items-center text-2xl leading-relaxed space-y-4">
-                <p>You need native USDC on the Polygon network for payment.</p>
-                <p>A common way to achieve this is to get USDC from a cryptocurrency exchange (e.g., Coinbase), and then send it to your Metamask (using the Polygon network).</p>
-              </div>
+              <div className="text-center text-xl">Connecting...</div>
             )}
           </div>
-        )}
-      </div>
+          {USDCBalance && Number(USDCBalance) >= 0.01 && (
+            <Inperson
+              urlParams={urlParams}
+              currencyAmount={currencyAmount}
+              setCurrencyAmount={setCurrencyAmount}
+              showNetwork={showNetwork}
+              setShowNetwork={setShowNetwork}
+              merchantNetworks={merchantNetworks}
+              selectedNetwork={selectedNetwork}
+              selectedToken={selectedToken}
+              onClickNetwork={onClickNetwork}
+              rates={rates}
+              isGettingBalance={isGettingBalance}
+              USDCBalance={USDCBalance}
+              send={send}
+              fxSavings={fxSavings}
+              tokenAmount={tokenAmount}
+              setTokenAmount={setTokenAmount}
+            />
+          )}
+          {USDCBalance && Number(USDCBalance) < 0.01 && (
+            <div className="mt-6 w-full h-full flex flex-col items-center text-2xl leading-relaxed space-y-4">
+              <p>You need native USDC on the Polygon network for payment.</p>
+              <p>A common way to achieve this is to get USDC from a cryptocurrency exchange (e.g., Coinbase), and then send it to your Metamask (using the Polygon network).</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {isSending == "sending" && (
+        <div className="h-full flex flex-col justify-center items-center">
+          <div className="w-full h-[50px] animate-spin">
+            <Image src="/loadingCircleBlack.svg" alt="loading" fill />
+          </div>
+          <div className="mt-4 text-xl font-medium">Sending transaction...</div>
+          <div className="mt-2 mb-20 text-xl font-medium">Please don't close this window</div>
+        </div>
+      )}
+
+      {isSending == "complete" && (
+        <div className="w-full h-full max-h-[500px] flex flex-col items-center justify-between">
+          <div></div>
+          {/*---payment completed! ---*/}
+          <div className="w-full flex flex-col items-center relative">
+            <Lottie animationData={circleCheck} loop={true} className="w-[70px] h-[70px]" />
+            <div className="mt-3 text-3xl font-medium">Payment Completed!</div>
+          </div>
+          {/*---details---*/}
+          <div className="w-[340px] flex flex-col items-center text-xl space-y-4">
+            <div className="w-full">
+              <span className="font-semibold">Time</span>: {getLocalDateWords(date.toString())} | {getLocalTime(date.toString()).time} {getLocalTime(date.toString()).ampm}
+            </div>
+            <div className="w-full">
+              <span className="font-semibold">To</span>: {urlParams.merchantName}
+            </div>
+            <div className="w-full">
+              <span className="font-semibold">Payment Amount:</span>: {currency2symbol[urlParams.merchantCurrency!]}
+              {currencyAmount}
+            </div>
+            <div className="w-full">
+              <span className="font-semibold">USDC Sent</span>: {tokenAmount}
+            </div>
+            <div className="w-full">
+              <span className="font-semibold">Total Savings</span>: {2 + Number(fxSavings)}%
+            </div>
+          </div>
+
+          {/*---close---*/}
+          <div
+            onClick={() => {
+              location.reload();
+            }}
+            className="w-full text-xl font-semibold link text-end"
+          >
+            Make another payment &#129122;
+          </div>
+        </div>
+      )}
 
       {/*---error modal---*/}
       {errorModal && (
