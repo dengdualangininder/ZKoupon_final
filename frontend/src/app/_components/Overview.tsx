@@ -6,7 +6,7 @@ import { QRCodeSVG } from "qrcode.react";
 // import components
 import MockUI from "./MockUI";
 // import constants
-import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
+import { countryData, currencyList, merchantType2data } from "@/utils/constants";
 // import font awesome
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +15,8 @@ import { faShop } from "@fortawesome/free-solid-svg-icons";
 const Overview = () => {
   const [merchantName, setMerchantName] = useState("A Store in Europe");
   const [merchantCurrency, setMerchantCurrency] = useState("EUR");
-  const [merchantCountry, setMerchantCountry] = useState("Europe");
+  const [merchantCountry, setMerchantCountry] = useState("US");
+  const [cex, setCex] = useState("Coinbase");
   const [merchantWebsite, setMerchantWebsite] = useState("https://www.stablecoinmap.com");
   const [merchantPaymentType, setMerchantPaymentType] = useState("inperson");
   const [merchantBusinessType, setMerchantBusinessType] = useState("instore");
@@ -28,11 +29,7 @@ const Overview = () => {
     let merchantCountryTemp = countryCurrencyString.split(" (")[0];
     setMerchantCountry(merchantCountryTemp);
     setMerchantCurrency(countryCurrencyString.split(" (")[1].replace(")", ""));
-    setMerchantName(
-      `${merchantPaymentType === "inperson" ? "A Store in" : merchantType2data[merchantBusinessType]["merchantName"]} ${
-        merchantCountryTemp == "Euro countries" ? "Europe" : merchantCountryTemp
-      }`
-    );
+    setMerchantName(`${merchantPaymentType === "inperson" ? "A Store in" : merchantType2data[merchantBusinessType]["merchantName"]} ${merchantCountryTemp == "Euro countries" ? "Europe" : merchantCountryTemp}`);
   };
 
   const onClickMerchantType = (e: React.MouseEvent<HTMLElement>) => {
@@ -61,21 +58,32 @@ const Overview = () => {
   };
 
   return (
-    <div id="overviewEl" className="px-2.5 xs:px-4 lg:px-0 py-8 md:py-12 text-gray-800">
-      {/*---TITLE + BUSINESS TYPES---*/}
-      <div data-show="yes" className="flex flex-col items-center opacity-0 transition-all duration-1000">
-        {/*---title---*/}
-        <div className="font-extrabold text-3xl xs:text-5xl text-blue-700 xs:mb-1">How It Works</div>
-        {/*---your currency + your business type---*/}
-        <div className="flex flex-col items-center">
-          <div className="mt-1 text-lg xs:text-base">Select a currency and business type</div>
-          <div className="mt-1 flex flex-col items-center p-3 border border-gray-500 rounded-md">
+    <div id="overviewEl" className="w-full flex flex-col items-center py-16">
+      {/*--- header + select currency ---*/}
+      <div data-show="yes" className="opacity-0 transition-all duration-1000">
+        {/*--- header ---*/}
+        <div className="homepageHeaderFont text-center">How It Works</div>
+        {/*--- select currency ---*/}
+        <div className="mt-12 sm:mt-8 w-full flex flex-col sm:flex-row justify-center items-center">
+          <label className="sm:mr-3 text-xl sm:text-lg font-medium">Select your currency: </label>
+          <select
+            className="mt-4 sm:mt-0 h-[44px] sm:h-[36px] font-medium pr-10 text-xl sm:text-base leading-none border bg-dark6 border-slate-600 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-colors duration-500 rounded-md"
+            onChange={async (e) => {
+              const merchantCurrencyTemp = e.target.value;
+              setMerchantCurrency(merchantCurrencyTemp);
+              // setCex(cexTemp);
+            }}
+            value={merchantCurrency}
+          >
+            {currencyList.map((i, index) => (
+              <option key={index}>{i}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* <div className="mt-1 flex flex-col items-center p-3 border border-gray-500 rounded-md">
             <div className="flex justify-center items-center px-4 py-2 border border-gray-500 rounded-[4px]">
-              <select
-                id="overviewCountryCurrency"
-                className="px-1 text-lg lg:text-base border-gray-300 rounded-lg outline-none cursor-pointer border-transparent"
-                onChange={onChangeCountryCurrency}
-              >
+              <select id="overviewCountryCurrency" className="px-1 text-lg lg:text-base border-gray-300 rounded-lg outline-none cursor-pointer border-transparent" onChange={onChangeCountryCurrency}>
                 {countryCurrencyList.map((i, index) => (
                   <option key={index} className="bg-white">
                     {i}
@@ -111,295 +119,176 @@ const Overview = () => {
                     <FontAwesomeIcon icon={merchantType2data[i].fa} className="text-xl text-blue-500 pointer-events-none" />
                   </div>
                   <div className="text-lg lg:text-base leading-none text-center pointer-events-none">{merchantType2data[i].text}</div>
-                  <div className="text-sm leading-none pointer-events-none text-center tracking-tight">
-                    {merchantType2data[i].subtext ? `(${merchantType2data[i].subtext})` : ""}
-                  </div>
+                  <div className="text-sm leading-none pointer-events-none text-center tracking-tight">{merchantType2data[i].subtext ? `(${merchantType2data[i].subtext})` : ""}</div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </div> */}
       </div>
 
-      {/*---PAYMENT FLOW CHART---*/}
-      <div data-show="slide" className="mt-6 flex flex-col items-center lg:flex-row lg:items-start lg:justify-center space-y-8 lg:space-y-0 lg:space-x-12">
+      {/*--- STEPS ---*/}
+      <div
+        data-show="slide"
+        className="mt-16 sm:mt-12 sm:w-[85%] sm:min-w-[588px] max-w-[700px] xl:w-full xl:max-w-[1240px] grid grid-cols-1 sm:grid-cols-[280px_280px] xl:grid-cols-[222px_280px_280px_280px] justify-center sm:justify-between gap-y-16 sm:gap-y-10 xl:gap-10"
+      >
         {/*---step 1---*/}
-        <div data-show="step" className="w-[356px] lg:w-[198px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out">
+        <div data-show="step" className="w-[350px] sm:w-[222px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4">
           {/*---title---*/}
-          <div className="w-full flex items-center lg:justify-center text-blue-700">
+          <div className="w-full flex items-center">
             <div className="overviewNumber">1</div>
-            <div className={`${merchantPaymentType === "inperson" ? "lg:w-[116px]" : "lg:w-[116px]"} overviewStepTitle`}>
-              {merchantPaymentType === "inperson" ? "You display a QR code" : "You display a payment link"}
-            </div>
+            <div className={` overviewStepTitle`}>You display a QR code</div>
           </div>
-          {/*---QR Code---*/}
-          {merchantPaymentType === "inperson" && (
-            <div className="mt-1 lg:mt-3 relative">
-              <div className="relative w-[198px] h-[280px]">
-                <Image src="/placardCoinbaseCashback.svg" alt="placard" fill />
-              </div>
-              <QRCodeSVG
-                xmlns="http://www.w3.org/2000/svg"
-                size={100}
-                bgColor={"#ffffff"}
-                fgColor={"#000000"}
-                level={"L"}
-                value={`https://metamask.app.link/dapp/www.lingpay.io/${merchantPaymentType}/${merchantCurrency}&&My%20Store%20in%20Europe&&0x585d271CfD119ead6BdfbC0F7d104572E3D3824D&&USDC,USDT&&Polygon,BNB,Optimism,Arbitrum,Avalanche`}
-                className="absolute top-[88px] left-[49px]"
-              />
-            </div>
-          )}
+          {/*--- image ---*/}
+          <div className="relative w-[180px] h-[260px] sm:h-[368px]">
+            <Image src={"/placardNoCashback.png"} alt="placardNoCashback" fill style={{ objectFit: "contain" }} />
+          </div>
           {/*---bullet points---*/}
-          <div className="w-full mt-2 overviewStepBody">
-            <div className="flex">
-              <div className="mr-1">&bull;</div>
-              <div className="">
-                <span onClick={() => router.push("/signup")} className="link">
-                  create one
-                </span>{" "}
-                in just 5 minutes!
-              </div>
-            </div>
-            {merchantPaymentType === "online" && (
-              <div className="space-y-2 lg:space-y-1">
-                <div className="flex">
-                  <div className="mr-1">&bull;</div>
-                  <div className="">Use the payment link to create a "Pay with MetaMask" button on your website</div>
-                </div>
-                <div className="flex">
-                  <div className="mr-1">&bull;</div>
-                  <div className="">Or, put the payment link on your online profile</div>
-                </div>
-                <div className="flex">
-                  <div className="mr-1">&bull;</div>
-                  <div className="">Or, display a QR code on any online medium</div>
-                </div>
-              </div>
-            )}
+          <div className="overviewBulletPoints">
+            You receive the QR code after setting up (
+            <span className="linkDark" onClick={() => router.push("/app")}>
+              set up in 1 minute
+            </span>
+            )
           </div>
         </div>
 
         {/*---Step 2---*/}
-        <div data-show="step" className="w-[356px] lg:w-[260px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-200">
+        <div data-show="step" className="w-[350px] sm:w-[280px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-200">
           {/*---title---*/}
-          <div className="w-full flex items-center lg:justify-center text-blue-700">
+          <div className="w-full flex items-center">
             <div className="overviewNumber">2</div>
-            <div className={`${merchantPaymentType === "inperson" ? "lg:w-[136px]" : "lg:w-[136px]"} overviewStepTitle`}>
-              {merchantPaymentType === "inperson" ? "Customer scans and pays" : "Customer clicks link and pays"}
-            </div>
+            <div className="overviewStepTitle">Customer scans and pays with MetaMask</div>
           </div>
-          {/*---mock UI---*/}
-          <div className="mt-3">
-            <MockUI
-              {...{
-                merchantName,
-                merchantCurrency,
-                merchantPaymentType,
-                merchantBusinessType,
-                merchantWebsite,
-                merchantFields,
-              }}
-            />
+          {/*--- image ---*/}
+          <div className="relative w-full h-[368px]">
+            <Image src={"/phonePay.png"} alt="phonePay" fill style={{ objectFit: "contain" }} />
           </div>
           {/*---bullet points---*/}
-          <div className="mt-2 overviewStepBody">
-            {["hotels", "taxis", "tours"].includes(merchantBusinessType) && (
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">
-                  customer looks up <span className="font-bold">available dates</span>, <span className="font-bold">item names</span>, and <span className="font-bold">prices</span>{" "}
-                  on your official website
-                </div>
-              </div>
-            )}
-            {["onlinephysical", "onlinedigital", "tickets", "gigs", "creators"].includes(merchantBusinessType) && (
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">
-                  customer looks up <span className="font-bold">item names</span> and <span className="font-bold">prices</span> on your official website
-                </div>
-              </div>
-            )}
-            {["donations"].includes(merchantBusinessType) && (
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">supporter writes a message (optional)</div>
-              </div>
-            )}
-            <div className="flex">
-              <div className="mr-1">&bull;</div>
+          <div className="overviewBulletPoints">
+            <div className="flex relative">
+              <div className="mr-2.5">1.</div>
               <div className="">
-                {merchantBusinessType === "donations" ? "supporter" : "customer"} enters <span className="font-bold">amount of {merchantCurrency}</span> for{" "}
-                {merchantBusinessType === "donations" ? "donation" : "payment"} and clicks "Send"
+                When the customer scans your QR code, their{" "}
+                <span className="group">
+                  <span className="linkDark">
+                    MetaMask app<sup>?</sup>
+                  </span>
+                  <div className="w-full bottom-[calc(100%+4px)] left-0 overviewTooltip">MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.</div>
+                </span>{" "}
+                will open
               </div>
             </div>
             <div className="flex relative">
-              <div className="mr-1">&bull;</div>
-              <div className="w-full">
-                {merchantCurrency == "USD" ? (
-                  <div className="">
-                    equal amount of{" "}
-                    <span className="group">
-                      <span className="link font-bold">USDC tokens</span>
-                      <div className="invisible group-hover:visible absolute bottom-[20px] px-3 py-2 bg-gray-100 border border-gray-500 rounded-[4px]">
-                        USDC is a USD stablecoin issued by Circle. 1 USDC is backed by 1 USD deposited in various U.S. banks (audited by Grant Thornton).
-                      </div>
-                    </span>
-                  </div>
-                ) : (
-                  <span className="whitespace-nowrap">
-                    stablecoins (of equal value
-                    {merchantPaymentType === "inperson" && (
-                      <span className="group">
-                        <span className="link"> minus 2%</span>
-                        <div className="invisible group-hover:visible whitespace-normal absolute w-[356px] lg:w-[260px] left-0 bottom-10 lg:text-sm lg:leading-tight px-3 py-2 bg-gray-100 border border-gray-500 rounded-[4px] leading-tight z-10">
-                          The journey towards revolutionizing payments is a difficult one. Credit cards charge merchants 3% and give 1% to the customer, so customers have few
-                          incentivizes to use other payment methods. To remain competitive, we require businesses who use our "In-Store Payments" to give 2% instant cashback to the
-                          customer. With Ling Pay, businesses are still saving ~1% compared to credit cards. Furthermore, with this cashback, you are attracting new customers and
-                          new revenue streams. Finally, would you rather give 3% to large corporations or 2% back to your loyal customers? To reiterate, all payments are P2P, so
-                          Ling Pay takes zero fees. All savings are given to the customer.
-                        </div>
-                      </span>
-                    )}
-                    )
-                  </span>
-                )}{" "}
-                are sent to your MetaMask wallet
+              <div className="mr-2">2.</div>
+              <div className="">
+                The customer <span className="font-semibold">enters the amount of {merchantCurrency} for payment</span>
               </div>
             </div>
-            <div className="flex">
-              <div className="mr-1">&bull;</div>
-              <div className="">
-                payment is P2P, so we cannot take fees
-                {merchantCurrency === "USD" ? "" : " and your customers always get the best token-to-fiat rates"}
+            <div className="flex relative">
+              <div className="mr-2">3.</div>
+              <div>
+                When the customer submits payment,{" "}
+                <span className="group">
+                  <span className="linkDark">
+                    USDC tokens<sup>?</sup>
+                  </span>
+                  <div className="bottom-[calc(100%+8px)] left-0 overviewTooltip">1 USDC token equals to 1 USD, as gauranteed by Circle. Almost all crypto users have USDC.</div>
+                </span>{" "}
+                {merchantCurrency == "USD" ? "" : <span>&#40;with a value equal to the amount of {merchantCurrency} entered&#41;</span>} will be sent from their MetaMask to your Flash app
               </div>
             </div>
           </div>
         </div>
 
         {/*---step 3---*/}
-        <div data-show="step" className="w-[356px] lg:w-[220px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-400">
+        <div data-show="step" className="w-[350px] sm:w-[280px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-400">
           {/*---title---*/}
-          <div className="w-full flex items-center lg:justify-center text-blue-700">
+          <div className="w-full flex items-center">
             <div className="overviewNumber">3</div>
-            {merchantPaymentType === "inperson" && <div className="lg:w-[136px] overviewStepTitle">You verify and record payment</div>}
-            {merchantPaymentType === "online" && <div className="lg:w-[152px] overviewStepTitle">You receive email of purchase order</div>}
+            <div className="overviewStepTitle">You receive payment on the Flash app</div>
+          </div>
+          {/*--- image ---*/}
+          <div className="relative w-full h-[368px]">
+            <Image src={"/phoneConfirmPayment.png"} alt="phoneConfirmPayment" fill style={{ objectFit: "contain" }} />
           </div>
           {/*---image and bullet points---*/}
-          {merchantPaymentType === "inperson" && (
-            <div className="mt-2 overviewStepBody">
-              <div className="flex relative">
-                <div className="mr-1">&bull;</div>
-                <div className="">
-                  view verified payments in our App or ask the customer to show you the{" "}
-                  <span className="group">
-                    <span className="link">Payment Completed</span>
-                    <div className="invisible group-hover:visible absolute w-[204px] lg:w-[184px] bottom-[52px] lg:bottom-[38px] left-[calc((100%-204px)/2)] lg:left-[calc((100%-184px)/2)] leading-tight px-3 py-2 bg-gray-100 border border-gray-500 rounded-[4px]">
-                      click "Send" in the phone interface for a preview
-                    </div>
-                  </span>{" "}
-                  page
-                </div>
-              </div>
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">record payment in your PoS system as a cash payment</div>
-              </div>
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">download spreadsheets of payment history</div>
-              </div>
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">refund payments with 1 click in our App</div>
-              </div>
-            </div>
-          )}
-          {merchantPaymentType === "online" && (
-            <div className="mt-2 overviewStepBody">
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">email contains all order details</div>
-              </div>
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">refund payments with 1 click</div>
-              </div>
-              <div className="flex">
-                <div className="mr-1">&bull;</div>
-                <div className="">download spreadsheets of payments history</div>
-              </div>
-              <div className="flex">
-                <div className="mr-1">*</div>
-                <div className="">above features require the Automation Package</div>
-              </div>
-            </div>
-          )}
+          <div className="overviewBulletPoints">
+            <div>In the Flash app, you will see the payment after ~5s. Employees can also log into your Flash app (with restricted functions) on a shared or personal device to confirm payment</div>
+          </div>
         </div>
 
         {/*---step 4---*/}
-        <div data-show="step" className="w-[354px] lg:w-[320px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out delay-600">
+        <div data-show="step" className="w-[350px] sm:w-[280px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-600">
           {/*---title---*/}
-          <div className="w-full flex items-center lg:justify-center text-blue-700">
+          <div className="w-full flex items-center">
             <div className="overviewNumber">4</div>
-            <div className="overviewStepTitle">
-              You cash out on{" "}
-              {merchantCurrency == "USD" ? (
-                <span>Coinbase Exchange</span>
-              ) : (
-                <span>
-                  a<br />
-                  cryptocurrency exchange
-                </span>
-              )}
-            </div>
+            <div className="overviewStepTitle">You cash out</div>
           </div>
-          <div className="relative w-[354px] lg:w-[320px] h-[300px] mt-4 lg:mt-3 border rounded-lg overflow-hidden border-gray-300">
-            <Image src="/overviewTrade.png" alt="trade" fill />
+          {/*--- image ---*/}
+          <div className="relative w-full h-[368px]">
+            <Image src={"/phoneCashOut.png"} alt="phoneCashOut" fill style={{ objectFit: "contain" }} />
           </div>
           {/*---bullet points---*/}
-          <div className="mt-2 overviewStepBody">
+          <div className="overviewBulletPoints">
+            {(merchantCurrency == "USD" || merchantCurrency == "EUR") && (
+              <div>
+                To transfer funds to your bank, you must have a Coinbase account (
+                <span className="linkDark">
+                  <a href="https://www.coinbase.com/signup" target="_blank">
+                    sign up here
+                  </a>
+                </span>
+                )
+              </div>
+            )}
+            {merchantCurrency == "TWD" && (
+              <div>
+                To transfer funds to your bank, you must have a MAX Exchange account (
+                <span className="linkDark">
+                  <a href="https://max.maicoin.com/signup" target="_blank">
+                    sign up here
+                  </a>
+                </span>
+                )
+              </div>
+            )}
             <div className="flex">
-              <div className="mr-1">&bull;</div>
+              <div className="mr-2.5">1.</div>
               <div className="">
-                create an account on{" "}
-                {merchantCurrency === "USD" ? (
-                  <span className="link">
-                    <a href="https://www.coinbase.com/signup" target="_blank">
-                      Coinbase
-                    </a>
-                  </span>
-                ) : (
-                  "a cryptocurrency exchange"
-                )}
+                {(merchantCurrency == "USD" || merchantCurrency == "EUR") && <div>In the Flash app, click "Link Coinbase Account"</div>}
+                {merchantCurrency == "TWD" && <div>Copy your MAX account's USDC deposit address (for Polygon) and paste it in the "Settings" menu of the Flash app</div>}
               </div>
             </div>
             <div className="flex">
-              <div className="mr-1">&bull;</div>
+              <div className="mr-2">2.</div>
               <div className="">
-                {merchantCurrency === "USD"
-                  ? "convert USDC to USD at a 1:1 rate (no fees) and withdraw money to your bank (no fees)"
-                  : `convert stablecoins to ${merchantCurrency} and withdraw money to your bank`}
+                {(merchantCurrency == "USD" || merchantCurrency == "EUR") && (
+                  <div>
+                    In the "Cash Out" menu, click "Transfer to Coinbase" and make a transfer. Then, click "Transfer to Bank" and make a transfer. On this second transfer, USDC will be automatically converted to{" "}
+                    {merchantCurrency == "USD" ? "USD" : "EUR*"} and the money sent to your bank
+                  </div>
+                )}
+                {merchantCurrency == "TWD" && <div>In the "Cash Out" menu, click "Transfer to MAX"</div>}
               </div>
             </div>
 
-            <div className="flex">
-              <div className="mr-1">&bull;</div>
-              <div>
-                or, activate the <span className="font-bold">Automation Package</span> ($0-5/month) and receive money in your bank with just 1 click in our App (no fees)
+            {merchantCurrency == "TWD" && (
+              <div className="flex">
+                <div className="mr-2">3.</div>
+                <div>Log into your MAX account. Sell USDC for TWD* and withdraw the money to your bank.</div>
               </div>
-            </div>
+            )}
 
             {merchantCurrency != "USD" && (
               <div className="flex relative">
-                <div className="mr-1">&bull;</div>
+                <div className="mr-2">&nbsp;*</div>
                 <div className="">
-                  you will not lose from exchange rates (
+                  Flash is designed so that you will not lose money from fluctuating token rates (
                   <span className="group">
-                    <span className="link">how?</span>
-                    <div className="invisible group-hover:visible absolute w-[354px] xs:w-[320px] left-0 bottom-8 px-3 py-2 bg-gray-100 border border-gray-500 rounded-[4px] leading-tight">
-                      Our interface adds 0.3~0.5% to the rate in favor of the business (businesses might even earn a little extra). If the payment token corresponds to the local
-                      currency (customer pays USDC and the local currency is USD), the rate will be 1:1.
+                    <span className="linkDark">how?</span>
+                    <div className="w-full bottom-[calc(100%+4px)] left-0 overviewTooltip">
+                      When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating
+                      rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-TWD rate offered by Flash is usually 1-5% better than the USD-to-TWD rate at any bank.
                     </div>
                   </span>
                   )

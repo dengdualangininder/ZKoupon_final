@@ -384,6 +384,8 @@ export const countryCurrencyList = [
   "Any country / EUR",
 ];
 
+export const currencyList = ["USD", "EUR", "TWD"];
+
 export const abb2full: { [key: string]: string } = {
   AT: "Austria", // 1
   BE: "Belgium", // 2

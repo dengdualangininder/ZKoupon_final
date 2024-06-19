@@ -128,6 +128,22 @@
     @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
   }
 
+  .homepageHeaderFont {
+    @apply text-5xl sm:text-6xl font-medium;
+  }
+
+  .heroSubheaderWidth {
+    @apply w-[98%] portrait:max-w-[372px] landscape:max-w-[620px] portrait:sm:max-w-[744px] landscape:lg:max-w-[744px] landscape:xl:desktop:max-w-[716px];
+  }
+
+  .heroSubheaderFont {
+    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl leading-normal portrait:sm:leading-normal landscape:lg:leading-normal landscape:xl:desktop:leading-relaxed;
+  }
+
+  .heroButton {
+    @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px] w-[120px] portrait:sm:w-[148px] landscape:lg:w-[148px] landscape:xl:desktop:w-[130px] text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg font-medium bg-black text-white rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg cursor-pointer desktop:xl:hover:bg-slate-800 active:bg-slate-800;
+  }
+
   .chainLogo {
     @apply h-[38px] pointer-events-none;
   }
@@ -152,6 +168,10 @@
     @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
   }
 
+  .linkDark {
+    @apply cursor-pointer text-blue-400 xs:hover:underline active:underline;
+  }
+
   .tooltip {
     @apply invisible group-hover:visible absolute px-3 py-2 portrait:sm:px-5 landscape:lg:px-5 landscape:xl:desktop:px-3 portrait:sm:py-3 landscape:lg:py-3 landscape:xl:desktop:py-2 text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-sm font-normal text-white bg-gray-700 rounded-lg z-[1];
   }
@@ -162,6 +182,10 @@
 
   .introTooltip {
     @apply text-lg font-normal invisible group-hover:visible absolute px-4 py-3 bg-gray-800 text-white rounded-lg z-[1];
+  }
+
+  .overviewTooltip {
+    @apply text-base sm:text-sm font-normal invisible group-hover:visible absolute px-4 py-3 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
   }
 
   .cashoutTooltip {
@@ -277,15 +301,15 @@
   }
 
   .overviewNumber {
-    @apply w-[44px] h-[44px] lg:w-[40px] lg:h-[40px] text-2xl lg:text-xl font-bold flex justify-center items-center flex-none rounded-full bg-blue-700 text-white;
+    @apply mr-4 w-[44px] h-[44px] text-2xl font-bold flex justify-center items-center rounded-full bg-darkButton;
   }
 
   .overviewStepTitle {
-    @apply ml-2 text-2xl lg:text-lg font-bold leading-none lg:leading-none;
+    @apply flex-1 text-xl sm:text-base font-medium leading-tight;
   }
 
-  .overviewStepBody {
-    @apply text-lg leading-snug lg:text-sm lg:leading-tight space-y-2 lg:space-y-1;
+  .overviewBulletPoints {
+    @apply text-base landscape:xl:text-[13px] landscape:xl:leading-[20px] space-y-2;
   }
 
   .settingsFont {

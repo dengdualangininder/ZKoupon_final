@@ -1,9 +1,9 @@
-import { Inter, Nunito_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Theme from "@/app/provider/ThemeProvider";
 
-const inter = Inter({ subsets: ["latin"] }); // inter is variable font so no "weight" needed, recommended
+const inter = Inter({ subsets: ["latin"], display: "swap" }); // inter is variable font so no "weight" needed, recommended
 // const nunito = Nunito_Sans({ weight: ["300", "400", "500", "600", "700", "800", "900"], subsets: ["latin"] }); // inter is variable font so no "weight" needed, recommended
 
 // import local font (requires "npm i @next/font")
@@ -27,11 +27,11 @@ export const viewport: Viewport = {
 // root layout must contain <html> and <body> tags
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" className={inter.className}>
       <head>
         <script src="/maze.js"></script>
       </head>
-      <body className={inter.className}>
+      <body>
         <Theme>{children}</Theme>
       </body>
     </html>

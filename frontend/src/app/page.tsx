@@ -1,6 +1,7 @@
 "use client";
 // next
 import { useEffect } from "react";
+import { useTheme } from "next-themes";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
@@ -11,7 +12,12 @@ import Overview from "./_components/Overview";
 // import Contact from "../components/Contact.jsx";
 
 const Home = () => {
+  // hooks
+  const { setTheme } = useTheme();
+
   useEffect(() => {
+    setTheme("light");
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -40,15 +46,16 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="overflow-hidden font-nunito">
-      <div className="h-screen bg-cover bg-[url('/background.svg')] w-full flex justify-center">
-        <Navbar />
-        <div className="w-full xl:max-w-[1440px] flex items-center justify-center">
+    <div className="overflow-hidden">
+      <Navbar />
+
+      <div className="w-full flex justify-center bg-light2">
+        <div className="w-full xl:max-w-[1440px]">
           <Hero />
         </div>
       </div>
 
-      <div className="bg-white w-full flex justify-center">
+      <div className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
         <div className="w-full xl:max-w-[1440px]">
           <Overview />
         </div>

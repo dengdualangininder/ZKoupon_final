@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 // import { logo } from "../assets";
@@ -10,17 +10,9 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const ref = useRef<HTMLDivElement>(null);
-
   const router = useRouter();
 
   useEffect(() => {
-    const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    setIsMobile(isMobileTemp);
-  }, []);
-
-  useEffect(() => {
-    // consider setTimeout
     window.onscroll = () => {
       if (window.scrollY < 20) {
         setIsScrollTop(true);
@@ -30,18 +22,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // TODO: might have to change this to media query
-  useEffect(() => {
-    if (isMobile) {
-      const checkClickedOutside = (e: React.MouseEvent) => {
-        if (isMenuOpen && !ref.current?.contains(e.target as HTMLElement)) {
-          setIsMenuOpen(false);
-        }
-      };
-      document.addEventListener("click", () => checkClickedOutside);
-    }
-  }, [isMenuOpen]);
-
   const navLinks = [
     {
       id: "overview",
@@ -49,11 +29,7 @@ const Navbar = () => {
     },
     {
       id: "advantage",
-      title: "Why Ling Pay",
-    },
-    {
-      id: "why",
-      title: "How You Benefit",
+      title: "Why Use Flash",
     },
     {
       id: "learn",
@@ -61,76 +37,69 @@ const Navbar = () => {
     },
   ];
 
-  // const handleOnNavClick = (e: React.SyntheticEvent) => {
-  //   setIsMenuOpen(false);
-  //   document.getElementById(`${e.target.id}El`).scrollIntoView({ behavior: "smooth", block: "start" });
-  // };
-
   return (
     <div
       className={`${
-        isScrollTop ? "h-[92px]" : "h-[52px] bg-light2/70 border-b"
-      } fixed px-4 w-full flex items-center justify-between z-50 backdrop-blur-md transition-all duration-1000`}
+        isScrollTop ? "h-[92px] portrait:sm:h-[108px] landscape:lg:h-[108px]" : "h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[40px] bg-[rgb(241,245,249,0.6)] border-b border-slate-400"
+      } w-full fixed flex justify-center z-50 backdrop-blur-md transition-all duration-1000`}
     >
-      {/*---LOGO---*/}
-      <div className="w-[160px] h-full flex items-center">
-        <div className={`${isScrollTop ? "w-[120px] lg:w-[160px]" : "w-[80px] lg:w-[80px]"} h-full relative transition-all duration-1000`}>
-          <Image src="/logo.svg" alt="navLogo" fill />
+      <div className="mx-3 sm:mx-6 w-full landscape:xl:max-w-[1250px] h-full flex justify-center items-center relative">
+        {/*---LOGO---*/}
+        <div
+          className={`${
+            isScrollTop ? "w-[160px] portrait:sm:w-[190px] landscape:lg:w-[190px] landscape:xl:desktop:w-[180px]" : "w-[108px] portrait:sm:w-[140px] landscape:lg:w-[140px] landscape:xl:desktop:w-[96px]"
+          } h-full absolute left-0 transition-all duration-1000`}
+        >
+          <Image src="/logo.svg" alt="logo" fill />
+        </div>
+
+        {/*---DESKTOP MENU LINKS---*/}
+        <div className="hidden lg:flex w-[500px] xl:w-[560px] xl:desktop:w-[500px] justify-between">
+          {navLinks.map((navLink, index) => (
+            <div
+              className={`${isScrollTop ? "xl:desktop:text-lg font-semibold" : "xl:desktop:text-base font-medium"} text-xl text-center cursor-pointer desktop:xl:hover:scale-[108%] ease-in-out transition-all duration-[1200ms]`}
+              id={navLink.id}
+              key={index}
+            >
+              {navLink.title}
+            </div>
+          ))}
+        </div>
+
+        {/*--- ENTER BUTTON---*/}
+        <div
+          className={`${
+            isScrollTop ? "scale-[1.15] lg:scale-100 translate-y-[calc(84px+(100vh-92px)*(6.5/10))]" : "portrait:translate-x-[20px] portrait:xs:translate-x-0"
+          } w-full lg:w-auto h-full flex justify-center items-center absolute left-0 lg:left-auto lg:right-0 lg:translate-y-0 transition-transform duration-[1200ms]`}
+        >
+          <button className={`heroButton ${isScrollTop ? "" : "lg:h-[56px] desktop:text-base lg:desktop:h-[36px]"} transition-[height,font-size] duration-[1200ms]`} onClick={() => router.push("/app")}>
+            Enter App
+          </button>
+        </div>
+
+        {/*--- MOBILE BLACKOUT BG ---*/}
+        <div className={`${isMenuOpen ? "" : "hidden"} w-screen h-screen absolute left-0 top-0 z-[10]`} onClick={() => setIsMenuOpen(false)}></div>
+
+        {/*--- animated open/close icon ---*/}
+        <div onClick={() => setIsMenuOpen(!isMenuOpen)} className="h-[36px] w-[36px] absolute right-4 lg:hidden">
+          <div className={`${isMenuOpen ? "rotate-45 top-[16px] scale-110" : "top-[4px]"} absolute bg-black h-[2px] w-[36px] rounded transition-all duration-500`}></div>
+          <div className={`${isMenuOpen ? "hidden" : ""} absolute bg-black h-[2px] w-[36px] rounded top-[16px] transition-all duration-500`}></div>
+          <div className={`${isMenuOpen ? "-rotate-45 top-[16px] scale-110" : "top-[28px]"} absolute bg-black h-[2px] w-[36px] rounded transition-all duration-500`}></div>
         </div>
       </div>
-
-      {/*---DESKTOP MENU LINKS---*/}
-      <div className="hidden md:flex space-x-4 lg:space-x-12">
-        {navLinks.map((navLink, index) => (
-          <div
-            className="text-slate-800 text-base font-bold text-center cursor-pointer hover:scale-[108%] ease-in-out duration-300"
-            id={navLink.id}
-            // onClick={handleOnNavClick}
-            key={index}
-          >
-            {navLink.title}
-          </div>
-        ))}
-      </div>
-
-      {/*---ENTER APP BUTTON---*/}
-      <div className="absolute left-0 md:left-auto md:relative w-full md:w-auto flex justify-center md:justify-start space-x-1">
-        <button
-          onClick={() => router.push("/app")}
-          className={`${
-            isScrollTop ? "scale-125 translate-y-[530px]" : ""
-          } h-[44px] md:h-[40px] w-[132px] md:w-[150px] font-bold rounded-full bg-blue-500 xs:hover:border xs:hover:border-blue-700 xs:hover:bg-blue-600 md:translate-y-0 text-white md:transform-none transition-transform duration-1000`}
-        >
-          Enter App
-        </button>
-      </div>
-
-      {/*---MOBILE MENU LINKS---*/}
-      <div className="flex items-center justify-end md:hidden mr-6">
-        {/*---need to wrap icon and menu into 1 div, for useRef---*/}
-        <div ref={ref} className="">
-          {/*---animated menu open/close icon ---*/}
-          <div onClick={() => setIsMenuOpen(!isMenuOpen)} className="relative h-[36px] w-[36px]">
-            <div className={`${isMenuOpen ? "rotate-45 top-[16px] scale-110" : "top-[4px]"} absolute bg-black h-[3px] w-[36px] rounded transition-all duration-500`}></div>
-            <div className={`${isMenuOpen ? "hidden" : ""} absolute bg-black h-[3px] w-[36px] rounded top-[16px] transition-all duration-500`}></div>
-            <div className={`${isMenuOpen ? "-rotate-45 top-[16px] scale-110" : "top-[28px]"} absolute bg-black h-[3px] w-[36px] rounded transition-all duration-500`}></div>
-          </div>
-          {/*---menu contents---*/}
-          <div className={`${isMenuOpen ? "right-[-2px]" : " right-[-250px]"} pl-6 py-10 absolute top-[72px] w-[240px] duration-500`}>
-            <div className="w-full h-full absolute bg-white opacity-95 backdrop-blur-md top-0 left-0 rounded-tl-2xl rounded-bl-2xl border"></div>
-            <div className="flex flex-col z-50 relative space-y-10">
-              {navLinks.map((navLink, index) => (
-                <div
-                  key={index}
-                  id={navLink.id}
-                  // onClick={handleOnNavClick}
-                  className="font-bold text-slate-700 cursor-pointer text-2xl"
-                >
-                  {navLink.title}
-                </div>
-              ))}
+      {/*---sidebar---*/}
+      <div className={`${isMenuOpen ? "translate-x-[2px]" : " translate-x-[270px]"} absolute top-[90px] right-0 w-[260px] pl-8 py-8 bg-slate-200 border-2 border-slate-400 rounded-tl-3xl rounded-bl-3xl duration-500 z-[-20]`}>
+        <div className="flex flex-col z-50 relative space-y-8">
+          {navLinks.map((navLink, index) => (
+            <div
+              key={index}
+              id={navLink.id}
+              // onClick={handleOnNavClick}
+              className="font-medium cursor-pointer text-2xl"
+            >
+              {navLink.title}
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
