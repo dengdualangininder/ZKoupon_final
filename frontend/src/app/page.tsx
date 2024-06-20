@@ -1,17 +1,23 @@
 "use client";
 // next
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
-import Advantage from "./_components/Advantage";
 import Overview from "./_components/Overview";
+import LowCost from "./_components/LowCost";
+import Simple from "./_components/Simple";
+import Learn from "./_components/Learn";
+import Footer from "./_components/Footer";
+
 // import Why from "../components/Why.jsx";
-// import Learn from "../components/Learn.jsx";
 // import Contact from "../components/Contact.jsx";
 
 const Home = () => {
+  // states
+  const [merchantCurrency, setMerchantCurrency] = useState("EUR");
+
   // hooks
   const { setTheme } = useTheme();
 
@@ -57,13 +63,31 @@ const Home = () => {
 
       <div className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
         <div className="w-full xl:max-w-[1440px]">
-          <Overview />
+          <Overview merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
         </div>
       </div>
 
-      <div id="advantageEl" data-show="yes" className="opacity-0 bg-cover bg-darkblue w-full flex justify-center transition-all duration-1500">
+      <div id="advantageEl" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
+          <LowCost merchantCurrency={merchantCurrency} />
+        </div>
+      </div>
+
+      <div id="advantageEl" data-show="yes" className="opacity-0 bg-dark1 text-darkText1 w-full flex justify-center transition-all duration-1500">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
+          <Simple />
+        </div>
+      </div>
+
+      <div data-show="yes" className="bg-white flex w-full justify-center opacity-0 transition-all duration-1000">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
+          <Learn />
+        </div>
+      </div>
+
+      <div className="bg-dark1 w-full flex justify-center">
         <div className="w-full xl:max-w-[1440px]">
-          <Advantage />
+          <Footer />
         </div>
       </div>
 
@@ -73,23 +97,13 @@ const Home = () => {
         </div>
       </div>
 
-      <div data-show="yes" className="bg-white flex w-full justify-center opacity-0 transition-all duration-1000">
-        <div className="w-full xl:max-w-[1440px]">
-          <Learn />
-        </div>
-      </div>
-
       <div data-show="yes" className="bg-cover bg-[url('/src/assets/background.svg')] w-full flex justify-center opacity-0 transition-all duration-1000">
         <div className="w-full xl:max-w-[1440px]">
           <Contact />
         </div>
       </div>
 
-      <div className="bg-darkblue w-full flex justify-center">
-        <div className="w-full xl:max-w-[1440px]">
-          <Footer />
-        </div>
-      </div> */}
+       */}
     </div>
   );
 };

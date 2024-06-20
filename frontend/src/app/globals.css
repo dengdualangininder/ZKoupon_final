@@ -129,7 +129,11 @@
   }
 
   .homepageHeaderFont {
-    @apply text-5xl sm:text-6xl font-medium;
+    @apply text-5xl sm:text-6xl font-medium sm:leading-tight;
+  }
+
+  .homepageBodyFont {
+    @apply text-base;
   }
 
   .heroSubheaderWidth {
@@ -193,7 +197,7 @@
   }
 
   .learnContainer {
-    @apply py-4 border-b-2 border-gray-300;
+    @apply py-4 w-full flex justify-between items-center border-b-2 border-gray-300;
   }
 
   .learnIcon {
@@ -310,6 +314,18 @@
 
   .overviewBulletPoints {
     @apply text-base landscape:xl:text-[13px] landscape:xl:leading-[20px] space-y-2;
+  }
+
+  .lowCostCard {
+    @apply w-[430px] px-8 py-5 rounded-xl shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+  }
+
+  .lowCostCardHeader {
+    @apply text-2xl font-semibold;
+  }
+
+  .lowCostCardBody {
+    @apply mt-3 text-sm space-y-3;
   }
 
   .settingsFont {

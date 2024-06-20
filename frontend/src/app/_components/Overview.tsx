@@ -12,11 +12,9 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShop } from "@fortawesome/free-solid-svg-icons";
 
-const Overview = () => {
+const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: string; setMerchantCurrency: any }) => {
   const [merchantName, setMerchantName] = useState("A Store in Europe");
-  const [merchantCurrency, setMerchantCurrency] = useState("EUR");
   const [merchantCountry, setMerchantCountry] = useState("US");
-  const [cex, setCex] = useState("Coinbase");
   const [merchantWebsite, setMerchantWebsite] = useState("https://www.stablecoinmap.com");
   const [merchantPaymentType, setMerchantPaymentType] = useState("inperson");
   const [merchantBusinessType, setMerchantBusinessType] = useState("instore");
@@ -71,7 +69,6 @@ const Overview = () => {
             onChange={async (e) => {
               const merchantCurrencyTemp = e.target.value;
               setMerchantCurrency(merchantCurrencyTemp);
-              // setCex(cexTemp);
             }}
             value={merchantCurrency}
           >

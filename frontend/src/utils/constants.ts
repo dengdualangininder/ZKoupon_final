@@ -386,6 +386,18 @@ export const countryCurrencyList = [
 
 export const currencyList = ["USD", "EUR", "TWD"];
 
+type currencyToDataValue = {
+  cex: string;
+  symbol: string;
+  offrampNetwork: string;
+  offrampFee: string;
+};
+export const currencyToData: { [key: string]: currencyToDataValue } = {
+  USD: { cex: "Coinbase", symbol: "$", offrampNetwork: "ACH", offrampFee: "free" },
+  EUR: { cex: "Coinbase", symbol: "€", offrampNetwork: "SEPA", offrampFee: "free" },
+  TWD: { cex: "Max Exchange", symbol: "NT$", offrampNetwork: "CIFS", offrampFee: "NT$15" },
+};
+
 export const abb2full: { [key: string]: string } = {
   AT: "Austria", // 1
   BE: "Belgium", // 2
