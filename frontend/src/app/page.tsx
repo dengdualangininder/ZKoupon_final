@@ -8,11 +8,10 @@ import Hero from "./_components/Hero";
 import Overview from "./_components/Overview";
 import LowCost from "./_components/LowCost";
 import Simple from "./_components/Simple";
+import Why from "./_components/Why";
 import Learn from "./_components/Learn";
+import Contact from "./_components/Contact";
 import Footer from "./_components/Footer";
-
-// import Why from "../components/Why.jsx";
-// import Contact from "../components/Contact.jsx";
 
 const Home = () => {
   // states
@@ -56,13 +55,13 @@ const Home = () => {
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2">
-        <div className="w-full xl:max-w-[1440px]">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Hero />
         </div>
       </div>
 
       <div className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
-        <div className="w-full xl:max-w-[1440px]">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Overview merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
         </div>
       </div>
@@ -79,31 +78,29 @@ const Home = () => {
         </div>
       </div>
 
-      <div data-show="yes" className="bg-white flex w-full justify-center opacity-0 transition-all duration-1000">
+      <div id="whyEl" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Learn />
+          <Why merchantCurrency={merchantCurrency} />
         </div>
       </div>
 
-      <div className="bg-dark1 w-full flex justify-center">
-        <div className="w-full xl:max-w-[1440px]">
-          <Footer />
+      <div data-show="yes" className="bg-[#0A2540] text-white flex w-full justify-center opacity-0 transition-all duration-1000">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
+          <Learn merchantCurrency={merchantCurrency} />
         </div>
       </div>
 
-      {/* <div data-show="yes" className="bg-cover bg-bggrayone w-full flex justify-center text-lg opacity-0 transition-all duration-2000">
-        <div className="w-full xl:max-w-[1440px]">
-          <Why />
-        </div>
-      </div>
-
-      <div data-show="yes" className="bg-cover bg-[url('/src/assets/background.svg')] w-full flex justify-center opacity-0 transition-all duration-1000">
-        <div className="w-full xl:max-w-[1440px]">
+      <div data-show="yes" className="bg-light2 text-black w-full flex justify-center opacity-0 transition-all duration-1000">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Contact />
         </div>
       </div>
 
-       */}
+      <div className="bg-dark1 text-white w-full flex justify-center border-t border-slate-600">
+        <div className="w-full flex justify-center xl:max-w-[1440px]">
+          <Footer />
+        </div>
+      </div>
     </div>
   );
 };

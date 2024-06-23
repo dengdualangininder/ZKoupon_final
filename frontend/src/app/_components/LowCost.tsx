@@ -1,8 +1,8 @@
-import { countryData, currencyToData, currencyList, merchantType2data } from "@/utils/constants";
+import { currencyToData } from "@/utils/constants";
 
 const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
   return (
-    <div className="w-[77%] flex py-[100px] justify-between">
+    <div className="w-[77%] py-[100px] flex justify-between">
       {/*--- text (left) ---*/}
 
       <div className="w-[550px]">
@@ -10,8 +10,9 @@ const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
         <div className="homepageHeaderFont">A cost-efficient payments platform</div>
         {/*--- body ---*/}
         <div className="mt-8 w-[500px] text-base">
-          Although blockchain payments promises lower fees than traditional digital payments, most blockchain payment platforms still charge 1-2% in fees. Flash charges 0%. This is because Flash works by integrating existing low-cost blockchain
-          infrastructure (the Polygon network and cryptocurrency exchanges) to transfer funds and convert USDC to fiat. Flash is not a middleman and, therefore, we don’t charge any fees.
+          Although blockchain payments promises lower fees than traditional digital payments, most blockchain payment platforms still charge 1-2% in fees. Flash charges 0%. This is
+          because Flash works by integrating existing low-cost blockchain infrastructure (the Polygon network and cryptocurrency exchanges) to transfer funds and convert USDC to
+          fiat. Flash is not a middleman and, therefore, we don’t charge any fees.
         </div>
       </div>
       {/*--- cards (right) ---*/}
@@ -44,13 +45,18 @@ const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
         </div>
 
         {/*--- card 3 ---*/}
-        <div className="lowCostCard">
-          <div className="lowCostCardHeader">True market rates + 0% conversion fees</div>
-          <div className="lowCostCardBody">
-            <p>Flash does not profit by giving you or your customers suboptimal USDC-{merchantCurrency} conversion rates. Conversion rates are taken directly from Coinbase Exchange, which has the best rates compared to anywhere else.</p>
-            <p>The conversion fee on Coinbase is 0.001%.</p>
+        {merchantCurrency != "USD" && (
+          <div className="lowCostCard">
+            <div className="lowCostCardHeader">True market rates + 0% conversion fees</div>
+            <div className="lowCostCardBody">
+              <p>
+                Flash does not profit by giving you or your customers suboptimal USDC-{merchantCurrency} conversion rates. Conversion rates are taken directly from Coinbase
+                Exchange, which has the best rates compared to anywhere else.
+              </p>
+              <p>The conversion fee on Coinbase is 0.001%.</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

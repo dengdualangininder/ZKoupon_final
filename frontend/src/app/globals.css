@@ -136,6 +136,10 @@
     @apply text-base;
   }
 
+  .whiteCard {
+    @apply p-6 bg-white rounded-3xl shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+  }
+
   .heroSubheaderWidth {
     @apply w-[98%] portrait:max-w-[372px] landscape:max-w-[620px] portrait:sm:max-w-[744px] landscape:lg:max-w-[744px] landscape:xl:desktop:max-w-[716px];
   }
@@ -146,6 +150,14 @@
 
   .heroButton {
     @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px] w-[120px] portrait:sm:w-[148px] landscape:lg:w-[148px] landscape:xl:desktop:w-[130px] text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg font-medium bg-black text-white rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg cursor-pointer desktop:xl:hover:bg-slate-800 active:bg-slate-800;
+  }
+
+  .learnAnswerContainer {
+    @apply mt-1 mb-4 p-4 border border-slate-400 rounded-xl space-y-2 sm:space-y-3 text-base;
+  }
+
+  .learnBoldFont {
+    @apply font-semibold text-blue-400;
   }
 
   .chainLogo {
@@ -196,36 +208,16 @@
     @apply invisible group-hover:visible absolute px-3 py-2 leading-snug text-white bg-gray-700 rounded-lg z-[1];
   }
 
-  .learnContainer {
-    @apply py-4 w-full flex justify-between items-center border-b-2 border-gray-300;
-  }
-
-  .learnIcon {
-    @apply text-base rounded-full bg-purple text-white p-2 mr-3;
-  }
-
-  .learnLessonWord {
-    @apply text-2xl font-bold leading-none;
-  }
-
-  .learnLessonTitle {
-    @apply mt-1 text-base leading-none;
-  }
-
-  .learnLearnWord {
-    @apply cursor-pointer text-blue-500 font-bold whitespace-nowrap;
-  }
-
-  .learnChip {
-    @apply text-sm xs:text-base leading-tight xs:leading-tight px-4 py-2.5 rounded-md bg-white text-gray-600 border;
-  }
-
   .whyCard {
-    @apply relative w-[310px] md:w-[286px] h-[320px] py-3 px-3 md:px-5 text-lg leading-snug bg-white rounded-xl text-gray-600 shadow-[0px_2px_4px_2px_rgba(128,128,128,0.3)] sm:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+    @apply w-[304px] h-full whiteCard;
   }
 
-  .whyImage {
-    @apply absolute bottom-4;
+  .whyCardHeader {
+    @apply text-2xl font-semibold;
+  }
+
+  .whyCardBody {
+    @apply mt-4 text-sm;
   }
 
   .customerChip {
@@ -317,7 +309,7 @@
   }
 
   .lowCostCard {
-    @apply w-[430px] px-8 py-5 rounded-xl shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+    @apply w-[430px] whiteCard;
   }
 
   .lowCostCardHeader {
@@ -326,6 +318,14 @@
 
   .lowCostCardBody {
     @apply mt-3 text-sm space-y-3;
+  }
+
+  .footerHeader {
+    @apply underline underline-offset-2;
+  }
+
+  .footerLink {
+    @apply desktop:hover:text-blue-400 active:text-blue-400 cursor-pointer;
   }
 
   .settingsFont {
