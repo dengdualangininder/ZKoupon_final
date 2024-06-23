@@ -2,15 +2,19 @@ import React from "react";
 
 const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
   return (
-    <div className="w-[77%] py-[100px] flex flex-col items-center">
+    <div className="homeSectionSize">
       {/*--- HEADER ---*/}
-      <div className="w-full homepageHeaderFont">
+      <div className="w-full homeHeaderFont">
         Why set up crypto
         <br />
         payments?
       </div>
       {/*--- BODY ---*/}
-      <div className={`${merchantCurrency == "USD" ? "h-[250px]" : "h-[325px]"} mt-10 w-full flex justify-center space-x-16`}>
+      <div
+        className={`${
+          merchantCurrency == "USD" ? "xl:h-[250px]" : "xl:h-[350px] xl:desktop:h-[325px]"
+        } mt-10 w-full flex flex-col items-center xl:flex-row xl:justify-center xl:space-x-16 space-y-6 xl:space-y-0`}
+      >
         {/*--- card1 ---*/}
         <div className="whyCard">
           <div className="whyCardHeader">

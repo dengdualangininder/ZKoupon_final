@@ -128,16 +128,28 @@
     @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
   }
 
-  .homepageHeaderFont {
-    @apply text-5xl sm:text-6xl font-medium sm:leading-tight;
+  .homeHeaderFont {
+    @apply text-[40px] sm:text-6xl font-medium leading-normal sm:leading-tight;
   }
 
-  .homepageBodyFont {
-    @apply text-base;
+  .homeHeader2Font {
+    @apply text-2xl font-semibold leading-tight;
+  }
+
+  .homeBodyFont {
+    @apply text-lg sm:text-xl xl:desktop:text-base leading-normal sm:leading-normal;
+  }
+
+  .homeBody2Font {
+    @apply text-base leading-snug xl:desktop:text-sm;
+  }
+
+  .homeSectionSize {
+    @apply w-[360px] sm:w-[590px] xl:w-[1200px] xl:desktop:w-[77%] py-[100px];
   }
 
   .whiteCard {
-    @apply p-6 bg-white rounded-3xl shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+    @apply px-4 py-6 sm:p-6 bg-white rounded-3xl shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
   }
 
   .heroSubheaderWidth {
@@ -209,7 +221,7 @@
   }
 
   .whyCard {
-    @apply w-[304px] h-full whiteCard;
+    @apply w-full xl:desktop:w-[304px] h-full whiteCard;
   }
 
   .whyCardHeader {
@@ -217,7 +229,7 @@
   }
 
   .whyCardBody {
-    @apply mt-4 text-sm;
+    @apply mt-4 homeBody2Font;
   }
 
   .customerChip {
@@ -300,16 +312,20 @@
     @apply mr-4 w-[44px] h-[44px] text-2xl font-bold flex justify-center items-center rounded-full bg-darkButton;
   }
 
+  .overviewHeader2Font {
+    @apply text-xl sm:text-lg md:text-2xl xl:desktop:text-lg font-medium leading-tight sm:leading-tight xl:desktop:leading-tight;
+  }
+
   .overviewStepTitle {
-    @apply flex-1 text-xl sm:text-base font-medium leading-tight;
+    @apply flex-1 overviewHeader2Font;
   }
 
   .overviewBulletPoints {
-    @apply text-base landscape:xl:text-[13px] landscape:xl:leading-[20px] space-y-2;
+    @apply text-base md:text-lg xl:desktop:text-[13px] xl:desktop:leading-[20px] space-y-2;
   }
 
   .lowCostCard {
-    @apply w-[430px] whiteCard;
+    @apply w-full xl:w-[430px] whiteCard;
   }
 
   .lowCostCardHeader {
@@ -317,7 +333,7 @@
   }
 
   .lowCostCardBody {
-    @apply mt-3 text-sm space-y-3;
+    @apply homeBody2Font mt-3 space-y-3;
   }
 
   .footerHeader {

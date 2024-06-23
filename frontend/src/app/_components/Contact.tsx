@@ -5,11 +5,11 @@ import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const Contact = () => {
   return (
-    <div id="supportEl" className="w-[77%] py-[100px] flex flex-col items-center">
+    <div id="supportEl" className="homeSectionSize flex flex-col items-center">
       {/*---Header---*/}
-      <div className="homepageHeaderFont">Support</div>
+      <div className="homeHeaderFont">Support</div>
       {/*---Content---*/}
-      <div className="mt-10 w-[696px] leading-relaxed text-xl text-center">
+      <div className="homeBodyFont mt-10 w-full xl:max-w-[810px] md:text-center">
         For helpful information, read the “Instructions” in the Flash app’s “Settings” menu or the “How It Works” and “Learning Center” sections on this website. For further
         assistance, email support@flashpayments.xyz
       </div>

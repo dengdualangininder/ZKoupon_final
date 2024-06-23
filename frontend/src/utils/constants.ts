@@ -393,8 +393,8 @@ type currencyToDataValue = {
   offrampFee: string;
 };
 export const currencyToData: { [key: string]: currencyToDataValue } = {
-  USD: { cex: "Coinbase", symbol: "$", offrampNetwork: "ACH", offrampFee: "free" },
-  EUR: { cex: "Coinbase", symbol: "€", offrampNetwork: "SEPA", offrampFee: "free" },
+  USD: { cex: "Coinbase", symbol: "$", offrampNetwork: "ACH", offrampFee: "Free" },
+  EUR: { cex: "Coinbase", symbol: "€", offrampNetwork: "SEPA", offrampFee: "Free" },
   TWD: { cex: "Max Exchange", symbol: "NT$", offrampNetwork: "CIFS", offrampFee: "NT$15" },
 };
 

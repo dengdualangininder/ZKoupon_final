@@ -114,21 +114,21 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
           Furthermore, with Flash, businesses do not need to worry about 12-word secret phrases or gas tokens, making Flash much easier to use than MetaMask. Finally, with Flash,
           businesses can download a .CSV file of all payment details to help with accounting.
         </div>
-        <div>The functions above cannot be completed with MetaMask alone. We believe Flash is a simple, low-cost tool that can help any business in set up crypto payments.</div>
+        <div>The functions above cannot be completed with MetaMask alone. We believe Flash is a simple, low-cost tool that can help any business set up crypto payments.</div>
       </div>
     ),
   };
 
   return (
-    <div id="learnEl" className="w-[1250px] py-[80px] flex flex-col items-center">
-      <div className="homepageHeaderFont text-center">Learning Center</div>
+    <div id="learnEl" className="homeSectionSize xl:w-[840px] flex flex-col items-center">
+      <div className="homeHeaderFont text-center">Learning Center</div>
       <div className="mt-2 mb-8 md:mb-12 text-[17px] font-medium text-center sm:w-[440px] lg:w-auto">In 5 short lessons, we teach you the basics of blockchain</div>
-      <div className="w-[820px] flex flex-col ">
+      <div className="w-full flex flex-col ">
         {titles.map((i, index) => (
           <div className={`${index == 0 ? "border-t-2" : ""} border-b-2 border-slate-300`}>
             {/*--- TITLE ---*/}
             <div
-              className={` py-4 w-full flex justify-between items-center cursor-pointer desktop:hover:brightness-[1.2]`}
+              className={` py-4 w-full flex justify-between items-center cursor-pointer desktop:hover:bg-[#1D364F]`}
               onClick={() => (lesson == i.id ? setLesson("") : setLesson(i.id))}
             >
               {/*---content (left) ---*/}
@@ -159,7 +159,9 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
             </div>
             {/*--- CONTENT ---*/}
             <div
-              className={`${lesson == i.id ? "max-h-[600px]" : "max-h-0"} text-sm xs:text-base leading-tight xs:leading-tight px-4 overflow-hidden transition-all duration-[600ms]`}
+              className={`${
+                lesson == i.id ? "max-h-[1300px] sm:max-h-[650px]" : "max-h-0"
+              } text-sm xs:text-base leading-tight xs:leading-tight overflow-hidden transition-all duration-[600ms]`}
             >
               {learnContent[i.id]}
             </div>

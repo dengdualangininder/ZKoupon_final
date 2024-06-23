@@ -27,7 +27,11 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
     let merchantCountryTemp = countryCurrencyString.split(" (")[0];
     setMerchantCountry(merchantCountryTemp);
     setMerchantCurrency(countryCurrencyString.split(" (")[1].replace(")", ""));
-    setMerchantName(`${merchantPaymentType === "inperson" ? "A Store in" : merchantType2data[merchantBusinessType]["merchantName"]} ${merchantCountryTemp == "Euro countries" ? "Europe" : merchantCountryTemp}`);
+    setMerchantName(
+      `${merchantPaymentType === "inperson" ? "A Store in" : merchantType2data[merchantBusinessType]["merchantName"]} ${
+        merchantCountryTemp == "Euro countries" ? "Europe" : merchantCountryTemp
+      }`
+    );
   };
 
   const onClickMerchantType = (e: React.MouseEvent<HTMLElement>) => {
@@ -60,12 +64,12 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
       {/*--- header + select currency ---*/}
       <div data-show="yes" className="opacity-0 transition-all duration-1000">
         {/*--- header ---*/}
-        <div className="homepageHeaderFont text-center">How It Works</div>
+        <div className="homeHeaderFont text-center">How It Works</div>
         {/*--- select currency ---*/}
-        <div className="mt-12 sm:mt-8 w-full flex flex-col sm:flex-row justify-center items-center">
-          <label className="sm:mr-3 text-xl sm:text-lg font-medium">Select your currency: </label>
+        <div className="my-12 pb-4 w-full flex flex-col sm:flex-row justify-center items-center">
+          <label className="sm:mr-3 overviewHeader2Font">Select your currency: </label>
           <select
-            className="mt-4 sm:mt-0 h-[44px] sm:h-[36px] font-medium pr-10 text-xl sm:text-base leading-none border bg-dark6 border-slate-600 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-colors duration-500 rounded-md"
+            className="mt-4 sm:mt-0 h-[44px] sm:h-[36px] py-0 font-medium pr-10 text-xl sm:text-base leading-none border bg-dark6 border-slate-600 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-colors duration-500 rounded-md"
             onChange={async (e) => {
               const merchantCurrencyTemp = e.target.value;
               setMerchantCurrency(merchantCurrencyTemp);
@@ -77,63 +81,19 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
             ))}
           </select>
         </div>
-
-        {/* <div className="mt-1 flex flex-col items-center p-3 border border-gray-500 rounded-md">
-            <div className="flex justify-center items-center px-4 py-2 border border-gray-500 rounded-[4px]">
-              <select id="overviewCountryCurrency" className="px-1 text-lg lg:text-base border-gray-300 rounded-lg outline-none cursor-pointer border-transparent" onChange={onChangeCountryCurrency}>
-                {countryCurrencyList.map((i, index) => (
-                  <option key={index} className="bg-white">
-                    {i}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mt-3 grid grid-cols-3 md:grid-cols-5 gap-1">
-              <div
-                onClick={onClickMerchantType}
-                id="overviewinstore"
-                data-category="merchantBusinessType"
-                className={`flex flex-col items-center cursor-pointer rounded-[4px] py-2 px-2 border border-gray-500 lg:hover:border-gray-500 transition-transform duration-300 backface-hidden relative`}
-              >
-                <div>
-                  <FontAwesomeIcon icon={faShop} className="text-xl text-blue-500 pointer-events-none" />
-                </div>
-                <div className="text-lg lg:text-base leading-none lg:leading-tight text-center pointer-events-none">
-                  In-Store
-                  <br />
-                  Payments
-                </div>
-              </div>
-              {Object.keys(merchantType2data).map((i, index) => (
-                <div
-                  onClick={onClickMerchantType}
-                  id={`overview${i}`}
-                  data-category="merchantBusinessType"
-                  key={index}
-                  className="relative flex flex-col items-center cursor-pointer rounded-[4px] py-2 px-2 border border-transparent lg:hover:border-gray-500 transition-transform duration-300 backface-hidden"
-                >
-                  <div>
-                    <FontAwesomeIcon icon={merchantType2data[i].fa} className="text-xl text-blue-500 pointer-events-none" />
-                  </div>
-                  <div className="text-lg lg:text-base leading-none text-center pointer-events-none">{merchantType2data[i].text}</div>
-                  <div className="text-sm leading-none pointer-events-none text-center tracking-tight">{merchantType2data[i].subtext ? `(${merchantType2data[i].subtext})` : ""}</div>
-                </div>
-              ))}
-            </div>
-          </div> */}
       </div>
 
       {/*--- STEPS ---*/}
       <div
         data-show="slide"
-        className="mt-16 sm:mt-12 sm:w-[85%] sm:min-w-[588px] max-w-[700px] xl:w-full xl:max-w-[1240px] grid grid-cols-1 sm:grid-cols-[280px_280px] xl:grid-cols-[222px_280px_280px_280px] justify-center sm:justify-between gap-y-16 sm:gap-y-10 xl:gap-10"
+        className="sm:w-[90%] sm:min-w-[588px] md:min-w-[720px] md:max-w-[820px] lg:min-w-[920px] xl:desktop:w-full xl:desktop:max-w-[1240px] grid grid-cols-[350px] sm:grid-cols-[280px_280px] md:grid-cols-[350px_350px] lg:grid-cols-[400px_400px] xl:desktop:grid-cols-[222px_280px_280px_280px] justify-center sm:justify-between gap-y-16 sm:gap-y-10 lg:gap-y-16 xl:desktop:gap-x-10"
       >
         {/*---step 1---*/}
-        <div data-show="step" className="w-[350px] sm:w-[222px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4">
+        <div data-show="step" className="w-full xl:desktop:w-[222px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4">
           {/*---title---*/}
           <div className="w-full flex items-center">
             <div className="overviewNumber">1</div>
-            <div className={` overviewStepTitle`}>You display a QR code</div>
+            <div className={`overviewStepTitle`}>You display a QR code</div>
           </div>
           {/*--- image ---*/}
           <div className="relative w-[180px] h-[260px] sm:h-[368px]">
@@ -150,7 +110,7 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
         </div>
 
         {/*---Step 2---*/}
-        <div data-show="step" className="w-[350px] sm:w-[280px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-200">
+        <div data-show="step" className="w-full flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-200">
           {/*---title---*/}
           <div className="w-full flex items-center">
             <div className="overviewNumber">2</div>
@@ -170,7 +130,9 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
                   <span className="linkDark">
                     MetaMask app<sup>?</sup>
                   </span>
-                  <div className="w-full bottom-[calc(100%+4px)] left-0 overviewTooltip">MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.</div>
+                  <div className="w-full bottom-[calc(100%+4px)] left-0 overviewTooltip">
+                    MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.
+                  </div>
                 </span>{" "}
                 will open
               </div>
@@ -191,14 +153,15 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
                   </span>
                   <div className="bottom-[calc(100%+8px)] left-0 overviewTooltip">1 USDC token equals to 1 USD, as gauranteed by Circle. Almost all crypto users have USDC.</div>
                 </span>{" "}
-                {merchantCurrency == "USD" ? "" : <span>&#40;with a value equal to the amount of {merchantCurrency} entered&#41;</span>} will be sent from their MetaMask to your Flash app
+                {merchantCurrency == "USD" ? "" : <span>&#40;with a value equal to the amount of {merchantCurrency} entered&#41;</span>} will be sent from their MetaMask to your
+                Flash app
               </div>
             </div>
           </div>
         </div>
 
         {/*---step 3---*/}
-        <div data-show="step" className="w-[350px] sm:w-[280px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-400">
+        <div data-show="step" className="w-full flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-400">
           {/*---title---*/}
           <div className="w-full flex items-center">
             <div className="overviewNumber">3</div>
@@ -210,12 +173,15 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
           </div>
           {/*---image and bullet points---*/}
           <div className="overviewBulletPoints">
-            <div>In the Flash app, you will see the payment after ~5s. Employees can also log into your Flash app (with restricted functions) on a shared or personal device to confirm payment</div>
+            <div>
+              In the Flash app, you will see the payment after ~5s. Employees can also log into your Flash app (with restricted functions) on a shared or personal device to confirm
+              payment
+            </div>
           </div>
         </div>
 
         {/*---step 4---*/}
-        <div data-show="step" className="w-[350px] sm:w-[280px] flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-600">
+        <div data-show="step" className="w-full flex flex-col items-center translate-x-[1500px] transition-all duration-1500 ease-out space-y-4 delay-600">
           {/*---title---*/}
           <div className="w-full flex items-center">
             <div className="overviewNumber">4</div>
@@ -261,8 +227,8 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
               <div className="">
                 {(merchantCurrency == "USD" || merchantCurrency == "EUR") && (
                   <div>
-                    In the "Cash Out" menu, click "Transfer to Coinbase" and make a transfer. Then, click "Transfer to Bank" and make a transfer. On this second transfer, USDC will be automatically converted to{" "}
-                    {merchantCurrency == "USD" ? "USD" : "EUR*"} and the money sent to your bank
+                    In the "Cash Out" menu, click "Transfer to Coinbase" and make a transfer. Then, click "Transfer to Bank" and make a transfer. On this second transfer, USDC will
+                    be automatically converted to {merchantCurrency == "USD" ? "USD at a 1:1 rate" : "EUR*"} and the money sent to your bank (no fees)
                   </div>
                 )}
                 {merchantCurrency == "TWD" && <div>In the "Cash Out" menu, click "Transfer to MAX"</div>}
@@ -284,8 +250,9 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
                   <span className="group">
                     <span className="linkDark">how?</span>
                     <div className="w-full bottom-[calc(100%+4px)] left-0 overviewTooltip">
-                      When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating
-                      rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-TWD rate offered by Flash is usually 1-5% better than the USD-to-TWD rate at any bank.
+                      When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long
+                      run, these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra
+                      0.3% because the USDC-to-TWD rate offered by Flash is usually 1-5% better than the USD-to-TWD rate at any bank.
                     </div>
                   </span>
                   )
