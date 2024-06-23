@@ -149,35 +149,16 @@ const User = () => {
     console.log("/app, page.tsx, useEffect run once");
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
-    const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
+    // const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    const isMobileAndNotStandaloneTemp = isMobileTemp && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
-    console.log("isMobileTemp:", isMobileTemp);
-    setIsMobile(isMobileTemp);
+    const isMobileAndNotStandaloneTemp = !isDesktop && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
+    console.log("isMobile:", !isDesktop);
+    setIsMobile(!isDesktop);
     if (isMobileAndNotStandaloneTemp) {
       console.log("detected mobile & not standalone");
-      // detect browser and redirect to "Save To Homescreen"
-      const userAgent = navigator.userAgent;
-      if (userAgent.match(/chrome|chromium|crios/i)) {
-        setBrowser("Chrome");
-      } else if (userAgent.match(/firefox|fxios/i)) {
-        setBrowser("Firefox");
-      } else if (userAgent.match(/safari/i)) {
-        setBrowser("Safari");
-      } else if (userAgent.match(/opr\//i)) {
-        setBrowser("Opera");
-      } else if (userAgent.match(/edg/i)) {
-        setBrowser("Edge");
-      } else if (userAgent.match(/samsungbrowser/i)) {
-        setBrowser("Samsung");
-      } else if (userAgent.match(/ucbrowser/i)) {
-        setBrowser("UC");
-      } else {
-        setBrowser("");
-      }
-      // setPage("saveToHome");
-      // console.log("page set to saveToHome");
-      // return;
+      setPage("saveToHome");
+      return;
     }
 
     // detect and set light/dark mode
@@ -431,7 +412,7 @@ const User = () => {
         </div>
       )}
 
-      {page === "saveToHome" && <PWA browser={browser} />}
+      {page === "saveToHome" && <PWA />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} isUsabilityTest={isUsabilityTest} />}
       {page === "intro" && (
         <Intro2B
@@ -461,7 +442,9 @@ const User = () => {
                   { id: "settings", title: "SETTINGS", imgWhite: "/settingsWhite.svg", imgBlack: "/settingsBlack.svg" },
                 ].map((i) => (
                   <div
-                    className={`cursor-pointer flex flex-col items-center justify-center ${menu == i.id ? "opacity-100" : "opacity-50"} desktop:hover:opacity-100 active:opacity-100`}
+                    className={`cursor-pointer flex flex-col items-center justify-center ${
+                      menu == i.id ? "opacity-100" : "opacity-50"
+                    } desktop:hover:opacity-100 active:opacity-100`}
                     id={i.id}
                     key={i.id}
                     onClick={async (e) => {
@@ -500,7 +483,9 @@ const User = () => {
             )}
           </div>
           {/*---menu pages---*/}
-          {menu === "payments" && <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />}
+          {menu === "payments" && (
+            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />
+          )}
           {menu === "cashOut" && isAdmin && (
             <CashOut
               paymentSettingsState={paymentSettingsState!}
@@ -560,7 +545,8 @@ const User = () => {
                 <div className=" flex-col justify-center">
                   <div className="pb-1 text-base portrait:sm:text-lg landscape:lg:text-lg font-medium text-white">NEW PAYMENT</div>
                   <div className="font-semibold text-[22px] portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl">
-                    {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])} {paymentSettingsState?.merchantCurrency} from ..{transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
+                    {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])} {paymentSettingsState?.merchantCurrency}{" "}
+                    from ..{transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
                   </div>
                 </div>
                 {/*--- buttons ---*/}
@@ -635,8 +621,8 @@ const User = () => {
                   <p>Our journey together towards global payments with 0% fees is a long one.</p>
                   <p>For one, credit cards charge businesses ~3% and gives ~1% back to customers. This locks customers into using credit cards.</p>
                   <p>
-                    To be able to compete, we are requiring businesses give an instant 2% discount to customers. If a customer pays you 10 EUR, you will ultimately recieve 9.8 EUR in the bank. All savings go to customers (Flash makes zero profit per
-                    transaction).
+                    To be able to compete, we are requiring businesses give an instant 2% discount to customers. If a customer pays you 10 EUR, you will ultimately recieve 9.8 EUR
+                    in the bank. All savings go to customers (Flash makes zero profit per transaction).
                   </p>
                   <p>When crypto payments become more popular, we will make this 2% discount optional.</p>
                 </div>
@@ -649,7 +635,9 @@ const User = () => {
             </div>
           )}
 
-          {cashoutIntroModal && <CashoutIntroModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setCashoutIntroModal={setCashoutIntroModal} />}
+          {cashoutIntroModal && (
+            <CashoutIntroModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setCashoutIntroModal={setCashoutIntroModal} />
+          )}
         </div>
       )}
     </div>
