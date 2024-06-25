@@ -22,8 +22,8 @@ const Simple = () => {
         </div>
       </div>
       {/*--- image (right) ---*/}
-      <div className="relative w-full h-[300px] sm:w-[500px] sm:h-[400px] xl:w-[47%] xl:h-[500px] xl:desktop:w-[440px] xl:desktop:h-[300px]">
-        <Image src="/pos.jpg" alt="pointOfSale" fill style={{ objectFit: "contain" }} />
+      <div className="mt-10 relative w-[356px] h-[calc(356px/1.5)] sm:w-[500px] sm:h-[calc(500px/1.5)] xl:desktop:w-[480px] xl:desktop:h-[calc(480px/1.5)] rounded-3xl overflow-hidden">
+        <Image src="/pos.jpg" alt="pointOfSale" fill />
       </div>
     </div>
   );

@@ -34,12 +34,16 @@ const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
             {/*--- rates ---*/}
             <div className="">
               <div className="w-full flex justify-between items-center">
-                <div>Flash&#129050;{currencyToData[merchantCurrency].cex} (via Polygon)</div>
+                <div>
+                  Flash{"\u279E"}
+                  {currencyToData[merchantCurrency].cex}
+                </div>
                 <div>~0.05 USDC</div>
               </div>
               <div className="w-full flex justify-between items-center">
                 <div>
-                  {currencyToData[merchantCurrency].cex}&#129050;Bank (via {currencyToData[merchantCurrency].offrampNetwork})
+                  {currencyToData[merchantCurrency].cex}
+                  {"\u279E"}Bank (via {currencyToData[merchantCurrency].offrampNetwork})
                 </div>
                 <div>{currencyToData[merchantCurrency].offrampFee}</div>
               </div>
