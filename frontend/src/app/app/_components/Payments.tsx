@@ -47,7 +47,17 @@ export const getLocalDate = (mongoDate: string) => {
   return `${date[2]}-${date[1]}-${date[0]}`;
 };
 
-const Payments = ({ transactionsState, setTransactionsState, paymentSettingsState, isAdmin }: { transactionsState: Transaction[]; setTransactionsState: any; paymentSettingsState: PaymentSettings; isAdmin: boolean }) => {
+const Payments = ({
+  transactionsState,
+  setTransactionsState,
+  paymentSettingsState,
+  isAdmin,
+}: {
+  transactionsState: Transaction[];
+  setTransactionsState: any;
+  paymentSettingsState: PaymentSettings;
+  isAdmin: boolean;
+}) => {
   console.log("Payments component rendered");
 
   // states
@@ -312,7 +322,9 @@ const Payments = ({ transactionsState, setTransactionsState, paymentSettingsStat
       {/*--- TOP BAR h-140px/180px/160px ---*/}
       <div className="flex-none w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] landscape:xl:desktop:h-[160px] flex flex-col">
         {/*--- shaded region ---*/}
-        <div className={`flex-1 flex flex-col items-center bg-gradient-to-br from-[15%] to-[85%] from-light2 to-light4 dark:from-dark2 dark:to-dark4 landscape:dark:to-dark1 landscape:dark:from-dark1 pr-[${scrollWidth}px]`}>
+        <div
+          className={`flex-1 flex flex-col items-center bg-gradient-to-br from-[15%] to-[85%] from-light2 to-light4 dark:from-dark2 dark:to-dark4 landscape:dark:to-dark1 landscape:dark:from-dark1 pr-[${scrollWidth}px]`}
+        >
           {/*--- buttons ---*/}
           <div className="px-2 paymentsWidth h-[65%] flex items-center justify-between">
             {/*--- left buttons ---*/}
@@ -403,51 +415,56 @@ const Payments = ({ transactionsState, setTransactionsState, paymentSettingsStat
         id="table"
         className="w-full portrait:h-[calc(100vh-84px-140px)] landscape:h-[calc(100vh-140px)] portrait:sm:h-[calc(100vh-140px-180px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto select-none relative"
       >
-        <table className="paymentsWidth table-fixed text-left relative">
-          {(searchedTxns.length != 0 ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
-            <tr
-              className={`${
-                txn.refund ? "opacity-50" : ""
-              } w-full portrait:h-[calc((100vh-84px-140px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-180px)/6)] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer relative`}
-              id={txn.txnHash}
-              key={index}
-              onClick={onClickTxn}
-            >
-              {/*---Time---*/}
-              <td className="portrait:pl-2 portrait:sm:pl-0 w-[28%]">
-                {/*--- "to refund" ---*/}
-                {txn.toRefund && (
-                  <div
-                    // @ts-ignore
-                    style={{ "writing-mode": "tb-rl" }}
-                    className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] portrait:pr-1 portrait:sm:pr-0 bottom-0 text-center textSm landscape:xl:desktop:text-base font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
-                  >
-                    To Refund
+        {transactionsState.length != 0 && (
+          <table className="paymentsWidth table-fixed text-left relative">
+            {(searchedTxns.length != 0 ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
+              <tr
+                className={`${
+                  txn.refund ? "opacity-50" : ""
+                } w-full portrait:h-[calc((100vh-84px-140px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-180px)/6)] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer relative`}
+                id={txn.txnHash}
+                key={index}
+                onClick={onClickTxn}
+              >
+                {/*---Time---*/}
+                <td className="portrait:pl-2 portrait:sm:pl-0 w-[28%]">
+                  {/*--- "to refund" ---*/}
+                  {txn.toRefund && (
+                    <div
+                      // @ts-ignore
+                      style={{ "writing-mode": "tb-rl" }}
+                      className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] portrait:pr-1 portrait:sm:pr-0 bottom-0 text-center textSm landscape:xl:desktop:text-base font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
+                    >
+                      To Refund
+                    </div>
+                  )}
+                  {/*--- time/date ---*/}
+                  <div className="relative">
+                    <span className="text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl">{getLocalTime(txn.date).time}</span>
+                    <span className="portrait:text-sm landscape:text-xl portrait:sm:text-xl landscape:lg:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
+                    <div className="portrait:text-sm landscape:text-sm portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base portrait:leading-none landscape:leading-none portrait:sm:leading-none landscape:lg:leading-none landscape:xl:desktop:leading-none absolute bottom-[calc(100%+1px)] font-medium text-dualGray">
+                      {getLocalDateWords(txn.date).toUpperCase()}
+                    </div>
                   </div>
-                )}
-                {/*--- time/date ---*/}
-                <div className="relative">
-                  <span className="text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl">{getLocalTime(txn.date).time}</span>
-                  <span className="portrait:text-sm landscape:text-xl portrait:sm:text-xl landscape:lg:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
-                  <div className="portrait:text-sm landscape:text-sm portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base portrait:leading-none landscape:leading-none portrait:sm:leading-none landscape:lg:leading-none landscape:xl:desktop:leading-none absolute bottom-[calc(100%+1px)] font-medium text-dualGray">
-                    {getLocalDateWords(txn.date).toUpperCase()}
-                  </div>
-                </div>
-              </td>
-              {/*---currencyAmount---*/}
-              <td className="w-[35%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">{txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}</td>
-              {/*---Customer---*/}
-              <td className="w-[37%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</td>
+                </td>
+                {/*---currencyAmount---*/}
+                <td className="w-[35%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
+                  {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
+                </td>
+                {/*---Customer---*/}
+                <td className="w-[37%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
+                  ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
+                </td>
 
-              {/*---Online Options---*/}
-              {/* {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
+                {/*---Online Options---*/}
+                {/* {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
                   <div className="text-sm leading-tight">
                     <div>{txn.customerEmail.split("@")[0]}</div>
                     <div>@{txn.customerEmail.split("@")[1]}</div>
                   </div>
                 )} */}
 
-              {/* {paymentSettingsState.merchantFields.includes("daterange") && (
+                {/* {paymentSettingsState.merchantFields.includes("daterange") && (
                   <td className="xs:px-2">
                     <div className="text-sm leading-tight whitespace-nowrap">
                       <div>{txn.startDate}</div>
@@ -469,12 +486,16 @@ const Payments = ({ transactionsState, setTransactionsState, paymentSettingsStat
                   </td>
                 )}
                 {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>} */}
-            </tr>
-          ))}
-          {fillerRows?.map((txn: any, index: number) => (
-            <tr className={`flex-none w-full portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)] landscape:lg:h-[calc((100vh-140px-32px)/6)]`} key={index}></tr>
-          ))}
-        </table>
+              </tr>
+            ))}
+            {fillerRows?.map((txn: any, index: number) => (
+              <tr
+                className={`flex-none w-full portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)] landscape:lg:h-[calc((100vh-140px-32px)/6)]`}
+                key={index}
+              ></tr>
+            ))}
+          </table>
+        )}
         {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textLg">No payments</div>}
       </div>
 
@@ -549,7 +570,9 @@ const Payments = ({ transactionsState, setTransactionsState, paymentSettingsStat
               <div className="h-[25%] flex items-center justify-between">
                 <div className="textLg font-medium">Date</div>
                 <div
-                  className={`${searchDate && searchDate.to ? "" : " text-dualGray dark:text-[#53565C] font-medium italic"} inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
+                  className={`${
+                    searchDate && searchDate.to ? "" : " text-dualGray dark:text-[#53565C] font-medium italic"
+                  } inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
                   onClick={() => setShowCalendar(!showCalendar)}
                 >
                   {searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "select dates"}

@@ -526,6 +526,10 @@
     @apply buttonPrimaryColor flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
   }
 
+  .buttonBlack {
+    @apply text-white bg-black transition-all duration-[300ms] desktop:hover:bg-dark5 active:bg-dark5 flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
+  }
+
   .buttonLightColor {
     @apply text-white bg-gradient-to-r from-buttonLight2 to-buttonLight1 border-buttonLight1 desktop:hover:brightness-[1.2] active:brightness-[1.2];
   }

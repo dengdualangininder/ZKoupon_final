@@ -369,7 +369,7 @@ const Intro = ({
               </div>
               {/*--- buttons ---*/}
               <div className="w-full pt-2 pb-[44px] space-y-8 portrait:sm:space-y-8 landscape:lg:space-y-8 textLg flex flex-col items-center">
-                <button className="buttonPrimary dark:bg-black dark:border-black" onClick={onClickSIWC}>
+                <button className="buttonPrimary dark:bg-black border-none landscape:xl:desktop:hover:bg-dark5" onClick={onClickSIWC}>
                   Link Coinbase Account
                 </button>
                 <div
@@ -401,7 +401,7 @@ const Intro = ({
               </div>
               {/*--- button ---*/}
               <button
-                className="buttonPrimary dark:bg-black dark:border-black"
+                className="buttonBlack"
                 onClick={() => {
                   window.open("https://www.coinbase.com/signup", "_blank");
                   setPage("app");
