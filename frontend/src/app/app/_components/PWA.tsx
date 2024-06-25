@@ -43,7 +43,7 @@ const PWA = () => {
     <div className="h-[100dvh] py-6 flex flex-col items-center dark:bg-light2 dark:text-black overflow-y-auto">
       <div className="w-full flex flex-col items-center pb-12 my-auto">
         {/*---image---*/}
-        <div className="flex-none relative h-[320px] w-[160px] drop-shadow-[0px_4px_8px_rgb(0,0,0,0.3)]">
+        <div className="flex-none relative h-[320px] w-[160px] drop-shadow-[0px_4px_8px_rgb(0,0,0,0.3)] overflow-visible">
           <Image src="/PWA.png" alt="phone" fill />
         </div>
         {/*---text---*/}

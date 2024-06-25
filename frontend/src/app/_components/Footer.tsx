@@ -26,7 +26,7 @@ const Footer = () => {
       {/*--- logo + copyright---*/}
       <div className="mt-20 lg:mt-0 lg:w-1/3 lg:h-full flex flex-col items-center lg:items-start lg:justify-between">
         <div className="relative w-[140px] h-[80px]">
-          <Image src="logoBlackBg.svg" alt="Flash" fill />
+          <Image src="logoWhiteNoBg.svg" alt="Flash" fill />
         </div>
         <div className="mt-6 lg:mt-0 text-sm lg:text-xs">&copy; 2024 Flash Payments. All rights reserved.</div>
       </div>
