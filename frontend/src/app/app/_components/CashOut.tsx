@@ -57,8 +57,8 @@ const CashOut = ({
   const [cexBalance, setCexBalance] = useState<string | null>(null);
   const [isCexAccessible, setIsCexAccessible] = useState(true);
   const [txnHash, setTxnHash] = useState("");
-  const [usdcTransferToCex, setUsdcTransferToCex] = useState("");
-  const [usdcTransferToBank, setUsdcTransferToBank] = useState("");
+  const [usdcTransferToCex, setUsdcTransferToCex] = useState<string | null>(null);
+  const [usdcTransferToBank, setUsdcTransferToBank] = useState<string | null>(null);
   const [currencyDeposited, setCurrencyDeposited] = useState("");
   const [cbBankAccountName, setCbBankAccountName] = useState<any>("");
   const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
@@ -239,6 +239,12 @@ const CashOut = ({
       const usdcTransferToCexTemp = usdcTransferToCex;
       await new Promise((resolve) => setTimeout(resolve, 6000));
       setCexBalance((Number(cexBalance) + Number(usdcTransferToCexTemp)).toFixed(2));
+      return;
+    }
+
+    if (!usdcTransferToCex || Number(usdcTransferToCex) == 0) {
+      setErrorModal(true);
+      setErrorMsg("Please enter an amount");
       return;
     }
 
@@ -646,7 +652,7 @@ const CashOut = ({
                   icon={faAngleLeft}
                   onClick={() => {
                     setTransferToCexModal(false);
-                    setUsdcTransferToCex("");
+                    setUsdcTransferToCex(null);
                   }}
                 />
               </div>
@@ -655,7 +661,7 @@ const CashOut = ({
                 className="xButtonContainer"
                 onClick={() => {
                   setTransferToCexModal(false);
-                  setUsdcTransferToCex("");
+                  setUsdcTransferToCex(null);
                 }}
               >
                 <div className="xButton">&#10005;</div>
@@ -686,7 +692,7 @@ const CashOut = ({
                     type="number"
                     inputMode="decimal"
                     onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
-                    value={usdcTransferToCex}
+                    value={usdcTransferToCex || ""}
                     placeholder="0"
                   />
                   {/*--- max + USDC ---*/}
@@ -803,7 +809,7 @@ const CashOut = ({
                     type="number"
                     inputMode="decimal"
                     onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
-                    value={usdcTransferToBank}
+                    value={usdcTransferToBank || ""}
                     placeholder="0"
                   />
                   {/*--- max + USDC ---*/}
@@ -883,7 +889,7 @@ const CashOut = ({
                 setTransferState("initial");
                 setTransferToCexSuccessModal(false);
                 setTransferToCexModal(false);
-                setUsdcTransferToCex("");
+                setUsdcTransferToCex(null);
               }}
             >
               <div className="xButton">&#10005;</div>
@@ -903,7 +909,7 @@ const CashOut = ({
                   setTransferState("initial");
                   setTransferToCexSuccessModal(false);
                   setTransferToCexModal(false);
-                  setUsdcTransferToCex("");
+                  setUsdcTransferToCex(null);
                 }}
               >
                 CLOSE
@@ -923,7 +929,7 @@ const CashOut = ({
                 setTransferState("initial");
                 setTransferToBankSuccessModal(false);
                 setTransferToBankModal(false);
-                setUsdcTransferToBank("");
+                setUsdcTransferToBank(null);
               }}
             >
               <div className="xButton">&#10005;</div>
@@ -951,7 +957,7 @@ const CashOut = ({
                   setTransferState("initial");
                   setTransferToBankSuccessModal(false);
                   setTransferToBankModal(false);
-                  setUsdcTransferToBank("");
+                  setUsdcTransferToBank(null);
                 }}
               >
                 CLOSE
