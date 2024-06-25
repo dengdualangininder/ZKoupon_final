@@ -24,7 +24,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
     lesson1: (
       <div className="learnAnswerContainer">
         <div>
-          <span className="learnBoldFont">Blockchains</span> are like banks.
+          A <span className="learnBoldFont">blockchain</span> is like a banking system.
         </div>
         <div>
           The banking system is composed of bank accounts, where accounts can transfer currencies (USD, EUR, YEN) to other accounts. A record of account balances and transactions
@@ -50,7 +50,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
           Base, Polygon, Avalanche, Blast), are built using the same technology called the <span className="learnBoldFont">Ethereum Virtual Machine (EVM)</span>. An advantage of
           EVM is that a single EVM blockchain account can be used for all EVM blockchains. For example, if you have an EVM blockchain account and your EVM address is{" "}
           <span className="break-all">0x709D8145D21681f8287a556C67cD58Cb8A7FB3Aa</span>, you can use this same address to receive tokens on the Ethereum chain, Polygon chain, or
-          any other EVM chain. Payments on Flash are on Polygon. So, for now, we’ll only focus on EVM blockchains.
+          any other EVM chain. Payments on Flash use an EVM chain (Polygon), so for now we'll only focus on EVM blockchains.
         </div>
       </div>
     ),
@@ -82,10 +82,10 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
           cryptocurrency exchange account.
         </div>
         <div>
-          There are 2 main reasons why people want their tokens in a Web3 wallet than on a cryptocurrency exchange: 1) Sending/receiving tokens on a Web3 wallet takes ~3s, compared
-          to ~3 minutes on a cryptocurrency exchange. 2) A Web3 wallet can connect with thousands of blockchain-based web applications. For example, you can earn U.S. treasury
-          rates on the blockchain. To do this, first buy USDC tokens on a cryptocurrency exchange. Then, send the USDC to MetaMask. With MetaMask, you can connect to the Flux
-          Finance website and deposit your USDC on there to earn U.S. treasury rates (~5% APR).
+          There are 2 main reasons why people want their tokens in a Web3 wallet rather than on a cryptocurrency exchange: 1) Sending/receiving tokens on a Web3 wallet takes ~3s,
+          compared to ~3 minutes on a cryptocurrency exchange. 2) A Web3 wallet can connect with thousands of blockchain-based web applications. For example, you can earn U.S.
+          treasury rates on the blockchain. To do this, first buy USDC tokens on a cryptocurrency exchange. Then, send the USDC to MetaMask. With MetaMask, you can connect to the
+          Flux Finance website and deposit your USDC on there to earn U.S. treasury rates (~5% APR).
         </div>
         <div>
           With 50+ million people transacting on the blockchain, a large majority of these people will likely have the MetaMask app on their phones and USDC tokens in it. That is
@@ -97,10 +97,20 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
       <div className="learnAnswerContainer">
         <div>If you have MetaMask, you can easily receive USDC payments from customers. What can Flash do that MetaMask cannot do?</div>
         {merchantCurrency != "USD" && (
-          <div>
+          <div className="relative">
             First, most blockchain users transact in USDC (1 USDC = 1 USD). In non-USD countries, businesses and customers will have to agree on how much USDC should be sent for
-            payment. With Flash, the customer can enter the amount of EUR for payment. Flash then applies a fair exchange rate to calculate the amount of USDC sent for payment.
-            Flash does not profit through exchange rates, so you and your customers are always gauranteed true market rates.
+            payment. With Flash, the customer can enter the amount of local currency ({merchantCurrency}) for payment. Flash then applies a fair exchange rate to calculate the
+            amount of USDC sent for payment. Flash does not profit through exchange rates, so you and your customers are always gauranteed true market rates. Furthermore, Flash is
+            designed so that you will not lose money from fluctuating rates (
+            <span className="group">
+              <span className="linkDark">how?</span>
+              <div className="w-full top-[calc(100%+4px)] left-0 overviewTooltip">
+                When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run,
+                these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because
+                the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.
+              </div>
+            </span>
+            ).
           </div>
         )}
         <div>
@@ -111,10 +121,10 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
               businesses can cash out to their bank in a single interface on the Flash app.{" "}
             </span>
           )}
-          Furthermore, with Flash, businesses do not need to worry about 12-word secret phrases or gas tokens, making Flash much easier to use than MetaMask. Finally, with Flash,
-          businesses can download a .CSV file of all payment details to help with accounting.
+          Furthermore, with Flash, businesses do not need to worry about 12-word secret phrases or gas tokens, making Flash much easier to use than MetaMask. Lastly, businesses can
+          download a .CSV file of all payment details to help with accounting.
         </div>
-        <div>The functions above cannot be completed with MetaMask alone. We believe Flash is a simple, low-cost tool that can help any business set up crypto payments.</div>
+        <div>The functions above cannot be completed with MetaMask alone. Flash is a simple, low-cost tool that can help any business set up crypto payments.</div>
       </div>
     ),
   };

@@ -90,13 +90,13 @@ const Home = () => {
         </div>
       </div>
 
-      <div data-show="yes" className="bg-light2 text-black w-full flex justify-center opacity-0 transition-all duration-1000">
+      <div data-show="yes" className="bg-dark1 text-white w-full flex justify-center opacity-0 transition-all duration-1000">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Contact />
         </div>
       </div>
 
-      <div className="bg-dark1 text-white w-full flex justify-center border-t border-slate-600">
+      <div className="bg-gradient-to-b from-dark1 to-dark5 text-white w-full flex justify-center">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Footer />
         </div>

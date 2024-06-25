@@ -25,9 +25,9 @@ export default function Hero() {
             With a{" "}
             <span className="group">
               <span className="link font-semibold">true peer-to-peer</span>
-              <div className="invisible group-hover:visible w-full absolute left-0 bottom-[calc(100%+4px)] text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg px-4 py-3 bg-slate-700 text-white rounded-xl z-[1]">
-                True P2P payments mean that customers pay businesses directly with <span className="font-bold">no middlemen</span>. Therefore, Flash does not charge fees or make profit by giving you or your customers suboptimal token conversion
-                rates.
+              <div className="invisible group-hover:visible w-full absolute left-0 bottom-[calc(100%+4px)] text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-4 py-3 bg-slate-700 text-white rounded-xl border border-black z-[1]">
+                True P2P payments mean that customers pay businesses directly with <span className="font-bold">no middlemen</span>. Therefore, Flash does not charge fees or make
+                profit by giving you or your customers suboptimal token conversion rates.
               </div>
             </span>{" "}
             payments design, Flash Payments is a simple and low-cost platform to help you set up crypto payments for your business. Setting up takes 1 minute.

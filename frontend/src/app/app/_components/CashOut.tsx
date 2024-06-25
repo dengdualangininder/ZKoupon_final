@@ -53,8 +53,8 @@ const CashOut = ({
 }) => {
   console.log("CashOut component rendered");
 
-  const [flashBalance, setFlashBalance] = useState("325.55");
-  const [cexBalance, setCexBalance] = useState("");
+  const [flashBalance, setFlashBalance] = useState<string | null>(null);
+  const [cexBalance, setCexBalance] = useState<string | null>(null);
   const [isCexAccessible, setIsCexAccessible] = useState(true);
   const [txnHash, setTxnHash] = useState("");
   const [usdcTransferToCex, setUsdcTransferToCex] = useState("");
@@ -396,7 +396,7 @@ const CashOut = ({
                 </div>
               </div>
             ) : (
-              <div className="cashoutBalance text-transparent w-[150px] bg-light4 animate-pulse rounded-md">0000</div>
+              <div className="cashoutBalance text-transparent w-[150px] bg-slate-200 dark:bg-dark5 animate-pulse rounded-md">0000</div>
             )}
             {/*---details---*/}
             <div className={`${flashDetails ? "max-h-[120px]" : "max-h-[0px]"} cashoutDetailsContainer`}>
@@ -426,24 +426,24 @@ const CashOut = ({
             </div>
           </div>
           {/*--- button ---*/}
-          <div className="cashoutButtonContainer">
-            {flashBalance ? (
+          {flashBalance && (
+            <div className="cashoutButtonContainer">
               <button className="cashoutButton" onClick={onClickTransferToCex}>
                 Transfer to {cashoutSettingsState?.cex ?? "CEX"}
               </button>
-            ) : (
-              <button className="cashoutButton text-transparent bg-light4 animate-pulse">0000</button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/*---CEX---*/}
         <div className={`${paymentSettingsState?.merchantCountry != "Any country" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
-          {/*--- header + unlink ---*/}
+          {/*--- header + moreOptions ---*/}
           <div className="w-full flex justify-between items-center">
             <div className="cashoutHeader">Coinbase Account</div>
             <div
-              className={`${isCexAccessible ? "" : "hidden"} ${cexMoreOptions ? "bg-gray-200" : ""} cursor-pointer relative w-[36px] h-[36px] rounded-full flex items-center justify-center translate-x-[8px] landscape:xl:desktop:hover:bg-gray-200`}
+              className={`${isCexAccessible ? "" : "hidden"} ${
+                cexMoreOptions ? "bg-gray-200" : ""
+              } cursor-pointer relative w-[36px] h-[36px] rounded-full flex items-center justify-center translate-x-[8px] landscape:xl:desktop:hover:bg-gray-200`}
               onClick={() => {
                 setCexMoreOptions(!cexMoreOptions);
                 if (!cexMoreOptions) {
@@ -452,11 +452,17 @@ const CashOut = ({
               }}
             >
               {/* <FontAwesomeIcon icon={faEllipsisVertical} className="hidden textXl" /> */}
-              <div className={`${cexMoreOptions ? "absolute" : "hidden"} top-[calc(100%+8px)] right-0 px-4 py-1 textLg rounded-md border border-gray-300 desktop:hover:bg-gray-200 active:bg-gray-200`} onClick={onClickUnlink}>
+              <div
+                className={`${
+                  cexMoreOptions ? "absolute" : "hidden"
+                } top-[calc(100%+8px)] right-0 px-4 py-1 textLg rounded-md border border-gray-300 desktop:hover:bg-gray-200 active:bg-gray-200`}
+                onClick={onClickUnlink}
+              >
                 Unlink
               </div>
             </div>
           </div>
+
           {/*---balance + details ---*/}
           {isCexAccessible ? (
             <div className="cashoutBalanceContainer">
@@ -472,7 +478,7 @@ const CashOut = ({
                   </div>
                 </div>
               ) : (
-                <div className="cashoutBalance text-transparent w-[150px] bg-slate-200 dark:bg-dark4 animate-pulse rounded-md">0000</div>
+                <div className="cashoutBalance text-transparent w-[150px] bg-slate-200 dark:bg-dark5 animate-pulse rounded-md">0000</div>
               )}
               {/*---details---*/}
               <div className={`${cexDetails ? "max-h-[120px]" : "max-h-[0px]"} ${isCexAccessible ? "" : "hidden"} cashoutDetailsContainer`}>
@@ -841,7 +847,8 @@ const CashOut = ({
                 {/*--- to amount ---*/}
                 <div className="transferAmountToBox">
                   <div className="">
-                    {currency2symbol[paymentSettingsState?.merchantCurrency!]} {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
+                    {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
                   </div>
                   <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none"></div>
                 </div>
