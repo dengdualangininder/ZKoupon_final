@@ -7,7 +7,7 @@ export const GET = async (request: Request) => {
   console.log("getEmployeeData api");
   // read cookies
   const cookieStore = cookies();
-  const jwt = cookieStore.get("jwt")?.value ?? "";
+  const jwt = cookieStore.get("employeeJwt")?.value ?? "";
 
   try {
     // verify

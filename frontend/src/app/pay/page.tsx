@@ -18,7 +18,7 @@ import { faWallet } from "@fortawesome/free-solid-svg-icons";
 import Inperson from "./_components/Inperson";
 import ErrorModal from "../app/_components/modals/ErrorModal";
 // constants
-import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
+import { currency2decimal, currency2rateDecimal, currency2symbol, currency2correction } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
 import { getLocalDateWords, getLocalTime, getLocalDate } from "../app/_components/Payments";
@@ -36,39 +36,33 @@ const Pay = () => {
   const urlParams = { paymentType: paymentType, merchantName: merchantName, merchantCurrency: merchantCurrency, merchantEvmAddress: merchantEvmAddress };
 
   //inperson states
-  const [date, setDate] = useState<any>(new Date());
+  const [date, setDate] = useState<Date | null>(null);
   const [currencyAmount, setCurrencyAmount] = useState("");
+  const [currencyAmountAfterCashback, setCurrencyAmountAfterCashback] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [selectedToken, setSelectedToken] = useState("USDC");
-  const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
+  const [USDCBalance, setUSDCBalance] = useState("");
   const [tokenAmount, setTokenAmount] = useState("0");
+  const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
   const [fxSavings, setFxSavings] = useState("0.0"); // string with 1 decimal
   // modals and other states
   const [isSending, setIsSending] = useState("initial"); // initial | sending | complete
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   // pay form states
-  const [USDCBalance, setUSDCBalance] = useState("");
-  const [isGettingBalance, setIsGettingBalance] = useState(true);
-  const [showNetwork, setShowNetwork] = useState(false);
-  const [showToken, setShowToken] = useState(false);
-  const [gasFees, setGasFees] = useState([]);
 
   useEffect(() => {
     (async () => {
       const ethereum = await detectEthereumProvider();
-      // new code for single newtork
-      const selectedNetworkTemp = "Polygon";
       try {
         // @ts-ignore
         await ethereum?.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: chainIds[selectedNetworkTemp] }],
+          params: [{ chainId: chainIds[selectedNetwork] }],
         });
-
         // get balance
         try {
-          await getBalance(selectedNetworkTemp);
+          await getBalance(selectedNetwork);
         } catch (error) {
           console.log("error getting balance", error);
         }
@@ -80,14 +74,10 @@ const Pay = () => {
             // @ts-ignore
             await ethereum?.request({
               method: "wallet_addEthereumChain",
-              params: [addChainParams[selectedNetworkTemp]],
+              params: [addChainParams[selectedNetwork]],
             });
-            // user's MetaMask already set to selected network
-            setSelectedNetwork(selectedNetworkTemp);
-            setShowToken(true);
-            // get balance
             try {
-              await getBalance(selectedNetworkTemp);
+              await getBalance(selectedNetwork);
             } catch (error) {
               console.log("error getting balance", error);
             }
@@ -96,114 +86,96 @@ const Pay = () => {
           }
         }
       }
-      // code for multiple networks
-      // const ethereum = await detectEthereumProvider();
-      // if (selectedNetwork) {
-      //   ethereum?.on("accountsChanged", () => {
-      //     getBalance(selectedNetwork);
-      //   });
-      // }
+
+      // if user selects another account
+      ethereum?.on("accountsChanged", () => {
+        getBalance(selectedNetwork);
+      });
     })();
 
-    // get rates
-    const getRates = async () => {
-      const ratesRes = await fetch("/api/getRates", {
-        method: "POST",
-        body: JSON.stringify({ merchantCurrency: urlParams.merchantCurrency }),
-        headers: { "content-type": "application/json" },
-      });
-      const ratesData = await ratesRes.json();
-      console.log("ratesData", ratesData);
-      if (ratesData.status == "success") {
-        setRates({
-          usdcToLocal: Number((ratesData.usdcToLocal * 0.997).toFixed(currency2rateDecimal[urlParams?.merchantCurrency!])),
-          usdToLocal: Number((ratesData.usdToLocal * 0.997).toFixed(currency2rateDecimal[urlParams?.merchantCurrency!])),
-        });
-        setFxSavings((((ratesData.usdcToLocal * 0.997) / ratesData.usdToLocal - 1) * 100).toFixed(1));
-      }
-    };
-    getRates();
+    // set rates
+    urlParams.merchantCurrency == "USD" ? setRates({ usdcToLocal: 1, usdToLocal: 1 }) : getRates();
   }, []);
 
-  const merchantNetworks = [
-    { img: "/polygon.svg", name: "Polygon", gas: 0.01 },
-    { img: "/op.svg", name: "Optimism", gas: 0.01 },
-    { img: "/arb.svg", name: "Arbitrum", gas: 0.01 },
-    { img: "/bsc.svg", name: "BNB", gas: 0.05 },
-    { img: "/avax.svg", name: "Avalanche", gas: 0.03 },
-  ];
-  // const merchantTokens = [{ img: "/usdc.svg", name: "USDC", balance: USDCBalance }];
-
-  //makes it so getPrices runs once
-  const initialized = useRef(false);
-  if (!initialized.current) {
-    initialized.current = true;
-  }
-
-  const getBalance = async (network: string) => {
-    setIsGettingBalance(true);
-    // @ts-ignore
-    const provider = new ethers.BrowserProvider(ethereum);
-    // @ts-ignore
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-    // get token balances
-    const usdcContract = new ethers.Contract(tokenAddresses[network]["USDC"]["address"], erc20ABI, provider);
-    let usdcTemp = await usdcContract.balanceOf(accounts[0]);
-    usdcTemp = Number(ethers.formatUnits(usdcTemp, tokenAddresses[network]["USDC"]["decimals"]));
-    setUSDCBalance(usdcTemp.toFixed(2));
-    setIsGettingBalance(false);
-  };
-
-  const onClickNetwork = async (e: any) => {
-    // const ethereum = await detectEthereumProvider();
-    console.log(e.currentTarget.id);
-    const selectedNetworkTemp = e.currentTarget.id;
-
-    try {
-      // @ts-ignore
-      await ethereum?.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: chainIds[selectedNetworkTemp] }],
+  // get rates
+  const getRates = async () => {
+    const ratesRes = await fetch("/api/getRates", {
+      method: "POST",
+      body: JSON.stringify({ merchantCurrency: urlParams.merchantCurrency }),
+      headers: { "content-type": "application/json" },
+    });
+    const ratesData = await ratesRes.json();
+    console.log("ratesData", ratesData);
+    if (ratesData.status == "success") {
+      const rateDecimal = currency2rateDecimal[urlParams?.merchantCurrency!];
+      const correction = currency2correction[urlParams?.merchantCurrency!];
+      setRates({
+        usdcToLocal: Number((Number(ratesData.usdcToLocal) * correction).toFixed(rateDecimal)),
+        usdToLocal: Number(Number(ratesData.usdToLocal).toFixed(rateDecimal)),
       });
-      // user's MetaMask already set to selected network
-      setSelectedNetwork(selectedNetworkTemp);
-      setShowToken(true);
-      // get balance
-      try {
-        await getBalance(selectedNetworkTemp);
-      } catch (error) {
-        console.log("error getting balance", error);
-      }
-    } catch (error: any) {
-      if (error.message === "User rejected the request.") {
-        console.log("user rejected chain switch request", error);
-      } else {
-        try {
-          // @ts-ignore
-          await ethereum?.request({
-            method: "wallet_addEthereumChain",
-            params: [addChainParams[selectedNetworkTemp]],
-          });
-          // user's MetaMask already set to selected network
-          setSelectedNetwork(selectedNetworkTemp);
-          setShowToken(true);
-          // get balance
-          try {
-            await getBalance(selectedNetworkTemp);
-          } catch (error) {
-            console.log("error getting balance", error);
-          }
-        } catch (error) {
-          console.log("User rejected add chain or MetaMask not installed", error);
-        }
-      }
+      setFxSavings((((ratesData.usdcToLocal * correction) / ratesData.usdToLocal - 1) * 100).toFixed(1));
     }
   };
+
+  const getBalance = async (network: string) => {
+    // @ts-ignore
+    const provider = new ethers.BrowserProvider(window.ethereum); // detectEthereumProvider already used, so window.ethereum should be accessible on mobile
+    // @ts-ignore
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const usdcContract = new ethers.Contract(tokenAddresses[network][selectedToken]["address"], erc20ABI, provider);
+    let usdcBalanceUnformatted = await usdcContract.balanceOf(accounts[0]);
+    setUSDCBalance(ethers.formatUnits(usdcBalanceUnformatted, tokenAddresses[network][selectedToken]["decimals"]));
+  };
+
+  // const onClickNetwork = async (e: any) => {
+  //   // const ethereum = await detectEthereumProvider();
+  //   const selectedNetworkTemp = e.currentTarget.id;
+
+  //   try {
+  //     // @ts-ignore
+  //     await ethereum?.request({
+  //       method: "wallet_switchEthereumChain",
+  //       params: [{ chainId: chainIds[selectedNetworkTemp] }],
+  //     });
+  //     // user's MetaMask already set to selected network
+  //     setSelectedNetwork(selectedNetworkTemp);
+  //     setShowToken(true);
+  //     // get balance
+  //     try {
+  //       await getBalance(selectedNetworkTemp);
+  //     } catch (error) {
+  //       console.log("error getting balance", error);
+  //     }
+  //   } catch (error: any) {
+  //     if (error.message === "User rejected the request.") {
+  //       console.log("user rejected chain switch request", error);
+  //     } else {
+  //       try {
+  //         // @ts-ignore
+  //         await ethereum?.request({
+  //           method: "wallet_addEthereumChain",
+  //           params: [addChainParams[selectedNetworkTemp]],
+  //         });
+  //         // user's MetaMask already set to selected network
+  //         setSelectedNetwork(selectedNetworkTemp);
+  //         setShowToken(true);
+  //         // get balance
+  //         try {
+  //           await getBalance(selectedNetworkTemp);
+  //         } catch (error) {
+  //           console.log("error getting balance", error);
+  //         }
+  //       } catch (error) {
+  //         console.log("User rejected add chain or MetaMask not installed", error);
+  //       }
+  //     }
+  //   }
+  // };
 
   const send = async () => {
     setIsSending("sending");
 
-    if (isNaN(Number(currencyAmount)) || Number(currencyAmount) <= 0) {
+    if (Number(currencyAmount) <= 0) {
       setIsSending("initial");
       setErrorModal(true);
       setErrorMsg("Please enter a valid payment amount");
@@ -218,7 +190,7 @@ const Pay = () => {
       date: dateTemp,
       merchantEvmAddress: urlParams.merchantEvmAddress,
       currencyAmount: Number(currencyAmount),
-      currencyAmountAfterCashBack: Number((Number(currencyAmount) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency!])),
+      currencyAmountAfterCashBack: Number(currencyAmountAfterCashback),
       merchantCurrency: urlParams.merchantCurrency,
       customerAddress: "", // will get later
       tokenAmount: Number(tokenAmount),
@@ -226,18 +198,20 @@ const Pay = () => {
       network: selectedNetwork,
       blockRate: rates.usdcToLocal,
       cashRate: rates.usdToLocal,
-      savings: fxSavings,
+      fxSavings: `${Number(fxSavings)}%`,
+      cashback: "2%",
+      totalSavings: `${Number(fxSavings) + 2}%`,
       refund: false,
       toRefund: false,
-      refundNote: "",
-      txnHash: "", // will get later
+      note: "",
+      txnHash: "", // this will be filled later
     };
 
     // @ts-ignore
-    let provider = new ethers.BrowserProvider(window.ethereum);
-    let signer = await provider.getSigner();
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
     txn.customerAddress = await signer.getAddress();
-    let contract = new ethers.Contract(tokenAddresses[selectedNetwork][selectedToken]["address"], erc20ABI, signer);
+    const contract = new ethers.Contract(tokenAddresses[selectedNetwork][selectedToken]["address"], erc20ABI, signer);
     try {
       const txResponse = await contract.transfer(merchantEvmAddress, ethers.parseUnits(tokenAmount, tokenAddresses[selectedNetwork][selectedToken]["decimals"]));
       const txReceipt = await txResponse.wait();
@@ -250,10 +224,9 @@ const Pay = () => {
       } else if (err.info.error.code == 4001) {
         setErrorMsg("Transaction rejected");
       } else {
-        setErrorMsg("unknown error");
+        setErrorMsg("Error");
       }
       console.log("Error:", err);
-
       return;
     }
 
@@ -312,7 +285,7 @@ const Pay = () => {
                       <Image src="/usdc.svg" alt="usdc" fill />
                     </div>
                     <div className="mr-2">USDC</div>
-                    <div>{USDCBalance}</div>
+                    <div>{Number(USDCBalance).toFixed(2)}</div>
                   </div>
                 </div>
                 {/*--- 2nd row, fiat balance ---*/}
@@ -332,15 +305,10 @@ const Pay = () => {
               urlParams={urlParams}
               currencyAmount={currencyAmount}
               setCurrencyAmount={setCurrencyAmount}
-              showNetwork={showNetwork}
-              setShowNetwork={setShowNetwork}
-              merchantNetworks={merchantNetworks}
-              selectedNetwork={selectedNetwork}
+              currencyAmountAfterCashback={currencyAmountAfterCashback}
+              setCurrencyAmountAfterCashback={setCurrencyAmountAfterCashback}
               selectedToken={selectedToken}
-              onClickNetwork={onClickNetwork}
               rates={rates}
-              isGettingBalance={isGettingBalance}
-              USDCBalance={USDCBalance}
               send={send}
               fxSavings={fxSavings}
               tokenAmount={tokenAmount}
@@ -348,9 +316,9 @@ const Pay = () => {
             />
           )}
           {USDCBalance && Number(USDCBalance) < 0.01 && (
-            <div className="mt-6 w-full h-full flex flex-col items-center text-2xl leading-relaxed space-y-4">
+            <div className="mt-6 px-3  w-full h-full flex flex-col items-center text-xl leading-relaxed space-y-4">
               <p>You need native USDC on the Polygon network for payment.</p>
-              <p>A common way to achieve this is to get USDC from a cryptocurrency exchange (e.g., Coinbase), and then send it to your Metamask (using the Polygon network).</p>
+              <p>To get USDC, sign up for a cryptocurrency exchange. Then, send the USDC to your Metamask (on the Polygon network).</p>
             </div>
           )}
         </div>
@@ -376,7 +344,7 @@ const Pay = () => {
           {/*---details---*/}
           <div className="w-[340px] flex flex-col items-center text-xl space-y-4">
             <div className="w-full">
-              <span className="font-semibold">Time</span>: {getLocalDateWords(date.toString())} | {getLocalTime(date.toString()).time} {getLocalTime(date.toString()).ampm}
+              <span className="font-semibold">Time</span>: {getLocalDateWords(date?.toString())} | {getLocalTime(date?.toString())?.time} {getLocalTime(date?.toString())?.ampm}
             </div>
             <div className="w-full">
               <span className="font-semibold">To</span>: {urlParams.merchantName}
@@ -393,7 +361,7 @@ const Pay = () => {
             </div>
           </div>
 
-          <div className="mt-16 mb-8">You may close this window.</div>
+          <div className="mt-16 mb-8 text-xl">You may close this window</div>
         </div>
       )}
 

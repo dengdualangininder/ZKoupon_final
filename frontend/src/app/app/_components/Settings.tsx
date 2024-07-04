@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { deleteCookie } from "cookies-next";
 // other
 import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "next-themes";
@@ -20,7 +19,7 @@ import { countryData, countryCurrencyList, merchantType2data } from "@/utils/con
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faCircleCheck, faInfo } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
@@ -29,6 +28,7 @@ const Settings = ({
   setPaymentSettingsState,
   cashoutSettingsState,
   setCashoutSettingsState,
+  setPage,
   isMobile,
   idToken,
   publicKey,
@@ -38,6 +38,7 @@ const Settings = ({
   setPaymentSettingsState: any;
   cashoutSettingsState: CashoutSettings;
   setCashoutSettingsState: any;
+  setPage: any;
   isMobile: boolean;
   idToken: string;
   publicKey: string;
@@ -58,6 +59,7 @@ const Settings = ({
   const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
   const [contactUsModal, setContactUsModal] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState(false);
+  const [showLabel, setShowLabel] = useState(true);
   // consider removing
   const [qrModal, setQrModal] = useState(false);
   const [apiModal, setApiModal] = useState(false);
@@ -167,11 +169,6 @@ const Settings = ({
       const employeePass = e.target.value;
       (document.getElementById("employeePass") as HTMLInputElement).value = "";
       employeePass ? setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: true }) : setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: false });
-      // if (employeePass) {
-      //   setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: true });
-      // } else {
-      //   setCashoutSettingsState({ ...cashoutSettingsState, isEmployeePass: false });
-      // }
       const res = await fetch("/api/saveEmployeePass", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -190,20 +187,23 @@ const Settings = ({
     }
   };
 
+  const onClickChangeEmployeePass = async () => {
+    setEmployeePassMask(false);
+    setEmployeePassModal(false);
+    (document.getElementById("employeePass") as HTMLInputElement).value = "";
+    document.getElementById("employeePass")?.focus();
+  };
+
   const onClickSignOut = async () => {
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
-    deleteCookie("jwt");
     await disconnectAsync();
-    router.push("/app");
+    setPage("loading");
+    window.location.reload();
   };
 
-  const emailQrCode = async () => {
-    //logic
-  };
-
-  console.log("last render, paymentSettingsState:", paymentSettingsState);
-  console.log("last render, cashoutSettings:", cashoutSettingsState);
+  // console.log("last render, paymentSettingsState:", paymentSettingsState);
+  // console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
     <section className="w-full h-full flex flex-col items-center overflow-y-auto">
       <div className="settingsFont px-3 settingsWidth">
@@ -212,7 +212,7 @@ const Settings = ({
         <form className="w-full max-w-[640px]">
           {/*---EVM Address---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Your EVM Address</label>
+            <label className="settingsLabelFont">Account Address</label>
             <div className="relative h-full" onClick={copyAddress}>
               <div className="h-full flex items-center cursor-pointer desktop:hover:text-slate-500 transition-all duration-[300ms]">
                 {paymentSettingsState.merchantEvmAddress.slice(0, 7)}...{paymentSettingsState.merchantEvmAddress.slice(-5)}{" "}
@@ -337,7 +337,7 @@ const Settings = ({
             <div className="settingsLabelFont">
               <span className="group">
                 <label className="">
-                  Your Website <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline  text-light4" />
+                  Your Website <FontAwesomeIcon icon={faInfo} className="ml-0.5 xs:align-baseline  text-light4" />
                 </label>
                 <div className="invisible group-hover:visible pointer-events-none absolute bottom-[calc(100%-6px)] w-[330px] px-3 py-1 text-base font-normal  leading-tight bg-light2 border border-light4 rounded-lg z-[1]">
                   <p>- start with "http(s)"</p>
@@ -395,7 +395,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("email") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none">email</label>
               </div>
@@ -406,7 +406,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("item") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none">{merchantType2data[paymentSettingsState.merchantPaymentType]?.itemlabel.toLowerCase() ?? "item name"}</label>
               </div>
@@ -417,7 +417,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("count") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none"># of guests</label>
               </div>
@@ -428,7 +428,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("daterange") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none">date range</label>
               </div>
@@ -439,7 +439,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("date") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none">single date</label>
               </div>
@@ -450,7 +450,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("time") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none">time</label>
               </div>
@@ -461,7 +461,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("shipping") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile flex-none"
+                  className="checkbox flex-none"
                 ></input>
                 <label className="ml-1 text-base  leading-none xs:leading-none">shipping address</label>
               </div>
@@ -472,7 +472,7 @@ const Settings = ({
                   type="checkbox"
                   checked={paymentSettingsState.merchantFields.includes("sku") ? true : false}
                   onChange={onChangeMerchantFields}
-                  className="checkboxMobile"
+                  className="checkbox"
                 ></input>
                 <label className="ml-1 text-base  leading-none">SKU#</label>
               </div>
@@ -504,16 +504,32 @@ const Settings = ({
           )}
 
           {/*---cexEvmAddress---*/}
-          <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField border-bnone`}>
-            <label className="settingsLabelFont">CEX EVM Address</label>
-            <div className="h-full flex items-center cursor-pointer">
+          <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField`}>
+            <label className={`${showLabel ? "" : "hidden"} settingsLabelFont w-[150px] sm:w-auto`}>
+              <span>
+                Cash Out Platform's Address <FontAwesomeIcon icon={faCircleInfo} className="inline settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
+              </span>
+            </label>
+            <div className="w-full h-full flex items-center cursor-pointer">
               <input
-                className="settingsValueFont peer"
+                className={`${
+                  showLabel ? "" : "portrait:text-[13px] landscape:text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-1 sm:px-3"
+                } settingsValueFont peer`}
+                onFocus={() => setShowLabel(false)}
                 onChange={(e) => {
                   setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
                 }}
-                onBlur={() => setSave(!save)}
-                value={cashoutSettingsState.cexEvmAddress}
+                onBlur={() => {
+                  setSave(!save);
+                  setShowLabel(true);
+                }}
+                value={
+                  cashoutSettingsState.cexEvmAddress
+                    ? showLabel
+                      ? `${cashoutSettingsState.cexEvmAddress.slice(0, 7)}...${cashoutSettingsState.cexEvmAddress.slice(-5)}`
+                      : cashoutSettingsState.cexEvmAddress
+                    : ""
+                }
                 autoComplete="none"
                 placeholder="empty"
               ></input>
@@ -529,7 +545,12 @@ const Settings = ({
             </label>
             <div className="relative w-full max-w-[280px] landscape:xl:desktop:max-w-[240px] h-full">
               {/*--- mask ---*/}
-              <div className={`${employeePassMask ? "" : "hidden"} absolute w-full h-full flex items-center cursor-pointer z-[1]`} onClick={() => setEmployeePassModal(true)}>
+              <div
+                className={`${employeePassMask ? "" : "hidden"} absolute w-full h-full flex items-center cursor-pointer z-[1]`}
+                onClick={() => {
+                  cashoutSettingsState.isEmployeePass ? setEmployeePassModal(true) : onClickChangeEmployeePass();
+                }}
+              >
                 <div
                   id="employeePassMask"
                   className="peer w-full h-full px-3 text-end rounded-md flex items-center justify-end desktop:hover:text-slate-500 transition-all duration-[300ms]"
@@ -611,7 +632,7 @@ const Settings = ({
                 }
               }}
             >
-              <input type="checkbox" checked={theme == "dark" ? true : false} className="sr-only peer" />
+              <input type="checkbox" checked={theme == "dark" ? true : false} readOnly className="sr-only peer" />
               <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
               <div className="w-[26px] h-[26px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
             </div>
@@ -663,7 +684,7 @@ const Settings = ({
         <div>
           <div className="settingsInfoModal overflow-y-auto">
             {/*--- desktop close button ---*/}
-            <div className="hidden landscape:xl:desktop:flex absolute right-[12px] top-[12px] xButtonContainer" onClick={() => setInfoModal(null)}>
+            <div className="hidden landscape:xl:desktop:flex xButtonContainer" onClick={() => setInfoModal(null)}>
               <div className="xButton">&#10005;</div>
             </div>
             {/*--- TITLE ---*/}
@@ -671,6 +692,7 @@ const Settings = ({
               {infoModal == "employeePassword" && <div>What is the Employee Password?</div>}
               {infoModal == "cashback" && <div>What is the 2% Cashback?</div>}
               {infoModal == "googleId" && <div>What is the Google ID?</div>}
+              {infoModal == "cexDepositAddress" && <div>How to find my cryptocurrency exchange's address?</div>}
             </div>
             {/*--- CONTENT ---*/}
             <div className="textBase2 flex-1 flex flex-col">
@@ -678,8 +700,8 @@ const Settings = ({
                 <div className="space-y-3">
                   <p>
                     When an employee signs into the Flash app using your email ({paymentSettingsState.merchantEmail}) and the{" "}
-                    <span className="font-semibold">Employee Password</span>, they will have access to the <span className="font-semibold">Payments</span> menu tab in your Flash
-                    app. This allows employees to confirm payments when a customer pays.
+                    <span className="font-semibold">Employee Password</span>, they will have access to the <span className="font-semibold">Payments</span> menu in your Flash app.
+                    This allows employees to confirm payments when a customer pays.
                   </p>
                   <p className="pt-2 font-semibold">Can employees make refunds?</p>
                   <p className="">
@@ -691,8 +713,8 @@ const Settings = ({
               {infoModal == "cashback" && (
                 <div className="space-y-3">
                   <p>
-                    We are temporarily requiring businesses give customers a 2% discount, which is automatically applied at the time of payment. As always, Flash makes zero profit
-                    per transaction.
+                    We are temporarily requiring businesses give customers a 2% discount, which is automatically applied at the time of payment. Flash does not profit from
+                    transactions, so the entire discount goes to the customer.
                   </p>
                   <p>
                     Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and
@@ -705,6 +727,12 @@ const Settings = ({
                 <div>
                   Search "Google Place ID Finder" and go to the Google Place ID Finder website. Find your Google Place ID and paste it here. When you do, your business will be
                   added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments, thus allowing crypto users to more easily find your business.
+                </div>
+              )}
+              {infoModal == "cexDepositAddress" && (
+                <div>
+                  In your cryptocurrency exchange account, click the "Deposit", "Receive", or similar button. Select "USDC" as the token you want to deposit and select "Polygon" as
+                  the network. Copy the shown address (starts with "0x").
                 </div>
               )}
             </div>
@@ -723,16 +751,7 @@ const Settings = ({
             <div className="modalContent">Do you want to change the Employee Password?</div>
             {/*---buttons---*/}
             <div className="modalButtonContainer">
-              <button
-                onClick={() => {
-                  setEmployeePassMask(false);
-                  setEmployeePassModal(false);
-                  (document.getElementById("employeePass") as HTMLInputElement).value = "";
-                  document.getElementById("employeePass")?.focus();
-                  // no need to set PaymentSettingsState
-                }}
-                className="buttonPrimary"
-              >
+              <button onClick={onClickChangeEmployeePass} className="buttonPrimary">
                 Change Password
               </button>
               <button onClick={() => setEmployeePassModal(false)} className="buttonSecondary">

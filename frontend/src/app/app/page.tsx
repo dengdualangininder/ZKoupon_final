@@ -1,6 +1,6 @@
 "use client";
 // nextjs
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -21,18 +21,13 @@ import Login from "./_components/Login";
 import Payments from "./_components/Payments";
 import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
-import PWA from "./_components/PWA";
-import Intro from "./_components/Intro";
+import SaveToHome from "./_components/SaveToHome";
 import Intro2B from "./_components/Intro2B";
-import Intro2A from "./_components/Intro2A";
 import CashoutIntroModal from "./_components/modals/CashoutIntroModal";
+import QrCodeModal from "./_components/modals/QrCodeModal";
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
-// images
-import { IconContext } from "react-icons";
-import { PaymentsIcon, CashOutIcon, SettingsIcon } from "@/utils/components/DynamicIcons";
-import { FaListUl, FaDollarSign, FaGear } from "react-icons/fa6";
 
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
@@ -49,7 +44,7 @@ const User = () => {
   const [menu, setMenu] = useState("payments"); // "payments" | "cashOut" | "settings"
   const [page, setPage] = useState("loading"); // "loading" (default) | "login" | "saveToHome" | "intro" | "app"
   // modals
-  const [signOutModal, setSignOutModal] = useState(false);
+  const [qrCodeModal, setQrCodeModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [coinbaseIntroModal, setCoinbaseIntroModal] = useState(false);
   const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
@@ -71,7 +66,6 @@ const User = () => {
   const { data: walletClient } = useWalletClient();
   let web3Auth = useWeb3Auth();
   const { disconnectAsync } = useDisconnect();
-  const initialized = useRef(false); //makes it so API runs once
 
   // if (isStandalone) {
   //   PullToRefresh.init({
@@ -157,8 +151,8 @@ const User = () => {
     setIsMobile(!isDesktop);
     if (isMobileAndNotStandaloneTemp) {
       console.log("detected mobile & not standalone");
-      setPage("saveToHome");
-      return;
+      // setPage("saveToHome");
+      // return;
     }
 
     // detect and set light/dark mode
@@ -174,8 +168,7 @@ const User = () => {
     }
 
     // check if employee login
-    const jwt = getCookie("jwt");
-    console.log("jwt:", jwt);
+    const jwt = getCookie("employeeJwt");
     if (jwt) {
       verifyAndGetEmployeeData();
       return;
@@ -202,11 +195,7 @@ const User = () => {
       return;
     }
 
-    // get user doc (w/ verification) || create new user
-    if (!initialized.current) {
-      initialized.current = true;
-      verifyAndGetData();
-    }
+    verifyAndGetData();
 
     console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);
@@ -310,20 +299,21 @@ const User = () => {
   };
 
   const verifyAndGetEmployeeData = async () => {
-    console.log("/app, verifyAndGetEmployeeData() run once");
+    console.log("verifyAndGetEmployeeData()");
     const res = await fetch("/api/getEmployeeData", {
       method: "GET",
       headers: { "content-type": "application/json" },
     });
     const data = await res.json();
     if (data.status == "success") {
-      console.log("success");
+      console.log("fetched employee data");
       setTransactionsState(data.transactions);
       setPaymentSettingsState(data.paymentSettings);
       setIsAdmin(false);
       setPage("app");
     } else {
       console.log("employee login failed");
+      setPage("login");
     }
   };
 
@@ -358,9 +348,9 @@ const User = () => {
       cex = "Coinbase";
       console.log("detect country API failed, set default to US, USD, and Coinbase. Error:", err);
     }
+    // set merchantEmail and merchantEvmAddress
     const merchantEmail = (await web3Auth?.getUserInfo())?.email || ""; // TODO:check if this works for Apple login
     const merchantEvmAddress = account.address;
-    console.log("merchantEmail, merchantEvmAddress:", merchantEmail, merchantEvmAddress);
     // create new user in db
     try {
       const res = await fetch("/api/createUser", {
@@ -386,7 +376,7 @@ const User = () => {
           <div className="w-[92%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
             {/* LOADING */}
             <div className="w-full h-full absolute flex flex-col items-center justify-center">
-              <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin">
+              <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin relative">
                 <Image src="/loadingCircleBlack.svg" alt="loading" fill />
               </div>
               <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
@@ -395,7 +385,7 @@ const User = () => {
             <div className="w-full h-full flex flex-col items-center justify-center">
               <div className="pb-16 w-full flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
                 <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
-                  <Image src="/logo.svg" alt="logo" fill />
+                  <Image src="/logo.svg" alt="logo" fill priority />
                 </div>
                 <div className="pb-4 text-center animate-fadeInAnimation leading-relaxed invisible">
                   Set up crypto payments
@@ -412,7 +402,7 @@ const User = () => {
         </div>
       )}
 
-      {page === "saveToHome" && <PWA />}
+      {page === "saveToHome" && <SaveToHome />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} isUsabilityTest={isUsabilityTest} />}
       {page === "intro" && (
         <Intro2B
@@ -432,10 +422,9 @@ const User = () => {
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
           {/*---MENU: LEFT (w120/160/200px) or BOTTOM (h-84/140px) ---*/}
-          <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
-            {/*---menu---*/}
-            {isAdmin && (
-              <div className="portrait:fixed portrait:bottom-0 landscape:static w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] flex landscape:flex-col items-center justify-around portrait:pb-[10px] portrait:px-1">
+          {isAdmin && (
+            <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
+              <div className="portrait:bottom-0 w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] flex landscape:flex-col items-center justify-around portrait:pb-[10px] portrait:px-1">
                 {[
                   { id: "payments", title: "PAYMENTS", imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },
                   { id: "cashOut", title: "CASH OUT", imgWhite: "/cashOutWhite.svg", imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
@@ -449,9 +438,6 @@ const User = () => {
                     key={i.id}
                     onClick={async (e) => {
                       setMenu(e.currentTarget.id);
-                      if (i.modal == "signOutModal") {
-                        setSignOutModal(true);
-                      }
                       if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
                         setCashoutIntroModal(true);
                         setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
@@ -466,9 +452,9 @@ const User = () => {
                         });
                         const data = await res.json();
                         if (data === "saved") {
-                          console.log("cashoutIntro settings saved");
+                          // good
                         } else {
-                          console.log("error: cashoutIntro settings not saved");
+                          console.log("error: cashoutIntro not set to false");
                         }
                       }
                     }}
@@ -480,11 +466,18 @@ const User = () => {
                   </div>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
           {/*---menu pages---*/}
           {menu === "payments" && (
-            <Payments paymentSettingsState={paymentSettingsState!} transactionsState={transactionsState} setTransactionsState={setTransactionsState} isAdmin={isAdmin} />
+            <Payments
+              paymentSettingsState={paymentSettingsState!}
+              transactionsState={transactionsState}
+              setTransactionsState={setTransactionsState}
+              isAdmin={isAdmin}
+              setPage={setPage}
+            />
           )}
           {menu === "cashOut" && isAdmin && (
             <CashOut
@@ -504,6 +497,7 @@ const User = () => {
               setPaymentSettingsState={setPaymentSettingsState}
               cashoutSettingsState={cashoutSettingsState!}
               setCashoutSettingsState={setCashoutSettingsState}
+              setPage={setPage}
               isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}
@@ -550,39 +544,15 @@ const User = () => {
                   </div>
                 </div>
                 {/*--- buttons ---*/}
-                <button onClick={() => setBannerModal(false)} className="p-2 mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl">
+                <button onClick={() => setBannerModal(false)} className="xButtonBanner">
                   &#10005;
                 </button>
               </div>
             </div>
           )}
 
-          {/*---signOutModal---*/}
-          {signOutModal && (
-            <div>
-              <div className="modal text-center textLg">
-                {/*---content---*/}
-                <div className="grow flex flex-col justify-center">Do you want to sign out?</div>
-                {/*--- buttons ---*/}
-                <div className="w-full space-y-6">
-                  <button
-                    onClick={() => {
-                      setSignOutModal(false);
-                      deleteCookie("jwt");
-                      setPage("login");
-                    }}
-                    className="mt-10 buttonPrimary"
-                  >
-                    Confirm
-                  </button>
-                  <button onClick={() => setSignOutModal(false)} className="buttonSecondary">
-                    Cancel
-                  </button>
-                </div>
-              </div>
-              <div className="modalBlackout" onClick={() => setSignOutModal(false)}></div>
-            </div>
-          )}
+          {/*--- QR CODE MODAL ---*/}
+          {qrCodeModal && paymentSettingsState && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettingsState={paymentSettingsState} />}
 
           {/*---coinbaseIntroModal---*/}
           {coinbaseIntroModal && (

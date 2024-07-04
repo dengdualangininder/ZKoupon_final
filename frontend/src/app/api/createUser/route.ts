@@ -4,10 +4,7 @@ import { NextResponse } from "next/server";
 
 export const POST = async (request: Request) => {
   console.log("entered createUser api");
-
-  // request body
   const { merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex } = await request.json();
-  console.log(merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex);
 
   // connect db
   await dbConnect();
@@ -16,7 +13,7 @@ export const POST = async (request: Request) => {
   try {
     const doc = await UserModel.findOne({ "paymentSettings.merchantEvmAddress": merchantEvmAddress });
     if (doc) {
-      console.log("merchantEvmAddress already exists");
+      return NextResponse.json("user already exists"); // existence of merchantEvmAddress already checked in getUserDoc API, but still have this in case
     } else {
       const doc = await UserModel.create({
         "paymentSettings.merchantEvmAddress": merchantEvmAddress,
@@ -29,7 +26,7 @@ export const POST = async (request: Request) => {
         "paymentSettings.merchantBusinessType": "",
         "paymentSettings.merchantFields": [],
         "paymentSettings.merchantGoogleId": "",
-        "paymentSettings.employeePass": "",
+        "cashoutSettings.isEmployeePass": false,
         "cashoutSettings.cex": cex,
         "cashoutSettings.cexEvmAddress": "",
         "cashoutSettings.cexAccountName": "",

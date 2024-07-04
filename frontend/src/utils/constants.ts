@@ -9,7 +9,7 @@ export const fieldsList = ["email", "item", "date", "daterange", "count", "sku",
 export const countryData: { [key: string]: { the?: boolean; currency: string; CEXes: string[]; networks?: string[]; tokens?: string[]; bank?: string } } = {
   Taiwan: {
     currency: "TWD",
-    CEXes: ["MAX", "BitoPro", "Other CEX"],
+    CEXes: ["MAX", "BitoPro", "Other"],
     networks: ["Polygon", "BNB"], // in order of popularity
     tokens: ["USDT", "USDC"], // in order of popularity
     bank: "Bank of Taiwan",
@@ -17,7 +17,7 @@ export const countryData: { [key: string]: { the?: boolean; currency: string; CE
   Philippines: {
     the: true,
     currency: "PHP",
-    CEXes: ["Coins.ph", "PDAX Exchange", "Other CEX"],
+    CEXes: ["Coins.ph", "PDAX", "Other"],
     networks: ["Polygon", "BNB", "Arbitrum"], // in order of popularity
     tokens: ["USDT", "USDC"], // in order of popularity
     bank: "PNB Philippines",
@@ -25,7 +25,7 @@ export const countryData: { [key: string]: { the?: boolean; currency: string; CE
   "U.S.": {
     the: true,
     currency: "USD",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC"], // in order of popularity
     bank: "Wise",
@@ -33,125 +33,125 @@ export const countryData: { [key: string]: { the?: boolean; currency: string; CE
   "U.K.": {
     the: true,
     currency: "GBP",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
   },
   "Euro countries": {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
   },
   Austria: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Belgium: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Croatia: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Cyprus: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Estonia: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Finland: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   France: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Germany: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Greece: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Ireland: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Italy: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Latvia: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Lithuania: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Luxembourg: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Malta: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Monaco: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Montenegro: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Netherlands: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Portugal: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   "San Marino": {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Slovakia: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Slovenia: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Spain: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
   Vatican: {
     currency: "EUR",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
   },
 
   Canada: {
     currency: "CAD",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
   },
   Australia: {
     currency: "AUD",
-    CEXes: ["Coinbase", "Other CEX"],
+    CEXes: ["Coinbase", "Other"],
     networks: ["Polygon", "Optimism", "Base", "Arbitrum", "Avalanche"], // in order of popularity
     tokens: ["USDC", "USDT"], // in order of popularity
     bank: "Wise",
@@ -166,7 +166,7 @@ export const countryData: { [key: string]: { the?: boolean; currency: string; CE
   },
   Korea: {
     currency: "KRW",
-    CEXes: ["Upbit Exchange (via BTC)", "Bithumb Exchange", "Korbit Exchange", "GoPAX Exchange"],
+    CEXes: ["Upbit (via BTC)", "Bithumb", "Korbit", "GoPAX"],
     networks: [""], // in order of popularity
     tokens: [""], // in order of popularity
     bank: "Woori Bank",
@@ -331,10 +331,12 @@ export const merchantType2data: MerchantType2data = {
   },
 };
 
-export const currency2symbol: any = { USD: "$", EUR: "€", TWD: "TWD" };
+export const currency2symbol: any = { USD: "$", EUR: "€", TWD: "TWD " };
 export const currency2decimal: any = { USD: 2, EUR: 2, TWD: 0 };
-export const currency2rateDecimal: any = { USD: 4, EUR: 4, TWD: 4 };
+export const currency2rateDecimal: any = { USD: 4, EUR: 4, TWD: 3 };
 export const currency2number: any = { USD: 5, EUR: 5, TWD: 100, PHP: 100 };
+export const currency2correction: any = { USD: 0.997, EUR: 0.997, TWD: 0.994 }; // CEX fees + 0.003
+export const currency2bank: any = { EUR: "Wise", TWD: "Bank of Taiwan" };
 
 export const list2string = (list: string[]) => {
   let text;
@@ -395,7 +397,7 @@ type currencyToDataValue = {
 export const currencyToData: { [key: string]: currencyToDataValue } = {
   USD: { cex: "Coinbase", symbol: "$", offrampNetwork: "ACH", offrampFee: "Free" },
   EUR: { cex: "Coinbase", symbol: "€", offrampNetwork: "SEPA", offrampFee: "Free" },
-  TWD: { cex: "Max Exchange", symbol: "NT$", offrampNetwork: "CIFS", offrampFee: "NT$15" },
+  TWD: { cex: "Max Exchange", symbol: "NT", offrampNetwork: "CIFS", offrampFee: "NT 15" },
 };
 
 export const abb2full: { [key: string]: string } = {

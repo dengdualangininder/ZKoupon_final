@@ -5,7 +5,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 
-const PWA = () => {
+const SaveToHome = () => {
   const [browser, setBrowser] = useState("");
   const [os, setOs] = useState("");
 
@@ -79,4 +79,4 @@ const PWA = () => {
   );
 };
 
-export default PWA;
+export default SaveToHome;

@@ -128,6 +128,70 @@
     @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
   }
 
+  .checkbox {
+    @apply w-[30px] h-[30px] rounded-md checkboxColor cursor-pointer;
+  }
+
+  .checkboxColor {
+    @apply border border-slate-400 dark:border-slate-600 bg-light1 dark:bg-dark3 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
+  }
+
+  .xButtonContainer {
+    @apply absolute right-0 top-0 w-[80px] h-[80px] landscape:xl:desktop:w-[52px] landscape:xl:desktop:h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-bl-2xl rounded-tr-2xl cursor-pointer desktop:hover:bg-light3 desktop:hover:dark:bg-dark5 active:bg-light3 active:dark:bg-dark5;
+  }
+
+  .xButtonContainerNotHidden {
+    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
+  }
+
+  .xButtonContainerSmall {
+    @apply w-[52px] h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center portrait:sm:border landscape:lg:border border-black rounded-full;
+  }
+
+  .xButton {
+    @apply text-4xl font-medium landscape:xl:desktop:text-2xl text-lightText1 dark:text-darkText1;
+  }
+
+  .xButtonBanner {
+    @apply p-2 mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
+  }
+
+  .mobileBack {
+    @apply absolute left-3 top-[18px] leading-none text-2xl font-medium p-2 portrait:sm:hidden landscape:lg:hidden;
+  }
+
+  .placeholderColor {
+    @apply placeholder:italic placeholder:text-slate-400 dark:placeholder:text-slate-600;
+  }
+
+  .inputColor {
+    @apply border border-slate-400 dark:border-slate-600 bg-light1 dark:bg-dark3 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-0 outline-none transition-all duration-[500ms];
+  }
+
+  .gasFees {
+    @apply w-16 mx-0.5 text-xs text-center;
+  }
+
+  .sectionMargin {
+    @apply px-2.5 xs:px-4 lg:px-32 py-12 md:py-16;
+  }
+
+  .heading {
+    @apply font-extrabold text-4xl sm:text-5xl;
+  }
+
+  .body1 {
+    @apply mt-4 mb-4 md:mb-8 text-xl text-center;
+  }
+
+  .link {
+    @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
+  }
+
+  .linkDark {
+    @apply cursor-pointer text-blue-400 xs:hover:underline active:underline;
+  }
+
   .homeHeaderFont {
     @apply text-[40px] sm:text-6xl font-medium leading-normal sm:leading-tight;
   }
@@ -174,30 +238,6 @@
 
   .chainLogo {
     @apply h-[38px] pointer-events-none;
-  }
-
-  .gasFees {
-    @apply w-16 mx-0.5 text-xs text-center;
-  }
-
-  .sectionMargin {
-    @apply px-2.5 xs:px-4 lg:px-32 py-12 md:py-16;
-  }
-
-  .heading {
-    @apply font-extrabold text-4xl sm:text-5xl;
-  }
-
-  .body1 {
-    @apply mt-4 mb-4 md:mb-8 text-xl text-center;
-  }
-
-  .link {
-    @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
-  }
-
-  .linkDark {
-    @apply cursor-pointer text-blue-400 xs:hover:underline active:underline;
   }
 
   .tooltip {
@@ -282,6 +322,14 @@
 
   .modalBlackout {
     @apply opacity-[70%] dark:opacity-[88%] fixed inset-0 z-10 bg-black backdrop-blur-xl;
+  }
+
+  .modalContent {
+    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-6 portrait:sm:space-y-16 landscape:lg:space-y-16;
+  }
+
+  .modalButtonContainer {
+    @apply w-full pb-16 space-y-8;
   }
 
   .savingsCountry {
@@ -381,11 +429,11 @@
   }
 
   .settingsInfo {
-    @apply ml-2 text-sm portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm mt-[2px] text-dualGray dark:text-darkButton dark:bg-darkText1 rounded-full cursor-pointer desktop:hover:brightness-[1.2] active:brightness-[1.2];
+    @apply ml-2 text-sm portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm mt-[2px] text-slate-500 rounded-full cursor-pointer desktop:hover:brightness-[1.2] active:brightness-[1.2] z-[1];
   }
 
   .info {
-    @apply text-gray-400 dark:text-buttonDark textXs;
+    @apply text-gray-400 dark:text-darkButton textXs;
   }
 
   .inputOutline {
@@ -393,35 +441,11 @@
   }
 
   .loginInputFont {
-    @apply w-full font-medium px-1.5 py-2 landscape:xl:desktop:h-[44px] xs:py-3 rounded-md bg-white outline-none border-2 border-gray-200 focus:border-blue-500 transition-[all] duration-[500ms];
+    @apply textBase landscape:xl:desktop:text-base w-full font-medium px-1.5 py-2 landscape:xl:desktop:h-[44px] xs:py-3 rounded-md bg-white outline-none border-2 border-gray-200 focus:border-blue-500 transition-[all] duration-[500ms];
   }
 
   .menuText {
     @apply mt-1 text-xs portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
-  }
-
-  .checkboxMobile {
-    @apply w-6 h-6 xs:w-4 xs:h-4;
-  }
-
-  .modalContent {
-    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-6 portrait:sm:space-y-16 landscape:lg:space-y-16;
-  }
-
-  .modalButtonContainer {
-    @apply w-full pb-16 space-y-8;
-  }
-
-  .settingsInfoModal {
-    @apply modalColor portrait:w-[94%] landscape:w-[380px] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] landscape:h-[95%] landscape:lg:h-auto pb-10 px-4 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
-  }
-
-  .faqModal {
-    @apply w-full portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[80%] portrait:sm:max-h-[850px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:lg:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 pb-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl bg-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
-  }
-
-  .modal {
-    @apply modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[20];
   }
 
   .modalBase {
@@ -444,54 +468,50 @@
     @apply bg-white dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
   }
 
-  .errorModalSize {
-    @apply w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8;
-  }
-
-  .detailsModalSize {
-    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
-  }
-
-  .instructionsModalSize {
-    @apply w-full portrait:sm:w-[590px] landscape:lg:w-[590px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
-  }
-
-  .cashoutIntroModalSize {
-    @apply w-[350px] portrait:sm:w-[410px] landscape:lg:w-[410px] h-[560px] portrait:sm:h-[640px] landscape:lg:h-[640px] landscape:xl:desktop:h-[560px];
-  }
-
   /* specific modals */
 
+  .modal {
+    @apply modalBaseUp modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[370px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 z-[20];
+  }
+
   .errorModal {
-    @apply modalBaseUp modalColor errorModalSize;
+    @apply modalBase modalColor portrait:w-[350px] landscape:w-[420px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] max-h-[90%] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-8 landscape:lg:px-8;
+  }
+
+  .settingsInfoModal {
+    @apply modalBaseUp modalColor portrait:w-[94%] landscape:w-[380px] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] landscape:h-[95%] landscape:lg:h-auto pb-10 px-4 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8;
+  }
+
+  .faqModal {
+    @apply w-full portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[80%] portrait:sm:max-h-[850px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:lg:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 pb-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl bg-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
 
   .cashoutIntroModal {
-    @apply modalBase modalColor cashoutIntroModalSize;
+    @apply modalBase modalColor w-[350px] portrait:sm:w-[410px] landscape:lg:w-[410px] h-[560px] portrait:sm:h-[640px] landscape:lg:h-[640px] landscape:xl:desktop:h-[560px];
   }
 
   .detailsModal {
-    @apply modalFullBase modalFullColor detailsModalSize;
+    @apply modalFullBase modalFullColor w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
   }
 
   .transferModal {
-    @apply modalFullBase modalFullColor detailsModalSize dark:bg-dark2 landscape:xl:desktop:w-[400px];
+    @apply modalFullBase modalFullColor dark:bg-dark2 w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+  }
+
+  .transferModalButtonContainer {
+    @apply flex-1 min-h-[120px] landscape:xl:desktop:min-h-[90px] w-full flex items-center;
   }
 
   .instructionsModal {
-    @apply modalFullBase modalFullColor instructionsModalSize;
+    @apply modalFullBase modalFullColor w-full portrait:sm:w-[590px] landscape:lg:w-[590px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
   }
 
-  .detailsModalHeaderContainer {
-    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 px-12 portrait:sm:px-24 landscape:lg:px-24 landscape:xl:px-20 w-full h-[80px] landscape:xl:desktop:h-[60px] flex justify-center relative;
+  .detailsModalHeader {
+    @apply flex-none my-[22px] portrait:sm:my-8 landscape:lg:my-8 landscape:xl:desktop:my-6 w-[72%] text-center text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl font-semibold whitespace-nowrap;
   }
 
   .transferSuccessModalHeaderContainer {
     @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 w-full h-[50px] landscape:xl:desktop:h-[60px] relative;
-  }
-
-  .detailsModalHeader {
-    @apply w-full text-center text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl font-semibold;
   }
 
   .detailsLabelText {
@@ -514,12 +534,8 @@
     @apply text-2xl font-semibold;
   }
 
-  .searchModalContainer {
-    @apply h-[25%] flex items-center justify-between border-b border-dualGray dark:border-dark6;
-  }
-
-  .searchModalLabel {
-    @apply textLg font-medium;
+  .searchModalCategoryContainer {
+    @apply h-[25%] flex items-center justify-between border-b border-slate-300 dark:border-dark6;
   }
 
   .buttonPrimary {
@@ -543,7 +559,7 @@
   }
 
   .buttonSecondaryColor {
-    @apply bg-transparent text-dualGray border-dualGray desktop:hover:bg-light3 active:bg-light3 dark:desktop:hover:bg-dark4 dark:active:bg-dark4 transition-all duration-[300ms];
+    @apply bg-transparent text-slate-500 border-slate-500 desktop:hover:bg-light3 active:bg-light4 dark:desktop:hover:bg-dark4 dark:active:bg-dark6 transition-all duration-[300ms];
   }
 
   .buttonStart {
@@ -556,6 +572,18 @@
 
   .introWidthHowTo {
     @apply w-[88%] landscape:lg:w-[630px] portrait:lg:w-[630px];
+  }
+
+  .introLabelFont {
+    @apply font-medium text-xl;
+  }
+
+  .introInputFont {
+    @apply mt-1 text-xl w-full max-w-[480px] bg-white border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic;
+  }
+
+  .introInputFontSmall {
+    @apply mt-1 text-sm w-full max-w-[480px] bg-white border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic;
   }
 
   .introPageContainer {
@@ -598,42 +626,6 @@
     @apply buttonSecondaryColor mr-1 w-[110px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-[4px];
   }
 
-  .xButtonContainer {
-    @apply absolute right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
-  }
-
-  .xButtonContainerNotHidden {
-    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
-  }
-
-  .xButtonContainerSmall {
-    @apply w-[52px] h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center portrait:sm:border landscape:lg:border border-black rounded-full;
-  }
-
-  .xButton {
-    @apply text-3xl landscape:xl:desktop:text-2xl text-dualGray;
-  }
-
-  .mobileBack {
-    @apply absolute left-2 top-[-4px] leading-none text-2xl font-medium p-2 portrait:sm:hidden landscape:lg:hidden;
-  }
-
-  .placeholderColor {
-    @apply placeholder:italic placeholder:text-dualGray dark:placeholder:text-darkText4;
-  }
-
-  .inputColor {
-    @apply borderColor bg-light1 dark:bg-dark3 focus:ring-0 outline-none transition-all duration-[500ms];
-  }
-
-  .checkboxColor {
-    @apply border border-light4 dark:border-[#3E444E] checked:border-none bg-light1 dark:bg-dark3 dark:checked:bg-darkButton text-lightButton dark:text-darkButton focus:ring-0 focus:ring-offset-0;
-  }
-
-  .borderColor {
-    @apply border border-light4 focus:border-blue-500 dark:border-[#3E444E] dark:focus:border-dualGray;
-  }
-
   /* ----UNUSED---- */
   .startHeader {
     @apply w-[calc(100%-55px)] xs:w-[250px] flex-none sm:w-auto sm:flex text-2xl leading-tight font-bold;
@@ -660,23 +652,31 @@
   }
 
   .sidebar {
-    @apply absolute left-0 w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen flex flex-col items-center overflow-y-auto bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-none z-[20] transition-all duration-500;
+    @apply absolute left-0 w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen flex flex-col items-center overflow-y-auto bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600 z-[20] transition-all duration-500;
+  }
+
+  .sidebarBodyContainer {
+    @apply w-[85%] flex flex-col items-center;
   }
 
   .cashoutContainer {
-    @apply w-full min-h-[210px] px-7 portrait:sm:px-7 landscape:lg:px-7 portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[220px] py-5 portrait:sm:py-8 landscape:lg:py-8 landscape:xl:desktop:py-6 flex flex-col rounded-3xl bg-gradient-to-br from-[15%] to-[85%] from-light2 to-light4 dark:from-dark2 dark:to-dark4;
+    @apply w-full min-h-[210px] px-7 portrait:sm:px-7 landscape:lg:px-7 portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[220px] py-5 portrait:sm:py-8 landscape:lg:py-8 landscape:xl:desktop:py-6 flex flex-col rounded-3xl bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {
-    @apply textXl font-bold;
+    @apply textXl font-semibold;
   }
 
   .cashoutBalanceContainer {
-    @apply flex-1 flex flex-col mt-2 portrait:sm:mt-6 landscape:lg:mt-6;
+    @apply flex-1 flex flex-col mt-2 portrait:sm:mt-6 landscape:lg:mt-6 landscape:xl:mt-4;
   }
 
   .cashoutBalance {
     @apply text3xl font-medium flex items-center;
+  }
+
+  .cashoutMoreOptionsContainer {
+    @apply top-[calc(100%+8px)] right-0 px-5 py-3 desktop:py-2 textLg rounded-lg border bg-slate-100 dark:bg-dark5 border-transparent dark:border-slate-600 desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark6 active:bg-slate-200 whitespace-nowrap drop-shadow-md;
   }
 
   .cashoutArrowContainer {
@@ -692,7 +692,7 @@
   }
 
   .cashoutDetailsContainer2 {
-    @apply mt-3 mb-4 px-4 py-2 bg-light2 dark:bg-transparent border border-light4 dark:border-dark6 rounded-lg;
+    @apply mt-3 mb-4 px-4 py-2 bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg;
   }
 
   .cashoutStats2 {
@@ -704,15 +704,15 @@
   }
 
   .cashoutButton {
-    @apply buttonPrimaryColor textSm font-medium w-[180px] portrait:sm:w-[224px] landscape:lg:w-[224px] landscape:xl:desktop:w-[200px] h-[36px] portrait:sm:h-[48px] landscape:lg:h-[48px] landscape:xl:desktop:h-[40px] translate-x-[4px] rounded-full;
+    @apply buttonPrimaryColor textSm font-medium w-[180px] portrait:sm:w-[224px] landscape:lg:w-[224px] landscape:xl:desktop:w-[200px] h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] landscape:xl:desktop:h-[40px] translate-x-[4px] rounded-full;
   }
 
   .transferCard {
-    @apply w-full px-5 portrait:sm:px-8 landscape:lg:px-8 landscape:xl:desktop:px-6 flex flex-col items-center bg-light3 dark:bg-dark4 rounded-3xl relative border border-light4 dark:border-slate-600;
+    @apply flex-none w-full px-5 portrait:sm:px-8 landscape:lg:px-8 landscape:xl:desktop:px-6 flex flex-col items-center bg-light3 dark:bg-dark4 rounded-3xl relative border-none border-slate-400 dark:border-slate-600;
   }
 
   .transferIcon {
-    @apply relative w-[52px] h-[52px] rounded-lg overflow-hidden;
+    @apply relative w-[52px] h-[52px] rounded-lg overflow-hidden flex-none;
   }
 
   .transferAmountFromBox {
@@ -720,7 +720,19 @@
   }
 
   .transferAmountToBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-3xl landscape:xl:desktop:text-2xl rounded-xl pl-4 pr-0 mt-4 flex items-center justify-between border border-dualGray dark:border-slate-600;
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-3xl landscape:xl:desktop:text-2xl rounded-xl pl-4 pr-0 mt-4 flex items-center justify-between border border-slate-300 dark:border-dark6;
+  }
+
+  .transferArrowContainer {
+    @apply w-[200px] h-[70px] landscape:xl:desktop:w-[160px] landscape:xl:desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light2 dark:bg-dark3 border border-slate-400 dark:border-dark6 z-[2];
+  }
+
+  .transferArrowFont {
+    @apply text-base desktop:text-sm ml-2 leading-tight desktop:leading-tight;
+  }
+
+  .transferArrowArrow {
+    @apply text-[34px] landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1;
   }
 
   .faqContainer {

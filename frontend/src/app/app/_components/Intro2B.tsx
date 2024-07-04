@@ -166,11 +166,11 @@ const Intro = ({
             </div>
             {/*--- content ---*/}
             <div className="px-1 flex-1 space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 landscape:xl:desktop:space-y-8">
-              <div className="">To start accepting crypto payments, you will need a QR code. To create one, fill out the form below:</div>
+              <div className="">To start accepting crypto payments, create your QR code with the information below:</div>
               <div className="flex flex-col">
-                <label className="w-full font-medium">Your business's name</label>
+                <label className="w-full introLabelFont">Your business's name</label>
                 <input
-                  className="mt-1 w-full max-w-[480px] px-3 py-3 border bg-white border-gray-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="introInputFont"
                   placeholder="Enter the name of your business"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
@@ -178,9 +178,9 @@ const Intro = ({
                 ></input>
               </div>
               <div className="flex flex-col">
-                <label className="w-full font-medium">Your country / currency</label>
+                <label className="w-full introLabelFont">Your country / currency</label>
                 <select
-                  className="mt-1 w-full max-w-[480px] border bg-white border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="introInputFont"
                   onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
                     const merchantCountryTemp = e.target.value.split(" / ")[0];
                     const merchantCurrencyTemp = e.target.value.split(" / ")[1];
@@ -202,9 +202,9 @@ const Intro = ({
                 </select>
               </div>
               <div className="flex flex-col">
-                <label className="w-full font-medium">Your email address</label>
+                <label className="w-full introLabelFont">Your email address</label>
                 <input
-                  className="mt-1 w-full max-w-[480px] bg-white border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic"
+                  className="introInputFont"
                   placeholder="Type in your email"
                   onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                   onBlur={() => setSave(!save)}
@@ -248,7 +248,7 @@ const Intro = ({
             {/*--- text ---*/}
             <div className="px-3 flex-1 flex flex-col space-y-8">
               <div className="font-semibold">Your QR code was created!</div>
-              <div className="">Please check your email. We emailed you the QR code, along with instructions on how to print and display it.</div>
+              <div className="">We emailed you the QR code, along with instructions on how to print and display it.</div>
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer2">
@@ -285,7 +285,7 @@ const Intro = ({
                 <div className="relative flex">
                   <div className="introNumber">1</div>
                   <div>
-                    Customer scans your QR code, which will open thier{" "}
+                    Customer scans your QR code, which will open their{" "}
                     <span className="group">
                       <span className="link">
                         MetaMask app<sup>?</sup>
@@ -436,60 +436,59 @@ const Intro = ({
 
         {/*--- link (if not coinbase or if "Any country") ---*/}
         {step == "link" && (paymentSettingsState.merchantCountry == "Any country" || cashoutSettingsState.cex != "Coinbase") && (
-          <div className="introPageContainer portrait:text-2xl landscape:text-lg portrait:sm:text-3xl landscape:lg:text-3xl portrait:leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed">
+          <div className="introPageContainer">
+            {/*--- spacer ---*/}
+            <div className="w-full h-[7%] min-h-[72px]"></div>
             {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 portrait:space-y-5 landscape:space-y-3 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:xl:space-y-12">
-                <div className="w-full portrait:space-y-6 landscape:space-y-3 landscape:lg:space-y-6">
+            <div className="px-1 flex-1 space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 landscape:xl:desktop:space-y-8">
+              <div className="w-full portrait:space-y-6 landscape:space-y-3 landscape:lg:space-y-6">
+                <div>
                   <div>Enter the USDC (Polygon) deposit address of your cryptocurrency exchange account:</div>
                   <input
                     onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
                     onBlur={() => setSave(!save)}
                     value={cashoutSettingsState.cexEvmAddress}
-                    className="w-full portrait:text-[13px] landscape:text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl border-b-2 outline-none placeholder:text-lg placeholder:portrait:sm:text-2xl placeholder:landscape:lg:text-2xl xs:font-medium bg-white"
-                    placeholder="Enter address here"
+                    className="mt-2 w-full introInputFontSmall text-[13px] px-1 placeholder:text-lg placeholder:pl-2 placeholder:focus:text-transparent"
+                    placeholder="Paste address here"
                   ></input>
                 </div>
-                <div className="pt-3 w-full leading-relaxed">The address is used to allow easy transfer of USDC from Flash to your cryptocurrency exchange.</div>
-                {cashoutSettingsState.cex ? (
-                  <div className="pt-3 w-full leading-relaxed">
-                    If you don't have one, please register an account on {cashoutSettingsState.cex} Exchange. You can skip this step for now.
-                  </div>
-                ) : (
-                  <div>If you don't have one, please register an account on a cryptocurrency exchange. You can skip this step for now.</div>
-                )}
+              </div>
+              <div className="">The address is used to allow easy transfer of USDC from Flash to your cryptocurrency exchange.</div>
+              <div className="">
+                If you don't have one, you can skip this step. Register an account on {`${cashoutSettingsState.cex} Exchange` || "a cryptocurrency exchange"} and enter the address
+                in the "Settings" section of the Flash app at a later time.
               </div>
             </div>
             {/*--- buttons ---*/}
-            <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("emailSent")}>
-                BACK
+            <div className="introButtonContainer2">
+              <button className="introBack" onClick={() => setStep("how")}>
+                &#10094;&nbsp; BACK
               </button>
               <button className="introNext" onClick={() => setStep("final")}>
-                {cashoutSettingsState.cexEvmAddress ? "NEXT" : "Skip"}
+                {cashoutSettingsState.cexEvmAddress ? "NEXT " : "SKIP "}&nbsp;&#10095;
               </button>
             </div>
           </div>
         )}
 
         {step == "final" && (
-          <div className="introPageContainer introFont3xl ">
+          <div className="introPageContainer">
+            {/*--- spacer ---*/}
+            <div className="w-full h-[7%] min-h-[72px]"></div>
             {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
-                <div className="w-full">Your Flash account is ready!</div>
-                <div>
-                  If you have questions, read to the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
-                </div>
+            <div className="px-1 flex-1 space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8 landscape:xl:desktop:space-y-8">
+              <div className="w-full">Your Flash account is ready!</div>
+              <div>
+                If you have questions, read to the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
               </div>
             </div>
             {/*--- buttons ---*/}
-            <div className="introButtonContainer">
+            <div className="introButtonContainer2">
               <button className="introBack" onClick={() => setStep("link")}>
-                BACK
+                &#10094;&nbsp; BACK
               </button>
               <button className="introNext" onClick={() => setPage("app")}>
-                Done
+                FINISH
               </button>
             </div>
           </div>

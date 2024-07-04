@@ -1,14 +1,8 @@
 import axios from "axios";
-import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
-import { keccak256, getAddress } from "viem";
-import * as jose from "jose";
 
 export const POST = async (request: Request) => {
-  console.log("entered cbGetBankInfo endpoint");
-
+  console.log("entered cbGetBankInfo api");
   const { cbAccessToken, cbRefreshToken } = await request.json();
-  console.log("cbAccessToken=", cbAccessToken, "cbRefreshToken=", cbRefreshToken);
 
   // 1. If cbAccessToken exists, then getBankInfo
   // 2. If no cbAccessToken, call Coinbase's API to get new tokens. Withdraw and return new tokens to client.
@@ -16,7 +10,6 @@ export const POST = async (request: Request) => {
   if (cbAccessToken) {
     console.log("cbAccessToken exists, getting bank info...");
     const cbBankAccountName = await getCbBankInfo(cbAccessToken);
-    console.log(cbBankAccountName);
     if (cbBankAccountName) {
       return Response.json({ status: "success", cbBankAccountName: cbBankAccountName });
     } else {
@@ -33,18 +26,15 @@ export const POST = async (request: Request) => {
           refresh_token: cbRefreshToken,
         });
         const cbBankAccountName = await getCbBankInfo(res.data.access_token);
-        console.log(cbBankAccountName);
         if (cbBankAccountName) {
           return Response.json({ status: "success", cbBankAccountName: cbBankAccountName });
         } else {
           return Response.json({ status: "error", message: "Could not get list of payment methods" });
         }
       } catch (err) {
-        console.log({ status: "error", message: "failed to get new tokens from Coinbase" });
         return Response.json({ status: "error", message: "failed to get new tokens from Coinbase" });
       }
     } else {
-      console.log({ status: "error", message: "no cbAccessTokens or cbRefreshTokens" });
       return Response.json({ status: "error", message: "no cbAccessTokens or cbRefreshTokens" });
     }
   }

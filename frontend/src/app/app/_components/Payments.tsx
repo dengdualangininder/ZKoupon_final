@@ -12,31 +12,34 @@ import ErrorModal from "./modals/ErrorModal";
 import DetailsModal from "./modals/DetailsModal";
 // constants
 import ERC20ABI from "@/utils/abis/ERC20ABI.json";
-import { currency2decimal, merchantType2data } from "@/utils/constants";
+import { currency2decimal } from "@/utils/constants";
 // other
-import { addDays } from "date-fns";
 import { DateRange, DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "next-themes";
+import { deleteCookie } from "cookies-next";
 // images
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
-import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, Transaction } from "@/db/models/UserModel";
 
 // functions
-export const getLocalTime = (mongoDate: string) => {
+export const getLocalTime = (mongoDate: string | undefined) => {
+  if (!mongoDate) {
+    return;
+  }
   const time = new Date(mongoDate).toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
   const timeObject = { time: time.split(" ")[0], ampm: time.split(" ")[1] };
   return timeObject;
 };
 
 // return format: April 2
-export const getLocalDateWords = (mongoDate: string) => {
+export const getLocalDateWords = (mongoDate: string | undefined) => {
+  if (!mongoDate) {
+    return;
+  }
   let date = new Date(mongoDate).toLocaleDateString(undefined, { dateStyle: "long" }).split(",");
   return date[0];
 };
@@ -52,21 +55,21 @@ const Payments = ({
   setTransactionsState,
   paymentSettingsState,
   isAdmin,
+  setPage,
 }: {
   transactionsState: Transaction[];
   setTransactionsState: any;
   paymentSettingsState: PaymentSettings;
   isAdmin: boolean;
+  setPage: any;
 }) => {
   console.log("Payments component rendered");
-
   // states
   const [clickedTxn, setClickedTxn] = useState<Transaction | null>(null);
   const [clickedTxnIndex, setClickedTxnIndex] = useState<number | null>(null);
   const [refundStatus, setRefundStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
   const [refundAllStatus, setRefundAllStatus] = useState("initial"); // "initial" | "refunding" | "refunded"
   const [toRefundStatus, setToRefundStatus] = useState("processing"); // "false" | "processing" | "true"
-  const [pageNumber, setPageNumber] = useState(1);
   const [selectedStartMonth, setSelectedStartMonth] = useState("select");
   const [selectedEndMonth, setSelectedEndMonth] = useState("select");
   const [exportStartMonth, setExportStartMonth] = useState("select");
@@ -77,22 +80,20 @@ const Payments = ({
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [detailsModal, setDetailsModal] = useState(false);
-  const [downloadModal, setDownloadModal] = useState(false);
   const [exportModal, setExportModal] = useState(false);
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [downloadDates, setDownloadDates] = useState<string[]>([]);
   const [refundAllModal, setRefundAllModal] = useState(false);
   const [searchModal, setSearchModal] = useState(false);
+  const [clearSearchModal, setClearSearchModal] = useState(false);
+  const [signOutModal, setSignOutModal] = useState(false);
   // filter states
-  const [searchedTxns, setSearchedTxns] = useState<Transaction[]>([]);
+  const [searchedTxns, setSearchedTxns] = useState<Transaction[] | null>(null);
   const [last4Chars, setLast4Chars] = useState("");
   const [showToRefund, setShowToRefund] = useState(false);
   const [showRefunded, setShowRefunded] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [searchDate, setSearchDate] = useState<DateRange | undefined>(undefined);
-
-  const [showToolsModal, setShowToolsModal] = useState(false);
-  const [showQr, setShowQr] = useState(false);
+  const [searchDate, setSearchDate] = useState<DateRange | undefined>(undefined); // undefined and not null because of how react-day-picker works
 
   // hooks
   const config = useConfig();
@@ -198,7 +199,7 @@ const Payments = ({
     }
   };
 
-  const onClickDownload = () => {
+  const exportTxns = () => {
     const startDate = new Date(Number(selectedStartMonth.split("-")[0]), Number(selectedStartMonth.split("-")[1]) - 1, 1); // returns 1st, 0:00h
     const endDate = new Date(Number(selectedEndMonth.split("-")[0]), Number(selectedEndMonth.split("-")[1]), 1); // returns return 1st, 0:00h of the following month
 
@@ -278,14 +279,19 @@ const Payments = ({
   };
 
   const onClickRefundAll = async () => {
-    //logic here
+    //TODO
     setRefundAllModal(false);
   };
 
   const clearFilter = () => {
     setShowCalendar(false);
+    setShowToRefund(false);
+    setClearSearchModal(false);
+    setShowRefunded(false);
     setSearchDate(undefined);
     setLast4Chars("");
+    setSearchedTxns(null);
+    setFillerRows(null);
   };
 
   const search = async () => {
@@ -298,6 +304,7 @@ const Payments = ({
 
     // filter search
     let searchedTxnsTemp: Transaction[] = transactionsState;
+    console.log(searchedTxnsTemp);
     if (last4Chars) {
       searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == last4Chars.toLowerCase());
     }
@@ -307,13 +314,21 @@ const Payments = ({
     if (showRefunded) {
       searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.refund == true);
     }
-    if (searchDate?.to) {
-      searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == last4Chars.toLowerCase());
+    if (searchDate?.from && searchDate?.to) {
+      const fromDate = new Date(searchDate.from!);
+      const toDate = new Date(new Date(searchDate.to!).getTime() + 24 * 60 * 60 * 1000);
+      searchedTxnsTemp = searchedTxnsTemp?.filter((i) => new Date(i.date) >= fromDate && new Date(i.date) < toDate);
     }
+    console.log(searchedTxnsTemp);
+
     setSearchedTxns(searchedTxnsTemp);
+    setClearSearchModal(true);
+    setSearchModal(false);
 
     if (searchedTxnsTemp.length < 6) {
       setFillerRows(Array.from(Array(6 - searchedTxnsTemp.length).keys()));
+    } else {
+      setFillerRows([1]); // so that the last txn is visible
     }
   };
 
@@ -334,17 +349,26 @@ const Payments = ({
                   <Image src={theme == "dark" ? "/searchWhite.svg" : "/searchBlack.svg"} alt="search" fill />
                 </div>
               </div>
-              <div
-                className="paymentsIconContainer"
-                onClick={() => {
-                  createDownloadDates();
-                  setExportModal(true);
-                }}
-              >
-                <div className="paymentsIcon">
-                  <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export" fill />
+              {isAdmin && (
+                <div
+                  className="paymentsIconContainer"
+                  onClick={() => {
+                    createDownloadDates();
+                    setExportModal(true);
+                  }}
+                >
+                  <div className="paymentsIcon">
+                    <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export" fill />
+                  </div>
                 </div>
-              </div>
+              )}
+              {!isAdmin && (
+                <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
+                  <div className="paymentsIcon">
+                    <Image src={theme == "dark" ? "/signOutWhite.svg" : "/signOutBlack.svg"} alt="signOut" fill />
+                  </div>
+                </div>
+              )}
             </div>
             {/*--- qrCode button ---*/}
             <div className="paymentsIconContainer" onClick={() => setQrCodeModal(true)}>
@@ -360,14 +384,6 @@ const Payments = ({
               <div className="portrait:pl-2 portrait:sm:pl-0 text-start">Time</div>
               <div className="text-end">{paymentSettingsState.merchantCurrency}</div>
               <div className="text-end">Customer</div>
-              {/* {paymentSettingsState.merchantFields.includes("daterange") && <th className="px-2">Dates</th>}
-              {paymentSettingsState.merchantFields.includes("date") && <th className="px-2">Date</th>}
-              {paymentSettingsState.merchantFields.includes("time") && <th className="px-2">Time</th>}
-              {paymentSettingsState.merchantFields.includes("item") && <th>{merchantType2data[paymentSettingsState.merchantBusinessType]["itemlabel"]}</th>}
-              {paymentSettingsState.merchantFields.includes("count") && (
-                <th className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""}`}>Guests</th>
-              )}
-              {paymentSettingsState.merchantFields.includes("sku") && <th className="">SKU#</th>} */}
             </div>
           </div>
         </div>
@@ -413,58 +429,63 @@ const Payments = ({
       {/*--- Table or "no payments" ---*/}
       <div
         id="table"
-        className="w-full portrait:h-[calc(100vh-84px-140px)] landscape:h-[calc(100vh-140px)] portrait:sm:h-[calc(100vh-140px-180px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto select-none relative"
+        className={`${
+          isAdmin ? "portrait:h-[calc(100vh-84px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
+        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto select-none relative`}
       >
         {transactionsState.length != 0 && (
           <table className="paymentsWidth table-fixed text-left relative">
-            {(searchedTxns.length != 0 ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
-              <tr
-                className={`${
-                  txn.refund ? "opacity-50" : ""
-                } w-full portrait:h-[calc((100vh-84px-140px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-180px)/6)] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer relative`}
-                id={txn.txnHash}
-                key={index}
-                onClick={onClickTxn}
-              >
-                {/*---Time---*/}
-                <td className="portrait:pl-2 portrait:sm:pl-0 w-[28%]">
-                  {/*--- "to refund" ---*/}
-                  {txn.toRefund && (
-                    <div
-                      // @ts-ignore
-                      style={{ "writing-mode": "tb-rl" }}
-                      className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] portrait:pr-1 portrait:sm:pr-0 bottom-0 text-center textSm landscape:xl:desktop:text-base font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
-                    >
-                      To Refund
+            <tbody>
+              {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
+                <tr
+                  className={`${txn.refund ? "opacity-50" : ""} ${
+                    isAdmin
+                      ? "portrait:h-[calc((100vh-84px-140px)/6)] portrait:sm:h-[calc((100vh-140px-180px)/6)]"
+                      : "portrait:h-[calc((100vh-0px-140px)/6)] portrait:sm:h-[calc((100vh-0px-180px)/6)]"
+                  } w-full landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer relative`}
+                  id={txn.txnHash}
+                  key={index}
+                  onClick={onClickTxn}
+                >
+                  {/*---Time---*/}
+                  <td className="portrait:pl-2 portrait:sm:pl-0 w-[28%]">
+                    {/*--- "to refund" ---*/}
+                    {txn.toRefund && (
+                      <div
+                        // @ts-ignore
+                        style={{ "writing-mode": "tb-rl" }}
+                        className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] landscape:xl:desktop:left-[-24px] portrait:pr-1 portrait:sm:pr-0 bottom-0 text-center textSm landscape:xl:desktop:text-sm font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
+                      >
+                        To Refund
+                      </div>
+                    )}
+                    {/*--- time/date ---*/}
+                    <div className="relative">
+                      <span className="text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl">{getLocalTime(txn.date)?.time}</span>
+                      <span className="portrait:text-sm landscape:text-xl portrait:sm:text-xl landscape:lg:text-xl ml-1 font-medium">{getLocalTime(txn.date)?.ampm}</span>
+                      <div className="portrait:text-sm landscape:text-sm portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-sm portrait:leading-none landscape:leading-none portrait:sm:leading-none landscape:lg:leading-none landscape:xl:desktop:leading-none absolute bottom-[calc(100%+1px)] font-medium text-dualGray">
+                        {getLocalDateWords(txn.date)?.toUpperCase()}
+                      </div>
                     </div>
-                  )}
-                  {/*--- time/date ---*/}
-                  <div className="relative">
-                    <span className="text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl">{getLocalTime(txn.date).time}</span>
-                    <span className="portrait:text-sm landscape:text-xl portrait:sm:text-xl landscape:lg:text-xl ml-1 font-medium">{getLocalTime(txn.date).ampm}</span>
-                    <div className="portrait:text-sm landscape:text-sm portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base portrait:leading-none landscape:leading-none portrait:sm:leading-none landscape:lg:leading-none landscape:xl:desktop:leading-none absolute bottom-[calc(100%+1px)] font-medium text-dualGray">
-                      {getLocalDateWords(txn.date).toUpperCase()}
-                    </div>
-                  </div>
-                </td>
-                {/*---currencyAmount---*/}
-                <td className="w-[35%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
-                  {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
-                </td>
-                {/*---Customer---*/}
-                <td className="w-[37%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
-                  ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
-                </td>
+                  </td>
+                  {/*---currencyAmount---*/}
+                  <td className="w-[35%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
+                    {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
+                  </td>
+                  {/*---Customer---*/}
+                  <td className="w-[37%] text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl text-end">
+                    ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
+                  </td>
 
-                {/*---Online Options---*/}
-                {/* {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
+                  {/*---Online Options---*/}
+                  {/* {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
                   <div className="text-sm leading-tight">
                     <div>{txn.customerEmail.split("@")[0]}</div>
                     <div>@{txn.customerEmail.split("@")[1]}</div>
                   </div>
                 )} */}
 
-                {/* {paymentSettingsState.merchantFields.includes("daterange") && (
+                  {/* {paymentSettingsState.merchantFields.includes("daterange") && (
                   <td className="xs:px-2">
                     <div className="text-sm leading-tight whitespace-nowrap">
                       <div>{txn.startDate}</div>
@@ -486,136 +507,187 @@ const Payments = ({
                   </td>
                 )}
                 {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>} */}
-              </tr>
-            ))}
-            {fillerRows?.map((txn: any, index: number) => (
-              <tr
-                className={`flex-none w-full portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] landscape:h-[80px] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)] landscape:lg:h-[calc((100vh-140px-32px)/6)]`}
-                key={index}
-              ></tr>
-            ))}
+                </tr>
+              ))}
+              {fillerRows?.map((txn: any, index: number) => (
+                <tr
+                  className={`${
+                    isAdmin
+                      ? "portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)]"
+                      : "portrait:h-[calc((100vh-0px-120px-28px-0px)/6)] portrait:sm:h-[calc((100vh-0px-140px-32px)/6)]"
+                  } flex-none w-full landscape:h-[80px] landscape:lg:h-[calc((100vh-140px-32px)/6)]`}
+                  key={index}
+                ></tr>
+              ))}
+            </tbody>
           </table>
         )}
-        {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center textLg">No payments</div>}
-      </div>
-
-      {/*--- SEARCH MODAL ---*/}
-      <div className={`${searchModal ? "" : "hidden"} fixed inset-0 z-10`}></div>
-      <div id="searchModal" className={`${searchModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebar`}>
-        {/*--- HEADER ---*/}
-        <div className="detailsModalHeaderContainer">
-          {/*--- header ---*/}
-          <div className="detailsModalHeader">SEARCH</div>
-          {/*--- mobile back ---*/}
-          <div className="mobileBack">
-            <FontAwesomeIcon icon={faAngleLeft} onClick={() => setSearchModal(false)} />
-          </div>
-          {/*--- tablet/desktop close ---*/}
-          <div className="xButtonContainer" onClick={() => setSearchModal(false)}>
-            <div className="xButton">&#10005;</div>
-          </div>
-        </div>
-        <div className="mt-4 w-[85%]">
-          {/*--- header + close ---*/}
-          <div className="hidden searchModalHeaderContainer">
-            {/*--- header ---*/}
-            <div className="searchModalHeader">{showCalendar ? "" : "Search Payments"}</div>
-            {/*--- mobile: back ---*/}
-            <div className="absolute left-0 portrait:sm:hidden landscape:lg:hidden h-full flex items-center">
-              <FontAwesomeIcon icon={faAngleLeft} className="text-2xl font-medium" onClick={() => setSearchModal(false)} />
-            </div>
-            {/*--- tablet/desktop close ---*/}
-            <div className="xButtonContainerSmall absolute right-5">
-              <div
-                className="xButton"
-                onClick={() => {
-                  setSearchModal(false);
-                  clearFilter();
-                }}
-              >
+        {/*--- CLEAR SEARCH MODAL ---*/}
+        {clearSearchModal && (
+          <div
+            className={`${
+              isAdmin ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
+            } fixed landscape:bottom-2 landscape:lg:bottom-6 w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[72px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center items-center`}
+          >
+            <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 text-black">
+              <div className="text2xl">Clear Search</div>
+              <div className="xButtonBanner" onClick={clearFilter}>
                 &#10005;
               </div>
             </div>
           </div>
+        )}
+        {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">No payments</div>}
+      </div>
+
+      {/*--- SEARCH MODAL ---*/}
+      <div className={`${searchModal ? "" : "hidden"} fixed inset-0 z-10`}></div>
+      <div className={`${searchModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebar`}>
+        {/*--- HEADER ---*/}
+        <div className="detailsModalHeaderContainer">
+          <div className="detailsModalHeader">SEARCH</div>
+          {/*--- mobile back ---*/}
+          <div className="mobileBack">
+            <FontAwesomeIcon
+              icon={faAngleLeft}
+              onClick={() => {
+                setSearchModal(false);
+              }}
+            />
+          </div>
+          {/*--- tablet/desktop close ---*/}
+          <div
+            className="xButtonContainer rounded-tr-none"
+            onClick={() => {
+              setSearchModal(false);
+            }}
+          >
+            <div className="xButton">&#10005;</div>
+          </div>
+        </div>
+        {/*--- BODY ---*/}
+        <div className="mt-4 sidebarBodyContainer">
           {/*--- filters ---*/}
-          {!showCalendar ? (
-            <div className="flex-none w-full h-[360px] textLg flex flex-col">
-              {/*--- customer's address ---*/}
-              <div className="searchModalContainer">
-                <div className="">
-                  <div className="searchModalLabel">Customer's Address</div>
-                  <div className="text-base desktop:text-xs italic leading-none pb-[5px]">(Enter last 4 characters)</div>
-                </div>
-                <input
-                  className="text-xl w-[104px] h-[48px] text-center rounded-md placeholderColor inputColor"
-                  onChange={(e) => {
-                    setLast4Chars(e.currentTarget.value);
-                  }}
-                  value={last4Chars}
-                  maxLength={4}
-                  placeholder="ABCD"
-                />
+          <div className="flex-none w-full h-[360px] textLg flex flex-col">
+            {/*--- filter 1 - customer's address ---*/}
+            <div className="searchModalCategoryContainer">
+              <div className="">
+                <div className="font-medium">Customer's Address</div>
+                <div className="text-base desktop:text-xs italic leading-none pb-[5px]">(Enter last 4 characters)</div>
               </div>
-              {/*--- "to refund" payments ---*/}
-              <div className="searchModalContainer">
-                <div className="textLg font-medium">"To Refund" Payments</div>
-                <input type="checkbox" className="w-[30px] h-[30px] rounded-md checkboxColor" />
-              </div>
-              {/*--- refunded payments ---*/}
-              <div className="searchModalContainer">
-                <div className="textLg font-medium">Refunded Payments</div>
-                <input type="checkbox" className="w-[30px] h-[30px] rounded-md checkboxColor" />
-              </div>
-              {/*--- date ---*/}
-              <div className="h-[25%] flex items-center justify-between">
-                <div className="textLg font-medium">Date</div>
-                <div
-                  className={`${
-                    searchDate && searchDate.to ? "" : " text-dualGray dark:text-[#53565C] font-medium italic"
-                  } inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
-                  onClick={() => setShowCalendar(!showCalendar)}
-                >
-                  {searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "select dates"}
-                </div>
+              <input
+                className="text-xl w-[104px] h-[48px] text-center rounded-md placeholderColor inputColor"
+                onChange={(e) => {
+                  setLast4Chars(e.currentTarget.value);
+                }}
+                value={last4Chars}
+                maxLength={4}
+                placeholder="ABCD"
+              />
+            </div>
+            {/*--- filter 2 - "to refund" payments ---*/}
+            <div className="searchModalCategoryContainer">
+              <div className="font-medium">"To Refund" Payments</div>
+              <input type="checkbox" className="checkbox" onChange={(e) => (e.target.checked ? setShowToRefund(true) : setShowToRefund(false))} checked={showToRefund} />
+            </div>
+            {/*--- filter 3 - refunded payments ---*/}
+            <div className="searchModalCategoryContainer">
+              <div className="font-medium">Refunded Payments</div>
+              <input type="checkbox" className="checkbox" onChange={(e) => (e.target.checked ? setShowRefunded(true) : setShowRefunded(false))} checked={showRefunded} />
+            </div>
+            {/*--- filter 4 - date ---*/}
+            <div className="searchModalCategoryContainer border-none">
+              <div className="font-medium">Date</div>
+              <div
+                className={`${
+                  searchDate && searchDate.to ? "" : "text-slate-400 dark:text-slate-600 italic"
+                } inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
+                onClick={() => setShowCalendar(!showCalendar)}
+              >
+                {searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : "select dates"}
               </div>
             </div>
-          ) : (
-            <div className="flex-1 flex flex-col items-center mt-6">
-              <DayPicker mode="range" selected={searchDate} onSelect={setSearchDate} />
-              <div className="mt-2 w-full flex justify-between">
-                <button
-                  className="buttonSecondary w-[35%]"
-                  onClick={() => {
-                    setShowCalendar(false);
-                    setSearchDate(undefined);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button className="buttonPrimary w-[60%]" onClick={() => setShowCalendar(false)}>
-                  Confirm Dates
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
+
           {/*--- button ---*/}
-          <div className={`${showCalendar ? "hidden" : ""} mt-8 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex justify-between`}>
-            <button className="buttonSecondary w-[46%]" onClick={() => clearFilter()}>
-              Clear Filters
+          <div className="mt-8 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex justify-between">
+            <button className="buttonSecondary w-[35%]" onClick={clearFilter}>
+              Clear
             </button>
-            <button className="buttonPrimary w-[46%]" onClick={search}>
+            <button className="buttonPrimary w-[60%]" onClick={search}>
               Search
             </button>
           </div>
         </div>
       </div>
 
+      {showCalendar && (
+        <div className="sidebar z-[21]">
+          {/*--- HEADER ---*/}
+          <div className="detailsModalHeaderContainer">
+            <div className="detailsModalHeader">Select Dates</div>
+            {/*--- mobile back ---*/}
+            <div className="mobileBack">
+              <FontAwesomeIcon
+                icon={faAngleLeft}
+                onClick={() => {
+                  setShowCalendar(false);
+                  setSearchDate(undefined);
+                }}
+              />
+            </div>
+            {/*--- tablet/desktop close ---*/}
+            <div
+              className="xButtonContainer rounded-tr-none"
+              onClick={() => {
+                setShowCalendar(false);
+                setSearchDate(undefined);
+              }}
+            >
+              <div className="xButton">&#10005;</div>
+            </div>
+          </div>
+          {/*--- BODY ---*/}
+          <div className="mt-2 sidebarBodyContainer">
+            {/*--- calendar ---*/}
+            <DayPicker mode="range" selected={searchDate} onSelect={setSearchDate} />
+            {/*--- date range ---*/}
+            <div className={`text-xl landscape:xl:desktop:text-lg`}>
+              {searchDate?.from?.toLocaleDateString() ?? "start date"}&nbsp; &ndash; &nbsp;{searchDate?.to?.toLocaleDateString() ?? "end date"}
+            </div>
+            {/*--- buttons ---*/}
+            <div className="mt-8 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex justify-between">
+              <button
+                className="buttonSecondary w-[35%]"
+                onClick={() => {
+                  setSearchDate(undefined);
+                }}
+              >
+                Reset
+              </button>
+              <button
+                className="buttonPrimary w-[60%]"
+                onClick={() => {
+                  if (searchDate && searchDate.from && searchDate.to) {
+                    setShowCalendar(false);
+                  } else {
+                    setErrorModal(true);
+                    setErrorMsg("Please select a date range");
+                  }
+                }}
+              >
+                Confirm Dates
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/*--- EXPORT MODAL ---*/}
       <div className={`${exportModal ? "" : "hidden"} fixed inset-0 z-10`} onClick={() => setExportModal(false)}></div>
       <div id="exportModal" className={`${exportModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebar`}>
         {/*--- HEADER ---*/}
         <div className="detailsModalHeaderContainer">
-          {/*--- header ---*/}
           <div className="detailsModalHeader">EXPORT</div>
           {/*--- mobile back ---*/}
           <div className="mobileBack">
@@ -630,7 +702,7 @@ const Payments = ({
           </div>
           {/*--- tablet/desktop close ---*/}
           <div
-            className="xButtonContainer"
+            className="xButtonContainer rounded-tr-none"
             onClick={() => {
               setExportModal(false);
               setExportStartMonth("select");
@@ -641,11 +713,11 @@ const Payments = ({
           </div>
         </div>
         {/*--- content ---*/}
-        <div className="mt-12 textLg w-[83%] flex flex-col space-y-10">
+        <div className="mt-12 textLg w-[85%] flex flex-col space-y-10">
           {/*---start month---*/}
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">Starting Month/Year</div>
-            <select className="w-[120px] inputColor px-3 py-2 rounded-[4px]" value={exportStartMonth} onChange={(e) => setExportStartMonth(e.target.value)}>
+            <select className="w-[130px] textLg inputColor px-3 py-2 rounded-md" value={exportStartMonth} onChange={(e) => setExportStartMonth(e.target.value)}>
               {downloadDates.map((i) => (
                 <option>{i}</option>
               ))}
@@ -654,7 +726,7 @@ const Payments = ({
           {/*---end month---*/}
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">Ending Month/Year</div>
-            <select className="w-[120px] inputColor px-3 py-2 rounded-[4px]" value={exportEndMonth} onChange={(e) => setExportEndMonth(e.target.value)}>
+            <select className="w-[130px] textLg inputColor px-3 py-2 rounded-md" value={exportEndMonth} onChange={(e) => setExportEndMonth(e.target.value)}>
               {downloadDates.map((i) => (
                 <option className="">{i}</option>
               ))}
@@ -662,18 +734,9 @@ const Payments = ({
           </div>
         </div>
         {/*--- button ---*/}
-        <div className="mt-12 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-[83%] flex flex-col items-center space-y-12">
-          <button className={`${showCalendar ? "hidden" : ""} buttonPrimary`} onClick={search}>
+        <div className="my-12 w-[85%]">
+          <button className={`${showCalendar ? "hidden" : ""} buttonPrimary`} onClick={exportTxns}>
             Export
-          </button>
-          <button
-            className={`${showCalendar ? "hidden" : ""} hidden portrait:sm:block landscape:lg:block buttonSecondary`}
-            onClick={() => {
-              setExportModal(false);
-              clearFilter();
-            }}
-          >
-            Close
           </button>
         </div>
       </div>
@@ -693,6 +756,36 @@ const Payments = ({
           onClickRefund={onClickRefund}
           onClickToRefund={onClickToRefund}
         />
+      )}
+
+      {/*  */}
+
+      {/*---signOutModal---*/}
+      {signOutModal && (
+        <div>
+          <div className="modal">
+            {/*---content---*/}
+            <div className="modalContent">Do you want to sign out?</div>
+            {/*--- buttons ---*/}
+            <div className="modalButtonContainer">
+              <button
+                onClick={() => {
+                  deleteCookie("employeeJwt");
+                  setSignOutModal(false);
+                  setPage("loading");
+                  window.location.reload();
+                }}
+                className="mt-10 buttonPrimary"
+              >
+                Confirm
+              </button>
+              <button onClick={() => setSignOutModal(false)} className="buttonSecondary">
+                Cancel
+              </button>
+            </div>
+          </div>
+          <div className="modalBlackout"></div>
+        </div>
       )}
 
       {refundAllModal && (

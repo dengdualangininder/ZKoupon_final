@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 // wagmi & viem & ethers
 import { useConfig, useAccount, useClient } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";
-import { parseUnits, formatUnits, encodeFunctionData } from "viem";
+import { parseUnits, formatUnits, encodeFunctionData, isAddress } from "viem";
 import { ethers } from "ethers";
 // other
 import { v4 as uuidv4 } from "uuid";
@@ -59,12 +59,16 @@ const CashOut = ({
   const [txnHash, setTxnHash] = useState("");
   const [usdcTransferToCex, setUsdcTransferToCex] = useState<string | null>(null);
   const [usdcTransferToBank, setUsdcTransferToBank] = useState<string | null>(null);
+  const [usdcTransferToBankActual, setUsdcTransferToBankActual] = useState<string | null>(null);
   const [currencyDeposited, setCurrencyDeposited] = useState("");
   const [cbBankAccountName, setCbBankAccountName] = useState<any>("");
   const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
   const [fiatDeposited, setFiatDeposited] = useState("");
   const [cexMoreOptions, setCexMoreOptions] = useState(false);
+  const [flashMoreOptions, setFlashMoreOptions] = useState(false);
   const [blockchainFee, setBlockchainFee] = useState(0.05); // in USDC
+  const [transferToAnyAddress, setTransferToAnyAddress] = useState(false);
+  const [anyAddress, setAnyAddress] = useState<string | null>(null);
   // accordion states
   const [flashDetails, setFlashDetails] = useState(false);
   const [cexDetails, setCexDetails] = useState(false);
@@ -100,15 +104,19 @@ const CashOut = ({
     console.log("/app, Cashout, get balances useEffect start");
     const getBalances = async () => {
       // get rates
-      const ratesRes = await fetch("/api/getRates", {
-        method: "POST",
-        body: JSON.stringify({ merchantCurrency: paymentSettingsState?.merchantCurrency }),
-        headers: { "content-type": "application/json" },
-      });
-      const ratesData = await ratesRes.json();
-      console.log("ratesData", ratesData);
-      if (ratesData.status == "success") {
-        setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
+      if (paymentSettingsState?.merchantCurrency == "USD") {
+        setRates({ usdcToLocal: 1, usdToLocal: 1 });
+      } else {
+        const ratesRes = await fetch("/api/getRates", {
+          method: "POST",
+          body: JSON.stringify({ merchantCurrency: paymentSettingsState?.merchantCurrency }),
+          headers: { "content-type": "application/json" },
+        });
+        const ratesData = await ratesRes.json();
+        console.log("ratesData", ratesData);
+        if (ratesData.status == "success") {
+          setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
+        }
       }
 
       // usability test
@@ -127,9 +135,8 @@ const CashOut = ({
         functionName: "balanceOf",
         args: [account.address],
       })) as bigint;
-      const flashBalanceTemp = Number(formatUnits(flashBalanceBigInt, 6)).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]);
+      const flashBalanceTemp = formatUnits(flashBalanceBigInt, 6);
       setFlashBalance(flashBalanceTemp);
-      console.log("flashBalanceTemp", flashBalanceTemp);
 
       // get Coinbase balance
       if (cashoutSettingsState?.cex == "Coinbase") {
@@ -167,50 +174,46 @@ const CashOut = ({
         }
       }
 
-      // calculate savings
-      let totalCurrencyAmount = 0;
-      let totalCurrencyAmountAfterCashback = 0;
-      let totalTokenAmount = 0;
-      if (transactionsState?.length > 0) {
-        for (const txn of transactionsState) {
-          totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
-          totalCurrencyAmountAfterCashback = totalCurrencyAmountAfterCashback + Number(txn.currencyAmountAfterCashback ?? 0);
-          totalTokenAmount = totalTokenAmount + Number(txn.tokenAmount);
-        }
-      }
-      setStats({
-        totalTxns: transactionsState?.length,
-        totalCurrencyAmount: totalCurrencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
-        totalCurrencyAmountAfterCashback: totalCurrencyAmountAfterCashback.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
-        totalCashbackGiven: (totalCurrencyAmount - totalCurrencyAmountAfterCashback).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
-        totalTokenAmount: totalTokenAmount.toFixed(2),
-        paymentRate: (totalCurrencyAmountAfterCashback / totalTokenAmount).toFixed(currency2rateDecimal[paymentSettingsState?.merchantCurrency!]),
-        currentRate: ratesData.usdcToLocal,
-        cashoutRate: 0,
-      });
+      // // calculate savings
+      // let totalCurrencyAmount = 0;
+      // let totalCurrencyAmountAfterCashback = 0;
+      // let totalTokenAmount = 0;
+      // if (transactionsState?.length > 0) {
+      //   for (const txn of transactionsState) {
+      //     totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
+      //     totalCurrencyAmountAfterCashback = totalCurrencyAmountAfterCashback + Number(txn.currencyAmountAfterCashback ?? 0);
+      //     totalTokenAmount = totalTokenAmount + Number(txn.tokenAmount);
+      //   }
+      // }
+      // setStats({
+      //   totalTxns: transactionsState?.length,
+      //   totalCurrencyAmount: totalCurrencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
+      //   totalCurrencyAmountAfterCashback: totalCurrencyAmountAfterCashback.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
+      //   totalCashbackGiven: (totalCurrencyAmount - totalCurrencyAmountAfterCashback).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
+      //   totalTokenAmount: totalTokenAmount.toFixed(2),
+      //   paymentRate: (totalCurrencyAmountAfterCashback / totalTokenAmount).toFixed(currency2rateDecimal[paymentSettingsState?.merchantCurrency!]),
+      //   currentRate: ratesData.usdcToLocal,
+      //   cashoutRate: 0,
+      // });
     };
     getBalances();
     console.log("/app, Cashout, get balances useEffect end");
   }, []);
 
   const onClickSIWC = async () => {
-    // setIsCexAccessible(true);
-    // return;
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
     router.push(
-      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:buys:create,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read`
+      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:buys:create,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read`
     );
   };
 
   const onClickUnlink = () => {
-    // setIsCexAccessible(false);
-    // return;
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     setIsCexAccessible(false);
-    setCexBalance("");
+    setCexBalance(null);
   };
 
   const onClickTransferToCex = async () => {
@@ -220,7 +223,25 @@ const CashOut = ({
       if (cashoutSettingsState?.cex == "Coinbase") {
         setErrorMsg("Please first link your Coinbase account");
       } else {
-        setErrorMsg("Please go to Settings > Cash Out Settings and add your CEX's EVM address, specifically the USDC deposit address on the Polygon network");
+        setErrorMsg(
+          <div className="text-base space-y-4">
+            <div className="">
+              Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>
+            </div>
+            <div>or</div>
+            <div
+              className="link dark:linkDark"
+              onClick={() => {
+                setTransferToCexModal(true);
+                setTransferToAnyAddress(true);
+                setErrorModal(false);
+                setErrorMsg("");
+              }}
+            >
+              transfer to any EVM address
+            </div>
+          </div>
+        );
       }
       setErrorModal(true);
     }
@@ -242,9 +263,47 @@ const CashOut = ({
       return;
     }
 
-    if (!usdcTransferToCex || Number(usdcTransferToCex) == 0) {
+    // check if amount exists
+    if (!usdcTransferToCex) {
       setErrorModal(true);
       setErrorMsg("Please enter an amount");
+      return;
+    }
+    // check if amount >= 1
+    if (Number(usdcTransferToCex) < 1) {
+      setErrorModal(true);
+      setErrorMsg("1 USDC minimum transfer");
+      return;
+    }
+
+    // determine toAddress
+    let toAddress;
+    if (transferToAnyAddress) {
+      if (anyAddress) {
+        console.log("anyAddress:", anyAddress);
+        toAddress = anyAddress;
+      } else {
+        setErrorModal(true);
+        setErrorMsg('Please enter an EVM address in the "To:" field');
+        return;
+      }
+    } else {
+      if (cashoutSettingsState?.cexEvmAddress) {
+        toAddress = cashoutSettingsState?.cexEvmAddress;
+      } else {
+        // this condition should not be possible but will add anyway
+        setErrorModal(true);
+        <div className="">
+          Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>
+        </div>;
+        return;
+      }
+    }
+
+    // check if toAddress if valid
+    if (!isAddress(toAddress)) {
+      setErrorModal(true);
+      setErrorMsg("Please enter a valid EVM address");
       return;
     }
 
@@ -291,7 +350,7 @@ const CashOut = ({
         address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
         abi: ERC20ABI,
         functionName: "transfer",
-        args: [cashoutSettingsState?.cexEvmAddress, parseUnits(usdcTransferToCex, 6)],
+        args: [toAddress, parseUnits(usdcTransferToCex, 6)],
       });
       console.log(txnHashTemp);
       setTxnHash(txnHashTemp);
@@ -359,17 +418,52 @@ const CashOut = ({
       return;
     }
 
-    // setModalText("sending");
+    // check if amount exists
+    if (!usdcTransferToBank) {
+      setErrorModal(true);
+      setErrorMsg("Please enter an amount");
+      return;
+    }
+    // check if amount >= 1
+    if (Number(usdcTransferToBank) < 11) {
+      setErrorModal(true);
+      setErrorMsg("11 USDC minimum transfer");
+      return;
+    }
+    if (Number(usdcTransferToBank) > 10000.1) {
+      setErrorModal(true);
+      setErrorMsg("10,000 USDC maximum transfer");
+      return;
+    }
 
-    // const clientOrderId = uuidv4();
-
-    const res = await fetch("/api/cbWithdraw", {
-      method: "POST",
-      body: JSON.stringify({ cbAccessToken: window.sessionStorage.getItem("cbAccessToken"), amount: usdcTransferToBank }),
-      headers: { "content-type": "application/json" },
-    });
-    const data = await res.json();
-    console.log(data);
+    setTransferState("sending");
+    try {
+      const res = await fetch("/api/cbWithdraw", {
+        method: "POST",
+        body: JSON.stringify({
+          amount: usdcTransferToBank,
+          merchantCurrency: paymentSettingsState?.merchantCurrency,
+          cbAccessToken: window.sessionStorage.getItem("cbAccessToken"),
+        }),
+        headers: { "content-type": "application/json" },
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.status == "success") {
+        setFiatDeposited(data.fiatAmountBought);
+        setUsdcTransferToBankActual(data.usdcAmountSold);
+        setCexBalance((Number(cexBalance) - Number(data.usdcAmountSold)).toFixed(2));
+        setTransferToBankSuccessModal(true);
+        setTransferToBankModal(false);
+      } else if (data.status == "error") {
+        setErrorMsg(data.message);
+        setErrorModal(true);
+      }
+    } catch (e) {
+      setErrorModal(true);
+      setErrorMsg("Something happened and the transfer was not made. Please try again or contact us. We apologize for the inconvenience.");
+    }
+    setTransferState("initial");
   };
 
   const hideCexMoreOptions = () => {
@@ -377,16 +471,44 @@ const CashOut = ({
     document.removeEventListener("click", hideCexMoreOptions);
   };
 
+  const hideFlashMoreOptions = () => {
+    setFlashMoreOptions(false);
+    document.removeEventListener("click", hideFlashMoreOptions);
+  };
+
+  console.log("usdcTransferToCex", usdcTransferToCex);
   console.log("before render", "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible, "\ncexBalance:", cexBalance);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="py-6 portrait:sm:py-8 landscape:lg:py-8 portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto">
+    <section className="py-6 portrait:sm:py-8 landscape:lg:py-8 portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto bg-light2 dark:bg-dark1">
       {/*---Flash Account + Coinbase Account + Statistics ---*/}
-      <div className="w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[500px] flex flex-col space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8">
+      <div className="w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[400px] flex flex-col space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8">
         {/*---FLASH CARD ---*/}
         <div className="cashoutContainer">
           {/*--- title ---*/}
-          <div className="cashoutHeader h-[36px] flex items-center">Flash Account</div>
+          <div className="w-full flex justify-between items-center">
+            <div className="cashoutHeader h-[36px] flex items-center">Flash Account</div>
+            <div
+              className={`${flashBalance ? "" : "hidden"} w-[24px] flex items-center justify-center cursor-pointer group relative`}
+              onClick={() => {
+                setFlashMoreOptions(!flashMoreOptions);
+                if (!flashMoreOptions) {
+                  document.addEventListener("click", hideFlashMoreOptions);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faEllipsisVertical} className={`${flashMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
+              <div
+                className={`${flashMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`}
+                onClick={() => {
+                  setTransferToCexModal(true);
+                  setTransferToAnyAddress(true);
+                }}
+              >
+                Transfer to any address
+              </div>
+            </div>
+          </div>
           {/*--- balance + details ---*/}
           <div className="cashoutBalanceContainer">
             {/*--- balance ---*/}
@@ -402,7 +524,7 @@ const CashOut = ({
                 </div>
               </div>
             ) : (
-              <div className="cashoutBalance text-transparent w-[150px] bg-slate-200 dark:bg-dark5 animate-pulse rounded-md">0000</div>
+              <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
             )}
             {/*---details---*/}
             <div className={`${flashDetails ? "max-h-[120px]" : "max-h-[0px]"} cashoutDetailsContainer`}>
@@ -415,7 +537,7 @@ const CashOut = ({
                     </div>
                     USDC
                   </div>
-                  <div className="">{flashBalance}</div>
+                  <div className="">{Number(flashBalance).toFixed(2)}</div>
                 </div>
                 {/*--- rate ---*/}
                 <div className="flex justify-between">
@@ -423,7 +545,7 @@ const CashOut = ({
                     Rate
                     <div className="group flex items-center">
                       <FontAwesomeIcon icon={faCircleInfo} className="px-2 info" />
-                      <div className="w-full top-0 left-0 cashoutTooltip">The USDC to EUR rate if you cash out now</div>
+                      <div className="w-full top-0 left-0 cashoutTooltip">The USDC to {paymentSettingsState?.merchantCurrency} rate if you cash out now</div>
                     </div>
                   </div>
                   <div className="">{rates.usdcToLocal}</div>
@@ -441,15 +563,14 @@ const CashOut = ({
           )}
         </div>
 
-        {/*---CEX---*/}
+        {/*--- CEX CARD ---*/}
         <div className={`${paymentSettingsState?.merchantCountry != "Any country" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
           {/*--- header + moreOptions ---*/}
           <div className="w-full flex justify-between items-center">
             <div className="cashoutHeader">Coinbase Account</div>
+
             <div
-              className={`${isCexAccessible ? "" : "hidden"} ${
-                cexMoreOptions ? "bg-gray-200" : ""
-              } cursor-pointer relative w-[36px] h-[36px] rounded-full flex items-center justify-center translate-x-[8px] landscape:xl:desktop:hover:bg-gray-200`}
+              className={`${cexBalance ? "" : "hidden"} w-[24px] flex items-center justify-center cursor-pointer group relative`}
               onClick={() => {
                 setCexMoreOptions(!cexMoreOptions);
                 if (!cexMoreOptions) {
@@ -457,13 +578,8 @@ const CashOut = ({
                 }
               }}
             >
-              {/* <FontAwesomeIcon icon={faEllipsisVertical} className="hidden textXl" /> */}
-              <div
-                className={`${
-                  cexMoreOptions ? "absolute" : "hidden"
-                } top-[calc(100%+8px)] right-0 px-4 py-1 textLg rounded-md border border-gray-300 desktop:hover:bg-gray-200 active:bg-gray-200`}
-                onClick={onClickUnlink}
-              >
+              <FontAwesomeIcon icon={faEllipsisVertical} className={`${cexMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
+              <div className={`${cexMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`} onClick={onClickUnlink}>
                 Unlink
               </div>
             </div>
@@ -484,7 +600,7 @@ const CashOut = ({
                   </div>
                 </div>
               ) : (
-                <div className="cashoutBalance text-transparent w-[150px] bg-slate-200 dark:bg-dark5 animate-pulse rounded-md">0000</div>
+                <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
               )}
               {/*---details---*/}
               <div className={`${cexDetails ? "max-h-[120px]" : "max-h-[0px]"} ${isCexAccessible ? "" : "hidden"} cashoutDetailsContainer`}>
@@ -505,7 +621,7 @@ const CashOut = ({
                       Rate
                       <div className="group flex items-center">
                         <FontAwesomeIcon icon={faCircleInfo} className="px-2 text-gray-400 textXs" />
-                        <div className="w-full top-0 left-0 cashoutTooltip">The USDC to EUR rate if you cash out now</div>
+                        <div className="w-full top-0 left-0 cashoutTooltip">The USDC to {paymentSettingsState?.merchantCurrency} rate if you cash out now</div>
                       </div>
                     </div>
                     <div className="">{rates.usdcToLocal}</div>
@@ -630,11 +746,7 @@ const CashOut = ({
           {/*--- header ---*/}
           <div className="cashoutHeader">Transfer History</div>
           {/*--- table ---*/}
-          <div className="mt-2 px-2 flex justify-between">
-            <table>
-              <th></th>
-            </table>
-          </div>
+          <div className="mt-2 px-2 flex justify-between"></div>
         </div>
       </div>
 
@@ -642,10 +754,22 @@ const CashOut = ({
       {transferToCexModal && (
         <div className="">
           <div className="transferModal">
+            {/*--- CLOSE (tablet/desktop) ---*/}
+            <div
+              className="xButtonContainer"
+              onClick={() => {
+                setTransferToCexModal(false);
+                setUsdcTransferToCex(null);
+                setTransferToAnyAddress(false);
+              }}
+            >
+              <div className="xButton">&#10005;</div>
+            </div>
+
             {/*--- HEADER ---*/}
             <div className="detailsModalHeaderContainer">
               {/*--- header ---*/}
-              <div className="detailsModalHeader">Transfer To Coinbase</div>
+              <div className="detailsModalHeader whitespace-nowrap">Transfer{transferToAnyAddress ? "" : ` To ${cashoutSettingsState?.cex || "CEX"}`}</div>
               {/*--- mobile back ---*/}
               <div className="mobileBack">
                 <FontAwesomeIcon
@@ -653,107 +777,122 @@ const CashOut = ({
                   onClick={() => {
                     setTransferToCexModal(false);
                     setUsdcTransferToCex(null);
+                    setTransferToAnyAddress(false);
                   }}
                 />
-              </div>
-              {/*--- tablet/desktop close ---*/}
-              <div
-                className="xButtonContainer"
-                onClick={() => {
-                  setTransferToCexModal(false);
-                  setUsdcTransferToCex(null);
-                }}
-              >
-                <div className="xButton">&#10005;</div>
               </div>
             </div>
 
             {/*--- CONTENT ---*/}
-            <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] flex flex-col items-center overflow-y-auto landscape:xl:desktop:h-[500px]">
-              {/*--- FROM container ---*/}
-              <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon">
-                    <Image src="/logoBlackBgNoText.svg" alt="coinbase" fill />
+            <div className="flex-1 w-full flex justify-center overflow-y-auto">
+              <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] max-w-[500px] h-full flex flex-col items-center">
+                {/*--- FROM container ---*/}
+                <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
+                  {/*--- info ---*/}
+                  <div className="w-full flex items-center">
+                    <div className="transferIcon">
+                      <Image src="/logoBlackBgNoText.svg" alt="flashLogo" fill />
+                    </div>
+                    <div className="textBase ml-3 flex flex-col">
+                      <div className="leading-none font-medium">From: Flash</div>
+                      <div className="leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
+                      <div className="leading-tight break-all text-slate-500">
+                        {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
+                      </div>
+                    </div>
                   </div>
-                  <div className="textBase ml-3 flex flex-col">
-                    <div className="leading-none font-medium">From: Flash</div>
-                    <div className="leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
-                    <div className="leading-tight break-all text-slate-500">
-                      {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
+                  {/*--- from amount ---*/}
+                  <div className="mt-4 w-full flex items-center relative">
+                    <input
+                      className="transferAmountFromBox inputColor border-slate-500 placeholderColor placeholder:not-italic dark:bg-dark2"
+                      type="number"
+                      inputMode="decimal"
+                      onChange={(e) => setUsdcTransferToCex(e.currentTarget.value.toString())}
+                      value={usdcTransferToCex || ""}
+                      placeholder="0"
+                      step="0.01"
+                    />
+                    {/*--- max + USDC ---*/}
+                    <div className="h-full right-0 absolute flex space-x-4 items-center">
+                      <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
+                        max
+                      </div>
+                      <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
+                    </div>
+                  </div>
+                  {/*--- balance ---*/}
+                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
+                    Balance: <span className="">{flashBalance}</span> USDC
+                  </div>
+                </div>
+
+                {/*--- ARROW ---*/}
+                <div className="flex-none w-full h-[24px] flex justify-center relative z-[1]">
+                  <div className="transferArrowContainer">
+                    <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
+                    <div className="transferArrowFont">
+                      {blockchainFee} USDC <br />
+                      blockchain fee
                     </div>
                   </div>
                 </div>
-                {/*--- from amount ---*/}
-                <div className="mt-4 w-full flex items-center relative">
-                  <input
-                    className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
-                    type="number"
-                    inputMode="decimal"
-                    onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
-                    value={usdcTransferToCex || ""}
-                    placeholder="0"
-                  />
-                  {/*--- max + USDC ---*/}
-                  <div className="h-full right-0 absolute flex space-x-4 items-center">
-                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
-                      max
+
+                {/*--- TO container ---*/}
+                <div className="pt-10 landscape:xl:desktop:pt-9 pb-6 transferCard">
+                  {/*--- info ---*/}
+                  {!transferToAnyAddress && (
+                    <div className="w-full flex items-center">
+                      <div className="transferIcon">
+                        {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                        {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="max" fill />}
+                        {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="bitopro" fill />}
+                        {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
+                      </div>
+                      <div className="textBase ml-3 flex flex-col">
+                        <div className="leading-none font-medium">To: {cashoutSettingsState?.cex}</div>
+                        <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                        <div className="leading-tight break-all text-slate-500">
+                          {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                        </div>
+                      </div>
                     </div>
+                  )}
+                  {transferToAnyAddress && (
+                    <div className="w-full flex flex-col">
+                      <label className="w-full font-medium">To:</label>
+                      <textarea
+                        id="settingsCexDepositAddress"
+                        rows={1}
+                        className="mt-1 textBase inputColor border-slate-500 placeholderColor rounded-lg dark:bg-dark2 resize-none"
+                        placeholder="Enter an EVM address"
+                        onChange={(e) => {
+                          let element = document.getElementById("settingsCexDepositAddress") as HTMLTextAreaElement;
+                          e.target.value ? (element.rows = 2) : (element.rows = 1);
+                          setAnyAddress(e.target.value);
+                        }}
+                      />
+                    </div>
+                  )}
+                  {/*--- to amount ---*/}
+                  <div className="transferAmountToBox">
+                    <div className="">{Number(usdcTransferToCex) >= 1 ? (Number(usdcTransferToCex) - blockchainFee).toFixed(2) : "0"}</div>
                     <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
                   </div>
                 </div>
-                {/*--- balance ---*/}
-                <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
-                  Balance: <span className="">{flashBalance}</span> USDC
-                </div>
-              </div>
 
-              {/*--- ARROW ---*/}
-              <div className="w-full h-[24px] flex justify-center relative z-[1]">
-                <div className="w-[200px] h-[70px] landscape:xl:desktop:w-[160px] landscape:xl:desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light1 dark:bg-dark3 border border-slate-500 dark:border-slate-600 z-[2]">
-                  <FontAwesomeIcon icon={faArrowDown} className="text-4xl landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1" />
-                  <div className="textBase ml-2 leading-tight">
-                    {blockchainFee} USDC <br />
-                    blockchain fee
-                  </div>
-                </div>
-              </div>
-
-              {/*--- TO container ---*/}
-              <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon">
-                    <Image src="/coinbase.svg" alt="coinbase" fill />
-                  </div>
-                  <div className="textBase ml-3 flex flex-col">
-                    <div className="leading-none font-medium">From: Coinbase</div>
-                    <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
-                    <div className="leading-tight break-all text-slate-500">
-                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                {/*--- buttons ---*/}
+                <div className="transferModalButtonContainer">
+                  {transferState == "initial" ? (
+                    <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
+                      Transfer{transferToAnyAddress ? "" : ` To ${cashoutSettingsState?.cex || "CEX"}`}
+                    </button>
+                  ) : (
+                    <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
+                      <SpinningCircleGray />
+                      &nbsp; Transferring...
                     </div>
-                  </div>
+                  )}
                 </div>
-                {/*--- to amount ---*/}
-                <div className="transferAmountToBox">
-                  <div className="">{usdcTransferToCex ? Number(usdcTransferToCex) - blockchainFee : "0"}</div>
-                  <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
-                </div>
-              </div>
-
-              {/*--- buttons ---*/}
-              <div className="flex-none mt-8 portrait:sm:mt-12 landscape:lg:mt-12 landscape:xl:desktop:mt-6 w-full pb-4">
-                {transferState == "initial" ? (
-                  <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
-                    Transfer To Coinbase
-                  </button>
-                ) : (
-                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
-                    <SpinningCircleGray />
-                    &nbsp; Transferring...
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -771,19 +910,17 @@ const CashOut = ({
       {transferToBankModal && (
         <div className="">
           <div className="transferModal">
-            {/*--- HEADER ---*/}
-            <div className="detailsModalHeaderContainer">
-              {/*--- header ---*/}
-              <div className="detailsModalHeader">Transfer To Bank</div>
-              {/*--- mobile back ---*/}
-              <div className="mobileBack">
-                <FontAwesomeIcon icon={faAngleLeft} onClick={() => setTransferToBankModal(false)} />
-              </div>
-              {/*--- tablet/desktop close ---*/}
-              <div className="xButtonContainer" onClick={() => setTransferToBankModal(false)}>
-                <div className="xButton">&#10005;</div>
-              </div>
+            {/*--- mobile back ---*/}
+            <div className="mobileBack">
+              <FontAwesomeIcon icon={faAngleLeft} onClick={() => setTransferToBankModal(false)} />
             </div>
+            {/*--- tablet/desktop close ---*/}
+            <div className="xButtonContainer" onClick={() => setTransferToBankModal(false)}>
+              <div className="xButton">&#10005;</div>
+            </div>
+
+            {/*--- HEADER ---*/}
+            <div className="detailsModalHeader">Transfer To Bank</div>
 
             {/*--- CONTENT ---*/}
             <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] flex flex-col items-center overflow-y-auto landscape:xl:desktop:h-[500px]">
@@ -791,8 +928,11 @@ const CashOut = ({
               <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
                 {/*--- info ---*/}
                 <div className="w-full flex items-center">
-                  <div className="relative w-[52px] h-[52px]">
-                    <Image src="/coinbase.svg" alt="coinbase" fill />
+                  <div className="transferIcon">
+                    {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
                   </div>
                   <div className="textBase ml-3 flex flex-col">
                     <div className="leading-none font-medium">From: Coinbase</div>
@@ -828,11 +968,19 @@ const CashOut = ({
 
               {/*--- ARROW ---*/}
               <div className="w-full h-[24px] flex justify-center relative z-[1]">
-                <div className="w-[200px] h-[70px] landscape:xl:desktop:w-[160px] landscape:xl:desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light1 dark:bg-dark3 border border-slate-500 dark:border-slate-600 z-[2]">
-                  <FontAwesomeIcon icon={faArrowDown} className="text-4xl landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1" />
-                  <div className="textBase ml-2 leading-tight">
-                    1 USDC =<br />
-                    {rates.usdcToLocal} {paymentSettingsState?.merchantCurrency}
+                <div className="transferArrowContainer">
+                  <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
+                  <div className="transferArrowFont">
+                    1 USDC{" "}
+                    {paymentSettingsState?.merchantCurrency == "USD" ? (
+                      "\u2248 "
+                    ) : (
+                      <span>
+                        =<br />
+                      </span>
+                    )}
+                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                    {rates.usdcToLocal}
                   </div>
                 </div>
               </div>
@@ -841,13 +989,12 @@ const CashOut = ({
               <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
                 {/*--- info ---*/}
                 <div className="w-full flex items-center">
-                  <div className="transferIcon border border-dualGray dark:border-dark6">
-                    <Image src={theme == "dark" ? "/bankDark.svg" : "/bankLight.svg"} alt="bank" fill />
+                  <div className="transferIcon bg-light5 dark:bg-slate-700">
+                    <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
                   </div>
                   <div className="textBase ml-3 flex flex-col">
                     <div className="leading-none font-medium">To: Bank</div>
-                    <div className="leading-tight text-slate-500 line-clamp-1">{cbBankAccountName.split("\n")[0]}</div>
-                    <div className="leading-none text-slate-500 line-clamp-1">{cbBankAccountName.split("\n")[1]}</div>
+                    <div className="leading-tight text-slate-500">{cbBankAccountName}</div>
                   </div>
                 </div>
                 {/*--- to amount ---*/}
@@ -861,7 +1008,7 @@ const CashOut = ({
               </div>
 
               {/*--- buttons ---*/}
-              <div className="flex-none mt-8 portrait:sm:mt-12 landscape:lg:mt-12 landscape:xl:desktop:mt-6 w-full pb-4">
+              <div className="transferModalButtonContainer">
                 {transferState == "initial" ? (
                   <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
                     Transfer To Bank
@@ -873,6 +1020,12 @@ const CashOut = ({
                   </div>
                 )}
               </div>
+              {paymentSettingsState?.merchantCurrency == "USD" && (
+                <div className="mb-2">
+                  *Due to limitations set by Coinbase, the above values are approximations. About {(Number(usdcTransferToBank) - 0.01).toFixed(2)} USDC will be substracted from
+                  your Coinbase balance and about ${((Number(usdcTransferToBank) - 0.01) * 0.99985).toFixed(2)} will be deposited to your bank.
+                </div>
+              )}
             </div>
           </div>
           <div className="modalBlackout"></div>
@@ -940,14 +1093,18 @@ const CashOut = ({
           <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
             <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
             <div className="text3xl font-medium">Deposit successful!</div>
-            <div className="text2xl font-bold">{usdcTransferToBank} USDC</div>
-            <div className="textLg text-center">
-              was converted to{" "}
-              <span className="font-bold">
-                {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                {fiatDeposited}
-              </span>
-              , and the money deposited to your bank. You should see the deposit within 1-2 business days.
+            <div className="textLg space-y-3">
+              <div>
+                <span className="font-bold">{Number(usdcTransferToBankActual).toFixed(2)} USDC</span> was deducted from your Coinbase account.
+              </div>
+              <div>
+                <span className="font-bold">
+                  {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                  {fiatDeposited}
+                </span>{" "}
+                was deposited to your bank.
+              </div>
+              <div>Please wait 1-2 business days for the deposit to show</div>
             </div>
             {/*--- button ---*/}
             <div className="w-full py-8">
@@ -966,6 +1123,7 @@ const CashOut = ({
           </div>
         </div>
       )}
+
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );

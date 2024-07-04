@@ -34,19 +34,18 @@ const DetailsModal = ({
   return (
     <div className="">
       <div className="detailsModal">
-        {/*--- HEADER ---*/}
-        <div className="detailsModalHeaderContainer">
-          {/*--- header ---*/}
-          <div className="detailsModalHeader">Payment Details</div>
-          {/*--- mobile back ---*/}
-          <div className="mobileBack">
-            <FontAwesomeIcon icon={faAngleLeft} onClick={() => setDetailsModal(false)} />
-          </div>
-          {/*--- tablet/desktop close ---*/}
-          <div className="xButtonContainer" onClick={() => setDetailsModal(false)}>
-            <div className="xButton">&#10005;</div>
-          </div>
+        {/*--- tablet/desktop close ---*/}
+        <div className="xButtonContainer" onClick={() => setDetailsModal(false)}>
+          <div className="xButton">&#10005;</div>
         </div>
+        {/*--- mobile back ---*/}
+        <div className="mobileBack">
+          <FontAwesomeIcon icon={faAngleLeft} onClick={() => setDetailsModal(false)} />
+        </div>
+
+        {/*--- HEADER ---*/}
+        <div className="detailsModalHeader">Payment Details</div>
+
         {/*--- CONTENT ---*/}
         <div className="flex-1 w-full max-h-[560px] portrait:sm:max-h-[660px] landscape:lg:max-h-[660px] flex justify-center overflow-y-auto scrollbar">
           <div className="landscape:max-w-[400px] landscape:lg:max-w-none flex flex-col justify-between gap-3 px-8 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8">
@@ -98,7 +97,7 @@ const DetailsModal = ({
             </div> */}
 
             {/*--- refund button ---*/}
-            <div className="flex-0 pb-4 min-h-[130px] flex items-center">
+            <div className="flex-1 pb-4 min-h-[100px] flex items-center">
               {clickedTxn?.refund ? (
                 <div>Payment has been refunded</div>
               ) : (
@@ -113,40 +112,6 @@ const DetailsModal = ({
             </div>
           </div>
         </div>
-
-        {/*--- NEED TO DELETE ---*/}
-        {clickedTxn?.refund || refundStatus === "refunded" ? (
-          <div className="hidden pt-4 text-center textLg font-bold text-gray-400">This payment has been refunded</div>
-        ) : (
-          <div className="hidden pt-4 w-full">
-            {isAdmin ? (
-              <div className="w-full flex flex-col items-center space-y-6">
-                <button className="buttonPrimary" onClick={onClickRefund}>
-                  {refundStatus === "initial" && clickedTxn?.refund == false && <div>REFUND NOW</div>}
-                  {refundStatus === "processing" && (
-                    <div className="flex items-center justify-center">
-                      <SpinningCircleGray />
-                    </div>
-                  )}
-                  {(refundStatus === "processed" || clickedTxn?.refund == true) && "Refunded"}
-                </button>
-              </div>
-            ) : (
-              <button className="buttonPrimary" onClick={onClickToRefund}>
-                {toRefundStatus == "processing" ? (
-                  <div className="flex items-center justify-center">
-                    <SpinningCircleWhite />
-                  </div>
-                ) : (
-                  <div>
-                    {toRefundStatus == "true" ? "Remove " : "Add "}
-                    "To Be Refunded" Note
-                  </div>
-                )}
-              </button>
-            )}
-          </div>
-        )}
       </div>
       <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
     </div>

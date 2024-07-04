@@ -34,7 +34,9 @@ export type Transaction = {
   network: string;
   blockRate: number;
   cashRate: number;
-  savings: string;
+  fxSavings: string;
+  cashback: string;
+  totalSavings: string;
   refund: boolean;
   toRefund: boolean;
   note: string;
@@ -78,7 +80,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
     cex: String,
     cexEvmAddress: String,
     cexAccountName: String,
-    isEmployeePass: Boolean,
+    isEmployeePass: Boolean, // needed because hashedEmployeePass is not passed to frontend and we need to know whether there is a password or not
     cashoutIntro: Boolean,
   },
   transactions: [
@@ -93,7 +95,9 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
       network: String,
       blockRate: Number,
       cashRate: Number,
-      savings: String,
+      fxSavings: String,
+      cashback: String,
+      totalSavings: String,
       merchantEvmAddress: String,
       refund: Boolean,
       toRefund: Boolean,

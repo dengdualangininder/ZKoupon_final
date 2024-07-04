@@ -2,14 +2,16 @@
 // nextjs
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 // wagmi
 import { useConnect } from "wagmi";
 // components
-import ErrorModal from "./modals/ErrorModal";
+import ErrorModalLight from "./modals/ErrorModalLight";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { SpinningCircleWhiteLarge } from "@/utils/components/SpinningCircleWhite";
 
 const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setPage: any; isUsabilityTest: boolean }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
@@ -19,8 +21,11 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   const [show, setShow] = useState(false);
   const [userType, setUserType] = useState("owners");
   const [moreOptionsModal, setMoreOptionsModal] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
+  // hooks
   let { connectAsync, connectors } = useConnect();
+  const router = useRouter();
 
   // define myConnectors
   if (isMobile) {
@@ -41,10 +46,10 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
     { name: "Line", img: "/line.svg", connectorIndex: 4 },
   ];
 
-  const employeeSubmit = async () => {
+  const employeeLogin = async () => {
+    setIsLoggingIn(true);
     try {
-      //fetch doc
-      console.log("employeeSubmit()");
+      // receive jwt
       const res = await fetch("/api/employeeLogin", {
         method: "POST",
         body: JSON.stringify({ merchantEmail, employeePass }),
@@ -53,16 +58,21 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
       const data = await res.json();
       // if success
       if (data.status == "success") {
-        console.log("login successful");
+        console.log("employee login authenticated");
         setPage("loading");
+        window.location.reload(); // trigger useEffect in page.tsx
+      } else if (data.status == "error") {
+        console.log("Incorrect email or password");
+        setErrorModal(true);
+        setErrorMsg(data.message);
       } else {
-        console.log("failed to login");
-        setPage("login");
+        setErrorModal(true);
+        setErrorMsg("Error: Could not connect to server API");
       }
     } catch (err) {
       console.log("failed to login");
-      setPage("login");
     }
+    setIsLoggingIn(false);
   };
 
   const sendEmail = async () => {
@@ -198,16 +208,16 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                 {/*--sign in button---*/}
                 <button
                   type="submit"
-                  className="buttonPrimary mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 text-white"
-                  onClick={employeeSubmit}
+                  className="buttonPrimary mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 text-white w-full flex justify-center items-center"
+                  onClick={employeeLogin}
                 >
-                  Sign in
+                  {isLoggingIn ? <SpinningCircleWhiteLarge /> : "Sign In"}
                 </button>
               </div>
               <div
                 className="landscape:mt-8 portrait:mt-10 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link landscape:xl:desktop:text-sm"
                 onClick={() => {
-                  setErrorMsg("Please contact your employer. The person who created this Flash account can view the Employee Password or set a new one.");
+                  setErrorMsg("Please contact your employer. The person who created this Flash account should know the Employee Password or can set a new one.");
                   setErrorModal(true);
                 }}
               >
@@ -219,7 +229,7 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
       </div>
 
       {/*---MODALS---*/}
-      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      {errorModal && <ErrorModalLight errorMsg={errorMsg} setErrorModal={setErrorModal} />}
 
       {moreOptionsModal && (
         <div className="">

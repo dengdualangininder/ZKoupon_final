@@ -109,7 +109,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       </div>
       {/*--- export options ---*/}
       {qrCodeModalExportOptions && (
-        <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-8 portrait:sm:bottom-[110px] landscape:lg:left-8 landscape:lg:bottom-[110px] cursor-pointer bg-background rounded-xl z-[13]">
+        <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-8 portrait:sm:bottom-[110px] landscape:lg:left-8 landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 rounded-xl z-[13]">
           <div className="px-6 py-4 landscape:xl:desktop:hover:opacity-50 border-b border-gray-300" onClick={() => setEmailModal(true)}>
             Send PDF File to Email
           </div>
@@ -155,7 +155,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       </div>
       {emailModal && (
         <div className="z-[20] relative">
-          <div className="w-full portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] h-full portrait:sm:h-auto landscape:min-h-[330px] px-4 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 py-10 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16 landscape:xl:desktop:space-y-12 flex flex-col items-center rounded-2xl bg-background fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] textXl text-center z-[2]">
+          <div className="modal">
             {/*---content---*/}
             <div className="grow flex flex-col justify-center space-y-8">
               <div>Email the QR code (a PDF file) to yourself or a print shop</div>
