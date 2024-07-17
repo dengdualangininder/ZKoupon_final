@@ -67,7 +67,7 @@ const Navbar = () => {
             <div
               className={`${
                 isScrollTop ? "xl:desktop:text-lg font-semibold" : "xl:desktop:text-base font-medium"
-              } text-xl text-center cursor-pointer desktop:xl:hover:scale-[108%] [transition:font-size_1.2s_cubic-bezier(0,0,1,1),font-weight_1.2s_cubic-bezier(0,0,1,1),transform_.5s_cubic-bezier(0,0,1,1)]`}
+              } text-xl text-center cursor-pointer desktop:xl:hover:text-slate-700 desktop:xl:hover:underline underline-offset-[6px] [transition:font-size_1s_cubic-bezier(0,0,1,1),font-weight_1s_cubic-bezier(0,0,1,1),transform_.3s_cubic-bezier(0,0,1,1)]`}
               id={navLink.id}
               key={index}
               onClick={onClickLink}

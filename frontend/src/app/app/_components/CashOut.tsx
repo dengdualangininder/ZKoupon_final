@@ -136,7 +136,7 @@ const CashOut = ({
         args: [account.address],
       })) as bigint;
       const flashBalanceTemp = formatUnits(flashBalanceBigInt, 6);
-      setFlashBalance(flashBalanceTemp);
+      setFlashBalance((Math.floor(Number(flashBalanceTemp) * 100) / 100).toString());
 
       // get Coinbase balance
       if (cashoutSettingsState?.cex == "Coinbase") {
@@ -156,7 +156,7 @@ const CashOut = ({
           // if successful
           if (data.status === "success") {
             // set cexBalance
-            setCexBalance(Number(data.balance).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]));
+            setCexBalance((Math.floor(data.balance * 100) / 100).toString());
             // save new tokens to browser
             if (data.newAccessToken && data.newRefreshToken) {
               console.log("storing new tokens");
@@ -204,8 +204,12 @@ const CashOut = ({
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
+    const scope =
+      paymentSettingsState?.merchantCurrency == "USD"
+        ? "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:buys:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read"
+        : "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read";
     router.push(
-      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=wallet:accounts:read,wallet:addresses:read,wallet:buys:create,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read`
+      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=${scope}`
     );
   };
 
@@ -424,6 +428,12 @@ const CashOut = ({
       setErrorMsg("Please enter an amount");
       return;
     }
+    // if amount exceeds Coinbase balance
+    if (Number(usdcTransferToBank) > Number(cexBalance)) {
+      setErrorModal(true);
+      setErrorMsg("Amount exceeds balance");
+      return;
+    }
     // check if amount >= 1
     if (Number(usdcTransferToBank) < 11) {
       setErrorModal(true);
@@ -537,7 +547,7 @@ const CashOut = ({
                     </div>
                     USDC
                   </div>
-                  <div className="">{Number(flashBalance).toFixed(2)}</div>
+                  <div className="">{flashBalance}</div>
                 </div>
                 {/*--- rate ---*/}
                 <div className="flex justify-between">
@@ -760,7 +770,6 @@ const CashOut = ({
               onClick={() => {
                 setTransferToCexModal(false);
                 setUsdcTransferToCex(null);
-                setTransferToAnyAddress(false);
               }}
             >
               <div className="xButton">&#10005;</div>
@@ -777,7 +786,6 @@ const CashOut = ({
                   onClick={() => {
                     setTransferToCexModal(false);
                     setUsdcTransferToCex(null);
-                    setTransferToAnyAddress(false);
                   }}
                 />
               </div>
@@ -807,10 +815,10 @@ const CashOut = ({
                       className="transferAmountFromBox inputColor border-slate-500 placeholderColor placeholder:not-italic dark:bg-dark2"
                       type="number"
                       inputMode="decimal"
-                      onChange={(e) => setUsdcTransferToCex(e.currentTarget.value.toString())}
+                      onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
                       value={usdcTransferToCex || ""}
+                      onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToCex(Number(e.currentTarget.value).toFixed(2)) : null)}
                       placeholder="0"
-                      step="0.01"
                     />
                     {/*--- max + USDC ---*/}
                     <div className="h-full right-0 absolute flex space-x-4 items-center">
@@ -821,9 +829,7 @@ const CashOut = ({
                     </div>
                   </div>
                   {/*--- balance ---*/}
-                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
-                    Balance: <span className="">{flashBalance}</span> USDC
-                  </div>
+                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">Balance: {flashBalance} USDC</div>
                 </div>
 
                 {/*--- ARROW ---*/}
@@ -910,122 +916,131 @@ const CashOut = ({
       {transferToBankModal && (
         <div className="">
           <div className="transferModal">
-            {/*--- mobile back ---*/}
-            <div className="mobileBack">
-              <FontAwesomeIcon icon={faAngleLeft} onClick={() => setTransferToBankModal(false)} />
-            </div>
             {/*--- tablet/desktop close ---*/}
-            <div className="xButtonContainer" onClick={() => setTransferToBankModal(false)}>
+            <div
+              className="xButtonContainer"
+              onClick={() => {
+                setTransferToBankModal(false);
+                setUsdcTransferToBank(null);
+              }}
+            >
               <div className="xButton">&#10005;</div>
             </div>
 
             {/*--- HEADER ---*/}
-            <div className="detailsModalHeader">Transfer To Bank</div>
+            <div className="detailsModalHeaderContainer">
+              {/*--- header ---*/}
+              <div className="detailsModalHeader whitespace-nowrap">Transfer To Bank</div>
+              {/*--- mobile back ---*/}
+              <div className="mobileBack">
+                <FontAwesomeIcon
+                  icon={faAngleLeft}
+                  onClick={() => {
+                    setTransferToBankModal(false);
+                    setUsdcTransferToBank(null);
+                  }}
+                />
+              </div>
+            </div>
 
             {/*--- CONTENT ---*/}
-            <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] flex flex-col items-center overflow-y-auto landscape:xl:desktop:h-[500px]">
-              {/*--- FROM container ---*/}
-              <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon">
-                    {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                    {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="coinbase" fill />}
-                    {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                    {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+            <div className="flex-1 w-full flex justify-center overflow-y-auto">
+              <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] max-w-[500px] h-full flex flex-col items-center">
+                {/*--- FROM container ---*/}
+                <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
+                  {/*--- info ---*/}
+                  <div className="w-full flex items-center">
+                    <div className="transferIcon">
+                      {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                      {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="coinbase" fill />}
+                      {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                      {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                    </div>
+                    <div className="textBase ml-3 flex flex-col">
+                      <div className="leading-none font-medium">From: Coinbase</div>
+                      <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                      <div className="leading-tight break-all text-slate-500">
+                        {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                      </div>
+                    </div>
                   </div>
-                  <div className="textBase ml-3 flex flex-col">
-                    <div className="leading-none font-medium">From: Coinbase</div>
-                    <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
-                    <div className="leading-tight break-all text-slate-500">
-                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                  {/*--- from amount ---*/}
+                  <div className="mt-4 w-full flex items-center relative">
+                    <input
+                      className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
+                      type="number"
+                      inputMode="decimal"
+                      onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
+                      value={usdcTransferToBank || ""}
+                      onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToBank(Number(e.currentTarget.value).toFixed(2)) : null)}
+                      placeholder="0"
+                    />
+                    {/*--- max + USDC ---*/}
+                    <div className="h-full right-0 absolute flex space-x-4 items-center">
+                      <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
+                        max
+                      </div>
+                      <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
+                    </div>
+                  </div>
+                  {/*--- balance ---*/}
+                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">Balance: {cexBalance} USDC</div>
+                </div>
+
+                {/*--- ARROW ---*/}
+                <div className="flex-none w-full h-[24px] flex justify-center relative z-[1]">
+                  <div className="transferArrowContainer">
+                    <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
+                    <div className="transferArrowFont">
+                      <div className="">
+                        1 USDC <span>={paymentSettingsState?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                        {rates.usdcToLocal}
+                      </div>
+                      {paymentSettingsState?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
                     </div>
                   </div>
                 </div>
-                {/*--- from amount ---*/}
-                <div className="mt-4 w-full flex items-center relative">
-                  <input
-                    className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
-                    type="number"
-                    inputMode="decimal"
-                    onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
-                    value={usdcTransferToBank || ""}
-                    placeholder="0"
-                  />
-                  {/*--- max + USDC ---*/}
-                  <div className="h-full right-0 absolute flex space-x-4 items-center">
-                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
-                      max
+
+                {/*--- TO container ---*/}
+                <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
+                  {/*--- info ---*/}
+                  <div className="w-full flex items-center">
+                    <div className="transferIcon bg-light5 dark:bg-slate-700">
+                      <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
                     </div>
-                    <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
+                    <div className="textBase ml-3 flex flex-col">
+                      <div className="leading-none font-medium">To: Bank</div>
+                      <div className="leading-tight text-slate-500">{cbBankAccountName}</div>
+                    </div>
+                  </div>
+                  {/*--- to amount ---*/}
+                  <div className="transferAmountToBox">
+                    <div className="">
+                      {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
+                      {usdcTransferToBank
+                        ? paymentSettingsState?.merchantCurrency == "USD"
+                          ? ((Number(usdcTransferToBank) - 0.01) * 0.99987).toFixed(2)
+                          : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])
+                        : (0).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                    </div>
+                    <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none"></div>
                   </div>
                 </div>
-                {/*--- balance ---*/}
-                <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
-                  Balance: <span className="">{cexBalance}</span> USDC
-                </div>
-              </div>
 
-              {/*--- ARROW ---*/}
-              <div className="w-full h-[24px] flex justify-center relative z-[1]">
-                <div className="transferArrowContainer">
-                  <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
-                  <div className="transferArrowFont">
-                    1 USDC{" "}
-                    {paymentSettingsState?.merchantCurrency == "USD" ? (
-                      "\u2248 "
-                    ) : (
-                      <span>
-                        =<br />
-                      </span>
-                    )}
-                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                    {rates.usdcToLocal}
-                  </div>
+                {/*--- buttons ---*/}
+                <div className="transferModalButtonContainer">
+                  {transferState == "initial" ? (
+                    <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
+                      Transfer To Bank
+                    </button>
+                  ) : (
+                    <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
+                      <SpinningCircleGray />
+                      &nbsp; Transferring...
+                    </div>
+                  )}
                 </div>
               </div>
-
-              {/*--- TO container ---*/}
-              <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon bg-light5 dark:bg-slate-700">
-                    <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
-                  </div>
-                  <div className="textBase ml-3 flex flex-col">
-                    <div className="leading-none font-medium">To: Bank</div>
-                    <div className="leading-tight text-slate-500">{cbBankAccountName}</div>
-                  </div>
-                </div>
-                {/*--- to amount ---*/}
-                <div className="transferAmountToBox">
-                  <div className="">
-                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
-                    {(Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-                  </div>
-                  <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none"></div>
-                </div>
-              </div>
-
-              {/*--- buttons ---*/}
-              <div className="transferModalButtonContainer">
-                {transferState == "initial" ? (
-                  <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
-                    Transfer To Bank
-                  </button>
-                ) : (
-                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
-                    <SpinningCircleGray />
-                    &nbsp; Transferring...
-                  </div>
-                )}
-              </div>
-              {paymentSettingsState?.merchantCurrency == "USD" && (
-                <div className="mb-2">
-                  *Due to limitations set by Coinbase, the above values are approximations. About {(Number(usdcTransferToBank) - 0.01).toFixed(2)} USDC will be substracted from
-                  your Coinbase balance and about ${((Number(usdcTransferToBank) - 0.01) * 0.99985).toFixed(2)} will be deposited to your bank.
-                </div>
-              )}
             </div>
           </div>
           <div className="modalBlackout"></div>
@@ -1095,7 +1110,7 @@ const CashOut = ({
             <div className="text3xl font-medium">Deposit successful!</div>
             <div className="textLg space-y-3">
               <div>
-                <span className="font-bold">{Number(usdcTransferToBankActual).toFixed(2)} USDC</span> was deducted from your Coinbase account.
+                <span className="font-bold">{Number(usdcTransferToBank).toFixed(2)} USDC</span> was deducted from your Coinbase account.
               </div>
               <div>
                 <span className="font-bold">
@@ -1104,7 +1119,7 @@ const CashOut = ({
                 </span>{" "}
                 was deposited to your bank.
               </div>
-              <div>Please wait 1-2 business days for the deposit to show</div>
+              <div>Please wait 1-2 business days for the deposit to show.</div>
             </div>
             {/*--- button ---*/}
             <div className="w-full py-8">

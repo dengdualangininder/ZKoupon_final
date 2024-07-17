@@ -165,7 +165,7 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
           {/*---title---*/}
           <div className="w-full flex items-center">
             <div className="overviewNumber">3</div>
-            <div className="overviewStepTitle">You receive payment on the Flash app</div>
+            <div className="overviewStepTitle">You confirm payment on the Flash app</div>
           </div>
           {/*--- image ---*/}
           <div className="relative w-full h-[368px]">
@@ -174,8 +174,8 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
           {/*---image and bullet points---*/}
           <div className="overviewBulletPoints">
             <div>
-              In the Flash app, you will see the payment after ~5s. Employees can also log into your Flash app (with restricted functions) on a shared or personal device to confirm
-              payment
+              About 5 seconds after a customer pays, you should see the payment in the Flash app. Employees can also log into your Flash app (with restricted functions) on a shared
+              or personal device to see successful payments
             </div>
           </div>
         </div>
@@ -227,8 +227,8 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
               <div className="">
                 {(merchantCurrency == "USD" || merchantCurrency == "EUR") && (
                   <div>
-                    In the "Cash Out" menu, click "Transfer to Coinbase" and make a transfer. Then, click "Transfer to Bank" and make a transfer. On this second transfer, USDC will
-                    be automatically converted to {merchantCurrency == "USD" ? "USD at a 1:1 rate" : "EUR*"} and the money sent to your bank (no fees)
+                    Click "Cash Out" and follow the on-screen instructions. USDC will be automatically converted to {merchantCurrency == "USD" ? "USD at a 1:1 rate" : "EUR*"} and
+                    the money sent to your bank (~0% fees)
                   </div>
                 )}
                 {merchantCurrency == "TWD" && <div>In the "Cash Out" menu, click "Transfer to MAX"</div>}
@@ -246,7 +246,7 @@ const Overview = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency:
               <div className="flex relative">
                 <div className="mr-2">&nbsp;*</div>
                 <div className="">
-                  Flash is designed so that you will not lose money from fluctuating token rates (
+                  Flash is designed so that you will not lose money from fluctuating exchange rates (
                   <span className="group">
                     <span className="linkDark">how?</span>
                     <div className="w-full bottom-[calc(100%+4px)] left-0 overviewTooltip">

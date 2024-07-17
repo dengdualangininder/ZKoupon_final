@@ -337,6 +337,7 @@ export const currency2rateDecimal: any = { USD: 4, EUR: 4, TWD: 3 };
 export const currency2number: any = { USD: 5, EUR: 5, TWD: 100, PHP: 100 };
 export const currency2correction: any = { USD: 0.997, EUR: 0.997, TWD: 0.994 }; // CEX fees + 0.003
 export const currency2bank: any = { EUR: "Wise", TWD: "Bank of Taiwan" };
+export const currency2cex: any = { EUR: "Coinbase", USD: "Coinbase", TWD: "MAX" };
 
 export const list2string = (list: string[]) => {
   let text;

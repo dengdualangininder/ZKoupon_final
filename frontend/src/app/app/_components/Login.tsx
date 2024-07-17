@@ -109,7 +109,7 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   };
 
   return (
-    <div className="w-full h-screen min-h-[667px] font-medium text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto bg-light2 text-black">
+    <div className="w-full h-screen font-medium text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto bg-light2 text-black">
       <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] landscape:xl:desktop:w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
         {/*--- logo + menu bar ---*/}
         <div className="pt-6 w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-end">

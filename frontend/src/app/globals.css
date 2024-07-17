@@ -328,6 +328,10 @@
     @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-6 portrait:sm:space-y-16 landscape:lg:space-y-16;
   }
 
+  .modalContent2 {
+    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-4;
+  }
+
   .modalButtonContainer {
     @apply w-full pb-16 space-y-8;
   }
@@ -452,10 +456,6 @@
     @apply flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
 
-  .modalBaseUp {
-    @apply flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[55%] z-[20];
-  }
-
   .modalFullBase {
     @apply pb-6 portrait:sm:rounded-2xl landscape:lg:rounded-2xl flex flex-col items-center absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
   }
@@ -471,7 +471,7 @@
   /* specific modals */
 
   .modal {
-    @apply modalBaseUp modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[370px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 z-[20];
+    @apply modalBase modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[370px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-6 z-[20];
   }
 
   .errorModal {
@@ -479,7 +479,7 @@
   }
 
   .settingsInfoModal {
-    @apply modalBaseUp modalColor portrait:w-[94%] landscape:w-[380px] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] landscape:h-[95%] landscape:lg:h-auto pb-10 px-4 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8;
+    @apply modalBase modalColor portrait:w-[94%] landscape:w-[380px] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] landscape:h-[95%] landscape:lg:h-auto pb-10 px-4 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8;
   }
 
   .faqModal {

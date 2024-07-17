@@ -23,31 +23,54 @@ export const POST = async (request: Request) => {
 
   // USD
   if (merchantCurrency == "USD") {
+    // get accountId
     const { usdAccountId, usdtAccountId } = await getAccountIdsForUsd();
-    if (!usdAccountId || !usdtAccountId) {
+    if (usdAccountId === null) {
+      return Response.json({
+        status: "error",
+        message: "Your Coinbase account does not have a valid USD account.",
+      });
+    } else if (usdtAccountId === null) {
+      return Response.json({
+        status: "error",
+        message: "Your Coinbase account does not have a valid USDT account.",
+      });
+    } else if (usdAccountId === undefined || usdtAccountId === undefined) {
       return Response.json({ status: "error", message: error1 });
     }
+
+    // get paymentMethodId
+    const achPaymentMethodId = await getPaymentMethodId("USD");
+    if (achPaymentMethodId === null) {
+      return Response.json({
+        status: "error",
+        message: "In your Coinbase account, please link a bank account that allows ACH withdrawals.",
+      });
+    } else if (achPaymentMethodId === undefined) {
+      return Response.json({ status: "error", message: error1 });
+    }
+
     // 1. convert usdc to usdt
-    const { limitOrderStatus, usdcAmountSold, usdtAmountBought } = await makeUsdcToUsdtLimitOrder();
-    if (limitOrderStatus != "success") {
+    const { usdcAmountSold, usdtAmountBought } = await makeUsdcToUsdtLimitOrder(usdtAccountId);
+    if (usdtAmountBought === undefined) {
       return Response.json({ status: "error", message: error1 });
     }
 
     // 2. convert usdt to usd
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // need pause or 400 error will happen
-    const marketOrderId = await makeUsdtToUsdMarketOrder(usdtAmountBought.toString());
+    const marketOrderId = await makeUsdtToUsdMarketOrder(usdtAmountBought);
     if (!marketOrderId) {
       return Response.json({ status: "error", message: error2 });
     }
     // get usdAmountBought
     await new Promise((resolve) => setTimeout(resolve, 3000)); // need pause or will return details of a partial fill order
-    const usdAmountBought = await getUsdtToUsdMarketOrderDetails(marketOrderId, usdAccountId);
-    if (!usdAmountBought) {
+    const fillPrice = await getUsdtToUsdMarketOrderFillPrice(marketOrderId, usdAccountId);
+    if (!fillPrice) {
       return Response.json({ status: "error", message: error3 });
     }
+    const usdAmountBought = (Math.floor(usdtAmountBought * fillPrice * 0.99999 * 100) / 100).toString();
 
     // 3. withdraw usd to bank
-    const withdrawStatus = await withdrawUsd(usdAmountBought, usdAccountId);
+    const withdrawStatus = await withdrawUsd(usdAmountBought, usdAccountId, achPaymentMethodId);
     if (withdrawStatus == "created") {
       return Response.json({ status: "success", usdcAmountSold: usdcAmountSold, fiatAmountBought: usdAmountBought });
     } else {
@@ -57,10 +80,25 @@ export const POST = async (request: Request) => {
 
   // EUR
   if (merchantCurrency == "EUR") {
+    // get accountId
     const eurAccountId = await getEurAccountId();
-    if (!eurAccountId) {
+    if (eurAccountId === null) {
+      return Response.json({ status: "error", message: "Your Coinbase account does not have a valid EUR account." });
+    } else if (eurAccountId === undefined) {
       return Response.json({ status: "error", message: error1 });
     }
+
+    // get paymentMethodId
+    const sepaPaymentMethodId = await getPaymentMethodId("EUR");
+    if (sepaPaymentMethodId === null) {
+      return Response.json({
+        status: "error",
+        message: "In your Coinbase account, please link a bank account that allows SEPA withdrawals.",
+      });
+    } else if (sepaPaymentMethodId === undefined) {
+      return Response.json({ status: "error", message: error1 });
+    }
+
     // 1. convert usdc to eur
     const marketOrderId = await makeUsdcToEurMarketOrder(amount);
     if (!marketOrderId) {
@@ -68,14 +106,14 @@ export const POST = async (request: Request) => {
     }
     // get eurAmountBought
     await new Promise((resolve) => setTimeout(resolve, 3000)); // need pause or will return details of a partial fill order
-    const eurAmountBought = await getUsdcToEurMarketOrderDetails(marketOrderId, eurAccountId);
-    if (!eurAmountBought) {
+    const fillPrice = await getUsdcToEurMarketOrderFillPrice(marketOrderId, eurAccountId);
+    if (!fillPrice) {
       return Response.json({ status: "error", message: error3 });
     }
-    console.log("usdcAmountSold:", amount, "eurAmountBought:", eurAmountBought);
+    const eurAmountBought = (Math.floor(amount * fillPrice * 0.99999 * 100) / 100).toString();
 
-    // 3. withdraw usd to bank
-    const withdrawStatus = await withdrawEur(eurAmountBought, eurAccountId);
+    // 2. withdraw eur to bank
+    const withdrawStatus = await withdrawEur(eurAmountBought, eurAccountId, sepaPaymentMethodId);
     if (withdrawStatus == "created") {
       return Response.json({ status: "success", usdcAmountSold: amount, fiatAmountBought: eurAmountBought });
     } else {
@@ -87,8 +125,8 @@ export const POST = async (request: Request) => {
     try {
       const res = await axios.get("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}`, "CB-VERSION": "2024-07-01" } });
       const accounts = res.data.data; // array of accounts
-      const usdAccountId = accounts.find((i: any) => i.name === "Cash (USD)").id;
-      const usdtAccountId = accounts.find((i: any) => i.name === "USDT Wallet").id;
+      const usdAccountId = accounts.find((i: any) => i.name === "Cash (USD)")?.id ?? null;
+      const usdtAccountId = accounts.find((i: any) => i.name === "USDT Wallet")?.id ?? null;
       return { usdAccountId, usdtAccountId };
     } catch (e: any) {
       console.log("error in getAccountIdsForUsd:", e.message);
@@ -99,10 +137,25 @@ export const POST = async (request: Request) => {
     try {
       const res = await axios.get("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}`, "CB-VERSION": "2024-07-01" } });
       const accounts = res.data.data; // array of accounts
-      const eurAccountId = accounts.find((i: any) => i.name === "Cash (EUR)").id; // need to double check this
+      const eurAccountId = accounts.find((i: any) => i.name === "Cash (EUR)")?.id ?? null; // need to double check this
       return eurAccountId;
     } catch (e: any) {
       console.log("error in getEurAccountId:", e.message);
+    }
+  }
+
+  async function getPaymentMethodId(merchantCurrency: string) {
+    const paymentMethodType: any = { USD: "ACH", EUR: "SEPA" }; // need to confirm "SEPA"
+    try {
+      const res = await axios.get(`https://api.coinbase.com/api/v3/brokerage/payment_methods`, {
+        headers: { Authorization: `Bearer ${cbAccessToken}` },
+      });
+      const paymentMethods = res.data.payment_methods; // array of payment methods
+      const paymentMethodId = paymentMethods.find((i: any) => i.type == paymentMethodType[merchantCurrency] && i.allow_withdraw === true)?.id ?? null;
+      console.log("paymentMethodId:", paymentMethodId);
+      return paymentMethodId;
+    } catch (err) {
+      console.log("error in getPaymentMethodId", err);
     }
   }
 
@@ -130,31 +183,47 @@ export const POST = async (request: Request) => {
       { headers: headers }
     );
     console.log("limitOrder:", res.data);
-    if (res.data.success) {
-      const limitOrderStatus = "success";
-      return limitOrderStatus;
-    }
+    return res.data.order_id;
   }
 
-  async function makeUsdcToUsdtLimitOrder(): Promise<any> {
-    // try 3 attemps in case usdtPrice changes and FOK order is killed. In 99.9% cases, should succeed on 1st attempt.
-    for (let attempts = 0; attempts < 3; attempts++) {
-      console.log("convertUsdcToUsdt attempts:", attempts); // ideally 0
+  async function makeUsdcToUsdtLimitOrder(usdtAccountId: string): Promise<any> {
+    // try 2 times to make FOK limit order. In 99.9% cases, should succeed on 1st attempt.
+    for (let attempts = 0; attempts < 2; attempts++) {
+      console.log("makeUsdcToUsdtLimitOrder attempts:", attempts); // ideally 0
       try {
         const usdtPrice = await getUsdtPrice(); // gets best askPrice
-        const usdtAmountToBuy = amount / usdtPrice - amount * 0.00001; // need to substract the fees
-        const usdtAmountToBuyRoundedDown = Math.floor(usdtAmountToBuy * 100) / 100;
-        console.log("usdtAmountToBuy:", usdtAmountToBuy, "| usdtAmountToBuyRoundedDown:", usdtAmountToBuyRoundedDown);
-        const limitOrderStatus = await makeLimitOrder(usdtAmountToBuyRoundedDown, usdtPrice);
-        if (limitOrderStatus == "success") {
-          const usdcAmountSold = usdtAmountToBuyRoundedDown * usdtPrice * 1.00001;
-          console.log("usdcAmountSold", usdcAmountSold, "| usdtAmountBought:", usdtAmountToBuyRoundedDown);
-          return { limitOrderStatus, usdcAmountSold, usdtAmountBought: usdtAmountToBuyRoundedDown };
+        const usdtAmountToBuyRoundedDown = Math.floor((amount / usdtPrice - amount * 0.00001) * 100) / 100; // must substract fees
+        console.log("usdtPrice:", usdtPrice, "usdtAmountToBuyRoundedDown:", usdtAmountToBuyRoundedDown);
+        const limitOrderId = await makeLimitOrder(usdtAmountToBuyRoundedDown, usdtPrice);
+
+        await new Promise((resolve) => setTimeout(resolve, 3000)); // 2s cooldown
+
+        // determine if txn shows up on in queried txn list (bad price will trigger error and be caught. A killed FOK limit order will show "success" and an orderID)
+        if (limitOrderId) {
+          for (let attempts2 = 0; attempts2 < 2; attempts2++) {
+            console.log("confirmLimitOrderSuccess attempt:", attempts2); // should be 0
+            try {
+              const res = await axios.get(`https://api.coinbase.com/v2/accounts/${usdtAccountId}/transactions`, { headers: headers });
+              const txns = res.data.data.slice(0, 5);
+              for (let i = 0; i < txns.length; i++) {
+                if (txns[i].advanced_trade_fill.order_id == limitOrderId) {
+                  const matchedTxn = txns[i];
+                  console.log("matchedTx index:", i, "| matchedTxn:", matchedTxn);
+                  const usdcAmountSold = (usdtAmountToBuyRoundedDown * usdtPrice * 1.00001).toFixed(8); // must add fees; Coinbase usdc is 8 decimals
+                  console.log("usdcAmountSold:", usdcAmountSold);
+                  return { usdcAmountSold, usdtAmountBought: usdtAmountToBuyRoundedDown.toString() };
+                }
+              }
+            } catch (e: any) {
+              console.log(e.message);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // 2s wait
+          }
         }
       } catch (e: any) {
         console.log(e.message);
       }
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2s cooldown
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2s wait
     }
   }
 
@@ -176,8 +245,10 @@ export const POST = async (request: Request) => {
         { headers: headers }
       );
       console.log("marketOrder:", res.data);
-      const marketOrderId = res.data.success_response.order_id;
-      return marketOrderId;
+      if (res.data.success) {
+        const marketOrderId = res.data.success_response.order_id;
+        return marketOrderId;
+      }
     } catch (e: any) {
       console.log("makeUsdtToUsdMarketOrder failed:", e.message); // this is a critical error
     }
@@ -200,61 +271,57 @@ export const POST = async (request: Request) => {
         },
         { headers: headers }
       );
-      const marketOrderId = res.data.success_response.order_id;
-      console.log("marketOrderId:", marketOrderId);
-      return marketOrderId;
+      console.log("marketOrder:", res.data);
+      if (res.data.success) {
+        const marketOrderId = res.data.success_response.order_id;
+        return marketOrderId;
+      }
     } catch (e: any) {
       console.log("makeUsdtToUsdMarketOrder failed:", e.message); // this is a critical error
     }
   }
 
-  async function getUsdtToUsdMarketOrderDetails(marketOrderId: string, usdAccountId: string) {
-    for (let attempts = 0; attempts < 4; attempts++) {
+  async function getUsdtToUsdMarketOrderFillPrice(marketOrderId: string, usdAccountId: string) {
+    for (let attempts = 0; attempts < 2; attempts++) {
       const res = await axios.get(`https://api.coinbase.com/v2/accounts/${usdAccountId}/transactions`, { headers: headers });
       const txns = res.data.data.slice(0, 5);
-      console.log("getUsdtToUsdMarketOrderDetails attempt:", attempts); // should be 0
+      console.log("getUsdtToUsdMarketOrderFillPrice attempt:", attempts); // should be 0
       for (let i = 0; i < txns.length; i++) {
         if (txns[i].advanced_trade_fill.order_id == marketOrderId) {
           const matchedTxn = txns[i];
           console.log("matchedTx index:", i, "| matchedTxn:", matchedTxn);
-          const usdAmountBought = matchedTxn.native_amount.amount; // native_amount.amount is slightly more accurate than amount.amount
-          console.log("usdAmountBought:", usdAmountBought);
-          return usdAmountBought;
+          const fillPrice = matchedTxn.advanced_trade_fill.fill_price;
+          console.log("fillPrice:", fillPrice);
+          return fillPrice;
         }
       }
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 4 attempts, 2s interval
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 attempts, 2s interval
     }
   }
 
-  async function getUsdcToEurMarketOrderDetails(marketOrderId: string, eurAccountId: string) {
-    for (let attempts = 0; attempts < 4; attempts++) {
+  async function getUsdcToEurMarketOrderFillPrice(marketOrderId: string, eurAccountId: string) {
+    for (let attempts = 0; attempts < 2; attempts++) {
       const res = await axios.get(`https://api.coinbase.com/v2/accounts/${eurAccountId}/transactions`, { headers: headers });
       const txns = res.data.data.slice(0, 5);
-      console.log("getUsdcToEurMarketOrderDetails attempt:", attempts); // should be 0
+      console.log("getUsdtToUsdMarketOrderFillPrice attempt:", attempts); // should be 0
       for (let i = 0; i < txns.length; i++) {
         if (txns[i].advanced_trade_fill.order_id == marketOrderId) {
           const matchedTxn = txns[i];
           console.log("matchedTx index:", i, "| matchedTxn:", matchedTxn);
-          const eurAmountBought = matchedTxn.amount.amount;
-          console.log("eurAmountBought:", eurAmountBought);
-          return eurAmountBought;
+          const fillPrice = matchedTxn.advanced_trade_fill.fill_price;
+          console.log("fillPrice:", fillPrice);
+          return fillPrice;
         }
       }
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 4 attempts, 2s interval
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 attempts, 2s interval
     }
   }
 
-  async function withdrawUsd(usdAmountBought: string, usdAccountId: string) {
-    // get usdPaymentMethodId
-    const usdPaymentMethodId = await getPaymentMethodId("USD");
-    if (!usdPaymentMethodId) {
-      return;
-    }
-
+  async function withdrawUsd(usdAmountBought: string, usdAccountId: string, achPaymentMethodId: string) {
     try {
       const res = await axios.post(
         `https://api.coinbase.com/v2/accounts/${usdAccountId}/withdrawals`,
-        { amount: usdAmountBought, currency: "USD", payment_method: usdPaymentMethodId },
+        { amount: usdAmountBought, currency: "USD", payment_method: achPaymentMethodId },
         { headers: { Authorization: `Bearer ${cbAccessToken}` } }
       );
       const withdrawStatus = res.data.data.status;
@@ -265,17 +332,11 @@ export const POST = async (request: Request) => {
     }
   }
 
-  async function withdrawEur(eurAmountBought: string, eurAccountId: string) {
-    // get usdPaymentMethodId
-    const eurPaymentMethodId = await getPaymentMethodId("EUR");
-    if (!eurPaymentMethodId) {
-      return;
-    }
-
+  async function withdrawEur(eurAmountBought: string, eurAccountId: string, sepaPaymentMethodId: string) {
     try {
       const res = await axios.post(
         `https://api.coinbase.com/v2/accounts/${eurAccountId}/withdrawals`,
-        { amount: eurAmountBought, currency: "EUR", payment_method: eurPaymentMethodId },
+        { amount: eurAmountBought, currency: "EUR", payment_method: sepaPaymentMethodId },
         { headers: { Authorization: `Bearer ${cbAccessToken}` } }
       );
       const withdrawStatus = res.data.data.status;
@@ -283,21 +344,6 @@ export const POST = async (request: Request) => {
       return withdrawStatus;
     } catch (e: any) {
       console.log(e.message);
-    }
-  }
-
-  async function getPaymentMethodId(merchantCurrency: string) {
-    const paymentMethodType: any = { USD: "ACH", EUR: "SEPA" }; // need to confirm "SEPA"
-    try {
-      const res = await axios.get(`https://api.coinbase.com/api/v3/brokerage/payment_methods`, {
-        headers: { Authorization: `Bearer ${cbAccessToken}` },
-      });
-      const paymentMethods = res.data.payment_methods; // array of payment methods
-      const paymentMethodId = paymentMethods.find((i: any) => i.type == paymentMethodType[merchantCurrency]).id;
-      console.log("paymentMethodId:", paymentMethodId);
-      return paymentMethodId;
-    } catch (err) {
-      console.log("error in getPaymentMethodId", err);
     }
   }
 };

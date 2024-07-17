@@ -12,14 +12,14 @@ export default function Hero() {
       <div className="h-[92px] portrait:sm:h-[108px] landscape:lg:h-[108px]"></div>
       {/*--- container without navbar ---*/}
       <div className="flex-1">
-        {/*--- geader + subheader ---*/}
-        <div className="h-[65%] max-h-[800px] flex flex-col justify-center items-center">
+        {/*--- header + subheader ---*/}
+        <div className="h-[75%] max-h-[800px] flex flex-col justify-center items-center">
           {/*--- header ---*/}
           <div className="font-extrabold text-center text-4xl portrait:sm:text-7xl landscape:lg:text-7xl leading-snug portrait:sm:leading-tight landscape:lg:leading-tight">
             CRYPTO PAYMENTS <br /> WITH 0% FEES
           </div>
           {/*--- spacer ---*/}
-          <div className="h-[10%]"></div>
+          <div className="h-[8%]"></div>
           {/*--- subheader ---*/}
           <div className="relative heroSubheaderWidth heroSubheaderFont">
             With a{" "}

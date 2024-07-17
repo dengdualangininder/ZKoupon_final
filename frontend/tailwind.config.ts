@@ -27,7 +27,7 @@ module.exports = {
         light4: "#CBD5E1",
         light5: "#B0BDCD",
         lightButton: "#000000",
-        lightButtonHover: "#2C2B31",
+        lightButtonHover: "#1E293B",
         lightText1: "#000000",
         lightText2: "#94A3B8",
         dualGray: "#94A3B8",

@@ -65,7 +65,7 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
   hashedEmployeePass: String,
   paymentSettings: {
     merchantEvmAddress: String,
-    merchantEmail: String,
+    merchantEmail: { type: String, unique: true },
     merchantName: String,
     merchantCountry: String,
     merchantCurrency: String,

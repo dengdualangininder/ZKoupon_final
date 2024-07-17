@@ -1,14 +1,34 @@
-import React from "react";
+import { currency2rateDecimal, currency2bank, currency2cex } from "@/utils/constants";
+import { useState, useEffect } from "react";
 
 const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
+  const [rates, setRates] = useState({ usdcToLocal: 0, usdToLocal: 0 });
+
+  useEffect(() => {
+    getRates();
+  }, [merchantCurrency]);
+
+  const getRates = async () => {
+    if (merchantCurrency == "USD") {
+      setRates({ usdcToLocal: 1, usdToLocal: 1 });
+    } else {
+      const ratesRes = await fetch("/api/getRates", {
+        method: "POST",
+        body: JSON.stringify({ merchantCurrency: merchantCurrency }),
+        headers: { "content-type": "application/json" },
+      });
+      const ratesData = await ratesRes.json();
+      console.log("ratesData", ratesData);
+      if (ratesData.status == "success") {
+        setRates({ usdcToLocal: Number(ratesData.usdcToLocal), usdToLocal: Number(ratesData.usdToLocal) });
+      }
+    }
+  };
+
   return (
     <div className="homeSectionSize">
       {/*--- HEADER ---*/}
-      <div className="w-full homeHeaderFont">
-        Why set up crypto
-        <br />
-        payments?
-      </div>
+      <div className="w-full homeHeaderFont">Why set up crypto payments?</div>
       {/*--- BODY ---*/}
       <div
         className={`${
@@ -31,20 +51,20 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
             <div className="whyCardBody space-y-4">
               <div>
                 Surveys show &gt;80% of tourists who own USDC prefer paying with USDC instead of cash/card. This is because the USDC-to-{merchantCurrency} rate is usually 1-5%
-                better than the USD-to-{merchantCurrency} rate at any bank, including Wise.
+                better than the USD-to-{merchantCurrency} rate at any bank{merchantCurrency == "EUR" ? ", including Wise" : ""}.
               </div>
               <div>
                 <div className="w-full flex justify-between">
-                  <div>USDC to {merchantCurrency} (Coinbase):</div>
-                  <div>0.9251</div>
+                  <div>
+                    USDC to {merchantCurrency} ({currency2cex[merchantCurrency]}):
+                  </div>
+                  <div>{rates.usdcToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
                 </div>
                 <div className="w-full flex justify-between">
-                  <div>USD to {merchantCurrency} (Wise):</div>
-                  <div>0.9321</div>
-                </div>
-                <div className="w-full flex justify-between">
-                  <div>USD to {merchantCurrency} (BNP Paribas):</div>
-                  <div>0.9321</div>
+                  <div>
+                    USD to {merchantCurrency} ({currency2bank[merchantCurrency]}):
+                  </div>
+                  <div>{rates.usdToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
                 </div>
               </div>
             </div>

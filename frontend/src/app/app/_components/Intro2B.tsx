@@ -7,12 +7,16 @@ import { useRouter } from "next/navigation";
 // other
 import { v4 as uuidv4 } from "uuid";
 import { QRCodeSVG } from "qrcode.react";
+import { renderToStream, pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
+import { saveAs } from "file-saver";
 // components
 import Flow from "./Flow";
 import Flow2 from "./Flow2";
 import Flow3 from "./Flow3";
 import IntroErrorModal from "./modals/IntroErrorModal";
 import SkipModal from "./modals/SkipModal";
+import Placard from "./placard/Placard";
+
 // constants
 import { countryData, countryCurrencyList, currency2number, merchantType2data } from "@/utils/constants";
 // images
@@ -59,66 +63,97 @@ const Intro = ({
   // hooks
   const router = useRouter();
 
-  useEffect(() => {
-    //usability test
-    if (isUsabilityTest) {
+  const saveSettings = async () => {};
+
+  const sendEmail = async () => {
+    // check if form completed
+    if (!paymentSettingsState.merchantName) {
+      setIntroErrorModal(true);
+      setErrorMsg("Please enter the name of your business");
+      return;
+    }
+    if (!paymentSettingsState.merchantEmail) {
+      setIntroErrorModal(true);
+      setErrorMsg("Please enter an email address");
       return;
     }
 
-    // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
-    // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
-    // control when to specifically trigger this useEffect
-    console.log("saveSettings useEffect run once");
-    console.log(paymentSettingsState);
-    console.log(cashoutSettingsState);
-    const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
-    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
-    if (paymentSettingsState.merchantPaymentType === "online") {
-      tempUrl =
-        tempUrl +
-        "&&" +
-        Buffer.from(paymentSettingsState.merchantEmail, "utf8").toString("base64") +
-        "&&" +
-        Buffer.from(paymentSettingsState.merchantWebsite, "utf8").toString("base64") +
-        "&&" +
-        paymentSettingsState.merchantBusinessType +
-        "&&" +
-        paymentSettingsState.merchantFields.join(",");
-    }
-    setUrl(tempUrl);
-    console.log(tempUrl);
+    // show next step
+    setStep("emailSent");
 
-    const saveSettings = async () => {
-      try {
-        console.log("entering saveSettings API");
-        const res = await fetch("/api/saveSettings", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ paymentSettings: { ...paymentSettingsState, qrCodeUrl: tempUrl }, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
-        });
-        const data = await res.json();
+    // save settings
+    try {
+      const res = await fetch("/api/saveSettings", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
+      });
+      const data = await res.json();
 
-        if (data === "saved") {
-          console.log("settings saved");
-        } else {
-          setErrorMsg("Internal server error. Data was not saved.");
-          setIntroErrorModal(true);
-        }
-      } catch (e) {
-        setErrorMsg("Server request error. Data was not saved.");
+      if (data == "saved") {
+        console.log("settings saved");
+      } else {
+        setErrorMsg("Internal server error. Data was not saved.");
         setIntroErrorModal(true);
+        return;
       }
-    };
-    saveSettings();
-  }, [save]);
+    } catch (e) {
+      setErrorMsg("Server request error. Data was not saved.");
+      setIntroErrorModal(true);
+      return;
+    }
+
+    // create PDF file string
+    const el = document.getElementById("introQrCode");
+    const dataString = await pdf(
+      <Document>
+        <Page size="A5" style={{ position: "relative" }}>
+          <View>
+            <Placard />
+          </View>
+          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
+            {/* @ts-ignore */}
+            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* @ts-ignore */}
+              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+              {/* @ts-ignore */}
+              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
+            </Svg>
+          </View>
+        </Page>
+      </Document>
+    ).toString();
+
+    // create the formData
+    const formData = new FormData();
+    formData.append("merchantEmail", paymentSettingsState.merchantEmail);
+    formData.append("dataString", dataString);
+
+    // send datat to api endpoint
+    const res = await fetch("/api/emailQrCode", {
+      method: "POST",
+      body: formData,
+    });
+
+    // api response
+    const response = await res.json();
+    console.log(response);
+    if (response == "email sent") {
+      console.log("email sent");
+    } else {
+      console.log("email did not send");
+    }
+  };
 
   const onClickSIWC = async () => {
     // usability test
-    setPage("loading");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setCoinbaseIntroModal(true);
-    setPage("app");
-    return;
+    if (isUsabilityTest) {
+      setPage("loading");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setCoinbaseIntroModal(true);
+      setPage("app");
+      return;
+    }
 
     const cbRandomSecure = uuidv4() + "SUBSTATEfromIntro";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
@@ -128,13 +163,13 @@ const Intro = ({
     );
   };
 
-  const sendEmail = async () => {
-    setStep("emailSent");
-  };
-
   return (
     <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light2 text-black">
       <div className="w-[85%] min-w-[354px] max-w-[420px] desktop:max-w-[450px] h-screen min-h-[650px] my-auto max-h-[800px]">
+        <div className="hidden">
+          <QRCodeSVG id="introQrCode" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
+        </div>
+
         {/*--- welcome ---*/}
         {step == "welcome" && (
           <div className="w-full h-full flex flex-col items-center justify-center">
@@ -172,8 +207,13 @@ const Intro = ({
                 <input
                   className="introInputFont"
                   placeholder="Enter the name of your business"
-                  onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
-                  onBlur={() => setSave(!save)}
+                  onChange={(e) =>
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantName: e.currentTarget.value,
+                      qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${e.currentTarget.value}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`,
+                    })
+                  }
                   value={paymentSettingsState.merchantName}
                 ></input>
               </div>
@@ -189,10 +229,10 @@ const Intro = ({
                       ...paymentSettingsState,
                       merchantCountry: merchantCountryTemp,
                       merchantCurrency: merchantCurrencyTemp,
+                      qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${paymentSettingsState.merchantName}&merchantCurrency=${merchantCurrencyTemp}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`,
                     });
                     setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "" }); // need to set blank as cex will change
                     e.target.closest("select")?.blur();
-                    setSave(!save);
                   }}
                   value={`${paymentSettingsState.merchantCountry} / ${paymentSettingsState.merchantCurrency}`}
                 >
@@ -206,8 +246,12 @@ const Intro = ({
                 <input
                   className="introInputFont"
                   placeholder="Type in your email"
-                  onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
-                  onBlur={() => setSave(!save)}
+                  onChange={(e) =>
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantEmail: e.currentTarget.value,
+                    })
+                  }
                   value={paymentSettingsState.merchantEmail}
                 ></input>
                 <div className="mt-0.5 textBase italic">Your QR code will be sent to this email</div>
@@ -218,22 +262,7 @@ const Intro = ({
               <button className="introBack" onClick={() => setStep("welcome")}>
                 &#10094;&nbsp; BACK
               </button>
-              <button
-                className="introNext"
-                onClick={() => {
-                  if (!paymentSettingsState.merchantName) {
-                    setIntroErrorModal(true);
-                    setErrorMsg("Please enter the name of your business");
-                    return;
-                  }
-                  if (!paymentSettingsState.merchantEmail) {
-                    setIntroErrorModal(true);
-                    setErrorMsg("Please enter a email address");
-                    return;
-                  }
-                  setStep("emailSent");
-                }}
-              >
+              <button className="introNext" onClick={sendEmail}>
                 NEXT &nbsp;&#10095;
               </button>
             </div>

@@ -25,6 +25,7 @@ import SaveToHome from "./_components/SaveToHome";
 import Intro2B from "./_components/Intro2B";
 import CashoutIntroModal from "./_components/modals/CashoutIntroModal";
 import QrCodeModal from "./_components/modals/QrCodeModal";
+import ErrorModal from "./_components/modals/ErrorModal";
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
@@ -49,6 +50,8 @@ const User = () => {
   const [coinbaseIntroModal, setCoinbaseIntroModal] = useState(false);
   const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
   const [cashbackModal, setCashbackModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
@@ -365,6 +368,8 @@ const User = () => {
       setPage("intro");
     } catch (error) {
       console.log("request to createUser api failed");
+      setErrorMsg("Failed to create new account");
+      setErrorModal(true);
       setPage("login");
     }
   };
@@ -526,6 +531,9 @@ const User = () => {
               </div>
             </div>
           )}
+
+          {/*--- error modal ---*/}
+          {errorModal && <ErrorModal setErrorModal={setErrorModal} errorMsg={errorMsg} />}
 
           {/*---bannerModal---*/}
           {transactionsState.length != 0 && (
