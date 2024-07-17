@@ -60,12 +60,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       </Document>
     ).toString();
 
-    // create the formData
-    // const formData = new FormData();
-    // formData.append("merchantEmail", email);
-    // formData.append("dataString", dataString);
-
-    // send datat to api endpoint
+    // make api call
     const res = await fetch("/api/emailQrCode", {
       method: "POST",
       body: JSON.stringify({ merchantEmail: email, dataString }),

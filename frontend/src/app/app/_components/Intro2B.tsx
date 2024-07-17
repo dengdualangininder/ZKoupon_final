@@ -63,8 +63,6 @@ const Intro = ({
   // hooks
   const router = useRouter();
 
-  const saveSettings = async () => {};
-
   const sendEmail = async () => {
     // check if form completed
     if (!paymentSettingsState.merchantName) {
@@ -124,15 +122,10 @@ const Intro = ({
       </Document>
     ).toString();
 
-    // create the formData
-    const formData = new FormData();
-    formData.append("merchantEmail", paymentSettingsState.merchantEmail);
-    formData.append("dataString", dataString);
-
-    // send datat to api endpoint
+    // make api call
     const res = await fetch("/api/emailQrCode", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify({ merchantEmail: paymentSettingsState.merchantEmail, dataString }),
     });
 
     // api response
