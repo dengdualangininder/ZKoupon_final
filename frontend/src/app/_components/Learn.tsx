@@ -14,7 +14,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
 
   const titles = [
     { id: "lesson1", title: "Lesson 1", subtitle: "What are blockchains & tokens?", fa: faCube, color: "4285f4" },
-    { id: "lesson2", title: "Lesson 2", subtitle: "What is an EVM address?", fa: faEthereum, color: "34a853" },
+    { id: "lesson2", title: "Lesson 2", subtitle: "What is an EVM address?", fa: faCube, color: "34a853" },
     { id: "lesson3", title: "Lesson 3", subtitle: "Are tokens real money?", fa: faCoins, color: "fbbc05" },
     { id: "lesson4", title: "Lesson 4", subtitle: "How do I use the blockchain?", fa: faMobileScreenButton, color: "ea4335" },
     { id: "lesson5", title: "Lesson 5", subtitle: "How does Flash help?", fa: faBoltLightning, color: "000000" },
