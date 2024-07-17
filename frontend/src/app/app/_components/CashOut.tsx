@@ -363,7 +363,9 @@ const CashOut = ({
     } catch (err) {
       console.log(err);
       console.log("transfer not sent");
-      setTransferState("inital");
+      setErrorModal(true);
+      setErrorMsg("Transfer failed. Please try again.");
+      setTransferState("initial");
     }
   };
 
