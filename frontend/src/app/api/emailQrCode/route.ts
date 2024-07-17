@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 export const POST = async (request: Request) => {
   console.log("entered emailQrCode api");
   let merchantEmail, dataString;
+  console.log("hi");
   try {
     var formData = await request.formData();
     merchantEmail = formData.get("merchantEmail");
