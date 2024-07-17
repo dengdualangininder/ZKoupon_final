@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/maze.js", "../_unused/DetailsModalButtons.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/maze.js", "../_unused/DetailsModalButtons.tsx", "../_unused/pageGrayBox.tsx"],
   "exclude": ["node_modules"]
 }
