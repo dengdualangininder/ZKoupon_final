@@ -2,17 +2,21 @@ const nodemailer = require("nodemailer");
 
 export const POST = async (request: Request) => {
   console.log("entered emailQrCode api");
-  let merchantEmail, dataString;
-  console.log("hi");
-  try {
-    var formData = await request.formData();
-    merchantEmail = formData.get("merchantEmail");
-    dataString = formData.get("dataString");
-    console.log("merchantEmail:", merchantEmail);
-  } catch (e) {
-    console.log(e);
-    return Response.json("email not sent");
-  }
+
+  const { merchantEmail, dataString } = await request.json();
+  console.log("merchantEmail:", merchantEmail);
+
+  // let merchantEmail, dataString;
+  // console.log("hi");
+  // try {
+  //   var formData = await request.formData();
+  //   merchantEmail = formData.get("merchantEmail");
+  //   dataString = formData.get("dataString");
+  //   console.log("merchantEmail:", merchantEmail);
+  // } catch (e) {
+  //   console.log(e);
+  //   return Response.json("email not sent");
+  // }
 
   try {
     var mailTransporter = nodemailer.createTransport({

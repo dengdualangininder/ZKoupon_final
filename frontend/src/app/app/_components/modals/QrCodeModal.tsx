@@ -61,14 +61,14 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
     ).toString();
 
     // create the formData
-    const formData = new FormData();
-    formData.append("merchantEmail", email);
-    formData.append("dataString", dataString);
+    // const formData = new FormData();
+    // formData.append("merchantEmail", email);
+    // formData.append("dataString", dataString);
 
     // send datat to api endpoint
     const res = await fetch("/api/emailQrCode", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify({ merchantEmail: email, dataString }),
     });
 
     // api response
