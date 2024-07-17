@@ -53,7 +53,7 @@ const DetailsModal = ({
             <div className="flex flex-col">
               <div className="detailsLabelText">Time</div>
               <div className="detailsValueText">
-                {getLocalDate(clickedTxn?.date)} {getLocalTime(clickedTxn?.date).time} {getLocalTime(clickedTxn?.date).ampm}
+                {getLocalDate(clickedTxn?.date)} {getLocalTime(clickedTxn?.date)?.time} {getLocalTime(clickedTxn?.date)?.ampm}
               </div>
             </div>
             <div className="flex flex-col">
