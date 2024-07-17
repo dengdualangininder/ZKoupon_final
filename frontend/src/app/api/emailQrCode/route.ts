@@ -6,13 +6,20 @@ export const POST = async (request: Request) => {
   const merchantEmail = formData.get("merchantEmail");
   const dataString = formData.get("dataString");
 
-  let mailTransporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "contact@lingpay.io",
-      pass: process.env.GOOGLE_APP_PASSWORD,
-    },
-  });
+  console.log("merchantEmail:", merchantEmail);
+
+  try {
+    var mailTransporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "contact@lingpay.io",
+        pass: process.env.GOOGLE_APP_PASSWORD,
+      },
+    });
+  } catch (e) {
+    console.log("error in creating mailTransporter:", e);
+    return Response.json("email not sent");
+  }
 
   const html = `
   <div>
