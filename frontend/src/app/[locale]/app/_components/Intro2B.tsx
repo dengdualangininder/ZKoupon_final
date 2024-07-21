@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
 // other
 import { v4 as uuidv4 } from "uuid";
 import { QRCodeSVG } from "qrcode.react";

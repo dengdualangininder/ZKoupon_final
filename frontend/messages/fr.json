@@ -1,0 +1,43 @@
+{
+  "HomePage": {
+    "Navbar": { "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center", "enterApp": "Enter App" },
+    "Hero": {
+      "title1": "CRYPTO PAYMENTS",
+      "title2": "WITH 0% FEES",
+      "subtitle1": "With a",
+      "trueP2P": " true peer-2-peer",
+      "subtitle2": " payments design, Flash Payments is a simple and low-cost platform to help you set up crypto payments for your business. Setting up takes 1 minute.",
+      "enterApp": "Enter App",
+      "tooltip1": "True P2P payments mean that customers pay businesses directly with no middlemen. Therefore, Flash cannot charge fees.",
+      "tooltip2": "Flash also does not profit from exchange rates, meaning true market token\u2B80{merchantCurrency} rates will always be given to you and your customers."
+    },
+    "How": {
+      "title": "",
+      "selectCurrency": "Select your currency",
+      "step-1": "You display a QR code",
+      "step-2": "Customer scans and pays with MetaMask",
+      "step-3": "You confirm payment on the Flash app",
+      "step-4": "You cash out",
+      "step-1-1": "You receive the QR code after setting up",
+      "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app<sup>?</sup></span2><div>MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.</div></span1> will open",
+      "step-2-2": "The customer enters the amount of EUR for payment",
+      "step-2-3": "When the customer submits payment, USDC tokens? (with a value equal to the amount of EUR entered) will be sent from their MetaMask to your Flash app",
+      "step-3-1": "About 5 seconds after a customer pays, you should see the payment in the Flash app. Employees can also log into your Flash app (with restricted functions) on a shared or personal device to see successful payments",
+      "step-4-1": "To transfer funds to your bank, you must have a Coinbase account (sign up here)",
+      "step-4-2": "In the Flash app, click 'Link Coinbase Account'",
+      "step-4-3": "Click 'Cash Out' and follow the on-screen instructions. USDC will be automatically converted to EUR* and the money sent to your bank (~0% fees)",
+      "step-4-4": "Flash is designed so that you will not lose money from fluctuating exchange rates (how?)",
+      "mmTooltip": "MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.",
+      "usdcTooltip": "1 USDC token equals to 1 USD, as gauranteed by Circle. Almost all crypto users have USDC.",
+      "howTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
+      "setup": "set up in 1 minute",
+      "signup": "sign up here"
+    },
+    "LowCost": {},
+    "Simple": {},
+    "Why": {},
+    "Learn": {},
+    "Contact": {},
+    "Footer": {}
+  }
+}

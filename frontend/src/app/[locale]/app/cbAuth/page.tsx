@@ -3,7 +3,8 @@
 // nextjs
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/navigation";
 
 const cbAuth = () => {
   const router = useRouter();

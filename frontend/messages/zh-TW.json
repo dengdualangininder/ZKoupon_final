@@ -1,0 +1,43 @@
+{
+  "HomePage": {
+    "Navbar": { "how": "如何使用", "why": "Flash優點", "learn": "學習中心", "enterApp": "進入 App" },
+    "Hero": {
+      "title1": "加密貨幣支付",
+      "title2": "0% 手續費",
+      "subtitle1": "透過使用",
+      "trueP2P": "真正的點對點",
+      "subtitle2": "設計，Flash Payments 能夠為您的企業實現簡單、低成本的加密貨幣支付。設定只需 1 分鐘",
+      "enterApp": "進入 App",
+      "tooltip1": "真正點對點意思是客戶直接付款給企業，沒有中間人。因此，Flash 不收取任何費用。",
+      "tooltip2": "因為 Flash 也不會從匯率中獲利，您和您的客戶將永遠獲得最佳的加密貨幣\u2B80{merchantCurrency}匯率。"
+    },
+    "How": {
+      "title": "如何使用",
+      "selectCurrency": "選擇幣別",
+      "step-1": "列印並顯示您的 QR Code",
+      "step-2": "客戶使用 MetaMask App 掃描並付款",
+      "step-3": "您在 Flash App 上確認付款",
+      "step-4": "您在 Flash App 轉帳到您的銀行",
+      "step-1-1": "設定帳戶後，您會收到 QR Code",
+      "step-2-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App<sup>?</sup></span2><div>MetaMask App 是收發加密貨幣最流行的App，全球有超過 5000 萬人在使用。</div></span1> 會開啟",
+      "step-2-2": "客戶輸入{merchantCurrency}付款金額",
+      "step-2-3": "客戶提交付款時，USDC幣（價值相等於輸入的{merchantCurrency}金額）會從客戶的 MetaMask app 送到您的 Flash app。",
+      "step-3-1": "About 5 seconds after a customer pays, you should see the payment in the Flash app. Employees can also log into your Flash app (with restricted functions) on a shared or personal device to see successful payments",
+      "step-4-1": "To transfer funds to your bank, you must have a Coinbase account (sign up here)",
+      "step-4-2": "In the Flash app, click 'Link Coinbase Account'",
+      "step-4-3": "Click 'Cash Out' and follow the on-screen instructions. USDC will be automatically converted to EUR* and the money sent to your bank (~0% fees)",
+      "step-4-4": "Flash is designed so that you will not lose money from fluctuating exchange rates (how?)",
+      "mmTooltip": "MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.",
+      "usdcTooltip": "1 USDC token equals to 1 USD, as gauranteed by Circle. Almost all crypto users have USDC.",
+      "howTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
+      "setup": "花1分鐘建立帳戶",
+      "signup": "sign up here"
+    },
+    "LowCost": {},
+    "Simple": {},
+    "Why": {},
+    "Learn": {},
+    "Contact": {},
+    "Footer": {}
+  }
+}

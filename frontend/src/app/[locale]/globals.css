@@ -25,6 +25,22 @@
   } */
 
   /* custom scrollbar */
+  .hideScrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .halfHideScrollbar::-webkit-scrollbar-thumb {
+    background: #eef3f7;
+    border: 0px;
+  }
+  .halfHideScrollbar::-webkit-scrollbar-track {
+    background: #eef3f7;
+  }
+  .halfHideScrollbar::-webkit-scrollbar {
+    width: 17px;
+    height: 20px;
+  }
+
   .scrollbar::-webkit-scrollbar {
     width: 4px;
     height: 20px;
@@ -216,6 +232,14 @@
     @apply px-4 py-6 sm:p-6 bg-white rounded-3xl shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
   }
 
+  .navbarButtonHeight {
+    @apply h-[40px] lg:h-[56px] xl:desktop:h-[32px];
+  }
+
+  .navbarButtonHeightScrollTop {
+    @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px];
+  }
+
   .heroSubheaderWidth {
     @apply w-[98%] portrait:max-w-[372px] landscape:max-w-[620px] portrait:sm:max-w-[744px] landscape:lg:max-w-[744px] landscape:xl:desktop:max-w-[716px];
   }
@@ -252,8 +276,8 @@
     @apply text-lg font-normal invisible group-hover:visible absolute px-4 py-3 bg-gray-800 text-white rounded-lg z-[1];
   }
 
-  .overviewTooltip {
-    @apply text-base sm:text-sm font-normal invisible group-hover:visible absolute px-4 py-3 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
+  .howTooltip {
+    @apply text-base sm:text-sm xl:desktop:text-xs font-normal invisible group-hover:visible absolute px-4 py-3 xl:desktop:px-3 xl:desktop:py-2 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
   }
 
   .cashoutTooltip {
@@ -360,20 +384,20 @@
     @apply leading-tight text-lg sm:text-base text-gray-300 font-normal;
   }
 
-  .overviewNumber {
+  .howNumber {
     @apply mr-4 w-[44px] h-[44px] text-2xl font-bold flex justify-center items-center rounded-full bg-darkButton;
   }
 
-  .overviewHeader2Font {
+  .howHeader2Font {
     @apply text-xl sm:text-lg md:text-2xl xl:desktop:text-lg font-medium leading-tight sm:leading-tight xl:desktop:leading-tight;
   }
 
-  .overviewStepTitle {
-    @apply flex-1 overviewHeader2Font;
+  .howStepTitle {
+    @apply flex-1 howHeader2Font;
   }
 
-  .overviewBulletPoints {
-    @apply text-base md:text-lg xl:desktop:text-[13px] xl:desktop:leading-[20px] space-y-2;
+  .howBulletPoints {
+    @apply text-base md:text-lg xl:desktop:text-xs space-y-2;
   }
 
   .lowCostCard {

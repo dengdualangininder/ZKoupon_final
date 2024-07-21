@@ -22,6 +22,17 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/maze.js", "../_unused/DetailsModalButtons.tsx", "../_unused/pageGrayBox.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "public/maze.js",
+    "../_unused/DetailsModalButtons.tsx",
+    "../_unused/pageGrayBox.tsx",
+    "../_unused/MockUI.tsx",
+    "../_unused/Savings.tsx",
+    "../_unused/Advantage.tsx"
+  ],
   "exclude": ["node_modules"]
 }

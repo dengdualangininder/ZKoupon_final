@@ -2,7 +2,7 @@
 // next
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
 // wagmi & viem & ethers
 import { useConfig, useAccount, useClient } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";

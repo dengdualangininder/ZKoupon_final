@@ -8,7 +8,7 @@ const Footer = () => {
 
   const navLinks = [
     {
-      id: "overview",
+      id: "how",
       title: "How It Works",
     },
     {

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
 //wagmi
 import { useConfig } from "wagmi";
 import { writeContract } from "@wagmi/core";

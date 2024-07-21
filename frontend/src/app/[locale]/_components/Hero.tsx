@@ -1,10 +1,10 @@
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
+import { useTranslations } from "next-intl";
 
-export default function Hero() {
+export default function Hero({ merchantCurrency }: { merchantCurrency: string }) {
+  // hooks
   const router = useRouter();
-  // const handleOnClick = () => {
-  //   document.getElementById("startEl").scrollIntoView({ behavior: "smooth", block: "start" });
-  // };
+  const t = useTranslations("HomePage.Hero");
 
   return (
     <div className="h-screen flex flex-col max-h-[1200px]">
@@ -16,27 +16,28 @@ export default function Hero() {
         <div className="h-[75%] max-h-[800px] flex flex-col justify-center items-center">
           {/*--- header ---*/}
           <div className="font-extrabold text-center text-4xl portrait:sm:text-7xl landscape:lg:text-7xl leading-snug portrait:sm:leading-tight landscape:lg:leading-tight">
-            CRYPTO PAYMENTS <br /> WITH 0% FEES
+            {t("title1")}
+            <br />
+            {t("title2")}
           </div>
           {/*--- spacer ---*/}
           <div className="h-[8%]"></div>
           {/*--- subheader ---*/}
           <div className="relative heroSubheaderWidth heroSubheaderFont">
-            With a{" "}
+            {t("subtitle1")}
             <span className="group">
-              <span className="link font-semibold">true peer-to-peer</span>
+              <span className="link font-semibold">{t("trueP2P")}</span>
               <div className="invisible group-hover:visible w-full absolute left-0 bottom-[calc(100%+4px)] text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-4 py-3 bg-slate-700 text-white rounded-xl border border-black z-[1]">
-                True P2P payments mean that customers pay businesses directly with <span className="font-bold">no middlemen</span>. Therefore, Flash does not charge fees or make
-                profit by giving you or your customers suboptimal token conversion rates.
+                {t("tooltip1", { merchantCurrency: merchantCurrency })} {merchantCurrency != "USD" && t("tooltip2", { merchantCurrency: merchantCurrency })}
               </div>
-            </span>{" "}
-            payments design, Flash Payments is a simple and low-cost platform to help you set up crypto payments for your business. Setting up takes 1 minute.
+            </span>
+            {t("subtitle2")}
           </div>
         </div>
         {/*--- enter button ---*/}
         <div className="hidden lg:flex w-full flex-col items-center">
           <button className={`heroButton`} onClick={() => router.push("/app")}>
-            Enter App
+            {t("enterApp")}
           </button>
         </div>
       </div>

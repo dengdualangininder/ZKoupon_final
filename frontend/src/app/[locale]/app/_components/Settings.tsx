@@ -1,7 +1,7 @@
 "use client";
 // nextjs
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
 import Image from "next/image";
 // other
 import { QRCodeSVG } from "qrcode.react";

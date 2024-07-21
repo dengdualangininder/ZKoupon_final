@@ -104,7 +104,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
             designed so that you will not lose money from fluctuating rates (
             <span className="group">
               <span className="linkDark">how?</span>
-              <div className="w-full top-[calc(100%+4px)] left-0 overviewTooltip">
+              <div className="w-full top-[calc(100%+4px)] left-0 howTooltip">
                 When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run,
                 these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because
                 the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.

@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
-import Overview from "./_components/Overview";
+import How from "./_components/How";
 import LowCost from "./_components/LowCost";
 import Simple from "./_components/Simple";
 import Why from "./_components/Why";
@@ -40,7 +40,7 @@ const Home = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            document.querySelectorAll("div[data-show='step']").forEach((el) => el.classList.remove("translate-x-[1500px]"));
+            document.querySelectorAll("div[data-show='step']").forEach((el) => el.classList.remove("translate-x-[1600px]"));
             observerSlide.unobserve(entry.target);
           }
         });
@@ -51,18 +51,18 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-x-hidden">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Hero />
+          <Hero merchantCurrency={merchantCurrency} />
         </div>
       </div>
 
       <div className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Overview merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
+          <How merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
         </div>
       </div>
 
