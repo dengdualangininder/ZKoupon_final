@@ -21,7 +21,7 @@ import ErrorModal from "../[locale]/app/_components/modals/ErrorModal";
 import { currency2decimal, currency2rateDecimal, currency2symbol, currency2correction } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/ERC20ABI.json";
-import { getLocalDateWords, getLocalTime, getLocalDate } from "../[locale]/app/_components/Payments";
+import { getLocalDateWords, getLocalTime, getLocalDate } from "../app/_components/Payments";
 // types
 import { Rates } from "@/utils/types";
 
