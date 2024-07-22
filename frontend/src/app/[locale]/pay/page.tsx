@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
 // components
 import Inperson from "./_components/Inperson";
-import ErrorModal from "../[locale]/app/_components/modals/ErrorModal";
 // constants
 import { currency2decimal, currency2rateDecimal, currency2symbol, currency2correction } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
