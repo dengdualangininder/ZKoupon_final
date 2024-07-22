@@ -1,8 +1,12 @@
 import { currency2rateDecimal, currency2bank, currency2cex } from "@/utils/constants";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
   const [rates, setRates] = useState({ usdcToLocal: 0, usdToLocal: 0 });
+
+  //hooks
+  const t = useTranslations("HomePage.Why");
 
   useEffect(() => {
     getRates();
@@ -28,7 +32,7 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
   return (
     <div className="homeSectionSize">
       {/*--- HEADER ---*/}
-      <div className="w-full homeHeaderFont">Why set up crypto payments?</div>
+      <div className="w-full homeHeaderFont">{t("header")}</div>
       {/*--- BODY ---*/}
       <div
         className={`${
@@ -37,32 +41,30 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
       >
         {/*--- card1 ---*/}
         <div className="whyCard">
-          <div className="whyCardHeader">
-            Attract <span className="text-blue-700">a young and growing demographic</span>
-          </div>
-          <div className="whyCardBody">Hundreds of millions of users, particularly the younger generation, enjoy using crypto. The MetaMask app has 50+ million users.</div>
+          <div className="whyCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+          <div className="whyCardBody">{t("card-1-body")}</div>
         </div>
         {/*--- card2 ---*/}
         {merchantCurrency != "USD" && (
           <div className="whyCard">
-            <div className="whyCardHeader">
-              Attract <span className="text-blue-700">international tourists</span>
-            </div>
+            <div className="whyCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
             <div className="whyCardBody space-y-4">
               <div>
-                Surveys show &gt;80% of tourists who own USDC prefer paying with USDC instead of cash/card. This is because the USDC-to-{merchantCurrency} rate is usually 1-5%
-                better than the USD-to-{merchantCurrency} rate at any bank{merchantCurrency == "EUR" ? ", including Wise" : ""}.
+                {t.rich("card-2-body", {
+                  span: (chunks: any) => <span className={`${merchantCurrency == "EUR" ? "" : "hidden"}`}>{chunks}</span>,
+                  merchantCurrency: merchantCurrency,
+                })}
               </div>
               <div>
                 <div className="w-full flex justify-between">
                   <div>
-                    USDC to {merchantCurrency} ({currency2cex[merchantCurrency]}):
+                    USDC➜{merchantCurrency} ({currency2cex[merchantCurrency]}):
                   </div>
                   <div>{rates.usdcToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
                 </div>
                 <div className="w-full flex justify-between">
                   <div>
-                    USD to {merchantCurrency} ({currency2bank[merchantCurrency]}):
+                    USD➜{merchantCurrency} ({currency2bank[merchantCurrency]}):
                   </div>
                   <div>{rates.usdToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
                 </div>
@@ -70,21 +72,17 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
             </div>
           </div>
         )}
-        {/*--- card1 ---*/}
+        {/*--- card2 (USD only) ---*/}
         {merchantCurrency == "USD" && (
           <div className="whyCard">
-            <div className="whyCardHeader">
-              Become <span className="text-blue-700">free and independent</span>
-            </div>
-            <div className="whyCardBody">You control the entire payments process when you use Flash. No one can withhold payment or block you from using the system.</div>
+            <div className="whyCardHeader">{t.rich("card-2-usd-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+            <div className="whyCardBody">{t("card-2-usd-body")}</div>
           </div>
         )}
         {/*--- card3 ---*/}
         <div className="whyCard">
-          <div className="whyCardHeader">
-            Attract <span className="text-blue-700">big spenders</span>
-          </div>
-          <div className="whyCardBody">Many users keep their entire savings on the blockchain. These people may be more willing to spend when using USDC than card or cash.</div>
+          <div className="whyCardHeader">{t.rich("card-3-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+          <div className="whyCardBody">{t("card-3-body")}</div>
         </div>
       </div>
     </div>

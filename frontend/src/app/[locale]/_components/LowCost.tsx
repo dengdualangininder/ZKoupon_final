@@ -1,50 +1,43 @@
 import { currencyToData } from "@/utils/constants";
+import { useTranslations } from "next-intl";
 
 const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
+  const t = useTranslations("HomePage.LowCost");
+
   return (
     <div className="homeSectionSize flex flex-col items-center xl:flex-row xl:items-start xl:justify-between">
       {/*--- text (left) ---*/}
       <div className="w-full xl:w-[50%]">
         {/*--- header ---*/}
         <div className="homeHeaderFont">
-          A cost-efficient
+          {t("header-1")}
           <br />
-          payments platform
+          {t("header-2")}
         </div>
         {/*--- body ---*/}
-        <div className="mt-8 w-full xl:desktop:w-[500px] homeBodyFont">
-          Although blockchain payments promises lower fees than traditional digital payments, most blockchain payment platforms still charge 1-2% in fees. Flash charges 0%. This is
-          because Flash works by integrating existing low-cost blockchain infrastructure (the Polygon network and cryptocurrency exchanges) to transfer funds and convert USDC to
-          fiat. Flash is not a middleman and, therefore, we charge zero fees.
-        </div>
+        <div className="mt-8 w-full xl:desktop:w-[500px] homeBodyFont">{t("body")}</div>
       </div>
       {/*--- cards (right) ---*/}
       <div className="mt-8 xl:mt-0 w-full xl:w-[50%] space-y-7 flex flex-col items-center">
         {/*--- card 1 ---*/}
         <div className="lowCostCard">
-          <div className="homeHeader2Font">0% Processing Fees</div>
-          <div className="lowCostCardBody">Flash does not take a cut from any transaction.</div>
+          <div className="homeHeader2Font">{t("card-1-header")}</div>
+          <div className="lowCostCardBody">{t("card-1-body")}</div>
         </div>
 
         {/*--- card 2 ---*/}
         <div className="lowCostCard">
-          <div className="homeHeader2Font">$0 Withdrawal Fees</div>
+          <div className="homeHeader2Font">{t("card-2-header", { withdrawalFee: currencyToData[merchantCurrency].offrampFee })}</div>
           <div className="lowCostCardBody">
-            <div>Transferring funds to the bank costs near zero:</div>
-            {/*--- rates ---*/}
+            <div>{t("card-2-body-1")}:</div>
+            {/*--- transfer fees ---*/}
             <div className="">
               <div className="w-full flex justify-between items-center">
-                <div>
-                  Flash{"\u279E"}
-                  {currencyToData[merchantCurrency].cex}
-                </div>
+                <div>{t("card-2-body-2", { cex: currencyToData[merchantCurrency].cex })}</div>
                 <div>~0.05 USDC</div>
               </div>
               <div className="w-full flex justify-between items-center">
-                <div>
-                  {currencyToData[merchantCurrency].cex}
-                  {"\u279E"}Bank (via {currencyToData[merchantCurrency].offrampNetwork})
-                </div>
+                <div>{t("card-2-body-3", { cex: currencyToData[merchantCurrency].cex })}</div>
                 <div>{currencyToData[merchantCurrency].offrampFee}</div>
               </div>
             </div>
@@ -55,15 +48,13 @@ const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
         {merchantCurrency != "USD" && (
           <div className="lowCostCard">
             <div className="homeHeader2Font">
-              Best Rates +<br />
-              0% Conversion Fees
+              {t("card-3-header-1")}
+              <br />
+              {t("card-3-header-2", { conversionFee: currencyToData[merchantCurrency].conversionFee })}
             </div>
             <div className="lowCostCardBody">
-              <p>
-                Flash does not profit by giving you or your customers suboptimal USDC-{merchantCurrency} conversion rates. We use conversion rates from Coinbase Exchange, which has
-                the best rates compared to anywhere else.
-              </p>
-              <p>The conversion fee is 0.001%.</p>
+              <p>{t("card-3-body-1", { merchantCurrency: merchantCurrency })}</p>
+              <p>{t("card-3-body-2", { cex: currencyToData[merchantCurrency].cex, conversionFee: currencyToData[merchantCurrency].conversionFee })}</p>
             </div>
           </div>
         )}

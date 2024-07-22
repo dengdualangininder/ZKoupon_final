@@ -1,7 +1,11 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const Footer = () => {
+  //hooks
+  const t = useTranslations("HomePage.Footer");
+
   const onClickLink = (e: any) => {
     document.getElementById(`${e.target.id}El`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -9,15 +13,15 @@ const Footer = () => {
   const navLinks = [
     {
       id: "how",
-      title: "How It Works",
+      title: t("how"),
     },
     {
       id: "advantage",
-      title: "Why Use Flash",
+      title: t("why"),
     },
     {
       id: "learn",
-      title: "Learning Center",
+      title: t("learn"),
     },
   ];
 
@@ -33,12 +37,12 @@ const Footer = () => {
       <div className="homeFontBody w-full flex lg:w-2/3 justify-evenly lg:justify-around">
         {/*--- Company ---*/}
         <div className="flex flex-col space-y-5 text-lg">
-          <div className="footerHeader">Company</div>
-          <div className="footerLink">About Us</div>
+          <div className="footerHeader">{t("company")}</div>
+          <div className="footerLink">{t("about")}</div>
         </div>
         {/*--- Links ---*/}
         <div className="flex flex-col space-y-5 text-lg">
-          <div className="footerHeader">Links</div>
+          <div className="footerHeader">{t("links")}</div>
           {navLinks.map((navLink, index) => (
             <div className="footerLink" id={navLink.id} key={index} onClick={onClickLink}>
               {navLink.title}

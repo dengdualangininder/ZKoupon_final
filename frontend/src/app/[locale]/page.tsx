@@ -2,6 +2,11 @@
 // next
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+// other
+import axios from "axios";
+// constants
+import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
+
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
@@ -10,7 +15,7 @@ import LowCost from "./_components/LowCost";
 import Simple from "./_components/Simple";
 import Why from "./_components/Why";
 import Learn from "./_components/Learn";
-import Contact from "./_components/Contact";
+import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 
 const Home = () => {
@@ -48,6 +53,22 @@ const Home = () => {
       { rootMargin: "-100px" }
     );
     document.querySelectorAll("div[data-show='slide']").forEach((el) => observerSlide.observe(el));
+
+    // set currency
+    const getCurrency = async () => {
+      let merchantCurrencyTemp: string;
+      try {
+        const res = await axios.get("https://api.country.is");
+        const merchantCountry = abb2full[res.data.country] ?? "Any country";
+        merchantCurrencyTemp = countryData[merchantCountry]?.currency ?? "USD";
+        console.log("homePage detected currency:", merchantCurrencyTemp);
+      } catch (err) {
+        merchantCurrencyTemp = "USD";
+        console.log("homePage detect country failed, set to USD. Error:", err);
+      }
+      setMerchantCurrency(merchantCurrencyTemp);
+    };
+    getCurrency();
   }, []);
 
   return (
@@ -92,7 +113,7 @@ const Home = () => {
 
       <div data-show="yes" className="bg-dark1 text-white w-full flex justify-center opacity-0 transition-all duration-1000">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Contact />
+          <Support />
         </div>
       </div>
 

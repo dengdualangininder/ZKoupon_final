@@ -8,9 +8,6 @@ import { useConnect } from "wagmi";
 // components
 import ErrorModalLight from "./modals/ErrorModalLight";
 // images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { SpinningCircleWhiteLarge } from "@/utils/components/SpinningCircleWhite";
 
 const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setPage: any; isUsabilityTest: boolean }) => {
@@ -73,39 +70,6 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
       console.log("failed to login");
     }
     setIsLoggingIn(false);
-  };
-
-  const sendEmail = async () => {
-    console.log("send email clicked");
-    //   const merchantEmail = document.getElementById("forgotModalInput").value;
-    //   if (merchantEmail.includes("@") && merchantEmail.split("@")[1].includes(".")) {
-    //     setModalState("sending");
-    //     await axios
-    //       .post("https://server.lingpay.io/forgot", { merchantEmail: merchantEmail }, { withCredentials: true })
-    //       .then((res) => {
-    //         if (res.data === "sent") {
-    //           console.log("email sent");
-    //           setModalState("sent");
-    //         } else if (res.data === "no user") {
-    //           setErrorModal(true);
-    //           setErrorMsg("Email does not match with any account");
-    //           setModalState("initial");
-    //         } else {
-    //           setErrorModal(true);
-    //           setErrorMsg("Internal server error");
-    //           setModalState("initial");
-    //         }
-    //       })
-    //       .catch((e) => {
-    //         setErrorModal(true);
-    //         setErrorMsg("Server request error");
-    //         setModalState("initial");
-    //       });
-    //   } else {
-    //     setErrorModal(true);
-    //     setErrorMsg("Please enter a valid email");
-    //     setModalState("initial");
-    //   }xs:w-[90%] sm:w-[540px]
   };
 
   return (

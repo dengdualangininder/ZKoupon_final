@@ -277,7 +277,11 @@
   }
 
   .howTooltip {
-    @apply text-base sm:text-sm xl:desktop:text-xs font-normal invisible group-hover:visible absolute px-4 py-3 xl:desktop:px-3 xl:desktop:py-2 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
+    @apply text-base sm:text-sm xl:desktop:text-sm font-normal invisible group-hover:visible absolute px-4 py-3 xl:desktop:px-3 xl:desktop:py-2 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
+  }
+
+  .learnTooltip {
+    @apply text-base sm:text-sm xl:desktop:text-base font-normal invisible group-hover:visible absolute px-4 py-3 xl:desktop:px-3 xl:desktop:py-2 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
   }
 
   .cashoutTooltip {
@@ -285,7 +289,7 @@
   }
 
   .whyCard {
-    @apply w-full xl:desktop:w-[304px] h-full whiteCard;
+    @apply w-full xl:desktop:w-[312px] h-full whiteCard;
   }
 
   .whyCardHeader {
@@ -397,7 +401,7 @@
   }
 
   .howBulletPoints {
-    @apply text-base md:text-lg xl:desktop:text-xs space-y-2;
+    @apply text-base md:text-lg xl:desktop:text-sm space-y-2;
   }
 
   .lowCostCard {
