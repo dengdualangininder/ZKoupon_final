@@ -15,7 +15,7 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string })
         {/*--- header + subheader ---*/}
         <div className="h-[75%] max-h-[800px] flex flex-col justify-center items-center">
           {/*--- header ---*/}
-          <div className="font-extrabold text-center text-4xl portrait:sm:text-7xl landscape:lg:text-7xl leading-snug portrait:sm:leading-tight landscape:lg:leading-tight">
+          <div className="font-extrabold text-center text-4xl portrait:sm:text-[4rem] landscape:lg:text-[4rem] leading-snug portrait:sm:leading-tight landscape:lg:leading-tight">
             {t("title1")}
             <br />
             {t("title2")}
@@ -26,8 +26,8 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string })
           <div className="relative heroSubheaderWidth heroSubheaderFont">
             {t("subtitle1")}
             <span className="group">
-              <span className="link font-semibold">{t("trueP2P")}</span>
-              <div className="invisible group-hover:visible w-full absolute left-0 bottom-[calc(100%+4px)] text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-4 py-3 bg-slate-700 text-white rounded-xl border border-black z-[1]">
+              <span className="linkLight font-semibold">{t("trueP2P")}</span>
+              <div className="w-full left-0 bottom-[calc(100%+4px)] heroTooltip">
                 {t("tooltip1", { merchantCurrency: merchantCurrency })} {merchantCurrency != "USD" && t("tooltip2", { merchantCurrency: merchantCurrency })}
               </div>
             </span>

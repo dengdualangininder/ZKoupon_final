@@ -105,7 +105,7 @@
   }
 
   .text2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-xl;
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl leading-normal portrait:sm:leading-normal landscape:lg:leading-normal landscape:xl:desktop:leading-normal;
   }
 
   .text3xl {
@@ -121,11 +121,11 @@
   }
 
   .textBase2 {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base;
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-base landscape:xl:desktop:leading-normal;
   }
 
   .textLg2 {
-    @apply text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl;
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg;
   }
 
   .textXl2 {
@@ -150,30 +150,6 @@
 
   .checkboxColor {
     @apply border border-slate-400 dark:border-slate-600 bg-light1 dark:bg-dark3 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
-  }
-
-  .xButtonContainer {
-    @apply absolute right-0 top-0 w-[80px] h-[80px] landscape:xl:desktop:w-[52px] landscape:xl:desktop:h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-bl-2xl rounded-tr-2xl cursor-pointer desktop:hover:bg-light3 desktop:hover:dark:bg-dark5 active:bg-light3 active:dark:bg-dark5;
-  }
-
-  .xButtonContainerNotHidden {
-    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
-  }
-
-  .xButtonContainerSmall {
-    @apply w-[52px] h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center portrait:sm:border landscape:lg:border border-black rounded-full;
-  }
-
-  .xButton {
-    @apply text-4xl font-medium landscape:xl:desktop:text-2xl text-lightText1 dark:text-darkText1;
-  }
-
-  .xButtonBanner {
-    @apply p-2 mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
-  }
-
-  .mobileBack {
-    @apply absolute left-3 top-[18px] leading-none text-2xl font-medium p-2 portrait:sm:hidden landscape:lg:hidden;
   }
 
   .placeholderColor {
@@ -201,6 +177,10 @@
   }
 
   .link {
+    @apply cursor-pointer text-blue-500 dark:text-blue-400 xs:hover:underline active:underline;
+  }
+
+  .linkLight {
     @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
   }
 
@@ -209,11 +189,7 @@
   }
 
   .homeHeaderFont {
-    @apply text-[40px] sm:text-6xl font-medium leading-normal sm:leading-tight;
-  }
-
-  .homeHeader2Font {
-    @apply text-2xl font-semibold leading-tight;
+    @apply text-[2.75rem] sm:text-6xl text-center portrait:sm:text-start landscape:lg:text-start font-medium leading-normal sm:leading-tight;
   }
 
   .homeBodyFont {
@@ -225,11 +201,11 @@
   }
 
   .homeSectionSize {
-    @apply w-[360px] sm:w-[590px] xl:w-[1200px] xl:desktop:w-[77%] py-[100px];
+    @apply w-[356px] sm:w-[590px] xl:w-[1200px] xl:desktop:w-[77%] py-[100px];
   }
 
   .whiteCard {
-    @apply px-4 py-6 sm:p-6 bg-white rounded-3xl shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+    @apply px-[16px] py-[24px] sm:p-[24px] bg-white rounded-[20px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
   }
 
   .navbarButtonHeight {
@@ -241,7 +217,7 @@
   }
 
   .heroSubheaderWidth {
-    @apply w-[98%] portrait:max-w-[372px] landscape:max-w-[620px] portrait:sm:max-w-[744px] landscape:lg:max-w-[744px] landscape:xl:desktop:max-w-[716px];
+    @apply w-[97%] portrait:max-w-[372px] landscape:max-w-[620px] portrait:sm:max-w-[744px] landscape:lg:max-w-[744px] landscape:xl:desktop:max-w-[716px];
   }
 
   .heroSubheaderFont {
@@ -264,28 +240,20 @@
     @apply h-[38px] pointer-events-none;
   }
 
-  .tooltip {
-    @apply invisible group-hover:visible absolute px-3 py-2 portrait:sm:px-5 landscape:lg:px-5 landscape:xl:desktop:px-3 portrait:sm:py-3 landscape:lg:py-3 landscape:xl:desktop:py-2 text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-sm font-normal text-white bg-gray-700 rounded-lg z-[1];
-  }
-
   .copiedText {
     @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm;
   }
 
-  .introTooltip {
-    @apply text-lg font-normal invisible group-hover:visible absolute px-4 py-3 bg-gray-800 text-white rounded-lg z-[1];
+  .tooltip {
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg xl:desktop:px-[12px] xl:desktop:py-[8px] bg-slate-700 text-white border-slate-500 border z-[1];
   }
 
-  .howTooltip {
-    @apply text-base sm:text-sm xl:desktop:text-sm font-normal invisible group-hover:visible absolute px-4 py-3 xl:desktop:px-3 xl:desktop:py-2 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
-  }
-
-  .learnTooltip {
-    @apply text-base sm:text-sm xl:desktop:text-base font-normal invisible group-hover:visible absolute px-4 py-3 xl:desktop:px-3 xl:desktop:py-2 bg-slate-700 text-white rounded-lg border-slate-500 border z-[1];
+  .heroTooltip {
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg textLg bg-slate-700 text-white border border-slate-500 z-[1];
   }
 
   .cashoutTooltip {
-    @apply invisible group-hover:visible absolute px-3 py-2 leading-snug text-white bg-gray-700 rounded-lg z-[1];
+    @apply invisible group-hover:visible absolute px-[12px] py-[8px] rounded-lg text-base landscape:xl:desktop:text-sm leading-snug bg-slate-700 text-white border border-slate-500 z-[1];
   }
 
   .whyCard {
@@ -324,46 +292,6 @@
     @apply font-semibold text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg;
   }
 
-  .modalContainer {
-    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
-  }
-
-  .modalHeaderContainer {
-    @apply flex justify-between items-center pt-3 pb-2 border-b-2 mx-2 sm:mx-3 md:mx-4 lg:mx-5;
-  }
-
-  .modalHeaderText {
-    @apply text-2xl leading-tight sm:text-2xl sm:ml-2 font-bold w-full text-center;
-  }
-
-  .modalContentContainer {
-    @apply mt-2 sm:mt-4 sm:mx-4 text-lg leading-snug md:text-base md:leading-snug px-2 sm:px-3 md:px-4 lg:px-5;
-  }
-
-  .modalNumber {
-    @apply mr-2 md:mr-3;
-  }
-
-  .modalCloseButton {
-    @apply text-red-500 font-bold px-3 py-1.5 text-lg rounded-md transition-all duration-300 hover:bg-gray-300;
-  }
-
-  .modalBlackout {
-    @apply opacity-[70%] dark:opacity-[88%] fixed inset-0 z-10 bg-black backdrop-blur-xl;
-  }
-
-  .modalContent {
-    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-6 portrait:sm:space-y-16 landscape:lg:space-y-16;
-  }
-
-  .modalContent2 {
-    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-4;
-  }
-
-  .modalButtonContainer {
-    @apply w-full pb-16 space-y-8;
-  }
-
   .savingsCountry {
     @apply mt-3 text-gray-600 font-bold text-base leading-none;
   }
@@ -374,18 +302,6 @@
 
   .savingsConversion {
     @apply leading-tight text-[10px] text-gray-950;
-  }
-
-  .advantageHeader {
-    @apply font-bold text-lg sm:text-base;
-  }
-
-  .advantageLearnWord {
-    @apply text-blue-300 lg:hover:text-blue-500 active:text-blue-500 cursor-pointer font-normal ml-2 whitespace-nowrap text-base sm:text-sm;
-  }
-
-  .advantageBody {
-    @apply leading-tight text-lg sm:text-base text-gray-300 font-normal;
   }
 
   .howNumber {
@@ -429,11 +345,11 @@
   }
 
   .settingsWidth {
-    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] landscape:xl:desktop:w-[480px];
+    @apply px-[12px] w-full portrait:sm:w-[600px] landscape:lg:w-[600px] landscape:xl:desktop:w-[480px];
   }
 
   .settingsTitle {
-    @apply mt-2 h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] landscape:xl:h-[90px] text2xl font-bold flex items-center justify-center flex-none text-blue-700 dark:text-white;
+    @apply mt-[8px] h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] landscape:xl:h-[90px] text2xl font-bold flex items-center justify-center flex-none text-blue-700 dark:text-white;
   }
 
   .settingsField {
@@ -441,27 +357,39 @@
   }
 
   .settingsLabelFont {
-    @apply flex-none flex items-center tracking-tight mr-3 text-slate-500;
+    @apply flex-none flex items-center tracking-tight mr-3 text-slate-500 dark:text-slate-400;
   }
 
   .settingsLabelFontSupport {
     @apply flex-none flex items-center tracking-tight mr-3;
   }
 
-  .settingsValueFont {
-    @apply settingsFont w-full h-full px-3 text-end cursor-pointer focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic placeholder:pr-[2px] focus:placeholder:text-transparent;
+  .settingsInput {
+    @apply w-full h-full px-[12px] py-[4px] text-end cursor-pointer focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-500 placeholder:font-normal placeholder:italic placeholder:pr-[2px] focus:placeholder:text-transparent;
   }
 
-  .settingsSelectFont {
-    @apply settingsFont scrollbar h-full px-3 bg-none [text-align-last:right] cursor-pointer rounded-md outline-none bg-transparent focus:bg-white dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms];
+  .settingsSelect {
+    @apply scrollbar h-full px-[12px] py-[4px] [text-align-last:right] cursor-pointer rounded-md outline-none bg-none bg-transparent focus:bg-white dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms];
+  }
+
+  .settingsInputFont {
+    @apply font-medium text-[16px] portrait:sm:text-[24px] landscape:lg:text-[24px] landscape:xl:desktop:text-[16px];
+  }
+
+  .settingsInputFontRem {
+    @apply font-medium text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-base;
+  }
+
+  .settingsInputFontSmall {
+    @apply portrait:text-[13px] landscape:text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-1 sm:px-3;
   }
 
   .settingsRightAngle {
-    @apply peer-focus:hidden pt-0.5 text-lg desktop:peer-hover:text-slate-500 peer-active:text-slate-500 transition-all duration-[300ms];
+    @apply peer-focus:hidden pt-[2px] text-[18px] desktop:peer-hover:text-slate-500 peer-active:text-slate-500 transition-all duration-[300ms];
   }
 
   .settingsInfo {
-    @apply ml-2 text-sm portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm mt-[2px] text-slate-500 rounded-full cursor-pointer desktop:hover:brightness-[1.2] active:brightness-[1.2] z-[1];
+    @apply flex-none inline ml-[6px] w-[20px] h-[20px] text-blue-500 dark:text-darkButton cursor-pointer desktop:hover:brightness-[1.2] active:brightness-[1.2];
   }
 
   .info {
@@ -472,82 +400,142 @@
     @apply border border-gray-500 rounded-[4px] outline-gray-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
   }
 
-  .loginInputFont {
-    @apply textBase landscape:xl:desktop:text-base w-full font-medium px-1.5 py-2 landscape:xl:desktop:h-[44px] xs:py-3 rounded-md bg-white outline-none border-2 border-gray-200 focus:border-blue-500 transition-[all] duration-[500ms];
-  }
-
   .menuText {
     @apply mt-1 text-xs portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
   }
 
+  /* MODAL CSS */
+
   .modalBase {
-    @apply flex flex-col items-center rounded-2xl fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+    @apply flex flex-col items-center rounded-[16px] fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
   }
 
   .modalFullBase {
-    @apply pb-6 portrait:sm:rounded-2xl landscape:lg:rounded-2xl flex flex-col items-center absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+    @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
   }
 
   .modalColor {
-    @apply bg-white dark:bg-dark3 border-2 border-light5 dark:border-dark4;
+    @apply bg-light2 dark:bg-dark4 border-2 border-light5 dark:border-dark4;
   }
 
   .modalFullColor {
-    @apply bg-white dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
+    @apply bg-white dark:bg-dark4 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
+  }
+
+  /* specific modal sizes (smallest to largest) and fonts */
+
+  .errorModalSize {
+    @apply w-[350px] portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[440px] max-h-[90%];
+  }
+
+  .errorModalFont {
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
+  }
+
+  .modalSize {
+    @apply w-[93%] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[370px] max-h-[90%];
+  }
+
+  .cbIntroModalSize {
+    @apply w-[93%] portrait:sm:w-[450px] landscape:lg:w-[450px] landscape:xl:desktop:w-[350px] max-h-[90%];
+  }
+
+  .cashoutIntroModalSize {
+    @apply w-[93%] xs:w-[400px] sm:w-[480px] landscape:xl:desktop:w-[420px] h-[620px] portrait:sm:h-[680px] landscape:lg:h-[680px] landscape:xl:desktop:h-[620px] max-h-[90%];
+  }
+
+  .settingsInfoModalSize {
+    @apply w-[95%] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] max-h-[93%];
+  }
+
+  .cashbackModalSize {
+    @apply w-[95%] portrait:sm:w-[580px] landscape:lg:w-[580px] landscape:xl:desktop:w-[560px] max-h-[93%];
+  }
+
+  .instructionsModalSize {
+    @apply w-full portrait:sm:w-[590px] landscape:lg:w-[590px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[650px];
+  }
+
+  .detailsModalSize {
+    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[740px] landscape:lg:h-[95%] landscape:xl:desktop:h-[600px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[95%];
+  }
+
+  .transferModalSize {
+    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+  }
+
+  .emailModalSize {
+    @apply w-full portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[500px] landscape:lg:h-[500px] landscape:xl:desktop:h-[420px] portrait:sm:max-h-[95%] landscape:lg:max-h-[95%];
   }
 
   /* specific modals */
 
   .modal {
-    @apply modalBase modalColor w-[350px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[370px] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-6 z-[20];
+    @apply modalBase modalColor modalSize modalYpadding;
   }
 
   .errorModal {
-    @apply modalBase modalColor portrait:w-[350px] landscape:w-[420px] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[350px] max-h-[90%] landscape:xl:desktop:space-y-12 px-6 portrait:sm:px-8 landscape:lg:px-8;
+    @apply modalBase modalColor errorModalSize modalYpadding;
   }
 
   .settingsInfoModal {
-    @apply modalBase modalColor portrait:w-[94%] landscape:w-[380px] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] landscape:h-[95%] landscape:lg:h-auto pb-10 px-4 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8;
+    @apply modalBase modalColor settingsInfoModalSize modalYpadding;
   }
 
-  .faqModal {
-    @apply w-full portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[80%] portrait:sm:max-h-[850px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:lg:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 pb-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl bg-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  .cbIntroModal {
+    @apply modalBase modalColor cbIntroModalSize modalYpadding;
+  }
+
+  .cashbackModal {
+    @apply modalBase modalColor cashbackModalSize modalYpadding;
   }
 
   .cashoutIntroModal {
-    @apply modalBase modalColor w-[350px] portrait:sm:w-[410px] landscape:lg:w-[410px] h-[560px] portrait:sm:h-[640px] landscape:lg:h-[640px] landscape:xl:desktop:h-[560px];
+    @apply modalBase modalColor cashoutIntroModalSize modalYpadding;
+  }
+
+  .instructionsModal {
+    @apply modalFullBase modalFullColor instructionsModalSize pb-[24px];
   }
 
   .detailsModal {
-    @apply modalFullBase modalFullColor w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+    @apply modalFullBase modalFullColor detailsModalSize pb-[24px];
   }
 
   .transferModal {
-    @apply modalFullBase modalFullColor dark:bg-dark2 w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+    @apply modalFullBase modalFullColor dark:bg-dark2 transferModalSize pb-[24px];
+  }
+
+  .emailModal {
+    @apply modalFullBase modalFullColor emailModalSize pb-[24px];
+  }
+
+  .modalYpadding {
+    @apply py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] landscape:xl:desktop:py-[24px];
+  }
+
+  .modalXpadding {
+    @apply px-[12px] portrait:sm:px-[40px] landscape:lg:px-[40px] landscape:xl:desktop:px-[32px];
+  }
+
+  .modalXpaddingLg {
+    @apply px-[16px] portrait:sm:px-[40px] landscape:lg:px-[40px] landscape:xl:desktop:px-[32px];
   }
 
   .transferModalButtonContainer {
     @apply flex-1 min-h-[120px] landscape:xl:desktop:min-h-[90px] w-full flex items-center;
   }
 
-  .instructionsModal {
-    @apply modalFullBase modalFullColor w-full portrait:sm:w-[590px] landscape:lg:w-[590px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
-  }
-
   .detailsModalHeader {
-    @apply flex-none my-[22px] portrait:sm:my-8 landscape:lg:my-8 landscape:xl:desktop:my-6 w-[72%] text-center text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl font-semibold whitespace-nowrap;
+    @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[24px] landscape:xl:desktop:py-[16px];
   }
 
-  .transferSuccessModalHeaderContainer {
-    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 w-full h-[50px] landscape:xl:desktop:h-[60px] relative;
+  .sidebarModalHeader {
+    @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[24px];
   }
 
-  .detailsLabelText {
-    @apply text-lg leading-snug portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-base landscape:xl:desktop:leading-none font-medium dark:font-semibold text-dualGray;
-  }
-
-  .detailsValueText {
-    @apply text-xl leading-snug portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:xl:text-2xl landscape:xl:desktop:text-base text-lightText1 dark:text-darkText1;
+  .modalHeaderFont {
+    @apply text-center text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl font-semibold;
   }
 
   .modalHeaderXl {
@@ -562,52 +550,132 @@
     @apply text-2xl font-semibold;
   }
 
+  .modalContentContainer {
+    @apply cursor-pointer;
+  }
+
+  .transferSuccessModalHeaderContainer {
+    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 w-full h-[50px] landscape:xl:desktop:h-[60px] relative;
+  }
+
+  .modalContainer {
+    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-3xl border border-gray-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
+  }
+
+  .modalHeaderContainer {
+    @apply flex justify-between items-center pt-3 pb-2 border-b-2 mx-2 sm:mx-3 md:mx-4 lg:mx-5;
+  }
+
+  .modalHeaderText {
+    @apply text-2xl leading-tight sm:text-2xl sm:ml-2 font-bold w-full text-center;
+  }
+
+  .modalContentContainer {
+    @apply mt-2 sm:mt-4 sm:mx-4 text-lg leading-snug md:text-base md:leading-snug px-2 sm:px-3 md:px-4 lg:px-5;
+  }
+
+  .modalNumber {
+    @apply mr-2 md:mr-3;
+  }
+
+  .modalCloseButton {
+    @apply text-red-500 font-bold px-3 py-1.5 text-lg rounded-md transition-all duration-300 hover:bg-gray-300;
+  }
+
+  .modalBlackout {
+    @apply opacity-[70%] dark:opacity-[88%] fixed inset-0 bg-black backdrop-blur-xl z-[10];
+  }
+
+  .modalContent {
+    @apply text-lg leading-normal;
+  }
+
+  .modalContent2 {
+    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-4;
+  }
+
+  .cashbackModalTextContainer {
+    @apply textLg w-full flex flex-col space-y-[16px];
+  }
+
+  .modalButtonContainer {
+    @apply pt-[36px] pb-[20px] w-full flex flex-col items-center;
+  }
+
+  .xButtonContainer {
+    @apply absolute right-0 top-0 w-[80px] h-[80px] landscape:xl:desktop:w-[52px] landscape:xl:desktop:h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-bl-[14px] rounded-tr-[14px] cursor-pointer desktop:hover:bg-light3 desktop:hover:dark:bg-dark5 active:bg-light3 active:dark:bg-dark5;
+  }
+
+  .xButtonContainerNotHidden {
+    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-dualGray desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
+  }
+
+  .xButtonContainerSmall {
+    @apply w-[52px] h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center portrait:sm:border landscape:lg:border border-black rounded-full;
+  }
+
+  .xButton {
+    @apply text-[36px] font-medium landscape:xl:desktop:text-[24px] text-lightText1 dark:text-darkText1;
+  }
+
+  .xButtonBanner {
+    @apply p-2 mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
+  }
+
+  .mobileBack {
+    @apply absolute left-[12px] top-[18px] leading-none text-[24px] font-medium p-[8px] portrait:sm:hidden landscape:lg:hidden;
+  }
+
+  .detailsLabelText {
+    @apply text-xl leading-snug portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base text-slate-500;
+  }
+
+  .detailsValueText {
+    @apply text-[20px] leading-snug portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[16px];
+  }
+
   .searchModalCategoryContainer {
     @apply h-[25%] flex items-center justify-between border-b border-slate-300 dark:border-dark6;
   }
 
   .buttonPrimary {
-    @apply buttonPrimaryColor flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
+    @apply buttonPrimaryColor flex-none w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
   }
 
-  .buttonBlack {
-    @apply text-white bg-black transition-all duration-[300ms] desktop:hover:bg-dark5 active:bg-dark5 flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
-  }
-
-  .buttonLightColor {
-    @apply text-white bg-gradient-to-r from-buttonLight2 to-buttonLight1 border-buttonLight1 desktop:hover:brightness-[1.2] active:brightness-[1.2];
-  }
-
-  .buttonSecondary {
-    @apply buttonSecondaryColor flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
+  .buttonPrimaryLight {
+    @apply buttonPrimaryColorLight flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
   }
 
   .buttonPrimaryColor {
     @apply text-white bg-lightButton dark:bg-darkButton border-lightButton dark:border-darkButton desktop:hover:bg-lightButtonHover active:bg-lightButtonHover dark:desktop:hover:bg-darkButtonHover dark:active:bg-darkButtonHover transition-all duration-[300ms];
   }
 
+  .buttonPrimaryColorLight {
+    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-lightButtonHover active:bg-lightButtonHover transition-all duration-[300ms];
+  }
+
+  .buttonSecondary {
+    @apply buttonSecondaryColor textLg flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] font-semibold border-2 rounded-md;
+  }
+
   .buttonSecondaryColor {
-    @apply bg-transparent text-slate-500 border-slate-500 desktop:hover:bg-light3 active:bg-light4 dark:desktop:hover:bg-dark4 dark:active:bg-dark6 transition-all duration-[300ms];
+    @apply bg-transparent text-slate-500 border-slate-500 active:text-slate-400 desktop:hover:text-slate-400 transition-all duration-[300ms];
   }
 
   .buttonStart {
     @apply w-[240px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:desktop:xl:h-[48px] textLg font-semibold tracking-wide rounded-md bg-black text-white desktop:hover:opacity-80 active:opacity-80 animate-fadeInAnimation;
   }
 
-  .introWidth {
-    @apply portrait:w-[88%] landscape:w-[600px] portrait:sm:w-[590px] landscape:lg:w-[630px] portrait:lg:w-[630px] landscape:lg:desktop:w-[540px];
-  }
-
-  .introWidthHowTo {
-    @apply w-[88%] landscape:lg:w-[630px] portrait:lg:w-[630px];
-  }
-
   .introLabelFont {
     @apply font-medium text-xl;
   }
 
+  .loginInputFont {
+    @apply w-full h-[56px] landscape:xl:desktop:h-[44px] px-[8px] text-[18px] landscape:xl:desktop:text-[16px] font-medium rounded-md bg-white outline-none border-2 border-gray-200 focus:border-blue-500 transition-[all] duration-[500ms];
+  }
+
   .introInputFont {
-    @apply mt-1 text-xl w-full max-w-[480px] bg-white border border-gray-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic;
+    @apply mt-1 w-full max-w-[480px] h-[52px] landscape:xl:desktop:h-[48px] px-[12px] text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] bg-white border border-gray-400 focus:border-blue-500 outline-none transition-colors duration-500 rounded-[4px] placeholder:italic;
   }
 
   .introInputFontSmall {
@@ -627,68 +695,47 @@
   }
 
   .introButtonContainer {
-    @apply flex-none pt-4 w-[82%] landscape:lg:w-[630px] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between;
+    @apply w-full px-2 pt-[32px] pb-[44px] flex justify-between flex-none;
   }
 
-  .introButtonContainer2 {
-    @apply w-full px-2 pt-[16px] pb-[56px] flex justify-between flex-none;
+  .introHeaderFont {
+    @apply text-2xl font-bold text-center;
   }
 
   .introNumber {
     @apply flex-none mr-2 w-[28px] h-[28px] bg-blue-500 rounded-full flex justify-center items-center font-bold text-base text-white;
   }
 
+  .introButtonBlack {
+    @apply w-full bg-black text-white border-2 border-black text-base font-bold py-[16px] rounded-full desktop:hover:bg-slate-800;
+  }
+
+  .introButtonWhite {
+    @apply w-full bg-transparent text-slate-500 border-2 border-slate-500 text-base font-bold py-[16px] rounded-full desktop:hover:opacity-70;
+  }
+
   .introNext {
-    @apply mr-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-semibold text-white bg-black border-2 border-black active:opacity-80 lg:hover:opacity-80 rounded-md;
+    @apply mr-1 w-[104px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-semibold text-white bg-black border-2 border-black active:opacity-80 lg:hover:opacity-80 rounded-md;
   }
 
   .introBack {
-    @apply ml-1 w-[110px] h-[60px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-semibold text-dualGray border-2 border-dualGray active:brightness-[1.2] lg:hover:brightness-[1.2] rounded-[4px];
+    @apply ml-1 w-[104px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-semibold text-slate-400 border-2 border-transparent active:brightness-[1.2] lg:hover:brightness-[1.2] rounded-[4px];
+  }
+
+  .cashoutIntroButtonContainer {
+    @apply flex-none px-[12px] w-full pt-[32px] pb-[8px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between items-end;
   }
 
   .cashoutIntroNext {
-    @apply buttonPrimaryColor mr-1 w-[110px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-[4px];
+    @apply buttonPrimaryColor w-[100px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[90px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-md;
   }
 
   .cashoutIntroBack {
-    @apply buttonSecondaryColor mr-1 w-[110px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-[4px];
-  }
-
-  /* ----UNUSED---- */
-  .startHeader {
-    @apply w-[calc(100%-55px)] xs:w-[250px] flex-none sm:w-auto sm:flex text-2xl leading-tight font-bold;
-  }
-
-  .startStepChip {
-    @apply text-lg sm:text-2xl px-3 py-0.5 mr-2 md:mr-3 font-bold text-white bg-orange-500 rounded-md;
-  }
-
-  .startStart {
-    @apply sm:ml-4 md:ml-8 text-lg bg-blue-500 hover:bg-blue-700 cursor-pointer rounded-md font-bold text-white px-4 py-2;
-  }
-
-  .startTime {
-    @apply absolute md:static md:ml-1 left-[3px] sm:left-[20px] text-center md:text-start w-[68px] bottom-[-15px] text-sm leading-none md:text-base md:leading-none;
-  }
-
-  .startStartNow {
-    @apply bg-blue-500 hover:bg-blue-700 py-1.5 px-3 rounded-md text-white font-bold cursor-pointer;
-  }
-
-  .qrPageIconContainer {
-    @apply absolute w-[60px] h-[60px] rounded-full portrait:sm:border-2 landscape:lg:border-2 border-white flex items-center justify-center cursor-pointer desktop:hover:opacity-80 active:opacity-80;
-  }
-
-  .sidebar {
-    @apply absolute left-0 w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen flex flex-col items-center overflow-y-auto bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600 z-[20] transition-all duration-500;
-  }
-
-  .sidebarBodyContainer {
-    @apply w-[85%] flex flex-col items-center;
+    @apply buttonSecondaryColor w-[100px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[90px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-md;
   }
 
   .cashoutContainer {
-    @apply w-full min-h-[210px] px-7 portrait:sm:px-7 landscape:lg:px-7 portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[220px] py-5 portrait:sm:py-8 landscape:lg:py-8 landscape:xl:desktop:py-6 flex flex-col rounded-3xl bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+    @apply w-full min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[220px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] landscape:xl:desktop:py-[24px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {
@@ -696,11 +743,11 @@
   }
 
   .cashoutBalanceContainer {
-    @apply flex-1 flex flex-col mt-2 portrait:sm:mt-6 landscape:lg:mt-6 landscape:xl:mt-4;
+    @apply flex-1 flex flex-col mt-[8px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] landscape:xl:mt-[16px];
   }
 
   .cashoutBalance {
-    @apply text3xl font-medium flex items-center;
+    @apply text-[30px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px] font-normal flex items-center;
   }
 
   .cashoutMoreOptionsContainer {
@@ -761,6 +808,64 @@
 
   .transferArrowArrow {
     @apply text-[34px] landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1;
+  }
+
+  .sidebar {
+    @apply absolute left-0 w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen flex flex-col items-center overflow-y-auto bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600 z-[20] transition-all duration-500;
+  }
+
+  .sidebarBodyContainer {
+    @apply w-[85%] flex flex-col items-center;
+  }
+
+  .qrCodeModalIconContainer {
+    @apply absolute w-[60px] h-[60px] rounded-full portrait:sm:border-2 landscape:lg:border-2 border-white flex items-center justify-center cursor-pointer desktop:hover:opacity-80 active:opacity-80;
+  }
+
+  /* ----UNUSED---- */
+
+  .faqModal {
+    @apply w-full portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[80%] portrait:sm:max-h-[850px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:lg:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 pb-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl bg-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
+  }
+
+  .advantageHeader {
+    @apply font-bold text-lg sm:text-base;
+  }
+
+  .advantageLearnWord {
+    @apply text-blue-300 lg:hover:text-blue-500 active:text-blue-500 cursor-pointer font-normal ml-2 whitespace-nowrap text-base sm:text-sm;
+  }
+
+  .advantageBody {
+    @apply leading-tight text-lg sm:text-base text-gray-300 font-normal;
+  }
+
+  .introWidth {
+    @apply portrait:w-[88%] landscape:w-[600px] portrait:sm:w-[590px] landscape:lg:w-[630px] portrait:lg:w-[630px] landscape:lg:desktop:w-[540px];
+  }
+
+  .introWidthHowTo {
+    @apply w-[88%] landscape:lg:w-[630px] portrait:lg:w-[630px];
+  }
+
+  .startHeader {
+    @apply w-[calc(100%-55px)] xs:w-[250px] flex-none sm:w-auto sm:flex text-2xl leading-tight font-bold;
+  }
+
+  .startStepChip {
+    @apply text-lg sm:text-2xl px-3 py-0.5 mr-2 md:mr-3 font-bold text-white bg-orange-500 rounded-md;
+  }
+
+  .startStart {
+    @apply sm:ml-4 md:ml-8 text-lg bg-blue-500 hover:bg-blue-700 cursor-pointer rounded-md font-bold text-white px-4 py-2;
+  }
+
+  .startTime {
+    @apply absolute md:static md:ml-1 left-[3px] sm:left-[20px] text-center md:text-start w-[68px] bottom-[-15px] text-sm leading-none md:text-base md:leading-none;
+  }
+
+  .startStartNow {
+    @apply bg-blue-500 hover:bg-blue-700 py-1.5 px-3 rounded-md text-white font-bold cursor-pointer;
   }
 
   .faqContainer {

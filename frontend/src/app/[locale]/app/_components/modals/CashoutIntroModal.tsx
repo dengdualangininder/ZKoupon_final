@@ -1,12 +1,15 @@
 // nextjs
 import { useState } from "react";
-import Image from "next/image";
+// other
+import { useTranslations } from "next-intl";
+// components
+import TradeMAXModal from "./exchanges/TradeMAXModal";
 // constants
-import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
+import { currency2symbol } from "@/utils/constants";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
@@ -14,111 +17,158 @@ const CashoutIntroModal = ({
   paymentSettingsState,
   cashoutSettingsState,
   setCashoutIntroModal,
+  setTradeMAXModal,
 }: {
-  paymentSettingsState: PaymentSettings | null;
-  cashoutSettingsState: CashoutSettings | null;
+  paymentSettingsState: PaymentSettings;
+  cashoutSettingsState: CashoutSettings;
   setCashoutIntroModal: any;
+  setTradeMAXModal: any;
 }) => {
   const [step, setStep] = useState("one");
+
+  const t = useTranslations("App.CashoutIntroModal");
+  const tcommon = useTranslations("Common");
+
   return (
     <div className="">
       <div className="cashoutIntroModal">
-        {/*---close---*/}
-        <div className="hidden w-full h-[50px] relative">
-          <div onClick={() => setCashoutIntroModal(false)} className="absolute top-2 right-3 p-2 xButton">
-            &#10005;
+        <div className="w-full h-full modalXpadding overflow-y-auto flex flex-col">
+          {/*---title---*/}
+          <div className="text2xl py-[16px] desktop:py-[12px] font-semibold text-center">{t("title")}</div>
+          {/*---step one & step two ---*/}
+          <div className="w-full flex-1">
+            {step == "one" && (
+              <div className="h-full flex flex-col">
+                {/*--- image + text ---*/}
+                <div className="flex-1 flex flex-col items-center">
+                  {/*--- image container ---*/}
+                  <div className="w-full h-[210px] portrait:sm:h-[260px] landscape:lg:h-[260px] landscape:xl:desktop:h-[220px] relative">
+                    {/*--- image ---*/}
+                    <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
+                      <div className="cashoutHeader h-[36px] flex items-center">Flash {tcommon("account")}</div>
+                      <div className="cashoutBalanceContainer">
+                        <div className="cashoutBalance">
+                          <div>
+                            {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
+                            <span>123.45</span>
+                          </div>
+                          <div className="cashoutArrowContainer">
+                            <FontAwesomeIcon icon={faAngleDown} className="cashoutArrow" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="cashoutButtonContainer relative">
+                        <div className="absolute w-[calc(180px+24px)] portrait:sm:w-[calc(224px+24px)] landscape:lg:w-[calc(224px+24px)] landscape:xl:desktop:w-[calc(200px+24px)] h-[calc(100%+28px)] border-4 border-red-500 z-[2] bottom-[-14px] right-[-16px]"></div>
+                        <button className="cashoutButton">{cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer")}</button>
+                      </div>
+                    </div>
+                  </div>
+                  {/*---text---*/}
+                  <div className="pt-[32px] desktop:pt-[16px] textLg2">
+                    <div>
+                      <span className="font-semibold dark:font-bold">{t("step-1-1")} :</span>
+                    </div>
+                    <div className="mt-2">
+                      {t.rich("step-1-2", {
+                        span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+                        span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+                        cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : "cryptocurrency exchange",
+                        transferToCEX: cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer"),
+                      })}
+                    </div>
+                  </div>
+                </div>
+                {/*--- buttons ---*/}
+                <div className="cashoutIntroButtonContainer justify-end">
+                  <button className="cashoutIntroNext" onClick={() => setStep("two")}>
+                    {tcommon("next")} &nbsp;&#10095;
+                  </button>
+                </div>
+              </div>
+            )}
+            {step == "two" && cashoutSettingsState.cex == "Coinbase" && paymentSettingsState.merchantCountry != "Other" && (
+              <div className="h-full flex flex-col">
+                {/*--- image + text ---*/}
+                <div className="flex-1 flex flex-col items-center">
+                  {/*--- image container ---*/}
+                  <div className="w-full h-[210px] portrait:sm:h-[260px] landscape:lg:h-[260px] landscape:xl:desktop:h-[220px] relative">
+                    {/*--- image ---*/}
+                    <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
+                      <div className="cashoutHeader h-[36px] flex items-center">Coinbase {tcommon("account")}</div>
+                      <div className="cashoutBalanceContainer">
+                        <div className="cashoutBalance">
+                          <div>
+                            {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
+                            <span>123.45</span>
+                          </div>
+                          <div className="cashoutArrowContainer">
+                            <FontAwesomeIcon icon={faAngleDown} className="cashoutArrow" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="cashoutButtonContainer relative">
+                        <div className="absolute w-[calc(180px+24px)] portrait:sm:w-[calc(224px+24px)] landscape:lg:w-[calc(224px+24px)] landscape:xl:desktop:w-[calc(200px+24px)] h-[calc(100%+28px)] border-4 border-red-500 z-[2] bottom-[-14px] right-[-16px]"></div>
+                        <button className="cashoutButton">{tcommon("transferToBank")}</button>
+                      </div>
+                    </div>
+                  </div>
+                  {/*---text---*/}
+                  <div className="pt-[32px] desktop:pt-[16px] textLg2">
+                    <div>
+                      <span className="font-semibold dark:font-bold">{t("step-2-1")} :</span>
+                    </div>
+                    <div className="mt-2">
+                      {t.rich("step-2-2cb", {
+                        span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+                        span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+                        transferToBank: tcommon("transferToBank"),
+                      })}
+                    </div>
+                  </div>
+                </div>
+                {/*--- buttons ---*/}
+                <div className="cashoutIntroButtonContainer">
+                  <button className="cashoutIntroBack" onClick={() => setStep("one")}>
+                    &#10094;&nbsp; {tcommon("back")}
+                  </button>
+                  <button className="cashoutIntroNext" onClick={() => setCashoutIntroModal(false)}>
+                    {tcommon("done")}
+                  </button>
+                </div>
+              </div>
+            )}
+            {step == "two" && (cashoutSettingsState.cex != "Coinbase" || paymentSettingsState.merchantCountry == "Other") && (
+              <div className="w-full h-full flex flex-col">
+                {/*--- content ---*/}
+                <div className="textLg2 flex-1 mt-[60px] flex flex-col items-center">
+                  <div className="w-full font-semibold dark:font-bold">{t("step-2-1")} :</div>
+                  <div className="mt-2">
+                    {t("step-2-2", {
+                      cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : "cryptocurrency exchange",
+                      merchantCurrency: paymentSettingsState.merchantCurrency,
+                    })}
+                  </div>
+                  {cashoutSettingsState.cex == "MAX" && (
+                    <div className="w-full mt-4 link" onClick={() => setTradeMAXModal(true)}>
+                      {t("step-2-max")}
+                    </div>
+                  )}
+                </div>
+                {/*--- buttons ---*/}
+                <div className="w-full cashoutIntroButtonContainer">
+                  <button className="cashoutIntroBack" onClick={() => setStep("one")}>
+                    &#10094;&nbsp; {tcommon("back")}
+                  </button>
+                  <button className="cashoutIntroNext" onClick={() => setCashoutIntroModal(false)}>
+                    {tcommon("done")}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        {/*---title---*/}
-        <div className="pt-8 pb-4 font-semibold text-center textXl">How To Cash Out</div>
-        {/*---step one & step two ---*/}
-        <div className="flex-1">
-          {step == "one" && (
-            <div className="h-full flex flex-col">
-              {/*--- image + text ---*/}
-              <div className="flex-1 flex flex-col items-center">
-                {/*--- image container ---*/}
-                <div className="w-full h-[210px] portrait:sm:h-[260px] landscape:lg:h-[260px] landscape:xl:desktop:h-[220px] relative">
-                  {/*--- image ---*/}
-                  <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
-                    <div className="cashoutHeader h-[36px] flex items-center">Flash Account</div>
-                    <div className="cashoutBalanceContainer">
-                      <div className="cashoutBalance">
-                        <div>
-                          {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                          <span>123.45</span>
-                        </div>
-                        <div className="cashoutArrowContainer">
-                          <FontAwesomeIcon icon={faAngleDown} className="cashoutArrow" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="cashoutButtonContainer relative">
-                      <div className="absolute w-[calc(180px+24px)] portrait:sm:w-[calc(224px+24px)] landscape:lg:w-[calc(224px+24px)] landscape:xl:desktop:w-[calc(200px+24px)] h-[calc(100%+28px)] border-4 border-red-500 z-[2] bottom-[-14px] right-[-16px]"></div>
-                      <button className="cashoutButton">Transfer to {cashoutSettingsState?.cex ?? "CEX"}</button>
-                    </div>
-                  </div>
-                </div>
-                {/*---text---*/}
-                <div className="pt-4 px-6 portrait:sm:px-10 landscape:lg:px-10 textLg">
-                  <span className="font-semibold dark:bold">Step 1 of 2:</span> Under <span className="font-semibold dark:bold">Flash Account</span>, click{" "}
-                  <span className="font-semibold dark:bold">Transfer to Coinbase</span> to move USDC from Flash to your Coinbase account.
-                </div>
-              </div>
-              {/*--- buttons ---*/}
-              <div className="px-6 portrait:sm:px-10 landscape:lg:px-10 w-full portrait:h-[80px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-end">
-                <button className="cashoutIntroNext" onClick={() => setStep("two")}>
-                  NEXT &nbsp;&#10095;
-                </button>
-              </div>
-            </div>
-          )}
-          {step == "two" && (
-            <div className="h-full flex flex-col">
-              {/*--- image + text ---*/}
-              <div className="flex-1 flex flex-col items-center">
-                {/*--- image container ---*/}
-                <div className="w-full h-[210px] portrait:sm:h-[260px] landscape:lg:h-[260px] landscape:xl:desktop:h-[220px] relative">
-                  {/*--- image ---*/}
-                  <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
-                    <div className="cashoutHeader h-[36px] flex items-center">Flash Account</div>
-                    <div className="cashoutBalanceContainer">
-                      <div className="cashoutBalance">
-                        <div>
-                          {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                          <span>123.45</span>
-                        </div>
-                        <div className="cashoutArrowContainer">
-                          <FontAwesomeIcon icon={faAngleDown} className="cashoutArrow" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="cashoutButtonContainer relative">
-                      <div className="absolute w-[calc(180px+24px)] portrait:sm:w-[calc(224px+24px)] landscape:lg:w-[calc(224px+24px)] landscape:xl:desktop:w-[calc(200px+24px)] h-[calc(100%+28px)] border-4 border-red-500 z-[2] bottom-[-14px] right-[-16px]"></div>
-                      <button className="cashoutButton">Transfer to {cashoutSettingsState?.cex ?? "CEX"}</button>
-                    </div>
-                  </div>
-                </div>
-                {/*---text---*/}
-                <div className="pt-4 px-6 portrait:sm:px-10 landscape:lg:px-10 textLg">
-                  <span className="font-semibold">Step 2:</span> Under <span className="font-semibold">Coinbase Account</span>, click{" "}
-                  <span className="font-semibold">Transfer to Bank</span> to transfer funds from your Coinbase account to your bank.
-                </div>
-              </div>
-              {/*--- buttons ---*/}
-              <div className="px-6 portrait:sm:px-10 landscape:lg:px-10 w-full portrait:h-[80px] landscape:h-[70px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between">
-                <button className="cashoutIntroBack" onClick={() => setStep("one")}>
-                  &#10094;&nbsp; BACK
-                </button>
-                <button className="cashoutIntroNext" onClick={() => setCashoutIntroModal(false)}>
-                  DONE
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
-      <div className="modalBlackout" onClick={() => setCashoutIntroModal(false)}></div>
+      <div className="modalBlackout"></div>
     </div>
   );
 };

@@ -5,9 +5,11 @@ import Image from "next/image";
 import { useRouter } from "@/navigation";
 // other
 import { useLocale, useTranslations } from "next-intl";
+// constants
+import { langObjectArray } from "@/utils/constants";
 // images
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faAngleUp, faBars, faCaretDown, faGlobe, faX } from "@fortawesome/free-solid-svg-icons";
+import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
+import { SlGlobe } from "react-icons/sl";
 
 const Navbar = () => {
   const [isScrollTop, setIsScrollTop] = useState(true);
@@ -31,31 +33,23 @@ const Navbar = () => {
   }, []);
 
   const onClickLink = (e: any) => {
-    document.getElementById(`${e.target.id}El`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(e.target.id.replace("NavLink", ""))?.scrollIntoView({ behavior: "smooth", block: "start" });
     setMobileMenuModal(false);
   };
 
   const navLinks = [
     {
-      id: "how",
+      id: "HowNavLink",
       title: t("how"),
     },
     {
-      id: "advantage",
+      id: "LowCostNavLink",
       title: t("why"),
     },
     {
-      id: "learn",
+      id: "LearnNavLink",
       title: t("learn"),
     },
-  ];
-
-  type LangObject = { id: "en" | "fr" | "it" | "zh-TW"; text: string };
-  const langObjectArray: LangObject[] = [
-    { id: "en", text: "English" },
-    { id: "fr", text: "Français" },
-    { id: "it", text: "Italiana" },
-    { id: "zh-TW", text: "中文" },
   ];
 
   return (
@@ -66,7 +60,7 @@ const Navbar = () => {
           : "h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[40px] bg-[rgb(241,245,249,0.8)] border-b border-slate-400"
       } w-full fixed flex justify-center z-50 backdrop-blur-md transition-all duration-1000`}
     >
-      <div className="mx-3 sm:mx-6 w-full landscape:xl:max-w-[1250px] h-full flex justify-center items-center relative">
+      <div className="mx-[12px] sm:mx-[16px] w-full landscape:xl:max-w-[1140px] h-full flex justify-center items-center relative">
         {/*---LOGO---*/}
         <div
           className={`${
@@ -94,7 +88,7 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/*--- ANIMATED BUTTON---*/}
+        {/*--- ANIMATED START BUTTON---*/}
         <div
           className={`${
             isScrollTop ? "scale-[1.15] translate-y-[calc(84px+(100vh-92px)*(6.5/10))]" : "portrait:translate-x-[20px]"
@@ -116,17 +110,18 @@ const Navbar = () => {
             isScrollTop ? "h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px]" : "h-[40px] lg:h-[56px] landscape:xl:desktop:h-[32px]"
           } hidden lg:flex items-center absolute right-0 transition-all duration-[1200ms] z-[100]`}
         >
-          {/*--- globe + angleDown ---*/}
+          {/*--- lang ---*/}
           <div
             className={`${
               showLangs ? "bg-slate-300" : ""
-            } h-full cursor-pointer flex items-center desktop:hover:bg-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg mr-6 px-3 relative`}
+            } h-full cursor-pointer flex items-center desktop:hover:bg-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg mr-[16px] px-[8px] relative`}
             onClick={() => setShowLangs(!showLangs)}
           >
-            <FontAwesomeIcon icon={faGlobe} className="mr-2 text-xl" />
-            <FontAwesomeIcon icon={faCaretDown} className="text-lg pb-0.5" />
+            <SlGlobe size={40} className="mr-1 w-[22px] h-[22px]" />
+            <FaCaretDown size={40} className="w-[18px] h-[18px]" />
+            {/*--- lang modal ---*/}
             {showLangs && (
-              <div className="absolute top-[calc(100%)] right-0 border border-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg py-6 px-6 space-y-8 text-xl font-medium bg-light2">
+              <div className="absolute top-[calc(100%)] right-0 border border-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg py-[24px] px-[24px] space-y-[32px] text-[20px] font-medium bg-light2">
                 {langObjectArray.map((langObject) => (
                   <div
                     key={langObject.id}
@@ -154,10 +149,9 @@ const Navbar = () => {
         {showLangs && <div className="hidden lg:block absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setShowLangs(false)}></div>}
 
         {/*--- MOBILE MENU ICON ---*/}
-        <div className="lg:hidden absolute right-2 cursor-pointer">
-          <FontAwesomeIcon
-            icon={faBars}
-            className="text-3xl"
+        <div className="lg:hidden absolute right-[12px] cursor-pointer">
+          <FaBars
+            size={36}
             onClick={async () => {
               setMobileMenuModal(true);
               document.body.classList.add("halfHideScrollbar");
@@ -170,44 +164,47 @@ const Navbar = () => {
       <div
         className={`${
           mobileMenuModal ? "opacity-100 z-[100]" : "opacity-0 z-[-10] pointer-events-none"
-        } w-full h-screen absolute left-0 top-0 bg-light2 transition-all duration-[700ms]`}
+        } w-full h-screen absolute left-0 top-0 bg-light2 transition-all duration-[700ms] overflow-y-auto`}
       >
+        {/*--- close button ---*/}
         <div
           className={`${
-            isScrollTop ? "pt-[29px] portrait:sm:pt-[36px] pr-[22px] sm:pr-[34px]" : "pt-[16px] pr-[22px] sm:pr-[34px]"
-          } transition-all duration-[500ms] w-full flex justify-end`}
+            isScrollTop ? "pt-[30px] portrait:sm:pt-[38px]" : "pt-[14px] portrait:sm:pt-[18px]"
+          } pr-[26px] sm:pr-[30px] transition-all duration-[500ms] w-full flex justify-end`}
         >
-          <FontAwesomeIcon
-            icon={faX}
-            className="text-3xl cursor-pointer"
+          <FaX
+            size={32}
             onClick={async () => {
               setMobileMenuModal(false);
               document.body.classList.remove("halfHideScrollbar");
+              setShowLangs(false);
             }}
           />
         </div>
-        <div className="p-6 w-full flex flex-col items-start relative space-y-12">
+        {/*--- menu contents ---*/}
+        <div className="font-medium text-2xl px-[9%] pt-[6%] pb-[48px] w-full flex flex-col items-start relative space-y-[44px]">
           {navLinks.map((navLink, index) => (
-            <div key={index} id={navLink.id} onClick={onClickLink} className="font-medium cursor-pointer text-2xl">
+            <div key={index} id={navLink.id} onClick={onClickLink} className="">
               {navLink.title}
             </div>
           ))}
-          <div id="support" className="font-medium cursor-pointer text-2xl" onClick={onClickLink}>
-            Customer Support
+          <div className="" onClick={onClickLink}>
+            {t("support")}
           </div>
-          <div></div>
-          <div className="font-medium cursor-pointer text-2xl flex items-center" onClick={() => (showLangs ? setShowLangs(false) : setShowLangs(true))}>
-            <FontAwesomeIcon icon={faGlobe} className="mr-2" /> Language <FontAwesomeIcon icon={showLangs ? faAngleUp : faAngleDown} className="ml-2" />
+          <div className="flex items-center" onClick={() => (showLangs ? setShowLangs(false) : setShowLangs(true))}>
+            <SlGlobe size={40} className="mr-1 w-[22px] h-[22px]" />
+            <FaCaretDown size={40} className="w-[20px] h-[20px]" />
           </div>
           {showLangs && (
-            <div className="w-full text-xl grid grid-cols-2 gap-y-8 gap-x-4">
+            <div className="w-[280px] grid grid-cols-2 gap-y-[44px] gap-x-[40px]">
               {langObjectArray.map((langObject) => (
-                <div
-                  key={langObject.id}
-                  className={`${langObject.id == locale ? "underline decoration-[2px] underline-offset-[8px]" : ""}`}
-                  onClick={() => router.replace("/", { locale: langObject.id })}
-                >
-                  {langObject.text}
+                <div key={langObject.id}>
+                  <span
+                    className={`${langObject.id == locale ? "underline decoration-[2px] underline-offset-[8px]" : ""} text-xl`}
+                    onClick={() => router.replace("/", { locale: langObject.id })}
+                  >
+                    {langObject.text}
+                  </span>
                 </div>
               ))}
             </div>

@@ -2,7 +2,7 @@ import { currency2rateDecimal, currency2bank, currency2cex } from "@/utils/const
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
-const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
+const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
   const [rates, setRates] = useState({ usdcToLocal: 0, usdToLocal: 0 });
 
   //hooks
@@ -32,12 +32,12 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
   return (
     <div className="homeSectionSize">
       {/*--- HEADER ---*/}
-      <div className="w-full homeHeaderFont">{t("header")}</div>
+      <div className="w-full homeHeaderFont text-center">{t("header")}</div>
       {/*--- BODY ---*/}
       <div
         className={`${
           merchantCurrency == "USD" ? "xl:h-[250px]" : "xl:h-[350px] xl:desktop:h-[325px]"
-        } mt-10 w-full flex flex-col items-center xl:flex-row xl:justify-center xl:space-x-16 space-y-6 xl:space-y-0`}
+        } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full flex flex-col items-center xl:flex-row xl:justify-center xl:space-x-16 space-y-6 xl:space-y-0`}
       >
         {/*--- card1 ---*/}
         <div className="whyCard">
@@ -55,7 +55,7 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
                   merchantCurrency: merchantCurrency,
                 })}
               </div>
-              <div>
+              <div className="text-[16px] leading-snug xl:desktop:text-[14px]">
                 <div className="w-full flex justify-between">
                   <div>
                     USDC➜{merchantCurrency} ({currency2cex[merchantCurrency]}):
@@ -89,4 +89,4 @@ const Why = ({ merchantCurrency }: { merchantCurrency: string }) => {
   );
 };
 
-export default Why;
+export default Benefits;

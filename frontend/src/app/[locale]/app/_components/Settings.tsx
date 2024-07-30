@@ -2,24 +2,20 @@
 // nextjs
 import { useState, useEffect } from "react";
 import { useRouter } from "@/navigation";
-import Image from "next/image";
 // other
-import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "next-themes";
 import { Buffer } from "buffer";
+import { useLocale, useTranslations } from "next-intl";
 // wagmi
 import { useDisconnect } from "wagmi";
 // components
 import FaqModal from "./modals/FaqModal";
 import ErrorModal from "./modals/ErrorModal";
-// import APIModal from "./modals/ApiKeyModal";
-// import QrModal from "./modals/QrModal";
 // constants
-import { countryData, countryCurrencyList, merchantType2data } from "@/utils/constants";
+import { countryData, countryCurrencyList, merchantType2data, langObjectArray } from "@/utils/constants";
 // images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faCircleCheck, faInfo } from "@fortawesome/free-solid-svg-icons";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { LuCopy } from "react-icons/lu";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
@@ -59,7 +55,8 @@ const Settings = ({
   const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
   const [contactUsModal, setContactUsModal] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState(false);
-  const [showLabel, setShowLabel] = useState(true);
+  const [hidePlatformAddressLabel, setHidePlatformAddressLabel] = useState(false);
+  const [hideGoogleLabel, setHideGoogleLabel] = useState(false);
   // consider removing
   const [qrModal, setQrModal] = useState(false);
   const [apiModal, setApiModal] = useState(false);
@@ -69,6 +66,9 @@ const Settings = ({
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const { disconnectAsync } = useDisconnect();
+  const locale = useLocale();
+  const t = useTranslations("App.Settings");
+  const tcommon = useTranslations("Common");
 
   // listens to changes in save and saves the states to db
   useEffect(() => {
@@ -206,40 +206,40 @@ const Settings = ({
   // console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
     <section className="w-full h-full flex flex-col items-center overflow-y-auto">
-      <div className="settingsFont px-3 settingsWidth">
-        <div className="settingsTitle">Settings</div>
+      <div className="settingsFont settingsWidth">
+        <div className="settingsTitle">{t("settings")}</div>
         {/*---form ---*/}
         <form className="w-full max-w-[640px]">
           {/*---EVM Address---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Account Address</label>
+            <label className="settingsLabelFont">{t("account")}</label>
             <div className="relative h-full" onClick={copyAddress}>
-              <div className="h-full flex items-center cursor-pointer desktop:hover:text-slate-500 transition-all duration-[300ms]">
-                {paymentSettingsState.merchantEvmAddress.slice(0, 7)}...{paymentSettingsState.merchantEvmAddress.slice(-5)}{" "}
-                <div className="ml-2 relative w-[20px] h-[20px]">
-                  <Image src={theme == "dark" ? "/copyWhite.svg" : "/copyBlack.svg"} alt="copy" fill />
-                </div>
+              <div className="settingsInputFont h-full flex items-center cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[300ms]">
+                {paymentSettingsState.merchantEvmAddress.slice(0, 7)}...{paymentSettingsState.merchantEvmAddress.slice(-5)} <LuCopy className="ml-2 w-[20px] h-[20px]" />
               </div>
+              {/*--- "copied" popup ---*/}
               {popup == "copyAddress" && (
-                <div className="copiedText absolute left-[50%] bottom-[calc(100%-4px)] translate-x-[-50%] px-2 py-1 bg-slate-700 text-white font-normal rounded-[4px]">copied</div>
+                <div className="copiedText absolute whitespace-nowrap left-[50%] bottom-[calc(100%-4px)] translate-x-[-50%] px-3 py-1 bg-slate-700 text-white font-normal rounded-full">
+                  {t("copied")}
+                </div>
               )}
             </div>
           </div>
 
           {/*---email---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Email</label>
+            <label className="settingsLabelFont">{t("email")}</label>
             <div
               className="w-full max-w-[300px] portrait:sm:max-w-[470px] landscape:lg:max-w-[400px] landscape:xl:desktop:max-w-[360px] h-full flex items-center cursor-pointer"
               onClick={() => document.getElementById("settingsEmail")?.focus()}
             >
               <input
                 id="settingsEmail"
-                className="settingsValueFont peer"
+                className="settingsInput settingsInputFont peer"
                 onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantEmail}
-                placeholder="empty"
+                placeholder={t("empty")}
               ></input>
               <div className="settingsRightAngle">&#10095;</div>
             </div>
@@ -247,14 +247,14 @@ const Settings = ({
 
           {/*---merchantName---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Business Name</label>
+            <label className="settingsLabelFont">{t("name")}</label>
             <div
               className="w-full h-full max-w-[280px] portrait:sm:max-w-[380px] landscape:lg:max-w-[380px] landscape:xl:desktop:max-w-[320px] flex items-center cursor-pointer"
               onClick={() => document.getElementById("settingsName")?.focus()}
             >
               <input
                 id="settingsName"
-                className="settingsValueFont peer"
+                className="settingsInput settingsInputFont peer"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
                 value={paymentSettingsState.merchantName}
@@ -265,14 +265,14 @@ const Settings = ({
 
           {/*---merchantCountry & merchantCurrency---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Country / Currency</label>
+            <label className="settingsLabelFont">{t("country")}</label>
             <div className="h-full flex items-center cursor-pointer">
               <select
-                className="settingsSelectFont peer"
+                className="settingsSelect settingsInputFont peer"
                 onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
                   const merchantCountryTemp = e.target.value.split(" / ")[0];
                   const merchantCurrencyTemp = e.target.value.split(" / ")[1];
-                  const cexTemp = merchantCountryTemp == "Any country" ? "" : countryData[merchantCountryTemp].CEXes[0];
+                  const cexTemp = merchantCountryTemp == "Other" ? "" : countryData[merchantCountryTemp].CEXes[0];
                   setPaymentSettingsState({
                     ...paymentSettingsState,
                     merchantCountry: merchantCountryTemp,
@@ -298,11 +298,11 @@ const Settings = ({
           {/* <div className="settingsField relative">
               <div className="flex items-center group cursor-pointer">
                 <label className="settingsLabelFont">Payment Type</label>
-                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" />
+                <IoInformationCircleOutline size={20} className="settingsInfo" />
                 <div className="top-[100%] w-full tooltip">Currently, we are only enabling "In-person" payments. In the future, "Online" payments will be available.</div>
               </div>
               <select
-                className="settingsSelectFont pointer-events-none"
+                className="settingsSelect settingsInputFont pointer-events-none"
                 onChange={async (e) => {
                   let merchantPaymentTypeTemp = e.target.value === "In-person" ? "inperson" : "online";
                   console.log(merchantPaymentTypeTemp);
@@ -333,11 +333,12 @@ const Settings = ({
             </div> */}
 
           {/*---merchantWebsite---*/}
-          <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"} flex flex-col relative`}>
+          {/* <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"} flex flex-col relative`}>
             <div className="settingsLabelFont">
               <span className="group">
                 <label className="">
-                  Your Website <FontAwesomeIcon icon={faInfo} className="ml-0.5 xs:align-baseline  text-light4" />
+                  Your Website
+                  <IoInformationCircleOutline size={20} className="ml-0.5 xs:align-baseline text-light4" />
                 </label>
                 <div className="invisible group-hover:visible pointer-events-none absolute bottom-[calc(100%-6px)] w-[330px] px-3 py-1 text-base font-normal  leading-tight bg-light2 border border-light4 rounded-lg z-[1]">
                   <p>- start with "http(s)"</p>
@@ -346,21 +347,21 @@ const Settings = ({
               </span>
             </div>
             <input
-              className="settingsValueFont peer"
+              className="settingsInput settingsInputFont peer"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setPaymentSettingsState({ ...paymentSettingsState, merchantWebsite: e.target.value });
                 setSave(!save);
               }}
               value={paymentSettingsState.merchantWebsite}
             ></input>
-          </div>
+          </div> */}
 
           {/*---merchantBusinessType---*/}
-          <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"}`}>
+          {/* <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"}`}>
             <div className="flex">
               <label className="settingsLabelFont">Your Business Type</label>
             </div>
-            <div onClick={() => setMerchantBusinessTypeModal(true)} className="w-full flex items-center settingsValueFont cursor-pointer hover:bg-blue-100">
+            <div onClick={() => setMerchantBusinessTypeModal(true)} className="settingsInput settingsInputFont w-full flex items-center cursor-pointer hover:bg-blue-100">
               {paymentSettingsState.merchantBusinessType && (
                 <div>
                   <FontAwesomeIcon icon={merchantType2data[paymentSettingsState.merchantBusinessType].fa} className="text-blue-500 mr-1.5" />{" "}
@@ -368,7 +369,7 @@ const Settings = ({
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
 
           {/*---merchantFields---*/}
           <div className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "hidden" : ""}`}>
@@ -377,7 +378,7 @@ const Settings = ({
               {/*---container with width matching text width---*/}
               <div className="flex group relative">
                 <div className="settingsLabelFont">
-                  Fields <FontAwesomeIcon icon={faCircleInfo} className="ml-0.5 xs:align-baseline text-light4" />
+                  Fields <IoInformationCircleOutline size={20} className="ml-0.5 xs:align-baseline text-light4" />
                 </div>
                 {/*---tooltip---*/}
                 <div className="bottom-6 w-[306px] tooltip">
@@ -480,12 +481,12 @@ const Settings = ({
           </div>
 
           {/*---cex---*/}
-          {paymentSettingsState.merchantCountry != "Any country" && (
+          {paymentSettingsState.merchantCountry != "Other" && (
             <div className={`${cashoutSettingsState.cex == "Coinbase" ? "border-bnot" : ""} settingsField`}>
-              <label className="settingsLabelFont">Cash Out Platform</label>
+              <label className="settingsLabelFont">{t("platform")}</label>
               <div className="h-full flex items-center cursor-pointer">
                 <select
-                  className="settingsSelectFont peer"
+                  className="settingsSelect settingsInputFont peer"
                   onChange={(e) => {
                     const cexTemp = e.currentTarget.value;
                     setCashoutSettingsState({ ...cashoutSettingsState, cex: cexTemp, cexEvmAddress: "" });
@@ -504,34 +505,33 @@ const Settings = ({
           )}
 
           {/*---cexEvmAddress---*/}
-          <div className={`${paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField`}>
-            <label className={`${showLabel ? "" : "hidden"} settingsLabelFont w-[150px] sm:w-auto`}>
-              <span>
-                Cash Out Platform's Address <FontAwesomeIcon icon={faCircleInfo} className="inline settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
-              </span>
+          <div className={`${paymentSettingsState.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField`}>
+            <label className={`${hidePlatformAddressLabel ? "hidden" : ""} settingsLabelFont w-[160px] sm:w-auto leading-tight`}>
+              {t("platformAddress")}
+              <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
             </label>
             <div className="w-full h-full flex items-center cursor-pointer">
               <input
                 className={`${
-                  showLabel ? "" : "portrait:text-[13px] landscape:text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-1 sm:px-3"
-                } settingsValueFont peer`}
-                onFocus={() => setShowLabel(false)}
+                  hidePlatformAddressLabel ? "settingsInputFontSmall" : "settingsInputFont"
+                } settingsInput placeholder:settingsInputFontRem focus:placeholder:text-transparent peer`}
+                onFocus={() => setHidePlatformAddressLabel(true)}
                 onChange={(e) => {
                   setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value });
                 }}
                 onBlur={() => {
                   setSave(!save);
-                  setShowLabel(true);
+                  setHidePlatformAddressLabel(false);
                 }}
                 value={
                   cashoutSettingsState.cexEvmAddress
-                    ? showLabel
-                      ? `${cashoutSettingsState.cexEvmAddress.slice(0, 7)}...${cashoutSettingsState.cexEvmAddress.slice(-5)}`
-                      : cashoutSettingsState.cexEvmAddress
+                    ? hidePlatformAddressLabel
+                      ? cashoutSettingsState.cexEvmAddress
+                      : `${cashoutSettingsState.cexEvmAddress.slice(0, 7)}...${cashoutSettingsState.cexEvmAddress.slice(-5)}`
                     : ""
                 }
                 autoComplete="none"
-                placeholder="empty"
+                placeholder={t("empty")}
               ></input>
               <div className="settingsRightAngle">&#10095;</div>
             </div>
@@ -540,8 +540,8 @@ const Settings = ({
           {/*---employee password---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">
-              Employee Password
-              <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" onClick={() => setInfoModal("employeePassword")} />
+              {t("employeePass")}
+              <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("employeePassword")} />
             </label>
             <div className="relative w-full max-w-[280px] landscape:xl:desktop:max-w-[240px] h-full">
               {/*--- mask ---*/}
@@ -558,15 +558,15 @@ const Settings = ({
                   {cashoutSettingsState.isEmployeePass ? (
                     "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
                   ) : (
-                    <div className="italic pr-[2px] font-normal text-slate-400 dark:text-slate-600">empty</div>
+                    <div className="italic pr-[2px] font-normal text-slate-400 dark:text-slate-600">{t("empty")}</div>
                   )}
                 </div>
-                <div className="pt-0.5 text-lg desktop:peer-hover:text-slate-500 transition-all duration-[300ms]">&#10095;</div>
+                <div className="pt-[2px] text-[18px] desktop:peer-hover:text-slate-500 transition-all duration-[300ms]">&#10095;</div>
               </div>
               <div className={`w-full h-full flex items-center cursor-pointer`}>
                 <input
                   id="employeePass"
-                  className="settingsValueFont"
+                  className="settingsInput settingsInputFont"
                   onBlur={(e) => {
                     saveEmployeePass(e);
                     setEmployeePassMask(true);
@@ -577,37 +577,34 @@ const Settings = ({
             </div>
           </div>
 
-          {/*---2% off---*/}
-          {paymentSettingsState.merchantPaymentType === "inperson" && (
-            <div className="settingsField relative">
-              <label className="settingsLabelFont">
-                Give 2% Cashback?
-                <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" onClick={() => setInfoModal("cashback")} />
-              </label>
-              <div className="h-full flex items-center cursor-pointer">
-                <select className="settingsSelectFont peer" onChange={(e) => {}}>
-                  <option key="yes">Yes</option>
-                  {/* <option key="no">No</option> */}
-                </select>
-                <div className="settingsRightAngle">&#10095;</div>
-              </div>
-            </div>
-          )}
-
           {/*---merchantGoogleId---*/}
-          <div className="settingsField border-b relative">
-            <label className="settingsLabelFont">
-              Google Place ID
-              <FontAwesomeIcon icon={faCircleInfo} className="settingsInfo" onClick={() => setInfoModal("googleId")} />
+          <div className="settingsField">
+            <label
+              className={`${hideGoogleLabel ? "hidden" : ""} settingsLabelFont font-medium text-[16px] portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-[16px]`}
+            >
+              {t("google")}
+              <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("googleId")} />
             </label>
-            <div className="h-full flex items-center cursor-pointer">
+            <div className="w-full h-full flex items-center cursor-pointer">
               <input
                 id="settingsGoogleId"
-                className="settingsValueFont peer"
+                className={`${
+                  hideGoogleLabel ? "text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[16px] px-[8px] sm:px-[12px];" : "settingsInputFont"
+                } settingsInput peer placeholder:settingsInputFontRem focus:placeholder:text-transparent`}
                 onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantGoogleId: e.target.value })}
-                onBlur={() => setSave(!save)}
-                value={paymentSettingsState.merchantGoogleId}
-                placeholder="empty"
+                onFocus={() => setHideGoogleLabel(true)}
+                onBlur={() => {
+                  setHideGoogleLabel(false);
+                  setSave(!save);
+                }}
+                value={
+                  paymentSettingsState.merchantGoogleId
+                    ? hideGoogleLabel
+                      ? paymentSettingsState.merchantGoogleId
+                      : `${paymentSettingsState.merchantGoogleId.slice(0, 7)}...${paymentSettingsState.merchantGoogleId.slice(-5)}`
+                    : ""
+                }
+                placeholder={t("empty")}
               ></input>
               <div className="settingsRightAngle" onClick={() => document.getElementById("settingsGoogleId")?.focus()}>
                 &#10095;
@@ -615,13 +612,30 @@ const Settings = ({
             </div>
           </div>
 
+          {/*---2% off---*/}
+          {paymentSettingsState.merchantPaymentType === "inperson" && (
+            <div className="settingsField border-b relative">
+              <label className="settingsLabelFont">
+                {t("cashback")}
+                <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cashback")} />
+              </label>
+              {/*--- toggle ---*/}
+              <div className="w-[56px] h-[30px] desktop:w-[48px] desktop:h-[25px] flex items-center relative cursor-pointer" onClick={() => setInfoModal("cashback")}>
+                <input type="checkbox" checked={true} readOnly className="sr-only peer" />
+                <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
+                <div className="w-[26px] h-[26px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] desktop:left-[3px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+              </div>
+            </div>
+          )}
+
           {/*--- APPEARANCE  ---*/}
-          <div className="settingsTitle">Display</div>
+          <div className="settingsTitle">{t("display")}</div>
+          {/*---DARK MODE ---*/}
           <div className="settingsField">
-            <label className="settingsLabelFont">Dark Mode</label>
+            <label className="settingsLabelFont">{t("dark")}</label>
             {/*--- toggle ---*/}
             <div
-              className="mt-1 desktop:mt-2 w-[56px] h-[30px] flex items-center relative cursor-pointer"
+              className="w-[56px] h-[30px] desktop:w-[48px] desktop:h-[25px] flex items-center relative cursor-pointer"
               onClick={() => {
                 if (theme == "dark") {
                   setTheme("light");
@@ -634,36 +648,57 @@ const Settings = ({
             >
               <input type="checkbox" checked={theme == "dark" ? true : false} readOnly className="sr-only peer" />
               <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
-              <div className="w-[26px] h-[26px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+              <div className="w-[26px] h-[26px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] desktop:left-[3px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+            </div>
+          </div>
+          {/*---LANGUAGE ---*/}
+          <div className="settingsField border-b">
+            <label className="settingsLabelFont">{t("language")}</label>
+            <div className="h-full flex items-center cursor-pointer">
+              <select
+                className="settingsSelect settingsInputFontRem peer"
+                onChange={(e) => {
+                  window.location.assign(`/${e.currentTarget.value}/app`); // for some reason, router.push/replace will cause web3Auth and walletClient to disconnect and show null. Thus, page.tsx useEffect will run. BUT, for some reason, it will not run like a reload and will get stuck, as after web3Auth connects, there is no more re-render.
+                  // router.replace("/app", { locale: e.currentTarget.value as "en" | "fr" | "it" | "zh-TW" });
+                }}
+                value={`${locale}`}
+              >
+                {langObjectArray.map((langObject) => (
+                  <option key={langObject.id} value={langObject.id}>
+                    {langObject.text}
+                  </option>
+                ))}
+              </select>
+              <div className="settingsRightAngle">&#10095;</div>
             </div>
           </div>
 
           {/*--- SUPPORT ---*/}
-          <div className="settingsTitle">Support</div>
+          <div className="settingsTitle">{t("support")}</div>
           {/*--- FAQs ---*/}
           <div
             className="settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 active:text-slate-500 dark:desktop:hover:text-slate-500 dark:active:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setFaqModal(true)}
           >
-            <div className="settingsLabelFontSupport cursor-pointer">Instructions</div>
-            <div className="pt-0.5 text-lg">&#10095;</div>
+            <div className="settingsLabelFontSupport cursor-pointer">{t("instructions")}</div>
+            <div className="pt-[2px] text-[18px]">&#10095;</div>
           </div>
           {/*--- Contact Us ---*/}
           <div
             className="settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 active:text-slate-500 dark:desktop:hover:text-slate-500 dark:active:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setContactUsModal(true)}
           >
-            <div className="settingsLabelFontSupport cursor-pointer">Contact Us</div>
-            <div className="pt-0.5 text-lg ">&#10095;</div>
+            <div className="settingsLabelFontSupport cursor-pointer">{t("contact")}</div>
+            <div className="pt-[2px] text-[18px]">&#10095;</div>
           </div>
           {/*--- Feedback ---*/}
-          <div
+          {/* <div
             className="hidden settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 active:text-slate-500 dark:desktop:hover:text-slate-500 dark:active:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setFeedbackModal(true)}
           >
             <div className="settingsLabelFontSupport cursor-pointer">Feedback</div>
             <div className="pt-0.5 text-lg">&#10095;</div>
-          </div>
+          </div> */}
         </form>
 
         <div className="mb-[20px] portrait:sm:mb-[40px] landscape:lg:mb-[40px] h-[120px] portrait:sm:h-[130px] landscape:lg:h-[130px] landscape:xl:desktop:h-[120px] flex flex-col justify-center">
@@ -671,9 +706,9 @@ const Settings = ({
           <div className="flex items-center justify-center relative">
             <button
               onClick={onClickSignOut}
-              className="px-6 py-3 portrait:sm:px-8 landscape:lg:px-8 portrait:sm:py-4 landscape:lg:py-4 landscape:xl:desktop:py-3 rounded-full font-medium buttonPrimaryColor"
+              className="px-[24px] py-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] portrait:sm:py-[16px] landscape:lg:py-[16px] landscape:xl:desktop:py-[12px] rounded-full font-medium buttonPrimaryColor"
             >
-              Sign Out
+              {t("signOut")}
             </button>
           </div>
         </div>
@@ -682,64 +717,47 @@ const Settings = ({
       {/*---5 MODALS---*/}
       {infoModal && (
         <div>
-          <div className="settingsInfoModal overflow-y-auto">
-            {/*--- desktop close button ---*/}
-            <div className="hidden landscape:xl:desktop:flex xButtonContainer" onClick={() => setInfoModal(null)}>
-              <div className="xButton">&#10005;</div>
+          <div className="settingsInfoModal">
+            <div className="px-[12px] portrait:sm:px-[40px] landscape:lg:px-[40px] landscape:xl:desktop:px-[32px] overflow-y-auto">
+              {/*--- title ---*/}
+              <div className="modalHeaderXl pb-[24px] w-full flex justify-center items-center">
+                {infoModal == "employeePassword" && <div>{t("info.employeePass.title")}</div>}
+                {infoModal == "cashback" && <div>{t("info.cashback.title")}</div>}
+                {infoModal == "googleId" && <div>{t("info.google.title")}</div>}
+                {infoModal == "cexDepositAddress" && <div>{t("info.platformAddress.title")}</div>}
+              </div>
+              {/*--- text ---*/}
+              <div className="textLg leading-normal flex flex-col">
+                {infoModal == "employeePassword" && (
+                  <div className="space-y-3">
+                    <p>
+                      {t.rich("info.employeePass.text-1", {
+                        span1: (chunks) => <span className="font-bold">{chunks}</span>,
+                        span2: (chunks) => <span className="font-bold">{chunks}</span>,
+                        email: paymentSettingsState.merchantEmail,
+                      })}
+                    </p>
+                    <p className="pt-2 font-bold">{t("info.employeePass.text-2")}</p>
+                    <p className="">{t("info.employeePass.text-3")}</p>
+                  </div>
+                )}
+                {infoModal == "cashback" && (
+                  <div className="space-y-3">
+                    <p>{t("info.cashback.text-1")}</p>
+                    <p>{t("info.cashback.text-2")}</p>
+                    <p>{t("info.cashback.text-3")}</p>
+                  </div>
+                )}
+                {infoModal == "googleId" && <div>{t("info.google.text-1")}</div>}
+                {infoModal == "cexDepositAddress" && <div>{t("info.platformAddress.text-1")}</div>}
+              </div>
+              {/*---button---*/}
+              <div className="py-[24px]">
+                <button onClick={() => setInfoModal(null)} className="buttonPrimary">
+                  {tcommon("close")}
+                </button>
+              </div>
             </div>
-            {/*--- TITLE ---*/}
-            <div className="modalHeaderXl flex-none landscape:xl:desktop:w-[calc(100%-80px)] h-[90px] portrait:sm:h-[110px] landscape:lg:h-[110px] landscape:xl:desktop:h-[100px] flex justify-center items-center relative">
-              {infoModal == "employeePassword" && <div>What is the Employee Password?</div>}
-              {infoModal == "cashback" && <div>What is the 2% Cashback?</div>}
-              {infoModal == "googleId" && <div>What is the Google ID?</div>}
-              {infoModal == "cexDepositAddress" && <div>How to find my cryptocurrency exchange's address?</div>}
-            </div>
-            {/*--- CONTENT ---*/}
-            <div className="textBase2 flex-1 flex flex-col">
-              {infoModal == "employeePassword" && (
-                <div className="space-y-3">
-                  <p>
-                    When an employee signs into the Flash app using your email ({paymentSettingsState.merchantEmail}) and the{" "}
-                    <span className="font-semibold">Employee Password</span>, they will have access to the <span className="font-semibold">Payments</span> menu in your Flash app.
-                    This allows employees to confirm payments when a customer pays.
-                  </p>
-                  <p className="pt-2 font-semibold">Can employees make refunds?</p>
-                  <p className="">
-                    Because employees do not have access to the funds in Flash, they cannot make refunds. However, employees can label/unlabel payments with the "To Refund" tag.
-                    You (the owner) can then later refund all payments with this label in a single click.
-                  </p>
-                </div>
-              )}
-              {infoModal == "cashback" && (
-                <div className="space-y-3">
-                  <p>
-                    We are temporarily requiring businesses give customers a 2% discount, which is automatically applied at the time of payment. Flash does not profit from
-                    transactions, so the entire discount goes to the customer.
-                  </p>
-                  <p>
-                    Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and
-                    credit cards charge &gt; 3% fees, you still save money when using Flash. Furthermore, the discount may attract new customers to your business.
-                  </p>
-                  <p>When crypto payments become more popular, we will make this cashback optional.</p>
-                </div>
-              )}
-              {infoModal == "googleId" && (
-                <div>
-                  Search "Google Place ID Finder" and go to the Google Place ID Finder website. Find your Google Place ID and paste it here. When you do, your business will be
-                  added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments, thus allowing crypto users to more easily find your business.
-                </div>
-              )}
-              {infoModal == "cexDepositAddress" && (
-                <div>
-                  In your cryptocurrency exchange account, click the "Deposit", "Receive", or similar button. Select "USDC" as the token you want to deposit and select "Polygon" as
-                  the network. Copy the shown address (starts with "0x").
-                </div>
-              )}
-            </div>
-            {/*---button---*/}
-            <button onClick={() => setInfoModal(null)} className="my-8 buttonSecondary landscape:xl:desktop:hidden">
-              CLOSE
-            </button>
           </div>
           <div className="modalBlackout" onClick={() => setInfoModal(null)}></div>
         </div>
@@ -748,21 +766,23 @@ const Settings = ({
         <div>
           <div className="modal">
             {/*---content---*/}
-            <div className="modalContent">Do you want to change the Employee Password?</div>
+            <div className="modalContent">{t("employeePassModal.text")}</div>
             {/*---buttons---*/}
             <div className="modalButtonContainer">
               <button onClick={onClickChangeEmployeePass} className="buttonPrimary">
-                Change Password
+                {t("employeePassModal.change")}
               </button>
               <button onClick={() => setEmployeePassModal(false)} className="buttonSecondary">
-                Cancel
+                {t("employeePassModal.cancel")}
               </button>
             </div>
           </div>
           <div className="modalBlackout"></div>
         </div>
       )}
-      {merchantBusinessTypeModal && (
+      {faqModal && <FaqModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setFaqModal={setFaqModal} />}
+      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      {/* {merchantBusinessTypeModal && (
         <div>
           <div className="flex flex-col items-center justify-between bg-white w-[350px] xs:w-[400px] h-[420px] py-[28px] rounded-xl border border-slate-500 fixed inset-1/2 -translate-y-[55%] -translate-x-1/2 z-20">
             <div className="font-bold text-2xl">Select a business type</div>
@@ -799,9 +819,7 @@ const Settings = ({
           </div>
           <div className="opacity-60 fixed inset-0 z-10 bg-black"></div>
         </div>
-      )}
-      {faqModal && <FaqModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setFaqModal={setFaqModal} />}
-      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      )} */}
     </section>
   );
 };

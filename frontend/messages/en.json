@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "Navbar": { "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center", "enterApp": "Enter App" },
+    "Navbar": { "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center", "enterApp": "Enter App", "support": "Customer Support" },
     "Hero": {
       "title1": "CRYPTO PAYMENTS",
       "title2": "WITH 0% FEES",
@@ -9,7 +9,7 @@
       "subtitle2": " payments design, Flash Payments is a simple and low-cost platform to help you set up crypto payments for your business. Setting up takes 1 minute.",
       "enterApp": "Enter App",
       "tooltip1": "True P2P payments mean that customers pay businesses directly with no middlemen. Therefore, Flash cannot charge fees.",
-      "tooltip2": "Flash also does not profit from exchange rates, meaning true market token\u2B80{merchantCurrency} rates will always be given to you and your customers."
+      "tooltip2": "Flash also does not profit from exchange rates, meaning the best token\u2B80fiat rates will always be given to you and your customers."
     },
     "How": {
       "header": "How It Works",
@@ -21,27 +21,25 @@
       "step-1-1": "You receive the QR code after setting up",
       "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app<sup>?</sup></span2><div>{tooltip}</div></span1> will open",
       "step-2-2": "The customer enters the amount of {merchantCurrency} for payment",
-      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask to your Flash app",
+      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app",
       "step-3-1": "~5 seconds after a customer pays, you should see the payment in the Flash app. Your employees can also log into your Flash app (with restricted functions), so they can confirm successful payments",
       "step-4-1cb": "To transfer funds to your bank, you must have a Coinbase account (sign up here)",
       "step-4-2cb": "In the Flash app, click \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "Click \u0022Cash Out\u0022 and follow the on-screen instructions. USDC will be automatically converted to {merchantCurrency}<span> at a 1:1 rate</span> and the money sent to your bank (~0% fees)",
       "step-4-1": "<a>Download the MAX Exchange App</a> and register an account",
       "step-4-2": "Copy your MAX account's USDC deposit address (for Polygon) and paste it into the Flash App (in the \u0022Cash Out Platform\u0022 field under \u0022Settings\u0022)",
-      "step-4-3": "In the \u0022Cash Out\u0022 menu, click \u0022Transfer to MAX\u0022 to transfer USDC to your MAX account",
-      "step-4-4": "Log into your MAX App. Sell USDC for TWD* and withdraw the money to your bank",
+      "step-4-3": "In the Flash app, transfer USDC to your MAX Exchange account",
+      "step-4-4": "In the MAX Exchange App, sell USDC for TWD* and withdraw the money to your bank",
       "step-4-setup": "Set Up",
       "step-4-cashout": "Cash Out",
       "step-4-notUSD": "Flash is designed so that you will not lose money from fluctuating exchange rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>",
-      "mmTooltip": "MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide.",
-      "usdcTooltip": "1 USDC token = 1 USD, as gauranteed by Circle. Almost all crypto users have USDC.",
       "setup": "set up in 1 minute",
       "signup": "sign up here"
     },
     "LowCost": {
       "header-1": "A cost-efficient",
       "header-2": "payments platform",
-      "body": "Although sending money on the blockchain costs near zero, most blockchain payment platforms still charge 1-2% in fees. Flash charges 0%. This is because Flash works by integrating existing low-cost blockchain infrastructure (the Polygon network and cryptocurrency exchanges) to transfer funds and convert USDC to fiat. Flash is not a middleman and, therefore, we charge zero fees.",
+      "body": "Sending money on the blockchain costs near zero, but most blockchain payment platforms still charge 1-2% in fees. Flash charges 0%, as Flash integrates existing low-cost blockchain infrastructure (the Polygon blockchain, Web3Auth, cryptocurrency exchanges, and others) to create a cost-efficient payments platform.",
       "card-1-header": "0% Transaction Fees",
       "card-2-header": "{withdrawalFee} Withdrawal Fee",
       "card-3-header-1": "Best Rates +",
@@ -50,13 +48,13 @@
       "card-2-body-1": "Transferring funds to the bank costs near zero",
       "card-2-body-2": "Flash\u279E{cex} Exchange",
       "card-2-body-3": "{cex} Exchange\u279EYour bank",
-      "card-3-body-1": "Flash does not profit by giving you or your customers suboptimal USDC-{merchantCurrency} conversion rates. We use conversion rates from cryptocurrency exchanges, which has the best rates compared to anywhere else.",
+      "card-3-body-1": "Flash does not profit by giving you or your customers suboptimal USDC-{merchantCurrency} conversion rates. We use conversion rates from cryptocurrency exchanges, which have the best rates compared to anywhere else.",
       "card-3-body-2": "{cex} Exchange's conversion fee is {conversionFee}."
     },
     "Simple": {
       "header-1": "Simplicity means",
       "header-2": "low overhead",
-      "body-1": "The Flash app has a minimalistic interface, so you or your employees can easily confirm payments or make refunds.",
+      "body-1": "The Flash app has a minimalistic interface, so you or your employees can easily learn how to use it.",
       "body-2": "<span>If you have a PoS system,</span> using Flash should not significantly increase your overhead. When a customer pays through Flash, we recommend entering the transaction in your PoS system as a cash payment, so you have a record of the transaction within a single system. You or your employees would only use the Flash app to confirm if a payment was successful or not."
     },
     "Why": {
@@ -100,9 +98,324 @@
       "header": "Support",
       "body": "For helpful information, read the “Instructions” in the Flash app’s “Settings” menu or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@flashpayments.xyz"
     },
-    "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center" },
-    "Common": {
-      "reduceFxLossTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank."
-    }
+    "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center" }
+  },
+  "App": {
+    "Page": {
+      "loading": "Loading",
+      "error": { "failedNewAccount": "Failed to create new account" },
+      "bannerModal": { "new": "NEW PAYMENT", "from": "from" },
+      "payments": "PAYMENTS",
+      "cashout": "CASH OUT",
+      "settings": "SETTINGS"
+    },
+    "Login": {
+      "subheader": "Crypto payments with 0% fees",
+      "owners": "Owners",
+      "employees": "Employees",
+      "signInWith": "Sign in with {socialMedia}",
+      "email": "Email",
+      "password": "Password",
+      "forgot": "Forgot password?",
+      "signIn": "Sign In",
+      "forgotModalText": "Please contact your employer. The person who created this Flash account should know the Employee Password or can set a new one."
+    },
+    "Intro": {
+      "welcome": { "text-1": "Set up crypto payments", "text-2": "with 0% fees", "start": "START" },
+      "info": {
+        "text-1": "To create your QR Code, fill out the information below (can be edited later)",
+        "label-1": "Your business's name",
+        "label-2": "Your country / currency",
+        "label-3": "Your email address",
+        "note": "Your QR code will be sent to this email"
+      },
+      "emailSent": { "text-1": "Your QR code was created!", "text-2": "We emailed you the QR code, along with instructions on how to print and display it." },
+      "how": {
+        "title": "How does a customer pay?",
+        "text-1": "Customer scans your QR code, which will open their <span1><span2>MetaMask app<sup>?</sup><div>{tooltip}</div></span2></span1>",
+        "text-2": "Customer <span>enters the amount of {merchantCurrency} for payment</span>",
+        "text-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup><div>{tooltip}</div></span2></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app"
+      },
+      "cashoutCb-1": {
+        "title": "How do I cash out?",
+        "text-1": "Link a <span1><span2>Coinbase<sup>?</sup></span2><div>{tooltip}</div></span1> account to the Flash app",
+        "text-2": "Click “Cash Out” in the Flash app (and follow in-app instructions)",
+        "text-3": "When you cash out, the USDC in your Flash app will be converted to {merchantCurrency} on Coinbase, and the money deposited to your bank.<span4> You will not lose money from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3></span4>",
+        "button-1": "Link Coinbase Account",
+        "button-2": "I don't have a Coinbase account"
+      },
+      "cashoutCb-2": {
+        "title": "Don't have a Coinbase account?",
+        "text-1": "No worries, creating a Coinbase account only takes several minutes. To get an account, download the Coinbase App<span> (recommended) or visit Coinbase's official website</span>.",
+        "text-2": "After you get an account, return to the Flash app to link it. In the meantime, your Flash app is functional now and can start accepting payments.",
+        "question": "Can I use a different cryptocurrency exchange?",
+        "answer": "If you use Coinbase, you can transfer funds from the Flash app to your bank in just a few clicks. If you use another exchange, you will not have this feature. Instead, you must first transfer USDC from the Flash app to your exchange, log into your exchange, and cash out from there, which is a time consuming process."
+      },
+      "cashoutNoCb-1": {
+        "title": "How do I cash out?",
+        "text-1": "First, you must have a {cex} account.",
+        "text-2": "To cash out, you first transfer USDC from Flash to {cex}. Then, on {cex}, you sell USDC for {merchantCurrency}{asterix} and withdraw the money to your bank.",
+        "text-3": "* You will not lose money from fluctuating exchange rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>.",
+        "button-1": "I have a {cex} account",
+        "button-2": "I don't have a {cex} account"
+      },
+      "cashoutNoCb-2": {
+        "text": "Enter your {cex}'s USDC deposit address (on Polygon). This will allow you to more conveniently transfer USDC from the Flash app to your {cex}.",
+        "label": "USDC Deposit Address (Polygon)",
+        "placeholder": "Paste the address here"
+      },
+      "cashoutNoCb-3": {
+        "title": "Don't have a {cex} account?",
+        "text-1": "No worries, creating an account only takes several minutes. To sign up, download the {cex} App<span> (recommended) or visit the exchange's official website</span>:",
+        "text-1-noCex": "No worries, signing up for a cryptocurrency exchange only takes several minutes. Pick an exchange that allows you to easily convert USDC to your local currency.",
+        "text-2": "After you get your account, there will be instructions in the Flash app on how to cash out funds to your bank.",
+        "desktop": "{cex} Official Website",
+        "mobile": " Download {cex} App"
+      },
+      "final": {
+        "text-1": "Your Flash account is ready and can start accepting payments!",
+        "text-2": "If you have any questions, you can refer to the <span1>Instructions</span1> located in the <span2>Settings</span2> menu or email support@flashpayments.xyz",
+        "finish": "FINISH"
+      }
+    },
+    "SaveToHome": {},
+    "Payments": {
+      "time": "Time",
+      "customer": "Customer",
+      "clearSearch": "Clear search",
+      "noPayments": "No payments",
+      "detailsModal": {
+        "title": "Payment Details",
+        "time": "Time",
+        "value": "Payment Value",
+        "tokens": "Tokens Received",
+        "rate": "Rate",
+        "customerAddress": "Customer's Address",
+        "toRefund": "\u0022To Refund\u0022 Label?",
+        "refundButton": "Refund Now",
+        "paymentRefunded": ""
+      },
+      "searchModal": {
+        "title": "Search Payments",
+        "customerAddress": "Customer's Address",
+        "toRefund": "\u0022To Refund\u0022 Payments",
+        "refunded": "Refunded Payments",
+        "enterChars": "Enter last 4 characters",
+        "date": "Date",
+        "selectDates": "select dates",
+        "selectDatesCap": "Select Dates",
+        "startDate": "start date",
+        "endDate": "end date",
+        "confirmDates": "Confirm Dates",
+        "clear": "Clear",
+        "search": "Search"
+      },
+      "downloadModal": { "title": "Download Payments", "start": "Starting Month/Year", "end": "Ending Month/Year", "download": "Download" },
+      "qrCodeModal": {
+        "emailPdf": "Email PDF file",
+        "downloadPdf": "Download PDF file",
+        "emailModal": {
+          "title": "Email QR Code",
+          "text": "Email the QR code to yourself or to a print shop.",
+          "label": "Receiving Email",
+          "button": "Send Email",
+          "sending": "Sending",
+          "sent": "Email sent!",
+          "errors": { "validEmail": "Please enter a valid email", "notSent": "Email was not sent. Please try again." }
+        }
+      },
+      "signOutModal": "Do you want to sign out?",
+      "refundAllModal": {}
+    },
+    "CashOut": {
+      "transferToAny": "Transfer to any address",
+      "unlink": "Unlink",
+      "rate": "Rate",
+      "rateTooltip": "The USDC to {merchantCurrency} rate if you cash out now",
+      "linkCoinbase": "Link Your Coinbase Account",
+      "errors": {
+        "platformAddress": "Please first enter your <span1>Cash Out Platform's Address</span1> under <span2>Settings</span2>. Or, click the menu icon (<icon></icon>) and choose <span3>transfer to any EVM address</span3>.",
+        "linkCb": "Please first link your Coinbase account",
+        "enterAmount": "Please enter an amount",
+        "minUSDC": "1 USDC minimum transfer",
+        "minUSDC11": "11 USDC minimum transfer",
+        "maxUSDC": "10,000 USDC maximum transfer",
+        "toEvmAddress": "Please enter an EVM address in the \u0022To:\u0022 field",
+        "validEvmAddress": "Please enter a valid EVM address",
+        "transferFailed": "Transfer failed. Please try again.",
+        "lowBalance": "Amount exceeds balance",
+        "unknownTransferError": "Something happened and the transfer was not made. Please try again or contact us. We apologize for the inconvenience."
+      },
+      "transferToCexSuccessModal": "was sent to your {cex} account. Please wait 1-5 minutes for your {cex} balance to update.",
+      "transferToBankSuccessModal": {
+        "text-1": "was deducted from your Coinbase account.",
+        "text-2": "was deposited to your bank.",
+        "text-3": "Please wait 1-2 business days for the deposit to show."
+      }
+    },
+    "Settings": {
+      "settings": "Settings",
+      "display": "Display",
+      "support": "Support",
+      "account": "Account Address",
+      "email": "Email",
+      "name": "Business Name",
+      "country": "Country / Currency",
+      "platform": "Cash Out Platform",
+      "platformAddress": "Cash Out Platform Address",
+      "employeePass": "Employee Password",
+      "cashback": "Give 2% Cashback?",
+      "google": "Google Place ID",
+      "dark": "Dark Mode",
+      "language": "Language",
+      "instructions": "Instructions",
+      "contact": "Contact Us",
+      "signOut": "Sign Out",
+      "info": {
+        "employeePass": {
+          "title": "What is the Employee Password?",
+          "text-1": "When an employee signs into the Flash app using your email ({email}) and the <span1>Employee Password</span1>, they will have access to the <span2>Payments</span2> menu in your Flash app. This allows employees to confirm payments when a customer pays.",
+          "text-2": "Can employees make refunds?",
+          "text-3": "Because employees do not have access to the funds in Flash, they cannot make refunds. However, employees can label/unlabel payments with the \u0022To Refund\u0022 tag. You (the owner) can then later refund all payments with this label in a single click."
+        },
+        "cashback": {
+          "title": "What is the 2% Cashback?",
+          "text-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Flash does not make any profit from transactions.",
+          "text-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and credit cards charge > 3% fees, you still save money when using Flash. Furthermore, the discount may attract new customers to your business.",
+          "text-3": "When crypto payments become more popular, we will make this cashback optional."
+        },
+        "google": {
+          "title": "What is the Google ID?",
+          "text-1": "Search \u0022Google Place ID Finder\u0022 and go to the Google Place ID Finder website. Find your Google Place ID and paste it here. When you do, your business will be added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments, thus allowing crypto users to more easily find your business."
+        },
+        "platformAddress": {
+          "title": "How to find my cryptocurrency exchange's address?",
+          "text-1": "In your cryptocurrency exchange account, click the \u0022Deposit\u0022, \u0022Receive\u0022, or similar button. Select \u0022USDC\u0022 as the token you want to deposit and select \u0022Polygon\u0022 as the network. Copy the shown address (starts with \u00220x\u0022)."
+        }
+      },
+      "employeePassModal": { "text": "Do you want to change the Employee Password?", "change": "Change Password", "cancel": "Cancel" },
+      "yes": "Yes",
+      "empty": "empty",
+      "copied": "copied"
+    },
+    "CashoutIntroModal": {
+      "title": "How To Cash Out",
+      "step-1-1": "Step 1 of 2",
+      "step-1-2": "Under <span1>Flash Account</span1>, click <span2>{transferToCEX}</span2> to transfer USDC from Flash to your {cex}.",
+      "step-2-1": "Step 2 of 2",
+      "step-2-2": "Log into your {cex} and convert USDC to {merchantCurrency}. Then, withdraw the money to your bank.",
+      "step-2-2cb": "Under <span1>Coinbase Account</span1>, click <span2>{transferToBank}</span2> to transfer funds from your Coinbase account to your bank.",
+      "step-2-max": "How do I convert USDC to TWD on MAX Exchange?"
+    },
+    "CbIntroModal": {
+      "text-1": "Your Coinbase account is linked!",
+      "text-2": "Your Flash account is ready to start accepting payments.",
+      "text-3": "If you have questions, read the <span1>Instructions</span1> in the <span2>Settings</span2> menu. If you need further assistance, contact us at support@flashpayments.xyz",
+      "enterApp": "Enter App"
+    },
+    "CashbackModal": {
+      "text-1": "Welcome to Flash!",
+      "text-2": "Our mission is to create a global payments platform with near-zero fees using blockchain technology.",
+      "text-3": "However, changing people's payment habits is challenging. For one, credit cards take 3-5% from businesses and give ~1% back to customers, locking consumers into only using credit cards.",
+      "text-4": "To be able to compete, we are temporarily requiring businesses give a 2% discount to customers who pay through Flash. The discount will be applied at the time of payment.",
+      "text-5": "Flash (near 0% fees) will still help you save money over credit cards (>3% fees). This discount may also attract new customers to your business!",
+      "text-6": "When crypto payments become more popular, we will make this 2% discount optional."
+    },
+    "ErrorModal": {},
+    "ErrorModalLight": {},
+    "InstructionsModal": {
+      "instructions": "Instructions",
+      "title": {
+        "setup": "How do I start?",
+        "pay": "How does a customer pay?",
+        "confirm": "How do I confirm payment?",
+        "log": "How should I log a payment?",
+        "refund": "How do I make refunds?",
+        "cashout": "How do I cash out?",
+        "cashback": "Why must I give 2% cashback?",
+        "fees": "What are the fees?",
+        "lose": "Will I lose from changing rates?",
+        "rate": "What conversion rate is used?"
+      },
+      "setup-1": "To start accepting crypto payments, print out and display your QR code so that customers can see it.",
+      "setup-2": "We emailed you the QR code when you created this account. You can re-send the email or download the QR code by going to <span>Payments > QR Code > Export</span>.",
+      "setup-3": "Instructions on how to print and display your QR Code will be provided when you export it.",
+      "pay-1": "Before payment, the customer must have the <span1><span2>MetaMask app<sup1>?</sup1></span2><div1>{tooltip1}</div1></span1> and <span3><span4>USDC<sup2>?</sup2></span4><div2>{tooltip2}</div2></span3> tokens on the <span5><span6>Polygon network<sup3>?</sup3></span6><div3>{tooltip3}</div3></span5>.",
+      "pay-2": "To pay, the customer scans your QR code, which opens their Metamask app. In the app, the customer <span> enters the amount of {merchantCurrency} for payment</span>.",
+      "pay-3": "When the customer submits payment, USDC tokens (equal <span>in value </span>to the amount of {merchantCurrency} entered) will be sent from their MetaMask to your Flash app.",
+      "confirm-1": "About 3-6s after a customer makes a payment, you will receive a notification in the Flash app and see the payment in the <span>Payments</span> menu.",
+      "log-1": "A record of all payments made through Flash can be downloaded as a .CSV file in the <span>Payments</span> menu.",
+      "log-2": "If you have PoS device, we recommend you log the payment in your PoS device as a cash payment. That way, you have a record of the payment in your PoS system.",
+      "refund-1": "You (the owner) can refund payments by clicking on a transaction in <span>Payments</span>, then clicking \u0022Refund Now\u0022.",
+      "refund-2": "Due to security, employees are restricted from transferring funds. Therefore, they cannot make refunds.",
+      "refund-3": "Instead, employees can label a payment as \u0022To Refund\u0022. Then, at any time, you (the owner) can go to the <span>Payments</span> menu and refund all payments labeled with this tag in a single click.",
+      "refund-4": "Security is our top concern and we believe this is the most secure way to conduct refunds.",
+      "cashout-settingUp": "SETTING UP",
+      "cashout-cashingOut": "CASHING OUT",
+      "cashout-1": "Sign up for a {cex} account if you don't have one. <span1>You can register an account on the {cex} app or the {cex} website.</span1><span2>Pick an exchange that allows you to convert USDC to your local currency and allows USDC deposits on the Polygon chain.</span2>",
+      "cashout-2": "Log into your {cex} account and find the USDC deposit address on Polygon. Paste this address into the \u0022Cash Out Platform Address\u0022 field in the <span>Settings</span> menu of your Flash app.",
+      "cashout-3": "In the Flash app, go to the <span>Cash Out</span> menu and transfer USDC to your {cex}.",
+      "cashout-4": "Log into your {cex} and convert USDC to {merchantCurrency}. Then, withdraw the money to your bank.",
+      "cashout-tradeMAX": "How To Convert USDC to TWD on MAX Exchange?",
+      "cashout-1cb": "Sign up for a Coinbase account if you don't have one. Under \u0022Settings\u0022 of your Coinbase account, link a bank account.",
+      "cashout-2cb": "In the <span>Cash Out</span> menu of your Flash app, click \u0022Link your Coinbase account\u0022.",
+      "cashout-3cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Coinbase\u0022 to transfer USDC from your Flash app to your Coinbase account. Wait 1-5 minutes for the Coinbase balance to update.",
+      "cashout-4cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Bank\u0022. When you submit a transfer, USDC will be automatically converted to {merchantCurrency} and the money will be deposited to your bank within 1-2 days.",
+      "cashback-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Flash does not make any profit from transactions.",
+      "cashback-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and credit cards charge > 3% fees, you still save money when using Flash. Furthermore, the discount may attract new customers to your business.",
+      "cashback-3": "When crypto payments become more popular, we will make this cashback optional.",
+      "fees-1": "During payment, the customer pays a ~0.01 USDC blockchain fee. You (the business) pay zero fees. Flash does not charge any processing fees.",
+      "fees-2": "When you transfer USDC from Flash to {cex}, there is a ~0.05 USDC blockchain fee.",
+      "fees-3cb": "When you transfer funds from Coinbase to your bank, there is no transfer fee. However, as USDC will be converted to {merchantCurrency}, there is a 0.001-0.0015% conversion fee.",
+      "fees-3max": "When you convert USDC to TWD on MAX Exchange, there is a 0.3% conversion fee.",
+      "fees-3none": "When you convert USDC to your local currency on your cryptocurrency exchange, there may be a small conversion fee (typically 0.1-0.3%). Furthermore, when you transfer money to your bank, there may or may not be a fee. Please check the information on your cryptocurrency exchange.",
+      "fees-nonUSD-1": "However, we remind you that when a customer pays, they are paying an extra 0.3% in USDC. These extra earnings should help reduce potential losses from fluctuating conversion rates or potential fees. Using Flash over other payment platforms (which typically have 1-5% in fees) should save you a significant amount of money.",
+      "fees-nonUSD-2": "Finally, Flash does not profit from exchange rates, so you and your customers will always get the best USDC\u21C4{merchantCurrency} rates.",
+      "lose-1": "Over the long run, you will not lose money from fluctuating USDC-to-{merchantCurrency} rates (in fact, you might earn a little).",
+      "lose-2": "During payment, our interface alters the USDC-to-{merchantCurrency} market rate by 0.3% in favor of the business. This means that businesses will earn an extra 0.3%. Over the long run, these extra earnings should cover any potential losses from fluctuating rates.",
+      "lose-3": "Here is an example",
+      "lose-4": "Let's assume the USDC-to-{merchantCurrency} rate is {rate}. When a customer enters {localSent} {merchantCurrency} in MetaMask and clicks \u0022Pay\u0022, you will receive",
+      "lose-5": "in your Flash app. This includes the 2% discount that you had given to the customer. When you cash out to the bank and if the rate of {rate} did not change, you will receive {usdcReceived} * {rate} = {localReceived} {merchantCurrency}. With the 2% discount, you should have received {localReceivedIntended} {merchantCurrency}. Instead, you recieved {localReceived} {merchantCurrency} or an extra ~0.3%. These extra earnings should offset any losses from fluctuating exchange rates, if you cash out frequently (about once every 2 weeks).",
+      "lose-6": "We don't believe customers will care about this extra 0.3%, as they are receiving a 2% discount from you already. But, even without this 2% discount, customers (particularly international travelers) will not care because the USDC-to-{merchantCurrency} rate used during payment will usually be 0.5-5% better than the USD-to-{merchantCurrency} rate they will get at any bank or currency exchanger.",
+      "rate-1": "Flash uses the USDC\u21C4{merchantCurrency} rate from {cex}. This rate is usually 0.5-5% better than USD-to-{merchantCurrency} rate given by any bank or money exchanger.",
+      "rate-1USD": "USDC is converted to USD at a 1:1 rate with no fees."
+    },
+    "IntroErrorModal": {},
+    "CbAuth": "Connecting to Coinbase"
+  },
+  "Common": {
+    "close": "CLOSE",
+    "comfirm": "Confirm",
+    "cancel": "Cancel",
+    "reduceFxLossTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
+    "mmTooltip": "MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide",
+    "usdcTooltip": "1 USDC token = 1 USD, as gauranteed by Circle. Almost all crypto users have USDC",
+    "cbTooltip": "Coinbase is a platform where USDC can be exchanged for {merchantCurrency} and where you can link a bank account",
+    "polygonTooltip": "The Polygon network is a blockchain that has cheap transaction fees (~0.01 USDC) and is integrated with many platforms.",
+    "MAX": "MAX Exchange",
+    "Coinbase": "Coinbase",
+    "CEX": "cryptocurrency exchange",
+    "aCEX": "a cryptocurrency exchange",
+    "CEXes": "cryptocurrency exchanges",
+    "your": "your ",
+    "account": "Account",
+    "transferToCEX": "Transfer to {cex}",
+    "transferToBank": "Transfer to Bank",
+    "transfer": "Transfer",
+    "next": "NEXT",
+    "back": "BACK",
+    "finish": "FINISH",
+    "done": "DONE",
+    "skip": "SKIP",
+    "max": "MAX",
+    "balance": "Balance",
+    "blockchainFee": "blockchain fee",
+    "fromFlash": "From: Flash",
+    "fromCoinbase": "From: Coinbase",
+    "toCEX": "To: {cex}",
+    "toBank": "To: Bank",
+    "enterAnEvmAddress": "Enter an EVM address",
+    "transferring": "Transferring",
+    "transferSuccessful": "Transfer successful"
   }
 }

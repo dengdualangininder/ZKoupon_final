@@ -14,6 +14,7 @@ import { useTheme } from "next-themes";
 import Pusher from "pusher-js";
 import { getPublic } from "@toruslabs/eccrypto";
 import { QRCodeSVG } from "qrcode.react";
+import { useTranslations, useLocale } from "next-intl";
 // constants
 import { txns } from "@/utils/txns";
 // components
@@ -22,10 +23,13 @@ import Payments from "./_components/Payments";
 import CashOut from "./_components/CashOut";
 import Settings from "./_components/Settings";
 import SaveToHome from "./_components/SaveToHome";
-import Intro2B from "./_components/Intro2B";
+import Intro from "./_components/Intro";
+import CbIntroModal from "./_components/modals/CbIntroModal";
 import CashoutIntroModal from "./_components/modals/CashoutIntroModal";
 import QrCodeModal from "./_components/modals/QrCodeModal";
 import ErrorModal from "./_components/modals/ErrorModal";
+import CashbackModal from "./_components/modals/CashbackModal";
+import TradeMAXModal from "./_components/modals/exchanges/TradeMAXModal";
 // constants
 import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
@@ -38,8 +42,8 @@ const User = () => {
   const searchParams = useSearchParams();
 
   // db values
-  const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | null>(null);
-  const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | null>(null);
+  const [paymentSettingsState, setPaymentSettingsState] = useState<PaymentSettings | undefined>(undefined);
+  const [cashoutSettingsState, setCashoutSettingsState] = useState<CashoutSettings | undefined>(undefined);
   const [transactionsState, setTransactionsState] = useState<Transaction[]>([]);
   // states
   const [menu, setMenu] = useState("payments"); // "payments" | "cashOut" | "settings"
@@ -47,15 +51,15 @@ const User = () => {
   // modals
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
-  const [coinbaseIntroModal, setCoinbaseIntroModal] = useState(false);
-  const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
+  const [cbIntroModal, setCbIntroModal] = useState(false);
+  const [cashoutIntroModal, setCashoutIntroModal] = useState(true);
   const [cashbackModal, setCashbackModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [tradeMAXModal, setTradeMAXModal] = useState(false);
   // other
   const [isAdmin, setIsAdmin] = useState(true); // need to change to false
   const [isMobile, setIsMobile] = useState(false);
-  const [browser, setBrowser] = useState<string>("Safari");
   const [isUsabilityTest, setIsUsabilityTest] = useState(searchParams.get("test") == "true" ? true : false);
   // for verification
   const [idToken, setIdToken] = useState("");
@@ -64,10 +68,16 @@ const User = () => {
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
 
   // hooks
+  const locale = useLocale();
+  const t = useTranslations("App.Page");
+  const tcommon = useTranslations("Common");
   const { theme, setTheme } = useTheme();
   const account = useAccount();
   const { data: walletClient } = useWalletClient();
+  console.log("walletClient:", walletClient);
   let web3Auth = useWeb3Auth();
+  console.log("web3Auth:", web3Auth);
+
   const { disconnectAsync } = useDisconnect();
 
   // if (isStandalone) {
@@ -99,6 +109,7 @@ const User = () => {
   // useEffect ends and web3Auth even lsitener will log "connecting", and then "connected". /app will then be rendered twice (why??) but useEffect is not run
   // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
   useEffect(() => {
+    console.log("/app, page.tsx, useEffect run once");
     // usability test
     if (isUsabilityTest) {
       // detect and set light/dark mode
@@ -138,12 +149,11 @@ const User = () => {
         setCashoutSettingsState(cashoutSettings);
         setTransactionsState(txns);
         setIsAdmin(true);
+        console.log("set to login page 1");
         setPage("login");
       }
       return;
     }
-
-    console.log("/app, page.tsx, useEffect run once");
 
     // if mobile & not standalone, then redirect to "Save To Homescreen"
     // const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
@@ -158,7 +168,7 @@ const User = () => {
       // return;
     }
 
-    // detect and set light/dark mode
+    // detect and set light/dark mode; set dark mode as default
     if (window.localStorage.theme) {
       if (window.localStorage.theme == "dark") {
         setTheme("dark");
@@ -183,6 +193,7 @@ const User = () => {
       // web3Auth sessionId detected
     } else {
       console.log("no web3Auth sessionId, page set to Login");
+      console.log("set to login page 2");
       setPage("login");
       return;
     }
@@ -227,6 +238,7 @@ const User = () => {
       console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
     } catch (e) {
       console.log("error: could not get web3Auth.userInfo, page set to Login");
+      console.log("set to login page 3");
       setPage("login");
     }
 
@@ -243,6 +255,7 @@ const User = () => {
       var publicKeyTemp = getPublic(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
       console.log("error: could not get publicKey, page set to Login");
+      console.log("set to login page 4");
       setPage("login");
       return;
     }
@@ -278,7 +291,7 @@ const User = () => {
             const substate = cbRandomSecure.split("SUBSTATE")[1];
             console.log("substate", substate);
             substate == "cashOut" ? setMenu("cashOut") : null;
-            substate == "fromIntro" ? setCoinbaseIntroModal(true) : null;
+            substate == "fromIntro" ? setCbIntroModal(true) : null;
             window.sessionStorage.removeItem("cbRandomSecure");
           }
           setPage("app"); // starthere
@@ -291,11 +304,15 @@ const User = () => {
         if (data.status == "error") {
           console.log(data);
           await disconnectAsync();
+          console.log("set to login page 5");
+
           setPage("login");
         }
       } catch (err) {
         console.log("error: api request to getUserDoc failed");
         await disconnectAsync();
+        console.log("set to login page 6");
+
         setPage("login");
       }
     }
@@ -341,7 +358,7 @@ const User = () => {
     // set merchantCountry, merchantCurrency, and cex
     try {
       const res = await axios.get("https://api.country.is");
-      var merchantCountry = abb2full[res.data.country] ?? "Any country";
+      var merchantCountry = abb2full[res.data.country] ?? "Other";
       var merchantCurrency = countryData[merchantCountry]?.currency ?? "USD";
       var cex = countryData[merchantCountry]?.CEXes[0] ?? "";
       console.log("detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
@@ -368,7 +385,7 @@ const User = () => {
       setPage("intro");
     } catch (error) {
       console.log("request to createUser api failed");
-      setErrorMsg("Failed to create new account");
+      setErrorMsg(t("error.failedNewAccount"));
       setErrorModal(true);
       setPage("login");
     }
@@ -384,7 +401,7 @@ const User = () => {
               <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin relative">
                 <Image src="/loadingCircleBlack.svg" alt="loading" fill />
               </div>
-              <div className="mt-4 font-medium textLg text-gray-500">Loading...</div>
+              <div className="mt-4 font-medium textLg text-gray-500">{t("loading")}...</div>
             </div>
             {/*--- welcome ---*/}
             <div className="w-full h-full flex flex-col items-center justify-center">
@@ -410,7 +427,7 @@ const User = () => {
       {page === "saveToHome" && <SaveToHome />}
       {page === "login" && <Login isMobile={isMobile} setPage={setPage} isUsabilityTest={isUsabilityTest} />}
       {page === "intro" && (
-        <Intro2B
+        <Intro
           isMobile={isMobile}
           page={page}
           setPage={setPage}
@@ -420,8 +437,9 @@ const User = () => {
           setPaymentSettingsState={setPaymentSettingsState}
           cashoutSettingsState={cashoutSettingsState!}
           setCashoutSettingsState={setCashoutSettingsState}
-          setCoinbaseIntroModal={setCoinbaseIntroModal}
+          setCbIntroModal={setCbIntroModal}
           isUsabilityTest={isUsabilityTest}
+          setCashbackModal={setCashbackModal}
         />
       )}
       {page === "app" && (
@@ -431,9 +449,9 @@ const User = () => {
             <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
               <div className="portrait:bottom-0 w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] flex landscape:flex-col items-center justify-around portrait:pb-[10px] portrait:px-1">
                 {[
-                  { id: "payments", title: "PAYMENTS", imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },
-                  { id: "cashOut", title: "CASH OUT", imgWhite: "/cashOutWhite.svg", imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
-                  { id: "settings", title: "SETTINGS", imgWhite: "/settingsWhite.svg", imgBlack: "/settingsBlack.svg" },
+                  { id: "payments", title: t("payments"), imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },
+                  { id: "cashOut", title: t("cashout"), imgWhite: "/cashOutWhite.svg", imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
+                  { id: "settings", title: t("settings"), imgWhite: "/settingsWhite.svg", imgBlack: "/settingsBlack.svg" },
                 ].map((i) => (
                   <div
                     className={`cursor-pointer flex flex-col items-center justify-center ${
@@ -509,31 +527,8 @@ const User = () => {
               isUsabilityTest={isUsabilityTest}
             />
           )}
-          {menu === "qrCode" && (
-            <div onClick={() => setMenu("payments")}>
-              <div className="fixed inset-0 z-[10] bg-black">
-                <div className="absolute bottom-[32px] w-full text-center text-base font-medium text-white z-[30]">Tap screen to exit</div>
-              </div>
-              <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-[20]">
-                <div className="w-full h-full relative">
-                  <Image src="/placard.svg" alt="placard" fill />
-                </div>
-              </div>
-              <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[20]">
-                <QRCodeSVG
-                  xmlns="http://www.w3.org/2000/svg"
-                  size={window.innerWidth > window.innerHeight ? Math.round((window.innerHeight / 1.4142) * (210 / 424.26)) : Math.round(window.innerWidth * (210 / 424.26))}
-                  bgColor={"#ffffff"}
-                  fgColor={"#000000"}
-                  level={"L"}
-                  value={paymentSettingsState?.qrCodeUrl ?? ""}
-                />
-              </div>
-            </div>
-          )}
 
-          {/*--- error modal ---*/}
-          {errorModal && <ErrorModal setErrorModal={setErrorModal} errorMsg={errorMsg} />}
+          {/*--- 6 MODALS ---*/}
 
           {/*---bannerModal---*/}
           {transactionsState.length != 0 && (
@@ -545,10 +540,10 @@ const User = () => {
               <div className="pl-[4%] bannerWidth flex items-center justify-between rounded-xl bg-lightButton dark:bg-darkButton">
                 {/*---content---*/}
                 <div className=" flex-col justify-center">
-                  <div className="pb-1 text-base portrait:sm:text-lg landscape:lg:text-lg font-medium text-white">NEW PAYMENT</div>
+                  <div className="pb-1 text-base portrait:sm:text-lg landscape:lg:text-lg font-medium text-white">{t("bannerModal.new")}</div>
                   <div className="font-semibold text-[22px] portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl">
                     {transactionsState?.slice(-1)[0].currencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])} {paymentSettingsState?.merchantCurrency}{" "}
-                    from ..{transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
+                    {t("bannerModal.from")} ..{transactionsState?.slice(-1)[0].customerAddress.slice(-4)}
                   </div>
                 </div>
                 {/*--- buttons ---*/}
@@ -559,63 +554,24 @@ const User = () => {
             </div>
           )}
 
-          {/*--- QR CODE MODAL ---*/}
+          {errorModal && <ErrorModal setErrorModal={setErrorModal} errorMsg={errorMsg} />}
+
           {qrCodeModal && paymentSettingsState && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettingsState={paymentSettingsState} />}
 
-          {/*---coinbaseIntroModal---*/}
-          {coinbaseIntroModal && (
-            <div>
-              <div className="modal">
-                {/*---content---*/}
-                <div className="modalContent text-start">
-                  <p>Your Coinbase account is linked!</p>
-                  <p>Your Flash account is ready.</p>
-                  <p>
-                    If you have questions, read the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
-                  </p>
-                </div>
-                {/*--- button ---*/}
-                <div className="modalButtonContainer">
-                  <button onClick={() => setCoinbaseIntroModal(false)} className="buttonPrimary bg-black text-white">
-                    ENTER APP
-                  </button>
-                </div>
-              </div>
-              <div
-                className="modalBlackout"
-                onClick={() => {
-                  setCoinbaseIntroModal(false);
-                  setCashbackModal(true);
-                }}
-              ></div>
-            </div>
-          )}
+          {cbIntroModal && <CbIntroModal setCbIntroModal={setCbIntroModal} setCashbackModal={setCashbackModal} />}
 
-          {cashbackModal && (
-            <div>
-              <div className="modal textLg">
-                {/*---content---*/}
-                <div className="grow flex flex-col justify-center space-y-6 text-start textBase">
-                  <p>Our journey together towards global payments with 0% fees is a long one.</p>
-                  <p>For one, credit cards charge businesses ~3% and gives ~1% back to customers. This locks customers into using credit cards.</p>
-                  <p>
-                    To be able to compete, we are requiring businesses give an instant 2% discount to customers. If a customer pays you 10 EUR, you will ultimately recieve 9.8 EUR
-                    in the bank. All savings go to customers (Flash makes zero profit per transaction).
-                  </p>
-                  <p>When crypto payments become more popular, we will make this 2% discount optional.</p>
-                </div>
-                {/*--- buttons ---*/}
-                <button onClick={() => setCoinbaseIntroModal(false)} className="buttonSecondary">
-                  Close
-                </button>
-              </div>
-              <div className="modalBlackout" onClick={() => setCashbackModal(false)}></div>
-            </div>
-          )}
+          {cashbackModal && <CashbackModal setCashbackModal={setCashbackModal} />}
 
           {cashoutIntroModal && (
-            <CashoutIntroModal paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} setCashoutIntroModal={setCashoutIntroModal} />
+            <CashoutIntroModal
+              paymentSettingsState={paymentSettingsState!}
+              cashoutSettingsState={cashoutSettingsState!}
+              setCashoutIntroModal={setCashoutIntroModal}
+              setTradeMAXModal={setTradeMAXModal}
+            />
           )}
+
+          {tradeMAXModal && <TradeMAXModal setTradeMAXModal={setTradeMAXModal} />}
         </div>
       )}
     </div>

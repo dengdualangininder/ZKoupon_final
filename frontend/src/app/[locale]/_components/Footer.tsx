@@ -7,20 +7,20 @@ const Footer = () => {
   const t = useTranslations("HomePage.Footer");
 
   const onClickLink = (e: any) => {
-    document.getElementById(`${e.target.id}El`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(e.target.id.replace("FooterLink", ""))?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const navLinks = [
     {
-      id: "how",
+      id: "HowFooterLink",
       title: t("how"),
     },
     {
-      id: "advantage",
+      id: "LowCostFooterLink",
       title: t("why"),
     },
     {
-      id: "learn",
+      id: "LearnFooterLink",
       title: t("learn"),
     },
   ];

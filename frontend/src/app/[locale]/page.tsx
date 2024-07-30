@@ -13,7 +13,7 @@ import Hero from "./_components/Hero";
 import How from "./_components/How";
 import LowCost from "./_components/LowCost";
 import Simple from "./_components/Simple";
-import Why from "./_components/Why";
+import Benefits from "./_components/Benefits";
 import Learn from "./_components/Learn";
 import Support from "./_components/Support";
 import Footer from "./_components/Footer";
@@ -59,7 +59,7 @@ const Home = () => {
       let merchantCurrencyTemp: string;
       try {
         const res = await axios.get("https://api.country.is");
-        const merchantCountry = abb2full[res.data.country] ?? "Any country";
+        const merchantCountry = abb2full[res.data.country] ?? "Other";
         merchantCurrencyTemp = countryData[merchantCountry]?.currency ?? "USD";
         console.log("homePage detected currency:", merchantCurrencyTemp);
       } catch (err) {
@@ -75,37 +75,37 @@ const Home = () => {
     <div className="overflow-x-hidden">
       <Navbar />
 
-      <div className="w-full flex justify-center bg-light2">
+      <div className="w-full flex justify-center bg-light2 text-lightText1">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Hero merchantCurrency={merchantCurrency} />
         </div>
       </div>
 
-      <div className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
+      <div id="How" className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <How merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
         </div>
       </div>
 
-      <div id="advantageEl" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
+      <div id="LowCost" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <LowCost merchantCurrency={merchantCurrency} />
         </div>
       </div>
 
-      <div id="advantageEl" data-show="yes" className="opacity-0 bg-dark1 text-darkText1 w-full flex justify-center transition-all duration-1500">
+      <div id="Simple" data-show="yes" className="opacity-0 bg-dark1 text-darkText1 w-full flex justify-center transition-all duration-1500">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Simple />
         </div>
       </div>
 
-      <div id="whyEl" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
+      <div id="Benefits" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Why merchantCurrency={merchantCurrency} />
+          <Benefits merchantCurrency={merchantCurrency} />
         </div>
       </div>
 
-      <div data-show="yes" className="bg-[#0A2540] text-white flex w-full justify-center opacity-0 transition-all duration-1000">
+      <div id="Learn" data-show="yes" className="bg-[#0A2540] text-white flex w-full justify-center opacity-0 transition-all duration-1000">
         <div className="w-full flex justify-center xl:max-w-[1440px]">
           <Learn merchantCurrency={merchantCurrency} />
         </div>

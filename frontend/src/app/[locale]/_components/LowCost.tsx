@@ -15,23 +15,23 @@ const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
           {t("header-2")}
         </div>
         {/*--- body ---*/}
-        <div className="mt-8 w-full xl:desktop:w-[500px] homeBodyFont">{t("body")}</div>
+        <div className="mt-[32px] w-full xl:desktop:w-[504px] homeBodyFont">{t("body")}</div>
       </div>
       {/*--- cards (right) ---*/}
-      <div className="mt-8 xl:mt-0 w-full xl:w-[50%] space-y-7 flex flex-col items-center">
+      <div className="mt-[32px] xl:mt-0 w-full xl:w-[50%] space-y-[28px] flex flex-col items-center">
         {/*--- card 1 ---*/}
         <div className="lowCostCard">
-          <div className="homeHeader2Font">{t("card-1-header")}</div>
+          <div className="lowCostCardHeader">{t("card-1-header")}</div>
           <div className="lowCostCardBody">{t("card-1-body")}</div>
         </div>
 
         {/*--- card 2 ---*/}
         <div className="lowCostCard">
-          <div className="homeHeader2Font">{t("card-2-header", { withdrawalFee: currencyToData[merchantCurrency].offrampFee })}</div>
+          <div className="lowCostCardHeader">{t("card-2-header", { withdrawalFee: currencyToData[merchantCurrency].offrampFee })}</div>
           <div className="lowCostCardBody">
             <div>{t("card-2-body-1")}:</div>
             {/*--- transfer fees ---*/}
-            <div className="">
+            <div className="text-sm">
               <div className="w-full flex justify-between items-center">
                 <div>{t("card-2-body-2", { cex: currencyToData[merchantCurrency].cex })}</div>
                 <div>~0.05 USDC</div>
@@ -47,7 +47,7 @@ const LowCost = ({ merchantCurrency }: { merchantCurrency: string }) => {
         {/*--- card 3 ---*/}
         {merchantCurrency != "USD" && (
           <div className="lowCostCard">
-            <div className="homeHeader2Font">
+            <div className="lowCostCardHeader">
               {t("card-3-header-1")}
               <br />
               {t("card-3-header-2", { conversionFee: currencyToData[merchantCurrency].conversionFee })}

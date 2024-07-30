@@ -15,7 +15,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
 
   //hooks
   const t = useTranslations("HomePage.Learn");
-  const tcommon = useTranslations("HomePage.Common");
+  const tcommon = useTranslations("Common");
 
   const titles = [
     { id: "lesson1", title: `${t("lesson")} 1`, subtitle: t("title1"), color: "4285f4" },
@@ -84,7 +84,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
             {t.rich("lesson-5-2", {
               span1: (chunks: any) => <span className="group">{chunks}</span>,
               span2: (chunks: any) => <span className="linkDark">{chunks}</span>,
-              div: (chunks: any) => <span className="w-full bottom-[26px] left-0 learnTooltip">{chunks}</span>,
+              div: (chunks: any) => <span className="w-full bottom-[26px] left-0 tooltip">{chunks}</span>,
               merchantCurrency: merchantCurrency,
               tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: merchantCurrency }),
             })}
@@ -100,7 +100,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
   };
 
   return (
-    <div id="learnEl" className="homeSectionSize xl:w-[840px] flex flex-col items-center">
+    <div className="homeSectionSize xl:w-[840px] flex flex-col items-center">
       <div className="homeHeaderFont text-center">{t("header")}</div>
       <div className="mt-2 mb-8 md:mb-12 text-lg font-medium text-center sm:w-[440px] lg:w-auto">{t("subheader")}</div>
       <div className="w-full flex flex-col ">
@@ -113,7 +113,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
             >
               {/*---content ---*/}
               <div className="flex flex-col items-start">
-                <div className="text-base font-semibold leading-none py-2 px-3 rounded-lg" style={{ backgroundColor: `#${i.color}` }}>
+                <div className="text-base font-semibold leading-none py-[8px] px-[12px] rounded-lg" style={{ backgroundColor: `#${i.color}` }}>
                   {i.title}
                 </div>
                 <div className="mt-2 text-lg leading-none">{i.subtitle}</div>

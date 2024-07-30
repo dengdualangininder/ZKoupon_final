@@ -5,6 +5,7 @@ import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { renderToStream, pdf, Document, Page, Path, Svg, View, Font } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
+import { useTranslations } from "next-intl";
 // components
 import Placard from "../placard/Placard";
 // images
@@ -24,6 +25,10 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // hooks
+  const t = useTranslations("App.Payments.qrCodeModal");
+  const tcommon = useTranslations("Common");
+
   const hideQrCodeModalExportOptions = () => {
     setQrCodeModalExportOptions(false);
     document.removeEventListener("click", hideQrCodeModalExportOptions);
@@ -32,7 +37,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
   const emailQrCode = async () => {
     // check if valid email
     if (!email.split("@")[1]?.includes(".")) {
-      setErrorMsg("Please enter a valid email");
+      setErrorMsg(t("emailModal.errors.validEmail"));
       setError(true);
       return;
     }
@@ -72,7 +77,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
     if (response == "email sent") {
       setIsSendingEmail("sent");
     } else {
-      setErrorMsg("Email was not sent. Please try again.");
+      setErrorMsg(t("emailModal.errors.notSend"));
       setError(true);
       setIsSendingEmail("initial");
     }
@@ -105,12 +110,15 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
     <div className="z-[10]">
       <div className="fixed inset-0 bg-black">
         {/*--- close button ---*/}
-        <div className="qrPageIconContainer top-2 right-2 portrait:sm:top-8 portrait:sm:right-8 landscape:lg:top-8 landscape:lg:right-8" onClick={() => setQrCodeModal(false)}>
+        <div
+          className="qrCodeModalIconContainer top-[8px] right-[8px] portrait:sm:top-[32px] portrait:sm:right-[32px] landscape:lg:top-[32px] landscape:lg:right-[32px]"
+          onClick={() => setQrCodeModal(false)}
+        >
           <div className="text-4xl text-white">&#10005;</div>
         </div>
         {/*--- export button ---*/}
         <div
-          className="qrPageIconContainer bottom-3 left-3 portrait:sm:bottom-8 portrait:sm:left-8 landscape:lg:bottom-8 landscape:lg:left-8"
+          className="qrCodeModalIconContainer bottom-[12px] left-[12px] portrait:sm:bottom-[32px] portrait:sm:left-[32px] landscape:lg:bottom-[32px] landscape:lg:left-[32px]"
           onClick={() => {
             if (!qrCodeModalExportOptions) {
               document.addEventListener("click", hideQrCodeModalExportOptions);
@@ -125,12 +133,12 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       </div>
       {/*--- export options ---*/}
       {qrCodeModalExportOptions && (
-        <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-8 portrait:sm:bottom-[110px] landscape:lg:left-8 landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 text-black rounded-xl z-[13]">
-          <div className="px-6 py-4 landscape:xl:desktop:hover:opacity-50 border-b border-gray-300" onClick={() => setEmailModal(true)}>
-            Email PDF file
+        <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-[32px] portrait:sm:bottom-[110px] landscape:lg:left-[32px] landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 text-black rounded-xl z-[13]">
+          <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50 border-b border-gray-300" onClick={() => setEmailModal(true)}>
+            {t("emailPdf")}
           </div>
-          <div className="px-6 py-4 landscape:xl:desktop:hover:opacity-50" onClick={downloadQrCode}>
-            Downlaod PDF file
+          <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50" onClick={downloadQrCode}>
+            {t("downloadPdf")}
           </div>
         </div>
       )}
@@ -172,80 +180,89 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
 
       {emailModal && (
         <div className="z-[20]">
-          <div className="modalFullBase modalFullColor dark:bg-dark3 w-full portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[520px] landscape:lg:max-h-[520px] z-[22]">
-            {/*--- CLOSE (tablet/desktop) ---*/}
-            <div
-              className="xButtonContainer"
-              onClick={() => {
-                setEmailModal(false);
-                setEmail(paymentSettingsState.merchantEmail);
-                setIsSendingEmail("initial");
-              }}
-            >
-              <div className="xButton">&#10005;</div>
-            </div>
-
-            {/*--- HEADER ---*/}
-            <div className="detailsModalHeaderContainer">
-              {/*--- header ---*/}
-              <div className="detailsModalHeader whitespace-nowrap">Email QR Code</div>
-              {/*--- mobile back ---*/}
-              <div className="mobileBack">
-                <FontAwesomeIcon
-                  icon={faAngleLeft}
+          <div className="emailModal z-[22]">
+            {!error && (
+              <div className="w-full flex flex-col items-center">
+                {/*--- tablet/desktop close ---*/}
+                <div
+                  className="xButtonContainer"
                   onClick={() => {
                     setEmailModal(false);
                     setEmail(paymentSettingsState.merchantEmail);
                     setIsSendingEmail("initial");
                   }}
-                />
-              </div>
-            </div>
+                >
+                  <div className="xButton">&#10005;</div>
+                </div>
+                {/*--- mobile back ---*/}
+                <div className="mobileBack">
+                  <FontAwesomeIcon
+                    icon={faAngleLeft}
+                    onClick={() => {
+                      setEmailModal(false);
+                      setEmail(paymentSettingsState.merchantEmail);
+                      setIsSendingEmail("initial");
+                    }}
+                  />
+                </div>
+                {/*--- header ---*/}
+                <div className="detailsModalHeader">{t("emailModal.title")}</div>
 
-            {/*---content---*/}
-            <div className="flex-1 w-full flex justify-center overflow-y-auto">
-              <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] max-w-[500px] h-full flex flex-col items-center space-y-6">
-                <div className="mt-4 textXl">Email the QR code to yourself or to a print shop.</div>
-                <div className="w-full">
-                  <label className="textLg font-medium">Receiving Email</label>
-                  <div className="mt-1 flex items-center relative">
-                    <input
-                      className="textLg peer w-full h-[56px] landscape:xl:desktop:h-[48px] px-3 focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
-                      onChange={(e) => setEmail(e.currentTarget.value)}
-                      value={email}
-                      placeholder="Enter an email address"
-                    />
-                    {email && (
-                      <div className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden" onClick={() => setEmail("")}>
-                        &#10005;
+                {/*---content---*/}
+                <div className="w-full flex-1 px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[32px] space-y-[24px] overflow-y-auto scrollbar">
+                  <div className="textXl mt-[12px]">{t("emailModal.text")}</div>
+                  <div className="w-full">
+                    <label className="textLg font-semibold">{t("emailModal.label")}</label>
+                    <div className="mt-[2px] flex items-center relative">
+                      <input
+                        className="text-[18px] portrait:sm:text-[24px] landscape:lg:text-[24px] landscape:xl:desktop:text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[48px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
+                        onChange={(e) => setEmail(e.currentTarget.value)}
+                        value={email}
+                        placeholder="Enter an email address"
+                      />
+                      {email && (
+                        <div className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden" onClick={() => setEmail("")}>
+                          &#10005;
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/*---button---*/}
+                  <div className="w-full pt-[16px] pb-[16px]">
+                    {isSendingEmail == "initial" && (
+                      <button onClick={emailQrCode} className="buttonPrimary">
+                        {t("emailModal.button")}
+                      </button>
+                    )}
+                    {isSendingEmail == "sending" && (
+                      <div onClick={emailQrCode} className="w-full flex items-center justify-center">
+                        <SpinningCircleGray />
+                        <div className="ml-3 textLg">{t("emailModal.sending")}...</div>
+                      </div>
+                    )}
+                    {isSendingEmail == "sent" && (
+                      <div onClick={emailQrCode} className="w-full flex items-center justify-center">
+                        <FontAwesomeIcon icon={faCircleCheck} className="text-green-500 text-2xl" />
+                        <div className="ml-3 textLg">{t("emailModal.sent")}</div>
                       </div>
                     )}
                   </div>
                 </div>
-                {/*---button---*/}
-                <div className="w-full pt-6 pb-8">
-                  {isSendingEmail == "initial" && (
-                    <button onClick={emailQrCode} className="buttonPrimary">
-                      Send Email
-                    </button>
-                  )}
-                  {isSendingEmail == "sending" && (
-                    <div onClick={emailQrCode} className="w-full flex items-center justify-center">
-                      <SpinningCircleGray />
-                      <div className="ml-3 textLg">Sending...</div>
-                    </div>
-                  )}
-                  {isSendingEmail == "sent" && (
-                    <div onClick={emailQrCode} className="w-full flex items-center justify-center">
-                      <FontAwesomeIcon icon={faCircleCheck} className="text-green-500 text-2xl" />
-                      <div className="ml-3 textLg">Email sent!</div>
-                    </div>
-                  )}
-                  {/*---error message---*/}
-                  {error && <div className="mt-6 text-center textXl">{errorMsg}</div>}
+              </div>
+            )}
+            {/*--- if error ---*/}
+            {error && (
+              <div className="w-full flex-1 flex flex-col px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[32px] space-y-[24px] overflow-y-auto scrollbar">
+                {/*--- text ---*/}
+                <div className="flex-1 w-full textXl text-center flex items-center justify-center">{errorMsg}</div>
+                {/*--- button ---*/}
+                <div className="w-full py-[60px]">
+                  <button onClick={() => setError(false)} className="buttonPrimary">
+                    {tcommon("close")}
+                  </button>
                 </div>
               </div>
-            </div>
+            )}
           </div>
           <div className="modalBlackout z-[21]"></div>
         </div>

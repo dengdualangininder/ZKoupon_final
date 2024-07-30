@@ -9,7 +9,7 @@ const Support = () => {
   const t = useTranslations("HomePage.Support");
 
   return (
-    <div id="supportEl" className="homeSectionSize flex flex-col items-center">
+    <div className="homeSectionSize flex flex-col items-center">
       {/*---Header---*/}
       <div className="homeHeaderFont">{t("header")}</div>
       {/*---Content---*/}

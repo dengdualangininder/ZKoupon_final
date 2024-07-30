@@ -1,7 +1,23 @@
 import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDollar, faUserTag, faCartArrowDown, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-// import { config } from '@fortawesome/fontawesome-svg-core'
+
+// langs
+type LangObject = { id: "en" | "fr" | "it" | "zh-TW"; text: string };
+export const langObjectArray: LangObject[] = [
+  { id: "en", text: "English" },
+  { id: "fr", text: "Français" },
+  { id: "it", text: "Italiana" },
+  { id: "zh-TW", text: "中文" },
+];
+
+type CexToName = { [key: string]: { [key: string]: string } };
+export const cexToName: CexToName = {
+  en: { Coinbase: "Coinbase", MAX: "MAX Exchange" },
+  fr: { Coinbase: "Coinbase", MAX: "MAX Exchange" },
+  it: { Coinbase: "Coinbase", MAX: "MAX Exchange" },
+  "zh-TW": { Coinbase: "Coinbase", MAX: "MAX 交易所" },
+};
 
 export const fieldsList = ["email", "item", "date", "daterange", "count", "sku", "shipping", "time"]; // delete??
 
@@ -338,6 +354,28 @@ export const currency2number: any = { USD: 5, EUR: 5, TWD: 100, PHP: 100 };
 export const currency2correction: any = { USD: 0.997, EUR: 0.997, TWD: 0.994 }; // CEX fees + 0.003
 export const currency2bank: any = { EUR: "Wise", TWD: "Bank of Taiwan" };
 export const currency2cex: any = { EUR: "Coinbase", USD: "Coinbase", TWD: "MAX" };
+export const cexToLinks: any = {
+  MAX: {
+    website: "https://max.maicoin.com/",
+    appleStore: "https://apps.apple.com/tw/app/max-%E8%99%9B%E6%93%AC%E8%B2%A8%E5%B9%A3%E4%BA%A4%E6%98%93%E6%89%80/id1370837255",
+    googlePlay: "https://play.google.com/store/apps/details?id=com.maicoin.max&pcampaignid=web_share",
+  },
+  Coinbase: {
+    website: "https://www.coinbase.com/",
+    appleStore: "https://apps.apple.com/us/app/coinbase-buy-bitcoin-ether/id886427730",
+    googlePlay: "https://play.google.com/store/apps/details?id=com.coinbase.android",
+  },
+  "Coins.ph": {
+    website: "https://coins.ph/",
+    appleStore: "https://apps.apple.com/ph/app/coins-buy-bitcoin-crypto/id972324049",
+    googlePlay: "https://play.google.com/store/apps/details?id=asia.coins.mobile",
+  },
+};
+export const currencyToExample: any = {
+  USD: { rate: "1", localSent: "10", usdcReceived: "9.80", localReceived: "9.80", localReceivedIntended: "9.80" },
+  EUR: { rate: "0.90", localSent: "10", usdcReceived: "10.9217", localReceived: "9.83", localReceivedIntended: "9.80" },
+  TWD: { rate: "32", localSent: "1000", usdcReceived: "30.7172", localReceived: "983", localReceivedIntended: "980" },
+};
 
 export const list2string = (list: string[]) => {
   let text;
@@ -383,8 +421,8 @@ export const countryCurrencyList = [
   "U.S. / USD",
   "U.K. / GBP",
   "Vatican / EUR",
-  "Any country / USD",
-  "Any country / EUR",
+  "Other / USD",
+  "Other / EUR",
 ];
 
 export const currencyList = ["USD", "EUR", "TWD"];

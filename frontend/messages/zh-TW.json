@@ -1,12 +1,12 @@
 {
   "HomePage": {
-    "Navbar": { "how": "使用方法", "why": "Flash優點", "learn": "學習中心", "enterApp": "進入 App" },
+    "Navbar": { "how": "使用方法", "why": "Flash優點", "learn": "學習中心", "enterApp": "進入 App", "support": "顧客服務" },
     "Hero": {
       "title1": "加密貨幣支付",
       "title2": "0% 手續費",
       "subtitle1": "透過使用",
       "trueP2P": "真正的點對點",
-      "subtitle2": "設計，Flash Payments 能夠為您的企業實現簡單、低成本的加密貨幣支付。設定只需 1 分鐘",
+      "subtitle2": "設計，Flash Payments 能夠為您的企業實現簡單、低成本的加密貨幣支付。建立帳戶只需 1 分鐘。",
       "enterApp": "進入 App",
       "tooltip1": "真正點對點意思是客戶直接付款給企業，沒有中間人。因此，Flash 不收取任何費用。",
       "tooltip2": "因為 Flash 也不會從匯率中獲利，您和您的客戶將永遠獲得最佳的加密貨幣\u2B80{merchantCurrency}匯率。"
@@ -18,30 +18,28 @@
       "step-2": "客戶掃描付款",
       "step-3": "在您的 Flash App 上確認付款",
       "step-4": "出金至銀行",
-      "step-1-1": "設定帳戶後，您會收到 QR Code",
+      "step-1-1": "建立 Flash 帳戶後，您會在電子信箱裡收到 QR Code",
       "step-2-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App<sup>?</sup></span2><div>{tooltip}</div></span1> 會開啟",
       "step-2-2": "客戶輸入的金額為 {merchantCurrency}",
       "step-2-3": "客戶提交付款時，<span1><span2>USDC幣<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask app 送到您的 Flash app",
-      "step-3-1": "付款~5秒後，付款會顯示在 Flash App。您的員工也可以登入您的 Flash App (功能受限)，以便確認付款成功",
+      "step-3-1": "付款~5秒後，付款會顯示在 Flash App。您的員工也可以登入您的 Flash App 以便確認付款成功",
       "step-4-1cb": "要出金，您先必須有個 Coinbase 帳戶",
       "step-4-2cb": "在 Flash App，點 \u0022Link Coinbase Account\u0022",
-      "step-4-3cb": "在 Flash App，點 \u0022出金\u0022 並依照螢幕上的指示操作。當您出金時，USDC 將自動兌換成 {merchantCurrency}<span> at a 1:1 rate</span>，並會出金到您的銀行（~0%費用)",
-      "step-4-1": "<a>下載 MAX App</a> 並註冊帳號",
-      "step-4-2": "複製您 MAX 帳戶的 USDC 存款地址 (Polygon鏈) 並貼在 Flash App 的 \u0022設定\u0022 選項裡",
-      "step-4-3": "在 \u0022出金\u0022 選項裡，點 \u0022出金至MAX\u0022 並進行轉帳",
-      "step-4-4": "登入您的 MAX App。賣出 USDC 兌換 TWD* 並出金至您的銀行",
+      "step-4-3cb": "在 Flash App，點 \u0022出金\u0022 並依照螢幕上的指示操作。當您出金時，USDC幣 將自動兌換成 {merchantCurrency}<span> at a 1:1 rate</span>，並會出金到您的銀行（~0%費用)",
+      "step-4-1": "<a>下載 MAX交易所 App</a> 並註冊帳號",
+      "step-4-2": "複製您 MAX 帳戶的 USDC幣 存款地址 (Polygon鏈) 並貼在 Flash App 的 \u0022設定\u0022 選項裡",
+      "step-4-3": "在 Flash App，轉帳 USDC幣 到您的 MAX 帳戶",
+      "step-4-4": "在 MAX交易所 App，賣出 USDC幣 買入 TWD* 並出金至您的銀行",
       "step-4-setup": "設定",
       "step-4-cashout": "出金",
       "step-4-notUSD": "Flash 的設計讓您不會因匯率波動而損失金錢 <span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>",
-      "mmTooltip": "MetaMask是收發加密貨幣最流行的App，全球有 5000+ 萬人在使用。",
-      "usdcTooltip": "1 USDC 幣 = 1 美元，由 Circle 保證。大多數區塊鏈使用者有 USDC。",
       "setup": "花1分鐘建立帳戶",
       "signup": "註冊"
     },
     "LowCost": {
       "header-1": "低成本",
       "header-2": "支付平台",
-      "body": "雖然在區塊鏈上轉錢的成本接近零，大多數區塊鏈支付平還是收 1-2% 的費用。Flash 收費為 0%。這是因為 Flash 透過現有的低成本區塊鏈基礎設施 (和加密貨幣交易所) 來運作。Flash 不是中間人，因此 Flash 不收費。",
+      "body": "雖然在區塊鏈上轉錢的成本接近零，大多數區塊鏈支付平台還是收 1-2% 的手續費。Flash 收費為 0%，因為 Flash 整合了現有低成本的區塊鏈基礎設施 (Polygon鏈、Web3Auth、加密貨幣交易所) 來運作。這高效率的方法可以降低成本。",
       "card-1-header": "0% 交易費",
       "card-2-header": "{withdrawalFee} 出金費",
       "card-3-header-1": "最佳匯率 +",
@@ -60,7 +58,7 @@
       "body-2": "<span>如果您有 PoS 系統</span>、使用 Flash 應該不會增加您的管理工作。當客戶透過 Flash 付款，我們建議您在 PoS 系統中以現金付款的方式輸入交易，這樣您就可以在單一系統中獲得交易記錄。您或您的員工只需使用 Flash App 確認付款是否成功。"
     },
     "Why": {
-      "header": "為何啟用加密貨幣支付？",
+      "header": "為什麼要整合加密貨幣支付？",
       "card-1-header": "吸引<span>新消費者</span>",
       "card-2-header": "吸引<span>國際遊客</span>",
       "card-2-usd-header": "成立<span>自由而獨立</span>",
@@ -98,11 +96,327 @@
     },
     "Support": {
       "header": "顧客服務",
-      "body": "如需有用的資訊，請閱讀 Flash App \u0022設定\u0022 選項裡的 \u0022說明\u0022，或本網站中的 \u0022使用方法\u0022 和 \u0022學習中心\u0022 部分。如需更多協助，請發送電子郵件至 support@flashpayments.xyz"
+      "body": "如果您有問題，請參考 Flash App \u0022設定\u0022 選項裡的 \u0022說明書\u0022，或本網站中的 \u0022使用方法\u0022 和 \u0022學習中心\u0022 部分。如需更多協助，請發送電子郵件至 support@flashpayments.xyz"
     },
-    "Footer": { "company": "公司", "links": "連結", "about": "關於我們", "how": "使用方法", "why": "Flash優點", "learn": "學習中心" },
-    "Common": {
-      "reduceFxLossTooltip": "客戶付款時，我們的介面會將 USDC-{merchantCurrency} 的匯率調整 0.3%，以利於商家。因此，您實際上多賺了 0.3%。長遠來說，如果您經常出金 (~2x per month)，這些額外的收入應該可以抵銷因匯率波動而造成的損失。客戶不會介意多出的 0.3%，因為 Flash 提供的 USDC 兌 {merchantCurrency} 匯率通常比任何銀行的 USD 兌 {merchantCurrency} 匯率高出 1-5%。"
-    }
+    "Footer": { "company": "公司", "links": "連結", "about": "關於我們", "how": "使用方法", "why": "Flash優點", "learn": "學習中心" }
+  },
+  "App": {
+    "Page": {
+      "loading": "載入中",
+      "error": { "failedNewAccount": "Failed to create new account" },
+      "bannerModal": { "new": "NEW PAYMENT", "from": "from" },
+      "payments": "收款",
+      "cashout": "出金",
+      "settings": "設定"
+    },
+    "Login": {
+      "subheader": "0%手續費加密貨幣支付",
+      "owners": "業主",
+      "employees": "員工",
+      "signInWith": "使用 {socialMedia} 登入",
+      "email": "電子信箱",
+      "password": "密碼",
+      "forgot": "忘記密碼？",
+      "signIn": "登入",
+      "forgotModalText": "請聯絡您的雇主。建立 Flash 帳戶的人應該知道員工密碼或可以設定新密碼。"
+    },
+    "Intro": {
+      "welcome": { "text-1": "啟用0%手續費", "text-2": "加密貨幣支付", "start": "開始" },
+      "info": {
+        "text-1": "填寫以下資訊以建立您的 QR Code (可稍後更改)",
+        "label-1": "您的企業名稱",
+        "label-2": "您的國家 / 幣別",
+        "label-3": "您的電子信箱",
+        "note": "QR Code 會發送到此電子信箱"
+      },
+      "emailSent": { "text-1": "您的 QR Code 已建立!", "text-2": "我們已將 QR Code 電郵給您。電子郵件包含列印和顯示的說明。" },
+      "how": {
+        "title": "客戶如何付款？",
+        "text-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App<sup>?</sup></span2><div>{tooltip}</div></span1> 會開啟",
+        "text-2": "客戶<span>輸入的金額為 {merchantCurrency}</span>",
+        "text-3": "客戶提交付款時，<span1><span2>USDC幣<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask App 送到您的 Flash App"
+      },
+      "cashoutCb-1": {
+        "title": "我如何出金？",
+        "text-1": "連結 <span1><span2>Coinbase<sup>?</sup></span2><div>{tooltip}</div></span1> 帳戶至 Flash App",
+        "text-2": "在 Flash App 裡，點\u0022出金\u0022 (並按照 App 內的說明)",
+        "text-3": "出金時，Flash App 裡的 USDC幣 會在 Coinbase 上轉換為 {merchantCurrency}, 然後出金至您的銀行。.<span4>您不會因匯率波動而損失金錢<span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3></span4>。",
+        "button-1": "連結 Coinbase 帳戶",
+        "button-2": "我沒有 Coinbase 帳戶"
+      },
+      "cashoutCb-2": {
+        "title": "沒有 Coinbase 帳戶?",
+        "text-1": "不用擔心，建立 Coinbase 帳戶只需要幾分鐘。要註冊帳戶，請下載 Coinbase App<span> (推薦) 或去 Coinbase 的官網</span>。",
+        "text-2": "取得帳號後，回到 Flash App 連結您 Coinbase 帳戶。現在，您的 Flash 應用程式已經開始運作，可以開始接受付款。",
+        "question": "我可以使用其他加密貨幣交易所嗎？",
+        "answer": "如果您使用 Coinbase，您只需點選幾點可從 Flash App 出金至您的銀行。如果您使用其他交易所，您不會有這個功能。您必須先從 Flash App 轉 USDC幣 到您的交易所，再登入您的交易所，從那裡出金，這是一個耗時的過程。"
+      },
+      "cashoutNoCb-1": {
+        "title": "我如何出金？",
+        "text-1": "首先，您必須有一個{cex}帳戶。",
+        "text-2": "您想出金時，您要先從 Flash 轉 USDC 幣到{cex}。然後，在{cex}上賣出 USDC / 買入 {merchantCurrency}{asterix}，並出金至您的銀行。",
+        "text-3": "*您不會因匯率波動而損失金錢<span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>。",
+        "button-1": "我有{cex}帳戶",
+        "button-2": "我沒有{cex}帳戶"
+      },
+      "cashoutNoCb-2": {
+        "text": "輸入您{cex}的 USDC 存款地址 (在 Polygon 鏈上)。輸入後，您可以更方便地從 Flash App 轉 USDC 幣到{cex}。",
+        "label": "USDC 存款地址 (Polygon鏈)",
+        "placeholder": "在此貼上地址"
+      },
+      "cashoutNoCb-3": {
+        "title": "沒有{cex}帳戶?",
+        "text-1": "不用擔心，建立{cex}帳戶只需要幾分鐘。要註冊帳戶，請下載{cex} App<span> (推薦) 或去{cex}的官網</span>:",
+        "text-1-noCex": "不用擔心，建立加密貨交易所帳戶只需要幾分鐘。重要的一點是您必須選擇可以將 USDC 兌換為當地貨幣的加密貨幣交易所。",
+        "text-2": "當您取得帳戶後，Flash App 裡會有說明如何出金到您的銀行。",
+        "desktop": "{cex}官網",
+        "mobile": " 下載{cex}App"
+      },
+      "final": {
+        "text-1": "註冊完成！您的 Flash App 可以開始接受付款",
+        "text-2": "如果您有問題，Flash App 裡有詳細說明 (點 \u0022<span1>設定</span1>\u0022 再點 \u0022<span2>說明書</span2>\u0022)，或發送電子郵件至 support@flashpayments.xyz",
+        "finish": "完成"
+      }
+    },
+    "SaveToHome": {},
+    "Payments": {
+      "time": "時間",
+      "customer": "客戶地址",
+      "clearSearch": "清除搜尋結果",
+      "noPayments": "還沒有收款",
+      "detailsModal": {
+        "title": "收款資料",
+        "time": "時間",
+        "value": "支付價值",
+        "tokens": "收到的幣",
+        "rate": "匯率",
+        "customerAddress": "客戶地址",
+        "toRefund": "標為\u0022要退款\u0022？",
+        "refundButton": "退款",
+        "paymentRefunded": ""
+      },
+      "searchModal": {
+        "title": "搜尋收款",
+        "customerAddress": "客戶地址",
+        "toRefund": "要退款",
+        "refunded": "已退款",
+        "enterChars": "輸入最後四字元",
+        "date": "日期",
+        "selectDates": "選擇日期",
+        "selectDatesCap": "選擇日期",
+        "startDate": "開始日期",
+        "endDate": "結束日期",
+        "confirmDates": "確認日期",
+        "clear": "清除",
+        "search": "搜尋"
+      },
+      "downloadModal": { "title": "下載收款清單", "start": "起始月/年", "end": "結束月/年", "download": "下載" },
+      "qrCodeModal": {
+        "emailPdf": "Email PDF檔",
+        "downloadPdf": "下載 PDF檔",
+        "emailModal": {
+          "title": "Email QR Code",
+          "text": "以電子郵件傳送 QR Code 給自己或列印店。",
+          "label": "接收的電子郵件地址",
+          "button": "發送電郵",
+          "sending": "發送中",
+          "sent": "電郵已發送!",
+          "errors": { "validEmail": "請輸入有效的電子郵件地址", "notSent": "電子郵件未發送。請再試一次。" }
+        }
+      },
+      "signOutModal": "您要登出嗎？",
+      "refundAllModal": {}
+    },
+    "CashOut": {
+      "transferToAny": "出金到任何地址",
+      "unlink": "解除連結",
+      "rate": "匯率",
+      "rateTooltip": "現在的 USDC\u2192{merchantCurrency} 匯率",
+      "linkCoinbase": "連結您的 Coinbase 帳戶",
+      "error": {
+        "platformAddress": "請先在 \u0022<span>設定</span>\u0022 裡輸入您的 \u0022<span2>出金平台地址</span2>\u0022",
+        "linkCb": "請先連結您的 Coinbase 帳戶",
+        "enterAmount": "請輸入金額",
+        "minUSDC": "1 USDC 最低出金金額",
+        "minUSDC11": "11 USDC 最低出金金額",
+        "maxUSDC": "10,00 USDC 最高出金金額",
+        "toEvmAddress": "請輸入\u0022出金地址\u0022",
+        "validEvmAddress": "請輸入有效的 EVM 地址",
+        "transferFailed": "出金失敗。請重試。",
+        "lowBalance": "金額超過餘額",
+        "unknownTransferError": "出金失敗，請重試或聯絡我們。對於造成的不便，我們深表歉意。"
+      },
+      "successModal": "已出金到您的{cex}帳戶。請等 1-5 分鐘以便您的{cex}餘額更新。",
+      "transferToBankSuccessModal": {
+        "text-1": "已從您的 Coinbase 帳戶中扣除。",
+        "text-2": "已存入您的銀行。",
+        "text-3": "請等待 1-2 個工作天以顯示訂金。"
+      }
+    },
+    "Settings": {
+      "settings": "帳戶設定",
+      "display": "顯示設定",
+      "support": "顧客服務",
+      "account": "帳戶地址",
+      "email": "電子信箱",
+      "name": "企業名稱",
+      "country": "國家 / 幣別",
+      "platform": "出金平台",
+      "platformAddress": "出金平台地址",
+      "employeePass": "員工密碼",
+      "cashback": "給2%回饋？",
+      "google": "Google Place ID",
+      "dark": "黑暗模式",
+      "language": "語言",
+      "instructions": "說明書",
+      "contact": "聯絡我們",
+      "signOut": "登出",
+      "info": {
+        "employeePass": {
+          "title": "員工密碼是什麼？",
+          "text-1": "員工可以使用您的電子郵件 ({email}) 和員工密碼登入 Flash App。登入後，他們可以看到\u0022收款\u0022選項。但是，他們無法存取其他功能。",
+          "text-2": "員工可以退錢嗎？",
+          "text-3": "因為員工無法存取 Flash 中的資金，他們無法退款。但是，員工可以把付款標示為 \u0022要退款\u0022。之後，您（Flash App 擁有者）可以點\u0022退還所有\u0022來退還標示為\u0022待退款\u0022的每筆付款。"
+        },
+        "cashback": {
+          "title": "2%回饋是什麼？",
+          "text-1": "我們暫時要求商家給客戶 2% 的折扣，折扣會在付款時自動套用。Flash 不從交易中獲利，因此全部折扣會給予客戶。",
+          "text-2": "因為大多數電子支付提供 1% 回饋，這 2% 折扣可以鼓勵客戶改用 USDC 支付。因為 Flash 收取 0% 手續費，而信用卡收 > 3% 手續費，使用 Flash 還是可讓您省錢。此外，2% 折扣也可以吸引新客戶到您的企業。",
+          "text-3": "當加密貨幣支付變得更流行時，我們會把 2% 回饋成為可選項目。"
+        },
+        "google": {
+          "title": "What is the Google ID?",
+          "text-1": "搜索 \u0022Google Place ID Finder\u0022 並進入 Google Place ID Finder 網站。找到您的 Google Place ID 並將其粘貼到此處。當您這樣做時，您的企業將被添加到 https://www.stablecoinmap.com，這是一個接受加密貨幣支付的地方的資料庫，從而使加密貨幣用戶更容易找到您的企業。"
+        },
+        "platformAddress": {
+          "title": "如何找我的出金平台地址?",
+          "text-1": "在您的加密貨幣交易帳，點 \u0022入金\u0022 或類似的按鈕。選擇 \u0022USDC\u0022 為入金的幣，並選擇 \u0022Polygon\u0022 鏈。複製顯示的地址（以 \u00220x\u0022 開始）。"
+        }
+      },
+      "employeePassModal": { "text": "您想要改員工密碼？", "change": "是，要改", "cancel": "取消" },
+      "yes": "我要",
+      "empty": "無",
+      "copied": "已複製"
+    },
+    "CashoutIntroModal": {
+      "title": "如何出金",
+      "step-1-1": "步驟 1 之 2",
+      "step-1-2": "在 \u0022<span1>Flash 帳戶</span1>\u0022 下，點 \u0022<span2>{transferToCEX}</span2>\u0022。從 Flash 轉移 USDC 至{cex}。",
+      "step-2-1": "步驟 2 之 2",
+      "step-2-2": "登入 {cex} (可以用 App 或網站) 賣出USDC/買入{merchantCurrency}。然後，提款到您的銀行。",
+      "step-2-2cb": "在 \u0022<span1>Coinbase 帳戶</span1>\u0022 下，點 \u0022<span2>{transferToBank}</span2>\u0022。從這裡您可以輕鬆出金您至的銀行。",
+      "step-2-max": "我要怎麼賣出USDC/買入TWD"
+    },
+    "CbIntroModal": {
+      "text-1": "您的 Coinbase 帳戶已連結！",
+      "text-2": "您的 Flash App 可以開始接受支付。",
+      "text-3": "有問題，請參考 \u0022<span1>設定</span1>\u0022 選項裡的 \u0022<span2>說明書</span2>\u0022。如需更多協助，請發送電子郵件至 support@flashpayments.xyz",
+      "enterApp": "進入 App"
+    },
+    "CashbackModal": {
+      "text-1": "歡迎使用 Flash！",
+      "text-2": "我們的使命是利用區塊鏈創建一個接近 0% 手續費全球支付平台。",
+      "text-3": "但是，改變群眾的支付習慣不容易。例如，信用卡從商家收 3-5% 並回饋消費者 ~1%，這使得消費者只想用信用卡。",
+      "text-4": "為了能競爭，我們暫時要求商家給使用 Flash 支付的客戶 2% 折扣。折扣會在付款時適用。",
+      "text-5": "因為信用卡手續費 >3%，Flash 還是會降低您的成本。此外，這 2% 折扣可能會吸引新客戶。",
+      "text-6": "當加密貨幣支付變更流行，我們會把 2% 回饋成為可選項目。"
+    },
+    "DetailsModal": {},
+    "ErrorModal": {},
+    "ErrorModalLight": {},
+    "InstructionsModal": {
+      "instructions": "說明書",
+      "title": {
+        "setup": "我要怎麼開始？",
+        "pay": "客戶怎麼付款？",
+        "confirm": "我要怎麼確認付款？",
+        "log": "我要怎麼記錄付款",
+        "refund": "我要怎麼退款？",
+        "cashout": "我要怎麼出金？",
+        "cashback": "為什麼要給 2% 回饋？",
+        "fees": "費用有哪些？",
+        "lose": "我會因匯率波動而損失錢嗎？",
+        "rate": "使用的轉換率是多少？"
+      },
+      "setup-1": "啟用加密貨幣支付，您只需要列印並顯示您的 QR Code。",
+      "setup-2": "建立 Flash 帳戶時，我們有把 QR Code 傳到您的電子信箱。如果您要重新傳送這封電子郵件或直接下載 QR Code 圖片，您可以往 <span> \u0022收款\u0022 選項 > QR Code (右上角) > 匯出 </span>。",
+      "setup-3": "匯出 QR Code 時，我們會提供列印和顯示 QR Code 的說明。",
+      "pay-1": "在付款之前，客戶必須在 <span1><span2>MetaMask App<sup1>?</sup1></span2><div1>{tooltip1}</div1></span1> 裡有 <span3><span4>USDC幣<sup2>?</sup2></span4><div2>{tooltip2}</div2></span3> (在 <span5><span6>Polygon鏈<sup3>?</sup3></span6><div3>{tooltip3}</div3></span5> 上)。",
+      "pay-2": "顧客掃描您 QR Code 後，他們的 Metamask App 會開啟。接著，客戶可以<span>輸入 {merchantCurrency} 的金額付款</span>。",
+      "pay-3": "客戶提交付款時，USDC 幣 (<span>價值</span>相等於輸入的{merchantCurrency}金額) 會從客戶的 MetaMask app 送到您的 Flash app。",
+      "confirm-1": "付款 3~6 秒後，您在 Flash App 會收到通知，並在 \u0022<span>收款</span>\u0022 選項裡看到付款。",
+      "log-1": "您可以在 \u0022<span>收款</span>\u0022 選項裡下載所有付款記錄為 .CSV 檔案。",
+      "log-2": "如果您有POS系統，我們建議您在POS系統中把付款記錄為現金付款。這樣，您付款記錄可以維持一個系統。",
+      "refund-1": "如果您（Flash App 擁有者）在 \u0022<span>收款</span>\u0022 選項裡點一個付款項目，您會看到 \u0022退款\u0022 的按鈕。",
+      "refund-2": "基於安全考量，員工被限制轉帳。因此，他們無法退款。",
+      "refund-3": "但是，如果員工在 \u0022<span>收款</span>\u0022 選項裡點一個付款項目，他們能把此付款項目標示為 \u0022要退款\u0022。之後，您（Flash App 擁有者）可以點 \u0022退款所有\u0022 來輕鬆退款每一個標示為 \u0022要退款\u0022 的付款項目。",
+      "refund-4": "安全是我們最關心的問題，我們相信這是最安全的退款方式。",
+      "cashout-settingUp": "設定",
+      "cashout-cashingOut": "出金",
+      "cashout-1": "請先註冊一個{cex}帳戶 (如果您還沒有)。<span1>您可以在{cex} App 註冊 (建議) 或在{cex}官網上註冊。</span1><span2>選擇一個允許您將 USDC 幣兌換為當地貨幣，並允許在 Polygon 鏈上存入 USDC 的交易所。</span2>",
+      "cashout-2": "登入您的 {cex} 帳戶，並找 Polygon 鏈的 USDC 存款地址。把地址貼入 Flash App \u0022<span>設定</span>\u0022 選項裡 \u0022出金平台地址\u0022 欄位。",
+      "cashout-3": "在 Flash App，點 \u0022<span>出金</span>\u0022 選項，並轉 USDC 幣到您的 {cex}。",
+      "cashout-4": "登入您的{cex}，並賣出USDC/買入TWD。然後，提款到您的銀行。",
+      "cashout-tradeMAX": "要怎麼賣出USDC/買入TWD?",
+      "cashout-1cb": "請先註冊一個 Coinbase 帳戶 (如果您還沒有)。然後在 Coinbase 帳戶設定裡，鏈接一個銀行帳戶。",
+      "cashout-2cb": "在 Flash App 的 \u0022<span>出金</span>\u0022 選項裡，點 \u0022連結 Coinbase 帳戶\u0022。",
+      "cashout-3cb": "在 \u0022<span>出金</span>\u0022 選項裡，點 \u0022出金至 Coinbase\u0022，從 Flash App 出金 USDC 到 Coinbase 帳戶。等 2-5 分鐘，讓 Coinbase 的餘額更新。",
+      "cashout-4cb": "在 \u0022<span>出金</span>\u0022 選項裡，點 \u0022出金至銀行\u0022.。當您提交出金時，USDC 會自動兌換成 {merchantCurrency}，並在 1-2 天內存入您的銀行。",
+      "cashback-1": "我們暫時要求商家給客戶 2% 的折扣，折扣會在付款時自動套用。Flash 不從交易中獲利，因此全部折扣會給予客戶。",
+      "cashback-2": "因為大多數電子支付提供 1% 回饋，這 2% 折扣可以鼓勵客戶改用 USDC 支付。因為 Flash 收取 0% 手續費，而信用卡收 > 3% 手續費，使用 Flash 還是可讓您省錢。此外，2% 折扣也可以吸引新客戶到您的企業。",
+      "cashback-3": "當加密貨幣支付變得更流行時，我們會把 2% 回饋成為可選項目。",
+      "fees-1": "支付時，客戶會付 ~0.01 USDC 的區塊鏈費用。您（企業）沒有費用。Flash 不收取任何手續費。",
+      "fees-2": "當您從 Flash App 轉 USDC 到{cex}時，會有 ~0.05 USDC 區塊鏈費用。",
+      "fees-3cb": "Coinbase轉帳到您銀行沒有費用。USDC 幣兌換為 {merchantCurrency} 會有 0.001-0.0015% 的兌換費。",
+      "fees-3max": "當您在 MAX Exchange 賣出USDC/買入TWD 時，會有 0.3% 的兌換費。提款至您銀行會有 15NT 的費用。",
+      "fees-3none": "當您在加密貨幣交易所將 USDC 兌換為當地貨幣時，可能會收取少量的兌換費（通常為 0.1-0.3%）。此外，當您向您的銀行轉帳時，可能會有或可能不會有手續費。請查看您的加密貨幣交易所的資訊。",
+      "fees-nonUSD-1": "不過，我們提醒您，客戶會多付 0.3% USDC 幣。這額外收益會減少因為匯率波動或這些費用而造成的損失。使用 Flash 而非信用卡平或其他支付平台 (通常具有 1-5% 的費用) 會讓您省不少錢。",
+      "fees-nonUSD-2": "最後，Flash 不會從匯率中獲利，因此您和您的客戶將永遠獲得最好的 USDC\u21C4{merchantCurrency} 匯率。",
+      "lose-1": "長期而言，您應該不會因為 USDC\u21C4{merchantCurrency} 匯率波動而損失 (反而您可能會多賺一點)。",
+      "lose-2": "客戶付款時，我們會把 USDC\u21C4{merchantCurrency} 的匯率調 0.3%，對商家有利。因此、商家會多賺 0.3%。長期而言，這額外的收益可以抵銷匯率波動造成的損失。",
+      "lose-3": "範例",
+      "lose-4": "假設匯率是 1 USDC = {rate} {merchantCurrency}。客戶在 MetaMask App 輸入 {localSent} {merchantCurrency} 並點 \u0022付款\u0022 時，您會收到",
+      "lose-5": "在您的 Flash App。這包括您給客戶的 2% 折扣。當您出金時，如果匯率沒有改變，您會收到 {usdcReceived} * {rate} = {localReceived} {merchantCurrency}。如果有 2% 的折扣，您應該會收到 {localReceivedIntended} {merchantCurrency} 。反而，您收到了 {localReceived} {merchantCurrency} (多 ~0.3%)。如果您經常出金（大約每兩週一次），這些額外收益可以抵銷匯率波動造成的損失。",
+      "lose-6": "客戶應該不會在意多付 0.3%，因為: 1) 他們已經從您獲得 2% 的折扣。2) 沒有2%折扣，客戶（尤其是國際旅客）也不會在意，因為付款時的 USDC\u21C4{merchantCurrency} 匯率會比所有銀行提供的 USDC\u21C4{merchantCurrency} 匯率更佳 0.5-5%。",
+      "rate-1": "Flash 使用的 USDC\u21C4{merchantCurrency} 匯率來自{cex}。Flash 不會從匯率中獲利，因此您和您的客戶將永遠獲得最好的 USDC\u21C4{merchantCurrency} 匯率。",
+      "rate-1USD": "USDC 以 1:1 的匯率兌換成美元，不收取任何費用。"
+    },
+    "IntroErrorModal": {},
+    "CbAuth": "連接 Coinbase 中"
+  },
+  "Common": {
+    "close": "關閉",
+    "comfirm": "確定",
+    "cancel": "取消",
+    "reduceFxLossTooltip": "客戶付款時，我們的介面會將 USDC-{merchantCurrency} 的匯率調整 0.3%，以利於商家。因此，您實際上多賺了 0.3%。長遠來說，如果您經常出金 (~2x per month)，這些額外的收入應該可以抵銷因匯率波動而造成的損失。客戶不會介意多出的 0.3%，因為 Flash 提供的 USDC 兌 {merchantCurrency} 匯率通常比任何銀行的 USD 兌 {merchantCurrency} 匯率高出 1-5%。",
+    "mmTooltip": "MetaMask是收發加密貨幣最流行的App，全球有 5000+ 萬人在使用。",
+    "usdcTooltip": "1 USDC 幣 = 1 美元，由 Circle 保證。大多數區塊鏈使用者有 USDC。",
+    "polygonTooltip": "Polygon 區塊鏈是最常用的區塊鏈之一，交易費用低。此外，許多平台都與之整合。",
+    "cbTooltip": "Coinbase is a platform where USDC can be exchanged for {merchantCurrency} and where you can link a bank account",
+    "MAX": " MAX 交易所",
+    "Coinbase": " Coinbase ",
+    "CEX": "加密貨交易所",
+    "aCEX": "一個加密貨交易所",
+    "CEXes": "合適的加密貨交易所",
+    "your": "您的",
+    "account": "帳戶",
+    "transferToCEX": "出金至{cex}",
+    "transferToBank": "出金至銀行",
+    "transfer": "出金",
+    "next": "下頁",
+    "back": "前頁",
+    "done": "完成",
+    "finish": "完成",
+    "skip": "跳過",
+    "max": "全部",
+    "balance": "餘額",
+    "blockchainFee": "區塊鏈費用",
+    "fromFlash": "從 Flash",
+    "fromCoinbase": "從 Coinbase",
+    "toCEX": "到 {cex}",
+    "toBank": "到銀行",
+    "enterAnEvmAddress": "輸入 EVM 地址",
+    "transferring": "出金中",
+    "transferSuccessful": "出金成功"
   }
 }

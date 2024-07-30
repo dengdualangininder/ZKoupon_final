@@ -3,26 +3,39 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "@/navigation";
-// wagmi
+// other
 import { useConnect } from "wagmi";
+import { useLocale, useTranslations } from "next-intl";
 // components
 import ErrorModalLight from "./modals/ErrorModalLight";
+// constants
+import { langObjectArray } from "@/utils/constants";
 // images
 import { SpinningCircleWhiteLarge } from "@/utils/components/SpinningCircleWhite";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown, faAngleUp, faBars, faCaretDown, faGlobe, faX } from "@fortawesome/free-solid-svg-icons";
+// images
+import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
+import { SlGlobe } from "react-icons/sl";
 
 const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setPage: any; isUsabilityTest: boolean }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState<any>("");
   const [show, setShow] = useState(false);
   const [userType, setUserType] = useState("owners");
   const [moreOptionsModal, setMoreOptionsModal] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showLangs, setShowLangs] = useState(false);
 
   // hooks
   let { connectAsync, connectors } = useConnect();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("App.Login");
+  console.log("locale:", locale);
 
   // define myConnectors
   if (isMobile) {
@@ -73,28 +86,57 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   };
 
   return (
-    <div className="w-full h-screen font-medium text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto bg-light2 text-black">
-      <div className="w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] landscape:xl:desktop:w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
-        {/*--- logo + menu bar ---*/}
-        <div className="pt-6 w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-end">
+    <div className="w-full h-screen font-medium text-lg landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto bg-light2 text-black">
+      {/*---showLang mask---*/}
+      {showLangs && <div className="absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setShowLangs(false)}></div>}
+      <div className="w-[344px] portrait:sm:w-[340px] landscape:lg:w-[340px] landscape:xl:desktop:w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
+        {/*--- lang + logo + menu bar ---*/}
+        <div className="flex-none w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-between">
+          {/*--- lang ---*/}
+          <div className="flex-none h-[60px] w-full flex justify-end items-end">
+            <div
+              className={`${
+                showLangs ? "bg-slate-300 rounded-br-none rounded-bl-none" : ""
+              } p-[12px] flex items-center desktop:hover:bg-slate-300 rounded-md relative cursor-pointer `}
+              onClick={() => setShowLangs(!showLangs)}
+            >
+              <SlGlobe size={40} className="mr-[4px] w-[24px] h-[24px] landscape:xl:desktop:w-[22px] landscape:xl:desktop:h-[22px]" />
+              <FaCaretDown size={40} className="w-[20px] h-[20px] landscape:xl:desktop:w-[18px] landscape:xl:desktop:h-[18px]" />
+              {showLangs && (
+                <div className="absolute top-[calc(100%)] right-0 rounded-md rounded-tr-none p-[32px] space-y-[32px] text-xl landscape:xl:desktop:text-base font-medium bg-slate-300 z-[100]">
+                  {langObjectArray.map((langObject) => (
+                    <div
+                      key={langObject.id}
+                      className={`${
+                        langObject.id == locale ? "underline decoration-[2px] underline-offset-[8px]" : ""
+                      } xl:desktop:hover:underline xl:desktop:hover:decoration-[2px] xl:desktop:hover:underline-offset-[8px] cursor-pointer`}
+                      onClick={() => router.replace("/app", { locale: langObject.id })}
+                    >
+                      {langObject.text}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
           {/*--- logo ---*/}
-          <div className="pb-1 w-full flex flex-col items-center justify-center">
-            <div className="relative w-full h-[90px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:h-[110px] landscape:xl:desktop:h-[90px] mr-1">
+          <div className="w-full flex flex-col items-center justify-center">
+            <div className="relative w-full h-[88px] mr-1">
               <Image src="/logo.svg" alt="logo" fill />
             </div>
-            <div className="mt-8 mb-10 textBase2 text-center">Crypto payments with 0% fees</div>
+            <div className="my-4 textBase text-center">{t("subheader")}</div>
           </div>
 
           {/*--- menu bar ---*/}
-          <div className="w-full h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px] flex items-center justify-center flex-none relative">
-            <div className="absolute w-full h-[48px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[40px] rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
+          <div className="w-full h-[52px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] flex items-center justify-center flex-none relative">
+            <div className="absolute w-full h-full rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
             <div
               className={`${
                 userType == "owners" ? "bg-black w-[54%] drop-shadow-md text-white" : "bg-transparent text-gray-500 w-[46%]"
               } h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
               onClick={() => setUserType("owners")}
             >
-              Owners
+              {t("owners")}
             </div>
             <div
               className={`${
@@ -102,21 +144,21 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
               }  h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
               onClick={() => setUserType("employees")}
             >
-              Employees
+              {t("employees")}
             </div>
           </div>
         </div>
 
         {/*--- content below MENU ---*/}
-        <div className="pb-6 mt-8 w-full landscape:lg:min-h-[350px] portrait:sm:mt-12 landscape:lg:mt-10 landscape:xl:mt-10 landscape:xl:desktop:text-base">
+        <div className="pt-[24px] pb-[32px] w-full landscape:xl:desktop:text-base">
           {/*--- FOR OWNERS ---*/}
           {userType == "owners" && (
-            <div className="w-full flex flex-col space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-6">
-              {/*--- connectors: google, apple, line, phantom, metamask ---*/}
+            <div className="pt-[16px] w-full flex flex-col space-y-[32px] portrait:sm:space-y-[32px] landscape:lg:space-y-[28px]">
+              {/*--- connectors: google, facebook, apple ---*/}
               {myConnectors.map<any>((i: any) => (
                 <div
                   key={i.name}
-                  className="w-full h-[64px] portrait:sm:h-[72px] landscape:lg:h-[72px] portrait:lg:h-[80px] landscape:xl:h-[80px] landscape:xl:desktop:h-[60px] flex items-center text-gray-700 bg-white rounded-md lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                  className="w-full h-[68px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[56px] flex items-center text-gray-700 bg-white rounded-md lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                   onClick={async () => {
                     // usability test
                     if (isUsabilityTest) {
@@ -132,10 +174,10 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                     console.log("login page, finished connecting");
                   }}
                 >
-                  <div className="relative ml-7 mr-4 w-[40px] h-[32px]">
+                  <div className="relative ml-[20px] mr-[16px] w-[40px] h-[32px]">
                     <Image src={i.img} alt={i.name} fill />
                   </div>
-                  <div>Sign in with {i.name}</div>
+                  <div>{t("signInWith", { socialMedia: i.name })}</div>
                 </div>
               ))}
             </div>
@@ -143,13 +185,13 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
 
           {/*--FOR EMPLOYEES---*/}
           {userType == "employees" && (
-            <div className="px-0.5 w-full flex flex-col items-center">
+            <div className="w-full flex flex-col items-center">
               <div className="w-full">
                 {/*--email---*/}
-                <div className="">Email</div>
+                <div className="">{t("email")}</div>
                 <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
                 {/*--password---*/}
-                <div className="mt-4 portrait:sm:mt-6 landscape:lg:mt-6 landscape:xl:desktop:mt-3">Password</div>
+                <div className="mt-[16px] portrait:sm:mt-[24px] landscape:lg:mt-[20px] landscape:xl:desktop:mt-[12px]">{t("password")}</div>
                 <div className="w-full relative">
                   <input
                     type={show ? "text" : "password"}
@@ -172,20 +214,20 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
                 {/*--sign in button---*/}
                 <button
                   type="submit"
-                  className="buttonPrimary mt-8 portrait:sm:mt-12 landscape:md:mt-10 landscape:lg:mt-12 landscape:xl:desktop:mt-8 text-white w-full flex justify-center items-center"
+                  className="buttonPrimaryLight mt-[32px] portrait:sm:mt-[36px] landscape:lg:mt-[36px] landscape:xl:desktop:mt-[32px] w-full flex justify-center items-center"
                   onClick={employeeLogin}
                 >
-                  {isLoggingIn ? <SpinningCircleWhiteLarge /> : "Sign In"}
+                  {isLoggingIn ? <SpinningCircleWhiteLarge /> : t("signIn")}
                 </button>
               </div>
               <div
-                className="landscape:mt-8 portrait:mt-10 landscape:md:mt-12 portrait:sm:mt-20 text-base landscape:md:text-xl portrait:sm:text-2xl text-center link landscape:xl:desktop:text-sm"
+                className="pt-[48px] textBase text-center link"
                 onClick={() => {
-                  setErrorMsg("Please contact your employer. The person who created this Flash account should know the Employee Password or can set a new one.");
+                  setErrorMsg(t("forgotModalText"));
                   setErrorModal(true);
                 }}
               >
-                Forgot password?
+                {t("forgot")}
               </div>
             </div>
           )}

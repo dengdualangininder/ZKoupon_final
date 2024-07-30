@@ -12,16 +12,16 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
   // hooks
   const router = useRouter();
   const t = useTranslations("HomePage.How");
-  const tcommon = useTranslations("HomePage.Common");
+  const tcommon = useTranslations("Common");
 
   return (
-    <div id="howEl" className="w-full flex flex-col items-center py-16">
+    <div className="w-full flex flex-col items-center py-[64px]">
       {/*--- header + select currency ---*/}
       <div data-show="yes" className="opacity-0 transition-all duration-1000">
         {/*--- header ---*/}
         <div className="homeHeaderFont text-center">{t("header")}</div>
         {/*--- select currency ---*/}
-        <div className="my-12 pb-4 w-full flex flex-col sm:flex-row justify-center items-center">
+        <div className="my-[48px] pb-[16px] w-full flex flex-col sm:flex-row justify-center items-center">
           <label className="sm:mr-3 howHeader2Font">{t("selectCurrency")}: </label>
           <select
             className="mt-4 sm:mt-0 h-[44px] sm:h-[36px] py-0 font-medium pr-10 text-xl sm:text-base leading-none border bg-dark6 border-slate-600 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-colors duration-500 rounded-md"
@@ -84,8 +84,8 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
                   span1: (chunks: any) => <span className="group">{chunks}</span>,
                   sup: (chunks: any) => <sup>{chunks}</sup>,
                   span2: (chunks: any) => <span className="linkDark">{chunks}</span>,
-                  div: (chunks: any) => <div className="w-full bottom-[calc(100%+4px)] left-0 howTooltip">{chunks}</div>,
-                  tooltip: t("mmTooltip", { merchantCurrency: merchantCurrency }),
+                  div: (chunks: any) => <div className="w-full bottom-[calc(100%+4px)] left-0 tooltip">{chunks}</div>,
+                  tooltip: tcommon("mmTooltip"),
                 })}
               </div>
             </div>
@@ -100,10 +100,10 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
                   span1: (chunks: any) => <span className="group">{chunks}</span>,
                   sup: (chunks: any) => <sup>{chunks}</sup>,
                   span2: (chunks: any) => <span className="linkDark">{chunks}</span>,
-                  div: (chunks: any) => <div className="bottom-[calc(100%+8px)] left-0 howTooltip">{chunks}</div>,
+                  div: (chunks: any) => <div className="bottom-[calc(100%+8px)] left-0 tooltip">{chunks}</div>,
                   span3: (chunks: any) => <span className={`${merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
                   merchantCurrency: merchantCurrency,
-                  tooltip: t("usdcTooltip"),
+                  tooltip: tcommon("usdcTooltip"),
                 })}
               </div>
             </div>
@@ -211,7 +211,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
                     span1: (chunks: any) => <span className="group">{chunks}</span>,
                     span2: (chunks: any) => <span className="linkDark">{chunks}</span>,
                     span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
-                    div: (chunks: any) => <div className="w-full bottom-[calc(100%+4px)] left-0 howTooltip whitespace-normal">{chunks}</div>,
+                    div: (chunks: any) => <div className="w-full bottom-[calc(100%+4px)] left-0 tooltip whitespace-normal">{chunks}</div>,
                     tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: merchantCurrency }),
                   })}
                 </div>

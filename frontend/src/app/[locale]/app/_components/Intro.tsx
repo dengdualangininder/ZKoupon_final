@@ -2,16 +2,24 @@
 // nextjs
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
 // other
 import { v4 as uuidv4 } from "uuid";
+import { QRCodeSVG } from "qrcode.react";
+import { useTranslations } from "next-intl";
+import { renderToStream, pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
+import { saveAs } from "file-saver";
 // components
-import Flow from "./Flow";
-import Flow2 from "./Flow2";
-import Flow3 from "./Flow3";
-import ErrorModal from "./modals/ErrorModal";
+import FlashToBankAnimation from "./FlashToBankAnimation";
+import IntroErrorModal from "./modals/IntroErrorModal";
+import Placard from "./placard/Placard";
+
 // constants
-import { countryData, countryCurrencyList, currency2number, merchantType2data } from "@/utils/constants";
+import { countryData, countryCurrencyList, cexToLinks, merchantType2data, cexToName } from "@/utils/constants";
+// images
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown, faCircleCheck, faPlus, faMinus, faX, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
 
@@ -25,6 +33,9 @@ const Intro = ({
   isMobile,
   idToken,
   publicKey,
+  setCbIntroModal,
+  isUsabilityTest,
+  setCashbackModal,
 }: {
   paymentSettingsState: PaymentSettings;
   setPaymentSettingsState: any;
@@ -35,66 +46,118 @@ const Intro = ({
   isMobile: boolean;
   idToken: string;
   publicKey: string;
+  setCbIntroModal: any;
+  isUsabilityTest: boolean;
+  setCashbackModal: any;
 }) => {
   const [step, setStep] = useState("welcome");
-  const [isSent, setIsSent] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<any>("");
-  const [errorModal, setErrorModal] = useState(false);
-  const [save, setSave] = useState(false);
   const [url, setUrl] = useState("");
+  const [save, setSave] = useState(false);
+  const [expand, setExpand] = useState(false);
+  // modal states
+  const [errorMsg, setErrorMsg] = useState<any>("");
+  const [introErrorModal, setIntroErrorModal] = useState(false);
+  const [isIOS, setIsIOS] = useState(true);
 
   // hooks
   const router = useRouter();
+  const t = useTranslations("App.Intro");
+  const tcommon = useTranslations("Common");
 
   useEffect(() => {
-    // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
-    // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
-    // control when to specifically trigger this useEffect
-    console.log("saveSettings useEffect run once");
-    console.log(paymentSettingsState);
-    console.log(cashoutSettingsState);
-    const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
-    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
-    if (paymentSettingsState.merchantPaymentType === "online") {
-      tempUrl =
-        tempUrl +
-        "&&" +
-        Buffer.from(paymentSettingsState.merchantEmail, "utf8").toString("base64") +
-        "&&" +
-        Buffer.from(paymentSettingsState.merchantWebsite, "utf8").toString("base64") +
-        "&&" +
-        paymentSettingsState.merchantBusinessType +
-        "&&" +
-        paymentSettingsState.merchantFields.join(",");
+    const isIOSTemp = /iPad|iPhone|iPod|MacIntel/.test(navigator.platform);
+    console.log("platform:", navigator.platform);
+    console.log("isIOS:", isIOSTemp);
+    setIsIOS(isIOSTemp);
+  }, []);
+
+  const sendEmail = async () => {
+    // check if form completed
+    if (!paymentSettingsState.merchantName) {
+      setIntroErrorModal(true);
+      setErrorMsg("Please enter the name of your business");
+      return;
     }
-    setUrl(tempUrl);
-    console.log(tempUrl);
+    if (!paymentSettingsState.merchantEmail) {
+      setIntroErrorModal(true);
+      setErrorMsg("Please enter an email address");
+      return;
+    }
 
-    const saveSettings = async () => {
-      try {
-        console.log("entering saveSettings API");
-        const res = await fetch("/api/saveSettings", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ paymentSettings: { ...paymentSettingsState, qrCodeUrl: tempUrl }, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
-        });
-        const data = await res.json();
+    // show next step
+    setStep("emailSent");
 
-        if (data === "saved") {
-          console.log("settings saved");
-        } else {
-          setErrorMsg("Internal server error. Data was not saved.");
-          setErrorModal(true);
-        }
-      } catch (e) {
-        setErrorMsg("Server request error. Data was not saved.");
-        setErrorModal(true);
+    // save settings
+    try {
+      const res = await fetch("/api/saveSettings", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
+      });
+      const data = await res.json();
+
+      if (data == "saved") {
+        console.log("settings saved");
+      } else {
+        setErrorMsg("Internal server error. Data was not saved.");
+        setIntroErrorModal(true);
+        return;
       }
-    };
-    saveSettings();
-  }, [save]);
+    } catch (e) {
+      setErrorMsg("Server request error. Data was not saved.");
+      setIntroErrorModal(true);
+      return;
+    }
+
+    return;
+
+    // create PDF file string
+    const el = document.getElementById("introQrCode");
+    const dataString = await pdf(
+      <Document>
+        <Page size="A5" style={{ position: "relative" }}>
+          <View>
+            <Placard />
+          </View>
+          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
+            {/* @ts-ignore */}
+            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* @ts-ignore */}
+              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+              {/* @ts-ignore */}
+              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
+            </Svg>
+          </View>
+        </Page>
+      </Document>
+    ).toString();
+
+    // make api call
+    const res = await fetch("/api/emailQrCode", {
+      method: "POST",
+      body: JSON.stringify({ merchantEmail: paymentSettingsState.merchantEmail, dataString }),
+    });
+
+    // api response
+    const response = await res.json();
+    console.log(response);
+    if (response == "email sent") {
+      console.log("email sent");
+    } else {
+      console.log("email did not send");
+    }
+  };
 
   const onClickSIWC = async () => {
+    // usability test
+    if (isUsabilityTest) {
+      setPage("loading");
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setCbIntroModal(true);
+      setPage("app");
+      return;
+    }
+
     const cbRandomSecure = uuidv4() + "SUBSTATEfromIntro";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
@@ -104,296 +167,100 @@ const Intro = ({
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-white">
-      <div className="w-full portrait:max-w-[500px] portrait:sm:max-w-none h-full flex justify-center items-center">
+    <div className="text-lg w-full h-screen flex justify-center overflow-y-auto bg-light2 text-black">
+      <div className="w-[85%] min-w-[354px] max-w-[420px] desktop:max-w-[420px] h-screen my-auto max-h-[850px]">
+        <div className="hidden">
+          <QRCodeSVG id="introQrCode" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
+        </div>
+
         {/*--- welcome ---*/}
         {step == "welcome" && (
-          <div className="w-full h-full flex flex-col items-center overflow-y-auto">
-            {/*--- text ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
-                <div className="relative w-[300px] h-[90px] landscape:lg:h-[120px] portrait:sm:h-[120px] landscape:lg:desktop:h-[100px] mr-1">
-                  <Image src="/logo.svg" alt="logo" fill />
-                </div>
-                <div className="text2xl font-medium text-center animate-fadeInAnimation">Welcome to Flash!</div>
-                <div className="mt-3 introFontHowTo leading-relaxed text-center animate-fadeInAnimation">
-                  Get your store ready to start
-                  <br />
-                  accepting crypto payments
-                </div>
+          <div className="text-xl w-full h-full flex flex-col items-center justify-center">
+            <div className="pb-16 w-full flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
+              <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
+                <Image src="/logo.svg" alt="logo" fill />
               </div>
-            </div>
-            {/*--- buttons ---*/}
-            <div className="introButtonContainer justify-end">
-              <button className="introNext" onClick={() => setStep("how1")}>
-                Start
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/*--- how1 ---*/}
-        {step == "how1" && (
-          <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
-            {/*--- image ---*/}
-            <div className="relative portrait:w-[100vw] portrait:h-[calc(100vw*(3/4))] landscape:w-[50%] landscape:h-[100%] flex-none">
-              <Image
-                src="/intro-scan.png"
-                alt="scan"
-                fill
-                style={{
-                  objectFit: "cover",
-                }}
-              />
-            </div>
-            {/*--- text + buttons---*/}
-            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
-              {/*--- text ---*/}
-              <div className="flex-1 w-[92%] portrait:xs:w-[90%] portrait:lg:w-[80%] flex flex-col items-center landscape:lg:justify-center introFontHowTo space-y-3 portrait:md:space-y-4 landscape:lg:space-y-6 pt-4 portrait:sm:pt-8 landscape:lg:pt-8">
-                <div className="w-full">First, you print and display a QR code (you'll create one later).</div>
-                <div className="relative">
-                  When a customer scans your QR code, their{" "}
-                  <span className="group">
-                    <span className="link">MetaMask App</span>
-                    <div className="w-full top-[calc(100%-32px)] left-0 introTooltip">
-                      MetaMask is currently the most popular App to send and receive tokens. It is used by 50+ million people worldwide.
-                    </div>
-                  </span>{" "}
-                  will open. The customer then <span className="font-bold">enters the amount of {paymentSettingsState?.merchantCurrency} for payment</span>.
-                </div>
-                <div className="relative">
-                  When the customer submits the payment,{" "}
-                  <span className="group">
-                    <span className="link">USDC tokens</span>
-                    <div className="bottom-[calc(100%+8px)] left-0 introTooltip">
-                      The USDC token is used by almost all crypto users. 1 USDC token equals to 1 USD, as gauranteed by Circle.
-                    </div>
-                  </span>{" "}
-                  (equal {paymentSettingsState?.merchantCurrency == "USD" ? "" : "in value"} to the amount of {paymentSettingsState?.merchantCurrency} entered) will be be sent from
-                  the customer's MetaMask App to your Flash App.
-                </div>
+              <div className="pb-4 text-center animate-fadeInAnimation leading-relaxed font-medium">
+                {t("welcome.text-1")}
+                <br />
+                {t("welcome.text-2")}
               </div>
               {/*--- buttons ---*/}
-              <div className="flex-none pt-4 w-[82%] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between">
-                <button className="introBack" onClick={() => setStep("welcome")}>
-                  Back
-                </button>
-                <button className="introNext" onClick={() => setStep("how2")}>
-                  Next
-                </button>
-              </div>
+              <button className="buttonStart" onClick={() => setStep("info")}>
+                {t("welcome.start")}
+              </button>
             </div>
           </div>
         )}
 
-        {/*--- how2 ---*/}
-        {step == "how2" && (
-          <div className="w-full h-full flex portrait:flex-col portrait:items-center portrait:overflow-y-auto">
-            {/*--- title ---*/}
-            <div className="mt-8 text2xl font-bold">Cashing Out</div>
-            {/*--- animation ---*/}
-            <div className="portrait:w-full landscape:w-[50%] portrait:h-[240px] portrait:min-h-[240px] portrait:sm:min-h-[40%] landscape:h-full flex items-center justify-center flex-none">
-              <Flow2 paymentSettingsState={paymentSettingsState} cashoutSettingsState={cashoutSettingsState} />
-            </div>
-            {/*--- text + button ---*/}
-            <div className="flex-1 portrait:w-full landscape:w-[50%] flex flex-col items-center landscape:overflow-y-auto landscape:xl:desktop:pr-[120px]">
-              {/*--- text ---*/}
-              <div className="flex-1 w-[92%] portrait:sm:w-[600px] portrait:lg:w-[700px] flex flex-col items-center landscape:lg:justify-center introFontHowTo landscape:pt-4 landscape:lg:pt-8">
-                {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-                  <div className="flex flex-col items-center">
-                    {paymentSettingsState.merchantCurrency == "USD" && (
-                      <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
-                        <div>
-                          To cash out funds to your bank, you must link a Coinbase account to Flash. Once linked,{" "}
-                          <span className="font-bold">cashing out on Flash is just a few easy clicks</span>.
-                        </div>
-                        <div>
-                          When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency} at a 1:1 rate (no fees). Deposits are made via ACH (no
-                          fees).
-                        </div>
-                        <div>So, from the customer to your bank, you keep all the money (0% fees).</div>
-                      </div>
-                    )}
-                    {paymentSettingsState.merchantCurrency != "USD" && (
-                      <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 flex flex-col">
-                        <div>
-                          To cash out funds to your bank, you must link a Coinbase account to Flash. Once linked,{" "}
-                          <span className="font-bold">cashing out on Flash is just a few easy clicks</span>.
-                        </div>
-                        <div>
-                          When you cash out, USDC will be automatically converted to {paymentSettingsState.merchantCurrency}. Flash is designed so that you will not lose money from
-                          this conversion, meaning if a customer pays 10 EUR, you will receive at least 10 EUR in the bank.
-                        </div>
-                        <div className="hidden">Flash charges zero fees and does not profit by giving you suboptimal rates.</div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex != "Coinbase" && (
-                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 textLg">
-                    <div>To cash out funds to your bank, you will need an account on {cashoutSettingsState.cex} Exchange (or other CEX).</div>
-                    <div>
-                      To cash out, you first transfer USDC from Flash to {cashoutSettingsState.cex}. Then, on {cashoutSettingsState.cex}, you can convert USDC to{" "}
-                      {paymentSettingsState.merchantCurrency} and transfer funds to your bank. Detailed instructions will be in the App.
-                    </div>
-                    <div>Flash is designed so that you will not lose money from changing conversion rates.</div>
-                    <div>Flash charges zero fees. We do not profit by giving suboptimal exchange rates.</div>
-                  </div>
-                )}
-                {paymentSettingsState.merchantCountry == "Any country" && (
-                  <div className="space-y-3 portrait:sm:space-y-6 landscape:lg:space-y-6 textLg">
-                    <div>To cash out funds to your bank, you will need a cryptocurrency exchange (CEX). Please use a CEX that allows fiat withdrawals.</div>
-                    <div>
-                      To cash out, you first transfer USDC from Flash to your CEX. Then, on your CEX, you can convert USDC to fiat and transfer funds to your bank. Detailed
-                      instructions will be in the App.
-                    </div>
-                    <div>Flash is designed so that you will not lose money from changing conversion rates.</div>
-                    <div>Flash charges zero fees. We do not profit by giving suboptimal exchange rates.</div>
-                  </div>
-                )}
-              </div>
-              {/*--- buttons ---*/}
-              <div className="flex-none pt-4 w-[82%] portrait:lg:w-[630px] portrait:h-[120px] landscape:h-[100px] portrait:sm:h-[160px] landscape:lg:h-[160px] flex justify-between">
-                <button className="introBack" onClick={() => setStep("how1")}>
-                  Back
-                </button>
-                <button className="introNext" onClick={() => setStep("how3")}>
-                  Next
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {step == "how3" && (
-          <div className="introPageContainer introFontHowTo">
+        {/*--- info ---*/}
+        {step == "info" && (
+          <div className="text-xl h-full flex flex-col">
+            {/*--- spacer ---*/}
+            <div className="h-[8%] landscape:xl:desktop:h-[12%] min-h-[40px]"></div>
             {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-6 portrait:sm:space-y-10 landscape:lg:space-y-10">
-                <div className="w-full">
-                  Flash uses <span className="font-bold">true peer-to-peer payments</span>. This means it is impossible for us to charge fees or skim profits by giving you or your
-                  customer suboptimal conversion rates, which is how most crypto payment platforms profit.
-                </div>
-                <div className="w-full">For every transaction on Flash, you are saving money compared to all other payment methods.</div>
-                <div className="hidden">
-                  We are temporarily requiring merchants give a 2% instant discount to customers who pays using Flash. So, if a customer pays 10 EUR, you will receive 9.8 EUR in
-                  the bank and the customer will get back 0.2 EUR. All savings will be given to the customer, as Flash does not make any profit per transaction.
-                </div>
-                <div className="hidden">
-                  The reason for this is because credit cards charge businesses 3% and give 1% back to the customer, thus locking customers into using credit cards. We hope this
-                  discount will motivate customers to use crypto payments instead. You still save money compared to credit cards. And, we believe the discount will attract many
-                  crypto users to your business.
-                </div>
-              </div>
-            </div>
-            {/*--- buttons ---*/}
-            <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("how2")}>
-                Back
-              </button>
-              <button className="introNext" onClick={() => setStep("name")}>
-                Next
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/*--- name ---*/}
-        {step == "name" && (
-          <div className="introPageContainer introFont3xl">
-            {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 landscape:space-y-8 landscape:lg:space-y-16 portrait:space-y-16">
-                <div className="w-full">Now, let's create your QR code. It'll only take 15 seconds.</div>
-                <div className="w-full">
-                  <label>Enter the name of your business:</label>
-                  <input
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
-                    onBlur={() => setSave(!save)}
-                    value={paymentSettingsState.merchantName}
-                    placeholder="type name here"
-                    className="mt-4 w-full border-b-2 outline-none placeholder:italic placeholder:font-normal font-bold bg-white"
-                  ></input>
-                </div>
-              </div>
-            </div>
-            {/*--- buttons ---*/}
-            <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("how2")}>
-                Back
-              </button>
-              <button className={`${paymentSettingsState.merchantName ? "" : "hidden"} introNext animate-fadeInAnimation`} onClick={() => setStep("currency")}>
-                Next
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/*--- currency ---*/}
-        {step == "currency" && (
-          <div className="introPageContainer introFont3xl">
-            {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-6 landscape:lg:space-y-16 portrait:sm:space-y-16">
-                <div className="w-full">Confirm (or select) your country & currency:</div>
-                <div className="w-full">
-                  <select
-                    onChange={(e) => {
-                      const merchantCountryTemp = e.target.value.split(" / ")[0];
-                      const merchantCurrencyTemp = e.target.value.split(" / ")[1];
-                      const cexTemp = merchantCountryTemp == "Any country" ? "" : countryData[merchantCountryTemp].CEXes[0];
-                      setPaymentSettingsState({
-                        ...paymentSettingsState,
-                        merchantCountry: merchantCountryTemp,
-                        merchantCurrency: merchantCurrencyTemp,
-                      });
-                      setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "" }); // need to set blank as cex will change
-                      setSave(!save);
-                    }}
-                    value={paymentSettingsState.merchantCountry + " / " + paymentSettingsState.merchantCurrency}
-                    className="px-2 border-b-2 outline-none font-bold bg-white"
-                  >
-                    {countryCurrencyList.map((i, index) => (
-                      <option key={index}>{i}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-            {/*--- buttons ---*/}
-            <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("name")}>
-                Back
-              </button>
-              <button className="introNext" onClick={() => setStep("email")}>
-                Next
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/*--- email ---*/}
-        {step == "email" && (
-          <div className="introPageContainer introFont3xl">
-            {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="w-full introTextContainer2 space-y-8 landscape:lg:space-y-16 portrait:sm:space-y-16">
-                <div className="w-full">Confirm (or edit) your email:</div>
+            <div className="px-1 flex-1 space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px] landscape:xl:desktop:space-y-[32px]">
+              <div className="">{t("info.text-1")}:</div>
+              <div className="flex flex-col">
+                <label className="w-full introLabelFont">{t("info.label-1")}</label>
                 <input
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
-                  onBlur={() => setSave(!save)}
-                  value={paymentSettingsState.merchantEmail}
-                  className="introFontXl sm:introFont3xl w-full border-b-2 outline-none font-bold bg-white"
+                  className="introInputFont"
+                  onChange={(e) =>
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantName: e.currentTarget.value,
+                      qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${e.currentTarget.value}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`,
+                    })
+                  }
+                  value={paymentSettingsState.merchantName}
                 ></input>
               </div>
+              <div className="flex flex-col">
+                <label className="w-full introLabelFont">{t("info.label-2")}</label>
+                <select
+                  className="introInputFont"
+                  onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
+                    const merchantCountryTemp = e.target.value.split(" / ")[0];
+                    const merchantCurrencyTemp = e.target.value.split(" / ")[1];
+                    const cexTemp = merchantCountryTemp == "Other" ? "" : countryData[merchantCountryTemp].CEXes[0];
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantCountry: merchantCountryTemp,
+                      merchantCurrency: merchantCurrencyTemp,
+                      qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${paymentSettingsState.merchantName}&merchantCurrency=${merchantCurrencyTemp}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`,
+                    });
+                    setCashoutSettingsState({ cex: cexTemp, cexEvmAddress: "" }); // need to set blank as cex will change
+                    e.target.closest("select")?.blur();
+                  }}
+                  value={`${paymentSettingsState.merchantCountry} / ${paymentSettingsState.merchantCurrency}`}
+                >
+                  {countryCurrencyList.map((i, index) => (
+                    <option key={index}>{i}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="w-full introLabelFont">{t("info.label-3")}</label>
+                <input
+                  className="introInputFont"
+                  onChange={(e) =>
+                    setPaymentSettingsState({
+                      ...paymentSettingsState,
+                      merchantEmail: e.currentTarget.value,
+                    })
+                  }
+                  value={paymentSettingsState.merchantEmail}
+                ></input>
+                <div className="mt-0.5 textBase italic">{t("info.note")}</div>
+              </div>
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("currency")}>
-                Back
+              <button className="introBack" onClick={() => setStep("welcome")}>
+                &#10094;&nbsp; {tcommon("back")}
               </button>
-              <button className="introNext" onClick={() => setStep("emailSent")}>
-                Next
+              <button className="introNext" onClick={sendEmail}>
+                {tcommon("next")} &nbsp;&#10095;
               </button>
             </div>
           </div>
@@ -401,136 +268,336 @@ const Intro = ({
 
         {/*--- emailSent ---*/}
         {step == "emailSent" && (
-          <div className="introPageContainer introFont3xl">
-            {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
-                <div className="w-full">Your QR code was successfully created!</div>
-                <div className="w-full">We emailed it to you, along with instructions on how to print and display it.</div>
-              </div>
+          <div className="text-xl w-full h-full flex flex-col items-center">
+            {/*--- spacer ---*/}
+            <div className="h-[8%] landscape:xl:desktop:h-[12%] min-h-[40px]"></div>
+            {/*--- text ---*/}
+            <div className="px-3 flex-1 flex flex-col space-y-8">
+              <div className="font-semibold">{t("emailSent.text-1")}</div>
+              <div className="">{t("emailSent.text-2")}</div>
             </div>
-
-            {/* <div id="introQrContainer" className="w-[200px] h-[280px] flex-none relative bg-red-300">
-                <Image src="/placard.svg" alt="placard" fill />
-                <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-[30]">
-                  <QRCodeSVG xmlns="http://www.w3.org/2000/svg" size={qrWidth} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
-                </div>
-              </div> */}
-            {/* <div>
-                <input
-                  defaultValue={paymentSettingsState.merchantEmail}
-                  className="introFontXl w-full h-[54px] border-2 p-2 rounded-md outline-none placeholder:italic font-bold"
-                ></input>
-                <button className="mt-4 w-full h-[54px] text-white font-medium bg-blue-500 introFontXl rounded-[4px]">Send Email</button>
-              </div> */}
-
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("email")}>
-                Back
+              <button className="introBack" onClick={() => setStep("info")}>
+                &#10094;&nbsp; {tcommon("back")}
               </button>
-              <button className={`${isSent ? "" : "hidden"} introNext`} onClick={() => setStep("link")}>
-                Next
+              <button className="introNext" onClick={() => setStep("how")}>
+                {tcommon("next")} &nbsp;&#10095;
               </button>
             </div>
           </div>
         )}
 
-        {/*--- link (if coinbase && not "Any country") ---*/}
-        {step == "link" && paymentSettingsState.merchantCountry != "Any country" && cashoutSettingsState.cex == "Coinbase" && (
-          <div className="introPageContainer overflow-y-auto portrait:text-2xl landscape:text-xl portrait:sm:text-[28px] landscape:lg:text-[28px] portrait:lg:text-3xl landscape:xl:text-3xl portrait:leading-[36px] landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed portrait:lg:leading-relaxed landscape:xl:leading-relaxed landscape:xl:desktop:leading-relaxed">
+        {/*--- how customer pays ---*/}
+        {step == "how" && (
+          <div className="pt-[28px] flex-none w-full h-full flex flex-col items-center">
             {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 flex flex-col items-center portrait:space-y-8 landscape:space-y-4 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:lg:desktop:space-y-8">
-                <div className="w-full">If you have a Coinbase account, you can link it to the Flash App now.</div>
-                <div>By linking it, you can transfer funds from Flash to your bank with just a few easy clicks!</div>
-                <div className="pt-2 pb-4">
-                  <button
-                    onClick={onClickSIWC}
-                    className="px-8 py-3 portrait:sm:px-8 portrait:sm:py-4 landscape:lg:px-8 landscape:lg:py-4 landscape:lg:desktop:py-2 portrait:text-lg landscape:text-base portrait:sm:text-2xl landscape:lg:text-2xl portrait:lg:text-2xl landscape:lg:desktop:text-lg text-white font-medium bg-blue-500 border-2 border-blue-500 rounded-full"
-                  >
-                    Link Your Coinbase
-                  </button>
-                </div>
-                <div className="textLg2 px-4 py-3 portrait:md:px-7 portrait:md:py-5 landscape:lg:px-7 landscape:lg:py-5 landscape:xl:desktop:px-5 landscape:xl:desktop:py-3 bg-gray-200 rounded-xl border border-gray-300">
-                  <div className="font-bold">Don't have a Coinbase account?</div>
-                  <div className="mt-1">Skip this step and register for one later. In the Flash App, you can link your Coinbase account at any time.</div>
-                </div>
+            <div className="flex-1 w-full flex flex-col items-center space-y-[20px]">
+              {/*--- title ---*/}
+              <div className="introHeaderFont">{t("how.title")}</div>
+              {/*--- image ---*/}
+              <div className="flex-none relative w-[340px] h-[calc(340px*(3/4))]">
+                <Image src="/intro-scan.png" alt="scan" fill />
               </div>
-            </div>
-            {/*--- buttons ---*/}
-            <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("emailSent")}>
-                Back
-              </button>
-              <button className="introNext" onClick={() => setStep("final")}>
-                Skip
-              </button>
-            </div>
-          </div>
-        )}
-        {/*--- link (if not coinbase or if "Any country") ---*/}
-        {step == "link" && (paymentSettingsState.merchantCountry == "Any country" || cashoutSettingsState.cex != "Coinbase") && (
-          <div className="introPageContainer portrait:text-2xl landscape:text-lg portrait:sm:text-3xl landscape:lg:text-3xl portrait:leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed">
-            {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 portrait:space-y-5 landscape:space-y-3 portrait:sm:space-y-10 landscape:lg:space-y-8 landscape:xl:space-y-12">
-                <div className="w-full portrait:space-y-6 landscape:space-y-3 landscape:lg:space-y-6">
-                  <div>Enter the USDC (Polygon) deposit address of your cryptocurrency exchange account:</div>
-                  <input
-                    onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
-                    onBlur={() => setSave(!save)}
-                    value={cashoutSettingsState.cexEvmAddress}
-                    className="w-full portrait:text-[13px] landscape:text-lg portrait:sm:text-xl landscape:lg:text-xl portrait:lg:text-2xl landscape:xl:text-2xl border-b-2 outline-none placeholder:text-lg placeholder:portrait:sm:text-2xl placeholder:landscape:lg:text-2xl xs:font-medium bg-white"
-                    placeholder="Enter address here"
-                  ></input>
-                </div>
-                <div className="pt-3 w-full leading-relaxed">The address is used to allow easy transfer of USDC from Flash to your cryptocurrency exchange.</div>
-                {cashoutSettingsState.cex ? (
-                  <div className="pt-3 w-full leading-relaxed">
-                    If you don't have one, please register an account on {cashoutSettingsState.cex} Exchange. You can skip this step for now.
+              {/*--- text ---*/}
+              <div className="flex flex-col space-y-[12px]">
+                <div className="relative flex">
+                  <div className="introNumber">1</div>
+                  <div>
+                    {t.rich("how.text-1", {
+                      span1: (chunks) => <span className="group">{chunks}</span>,
+                      span2: (chunks) => <span className="linkLight">{chunks}</span>,
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                      div: (chunks) => <div className="w-full top-[calc(100%+4px)] left-0 tooltip text-base">{chunks}</div>,
+                      tooltip: tcommon("mmTooltip"),
+                    })}
                   </div>
-                ) : (
-                  <div>If you don't have one, please register an account on a cryptocurrency exchange. You can skip this step for now.</div>
-                )}
+                </div>
+                <div className="relative flex">
+                  <div className="introNumber">2</div>
+                  <div>{t.rich("how.text-2", { span: (chunks) => <span className="font-bold">{chunks}</span>, merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
+                </div>
+                <div className="relative flex">
+                  <div className="introNumber">3</div>
+                  <div>
+                    {t.rich("how.text-3", {
+                      span1: (chunks) => <span className="group">{chunks}</span>,
+                      span2: (chunks) => <span className="linkLight">{chunks}</span>,
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                      div: (chunks) => <div className="bottom-[calc(100%+8px)] left-0 tooltip text-base">{chunks}</div>,
+                      span3: (chunks: any) => <span className={`${paymentSettingsState?.merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
+                      merchantCurrency: paymentSettingsState?.merchantCurrency,
+                      tooltip: tcommon("usdcTooltip"),
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
               <button className="introBack" onClick={() => setStep("emailSent")}>
-                Back
+                &#10094;&nbsp; {tcommon("back")}
+              </button>
+              <button
+                className="introNext"
+                onClick={() => (paymentSettingsState.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" ? setStep("cashoutCb-1") : setStep("cashoutNoCb-1"))}
+              >
+                {tcommon("next")} &nbsp;&#10095;
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/*--- cashoutCb-1 ---*/}
+        {step == "cashoutCb-1" && (
+          <div className="pt-[28px] flex-none w-full h-full flex flex-col items-center">
+            {/*--- content ---*/}
+            <div className="flex-1 flex flex-col space-y-[16px]">
+              {/*--- title ---*/}
+              <div className="introHeaderFont">{t("cashoutCb-1.title")}</div>
+              {/*--- animation ---*/}
+              <div className="w-full flex items-center justify-center">
+                <FlashToBankAnimation paymentSettingsState={paymentSettingsState} />
+              </div>
+              {/*--- text ---*/}
+              <div className="pt-2 space-y-[12px]">
+                <div className="relative flex">
+                  <div className="introNumber">1</div>
+                  <div>
+                    {t.rich("cashoutCb-1.text-1", {
+                      span1: (chunks) => <span className="group">{chunks}</span>,
+                      span2: (chunks) => <span className="linkLight">{chunks}</span>,
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                      div: (chunks) => <div className="left-0 top-[calc(100%+8px)] tooltip text-base">{chunks}</div>,
+                      tooltip: tcommon("cbTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency }),
+                    })}
+                  </div>
+                </div>
+                <div className="relative flex">
+                  <div className="introNumber">2</div>
+                  <div>{t("cashoutCb-1.text-2")}</div>
+                </div>
+                <div className="relative">
+                  {t.rich("cashoutCb-1.text-3", {
+                    span1: (chunks: any) => <span className="group">{chunks}</span>,
+                    span2: (chunks: any) => <span className="linkLight">{chunks}</span>,
+                    span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
+                    span4: (chunks: any) => <span className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
+                    div: (chunks: any) => <div className="w-full bottom-[28px] whitespace-normal tooltip text-base">{chunks}</div>,
+                    tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency }),
+                    merchantCurrency: paymentSettingsState.merchantCurrency,
+                  })}
+                </div>
+              </div>
+              {/*--- buttons ---*/}
+              <div className="pt-[4px] w-full space-y-[24px] flex flex-col items-center">
+                <button className="introButtonBlack" onClick={onClickSIWC}>
+                  {t("cashoutCb-1.button-1")}
+                </button>
+                <button className="introButtonWhite" onClick={() => setStep("cashoutCb-2")}>
+                  {t("cashoutCb-1.button-2")}
+                </button>
+              </div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="introButtonContainer">
+              <button className="introBack" onClick={() => setStep("how")}>
+                &#10094;&nbsp; {tcommon("back")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/*--- cashoutCb-2 ---*/}
+        {step == "cashoutCb-2" && (
+          <div className="pt-8 w-full h-full flex flex-col items-center">
+            {/*--- content ---*/}
+            <div className="flex-1 flex flex-col items-center space-y-8">
+              <div className="introHeaderFont">{t("cashoutCb-2.title")}</div>
+              <div>{t.rich("cashoutCb-2.text-1", { span: (chunks) => <span className={`${isMobile ? "hidden" : ""}`}>{chunks}</span> })}</div>
+              <button className="introButtonBlack" onClick={() => window.open("https://www.coinbase.com/signup", "_blank")}>
+                Download Coinbase App
+              </button>
+              <button className={`${isMobile ? "hidden" : ""} introButtonBlack`}>
+                Coinbase's Official Website
+                <FontAwesomeIcon icon={faExternalLink} className="ml-2" />
+              </button>
+              <div>{t("cashoutCb-2.text-2")}</div>
+              {/*--- can I use another cex? ---*/}
+              <div className="w-full flex flex-col bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
+                <div className="flex space-x-3">
+                  <FontAwesomeIcon icon={expand ? faMinus : faPlus} className="pt-1" />
+                  <div className="">{t("cashoutCb-2.question")}</div>
+                </div>
+                <div className={`${expand ? "max-h-[300px]" : "max-h-0"} w-full overflow-hidden`}>
+                  <div className="py-2">{t("cashoutCb-2.answer")}</div>
+                </div>
+              </div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="introButtonContainer">
+              <button className="introBack" onClick={() => setStep("cashoutCb-1")}>
+                &#10094;&nbsp; {tcommon("back")}
               </button>
               <button className="introNext" onClick={() => setStep("final")}>
-                {cashoutSettingsState.cexEvmAddress ? "Next" : "Skip"}
+                {tcommon("next")} &nbsp;&#10095;
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/*--- cashoutNoCb-1 ---*/}
+        {step == "cashoutNoCb-1" && (
+          <div className="pt-8 w-full h-full flex flex-col items-center">
+            {/*--- content ---*/}
+            <div className="w-full flex-1 flex flex-col items-center space-y-4">
+              {/*--- title ---*/}
+              <div className="introHeaderFont">{t("cashoutNoCb-1.title")}</div>
+              {/*--- body ---*/}
+              <div className="w-full">{t("cashoutNoCb-1.text-1", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
+              <div>
+                {t("cashoutNoCb-1.text-2", {
+                  cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : `${tcommon("your")}${tcommon("CEX")}`,
+                  merchantCurrency: paymentSettingsState.merchantCurrency,
+                  asterix: paymentSettingsState.merchantCurrency == "USD" ? "" : "*",
+                })}
+              </div>
+              <div className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""} w-full relative`}>
+                {t.rich("cashoutNoCb-1.text-3", {
+                  span1: (chunks: any) => <span className="group">{chunks}</span>,
+                  span2: (chunks: any) => <span className="linkLight">{chunks}</span>,
+                  span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
+                  div: (chunks: any) => <div className="w-full bottom-[32px] whitespace-normal tooltip text-base">{chunks}</div>,
+                  tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency }),
+                })}
+              </div>
+              <div className="pt-4 space-y-8">
+                <button
+                  className={`${cashoutSettingsState.cex ? "" : "text-base portrait:sm:text-lg landscape:lg:text-lg"} introButtonBlack`}
+                  onClick={() => setStep("cashoutNoCb-2")}
+                >
+                  {t("cashoutNoCb-1.button-1", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}
+                </button>
+                <button
+                  className={`${cashoutSettingsState.cex ? "" : "text-base portrait:sm:text-lg landscape:lg:text-lg"} introButtonWhite`}
+                  onClick={() => setStep("cashoutNoCb-3")}
+                >
+                  {t("cashoutNoCb-1.button-2", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}
+                </button>
+              </div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="introButtonContainer">
+              <button className="introBack" onClick={() => setStep("how")}>
+                &#10094;&nbsp; {tcommon("back")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/*--- cashoutNoCb-2 ---*/}
+        {step == "cashoutNoCb-2" && (
+          <div className="pt-8 w-full h-full flex flex-col items-center">
+            {/*--- content ---*/}
+            <div className="h-[8%] min-h-[70px]"></div>
+            <div className="flex-1 flex flex-col items-center space-y-8">
+              <div>{t("cashoutNoCb-2.text", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
+              <div>
+                <label className="text-lg font-medium">{t("cashoutNoCb-2.label")}</label>
+                <input
+                  onChange={(e) => setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: e.currentTarget.value })}
+                  onBlur={() => setSave(!save)}
+                  value={cashoutSettingsState.cexEvmAddress}
+                  className="mt-0.5 w-full introInputFontSmall text-[13px] px-1 placeholder:text-lg placeholder:pl-2 placeholder:focus:text-transparent"
+                  placeholder={t("cashoutNoCb-2.placeholder")}
+                ></input>
+              </div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="introButtonContainer">
+              <button className="introBack" onClick={() => setStep("cashoutNoCb-1")}>
+                &#10094;&nbsp; {tcommon("back")}
+              </button>
+              <button className="introNext" onClick={() => setStep("final")}>
+                {cashoutSettingsState.cexEvmAddress ? tcommon("next") : tcommon("skip")} &nbsp;&#10095;
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/*--- cashoutNoCb-3 ---*/}
+        {step == "cashoutNoCb-3" && (
+          <div className="pt-8 w-full h-full flex flex-col items-center">
+            {/*--- content ---*/}
+            <div className="flex-1 flex flex-col items-center space-y-8">
+              <div className="introHeaderFont">{t("cashoutNoCb-3.title", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
+              <div className={`${cashoutSettingsState.cex ? "" : "hidden"}`}>
+                {t.rich("cashoutNoCb-3.text-1", {
+                  span: (chunks) => <span className={`${isMobile ? "hidden" : ""}`}>{chunks}</span>,
+                  cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                })}
+              </div>
+              <button
+                className={`${!cashoutSettingsState.cex ? "hidden" : ""} introButtonBlack`}
+                onClick={() => window.open(isIOS ? cexToLinks[cashoutSettingsState.cex].appleStore : cexToLinks[cashoutSettingsState.cex].googlePlay, "_blank")}
+              >
+                {t("cashoutNoCb-3.mobile", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}
+              </button>
+              <button
+                className={`${!cashoutSettingsState.cex ? "hidden" : ""} ${isMobile ? "hidden" : ""} introButtonBlack`}
+                onClick={() => window.open(cexToLinks[cashoutSettingsState.cex].website, "_blank")}
+              >
+                {t("cashoutNoCb-3.desktop", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}{" "}
+                <FontAwesomeIcon icon={faExternalLink} className="ml-2" />
+              </button>
+              <div className={`${cashoutSettingsState.cex ? "hidden" : ""}`}>{t("cashoutNoCb-3.text-1-noCex")}</div>
+              <div>{t("cashoutNoCb-3.text-2")}</div>
+            </div>
+            {/*--- buttons ---*/}
+            <div className="introButtonContainer">
+              <button className="introBack" onClick={() => setStep("cashoutNoCb-1")}>
+                &#10094;&nbsp; {tcommon("back")}
+              </button>
+              <button className="introNext" onClick={() => setStep("final")}>
+                {tcommon("next")} &nbsp;&#10095;
               </button>
             </div>
           </div>
         )}
 
         {step == "final" && (
-          <div className="introPageContainer introFont3xl ">
+          <div className="text-xl introPageContainer">
+            {/*--- spacer ---*/}
+            <div className="h-[25%] min-h-[120px]"></div>
             {/*--- content ---*/}
-            <div className="introTextContainer1">
-              <div className="introTextContainer2 space-y-10 portrait:sm:space-y-16 landscape:lg:space-y-16">
-                <div className="w-full">Your Flash account is ready!</div>
-                <div>
-                  If you have questions, read to the FAQs located in the <span className="font-bold">Settings</span> menu or contact us.
-                </div>
+            <div className="flex-1 text-center flex flex-col items-center space-y-12">
+              <div className="text-3xl font-semibold leading-normal">{t("final.text-1")}</div>
+              <div className="leading-normal">
+                {t.rich("final.text-2", { span1: (chunks) => <span className="font-bold">{chunks}</span>, span2: (chunks) => <span className="font-bold">{chunks}</span> })}
               </div>
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
-              <button className="introBack" onClick={() => setStep("link")}>
-                Back
+              <button
+                className="introBack"
+                onClick={() => (paymentSettingsState.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" ? setStep("cashoutCb-2") : setStep("cashoutNoCb-1"))}
+              >
+                &#10094;&nbsp; {tcommon("back")}
               </button>
-              <button className="introNext" onClick={() => setPage("app")}>
-                Done
+              <button
+                className="introNext"
+                onClick={() => {
+                  setPage("app");
+                  setCashbackModal(true);
+                }}
+              >
+                {t("final.finish")}
               </button>
             </div>
           </div>
         )}
       </div>
-      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
+      {introErrorModal && <IntroErrorModal errorMsg={errorMsg} setIntroErrorModal={setIntroErrorModal} />}
     </div>
   );
 };

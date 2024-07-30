@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useTheme } from "next-themes";
 import { GelatoRelay } from "@gelatonetwork/relay-sdk";
-
+import { useTranslations, useLocale } from "next-intl";
 // constants and functions
 import { clientToProvider } from "@/utils/functions";
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
@@ -26,6 +26,8 @@ import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FaEllipsisVertical } from "react-icons/fa6";
+
 import Lottie from "lottie-react";
 import checkSimple from "@/utils/lotties/checkSimple.json";
 // types
@@ -42,8 +44,8 @@ const CashOut = ({
   publicKey,
   isUsabilityTest,
 }: {
-  paymentSettingsState: PaymentSettings | null;
-  cashoutSettingsState: CashoutSettings | null;
+  paymentSettingsState: PaymentSettings;
+  cashoutSettingsState: CashoutSettings;
   setCashoutSettingsState: any;
   transactionsState: Transaction[];
   isMobile: boolean;
@@ -98,6 +100,8 @@ const CashOut = ({
   const config = useConfig();
   const client = useClient();
   const { theme } = useTheme();
+  const t = useTranslations("App.CashOut");
+  const tcommon = useTranslations("Common");
 
   // get Flash and CEX balance
   useEffect(() => {
@@ -225,31 +229,49 @@ const CashOut = ({
       setTransferToCexModal(true);
     } else {
       if (cashoutSettingsState?.cex == "Coinbase") {
-        setErrorMsg("Please first link your Coinbase account");
+        setErrorMsg(t("errors.linkCb"));
       } else {
         setErrorMsg(
-          <div className="text-base space-y-4">
-            <div className="">
-              Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>
-            </div>
-            <div>or</div>
-            <div
-              className="link dark:linkDark"
-              onClick={() => {
-                setTransferToCexModal(true);
-                setTransferToAnyAddress(true);
-                setErrorModal(false);
-                setErrorMsg("");
-              }}
-            >
-              transfer to any EVM address
-            </div>
-          </div>
+          t.rich("errors.platformAddress", {
+            span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+            span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+            span3: (chunks) => (
+              <span
+                className="link"
+                onClick={() => {
+                  setTransferToCexModal(true);
+                  setTransferToAnyAddress(true);
+                  setErrorModal(false);
+                  setErrorMsg("");
+                }}
+              >
+                {chunks}
+              </span>
+            ),
+            icon: () => <FontAwesomeIcon icon={faEllipsisVertical} className="" />,
+          })
         );
       }
       setErrorModal(true);
     }
   };
+
+  //   <div className="">
+  //   Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>. Or, click the menu
+  //   icon (<FontAwesomeIcon icon={faEllipsisVertical} className="" />) and choose{" "}
+  //   <span
+  //     className="link"
+  //     onClick={() => {
+  //       setTransferToCexModal(true);
+  //       setTransferToAnyAddress(true);
+  //       setErrorModal(false);
+  //       setErrorMsg("");
+  //     }}
+  //   >
+  //     transfer to any EVM address
+  //   </span>
+  //   .
+  // </div>
 
   const onClickTransferToCexSubmit = async () => {
     // for usability test
@@ -270,13 +292,13 @@ const CashOut = ({
     // check if amount exists
     if (!usdcTransferToCex) {
       setErrorModal(true);
-      setErrorMsg("Please enter an amount");
+      setErrorMsg(t("errors.enterAmount"));
       return;
     }
     // check if amount >= 1
     if (Number(usdcTransferToCex) < 1) {
       setErrorModal(true);
-      setErrorMsg("1 USDC minimum transfer");
+      setErrorMsg(t("errors.minUSDC"));
       return;
     }
 
@@ -288,7 +310,7 @@ const CashOut = ({
         toAddress = anyAddress;
       } else {
         setErrorModal(true);
-        setErrorMsg('Please enter an EVM address in the "To:" field');
+        setErrorMsg(t("errors.toEvmAddress"));
         return;
       }
     } else {
@@ -307,7 +329,7 @@ const CashOut = ({
     // check if toAddress if valid
     if (!isAddress(toAddress)) {
       setErrorModal(true);
-      setErrorMsg("Please enter a valid EVM address");
+      setErrorMsg(t("errors.validEvmAddress"));
       return;
     }
 
@@ -364,7 +386,7 @@ const CashOut = ({
       console.log(err);
       console.log("transfer not sent");
       setErrorModal(true);
-      setErrorMsg("Transfer failed. Please try again.");
+      setErrorMsg(t("errors.transferFailed"));
       setTransferState("initial");
     }
   };
@@ -405,7 +427,7 @@ const CashOut = ({
           console.log("could not get bank info");
         }
       } else {
-        setErrorMsg(<div>Please first link your Coinbase account</div>);
+        setErrorMsg(t("errors.linkCb"));
         setErrorModal(true);
       }
     }
@@ -427,24 +449,24 @@ const CashOut = ({
     // check if amount exists
     if (!usdcTransferToBank) {
       setErrorModal(true);
-      setErrorMsg("Please enter an amount");
+      setErrorMsg(t("enterAmount"));
       return;
     }
     // if amount exceeds Coinbase balance
     if (Number(usdcTransferToBank) > Number(cexBalance)) {
       setErrorModal(true);
-      setErrorMsg("Amount exceeds balance");
+      setErrorMsg(t("errors.lowBalance"));
       return;
     }
     // check if amount >= 1
     if (Number(usdcTransferToBank) < 11) {
       setErrorModal(true);
-      setErrorMsg("11 USDC minimum transfer");
+      setErrorMsg(t("errors.minUSDC11"));
       return;
     }
     if (Number(usdcTransferToBank) > 10000.1) {
       setErrorModal(true);
-      setErrorMsg("10,000 USDC maximum transfer");
+      setErrorMsg("errors.maxUSDC");
       return;
     }
 
@@ -473,7 +495,7 @@ const CashOut = ({
       }
     } catch (e) {
       setErrorModal(true);
-      setErrorMsg("Something happened and the transfer was not made. Please try again or contact us. We apologize for the inconvenience.");
+      setErrorMsg(t("errors.unknownTransferError"));
     }
     setTransferState("initial");
   };
@@ -499,7 +521,7 @@ const CashOut = ({
         <div className="cashoutContainer">
           {/*--- title ---*/}
           <div className="w-full flex justify-between items-center">
-            <div className="cashoutHeader h-[36px] flex items-center">Flash Account</div>
+            <div className="cashoutHeader h-[36px] flex items-center">Flash {tcommon("account")}</div>
             <div
               className={`${flashBalance ? "" : "hidden"} w-[24px] flex items-center justify-center cursor-pointer group relative`}
               onClick={() => {
@@ -517,7 +539,7 @@ const CashOut = ({
                   setTransferToAnyAddress(true);
                 }}
               >
-                Transfer to any address
+                {t("transferToAny")}
               </div>
             </div>
           </div>
@@ -554,10 +576,10 @@ const CashOut = ({
                 {/*--- rate ---*/}
                 <div className="flex justify-between">
                   <div className="flex items-center">
-                    Rate
+                    {t("rate")}
                     <div className="group flex items-center">
                       <FontAwesomeIcon icon={faCircleInfo} className="px-2 info" />
-                      <div className="w-full top-0 left-0 cashoutTooltip">The USDC to {paymentSettingsState?.merchantCurrency} rate if you cash out now</div>
+                      <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
                     </div>
                   </div>
                   <div className="">{rates.usdcToLocal}</div>
@@ -569,17 +591,17 @@ const CashOut = ({
           {flashBalance && (
             <div className="cashoutButtonContainer">
               <button className="cashoutButton" onClick={onClickTransferToCex}>
-                Transfer to {cashoutSettingsState?.cex ?? "CEX"}
+                {cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer")}
               </button>
             </div>
           )}
         </div>
 
         {/*--- CEX CARD ---*/}
-        <div className={`${paymentSettingsState?.merchantCountry != "Any country" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
+        <div className={`${paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
           {/*--- header + moreOptions ---*/}
           <div className="w-full flex justify-between items-center">
-            <div className="cashoutHeader">Coinbase Account</div>
+            <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
 
             <div
               className={`${cexBalance ? "" : "hidden"} w-[24px] flex items-center justify-center cursor-pointer group relative`}
@@ -592,7 +614,7 @@ const CashOut = ({
             >
               <FontAwesomeIcon icon={faEllipsisVertical} className={`${cexMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
               <div className={`${cexMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`} onClick={onClickUnlink}>
-                Unlink
+                {t("unlink")}
               </div>
             </div>
           </div>
@@ -630,10 +652,10 @@ const CashOut = ({
                   {/*--- rate ---*/}
                   <div className="flex justify-between">
                     <div className="flex items-center">
-                      Rate
+                      {t("rate")}
                       <div className="group flex items-center">
                         <FontAwesomeIcon icon={faCircleInfo} className="px-2 text-gray-400 textXs" />
-                        <div className="w-full top-0 left-0 cashoutTooltip">The USDC to {paymentSettingsState?.merchantCurrency} rate if you cash out now</div>
+                        <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
                       </div>
                     </div>
                     <div className="">{rates.usdcToLocal}</div>
@@ -644,7 +666,7 @@ const CashOut = ({
           ) : (
             <div className="flex-1 w-full flex justify-center items-center">
               <div className="link textBase" onClick={onClickSIWC}>
-                Link Your Coinbase Account
+                {t("linkCoinbase")}
               </div>
             </div>
           )}
@@ -652,7 +674,7 @@ const CashOut = ({
           <div className="cashoutButtonContainer">
             {cexBalance && (
               <button className="cashoutButton" onClick={onClickTransferToBank}>
-                Transfer to Bank
+                {tcommon("transferToBank")}
               </button>
             )}
           </div>
@@ -780,7 +802,7 @@ const CashOut = ({
             {/*--- HEADER ---*/}
             <div className="detailsModalHeaderContainer">
               {/*--- header ---*/}
-              <div className="detailsModalHeader whitespace-nowrap">Transfer{transferToAnyAddress ? "" : ` To ${cashoutSettingsState?.cex || "CEX"}`}</div>
+              <div className="detailsModalHeader whitespace-nowrap">{tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? cashoutSettingsState.cex : tcommon("CEX") })}</div>
               {/*--- mobile back ---*/}
               <div className="mobileBack">
                 <FontAwesomeIcon
@@ -804,7 +826,7 @@ const CashOut = ({
                       <Image src="/logoBlackBgNoText.svg" alt="flashLogo" fill />
                     </div>
                     <div className="textBase ml-3 flex flex-col">
-                      <div className="leading-none font-medium">From: Flash</div>
+                      <div className="leading-none font-medium">{tcommon("fromFlash")}</div>
                       <div className="leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
                       <div className="leading-tight break-all text-slate-500">
                         {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
@@ -825,13 +847,15 @@ const CashOut = ({
                     {/*--- max + USDC ---*/}
                     <div className="h-full right-0 absolute flex space-x-4 items-center">
                       <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
-                        max
+                        {tcommon("max")}
                       </div>
                       <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
                     </div>
                   </div>
                   {/*--- balance ---*/}
-                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">Balance: {flashBalance} USDC</div>
+                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
+                    {tcommon("balance")}: {flashBalance} USDC
+                  </div>
                 </div>
 
                 {/*--- ARROW ---*/}
@@ -840,7 +864,7 @@ const CashOut = ({
                     <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
                     <div className="transferArrowFont">
                       {blockchainFee} USDC <br />
-                      blockchain fee
+                      {tcommon("blockchainFee")}
                     </div>
                   </div>
                 </div>
@@ -857,7 +881,7 @@ const CashOut = ({
                         {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
                       </div>
                       <div className="textBase ml-3 flex flex-col">
-                        <div className="leading-none font-medium">To: {cashoutSettingsState?.cex}</div>
+                        <div className="leading-none font-medium">{tcommon("toCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
                         <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
                         <div className="leading-tight break-all text-slate-500">
                           {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
@@ -892,12 +916,12 @@ const CashOut = ({
                 <div className="transferModalButtonContainer">
                   {transferState == "initial" ? (
                     <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
-                      Transfer{transferToAnyAddress ? "" : ` To ${cashoutSettingsState?.cex || "CEX"}`}
+                      {tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex).replace(" Exchange", "") : tcommon("CEX") })}
                     </button>
                   ) : (
                     <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
                       <SpinningCircleGray />
-                      &nbsp; Transferring...
+                      &nbsp; {tcommon("transferring")}...
                     </div>
                   )}
                 </div>
@@ -932,7 +956,7 @@ const CashOut = ({
             {/*--- HEADER ---*/}
             <div className="detailsModalHeaderContainer">
               {/*--- header ---*/}
-              <div className="detailsModalHeader whitespace-nowrap">Transfer To Bank</div>
+              <div className="detailsModalHeader whitespace-nowrap">{tcommon("transferToBank")}</div>
               {/*--- mobile back ---*/}
               <div className="mobileBack">
                 <FontAwesomeIcon
@@ -959,7 +983,7 @@ const CashOut = ({
                       {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
                     </div>
                     <div className="textBase ml-3 flex flex-col">
-                      <div className="leading-none font-medium">From: Coinbase</div>
+                      <div className="leading-none font-medium">{tcommon("fromCoinbase")}</div>
                       <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
                       <div className="leading-tight break-all text-slate-500">
                         {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
@@ -980,13 +1004,15 @@ const CashOut = ({
                     {/*--- max + USDC ---*/}
                     <div className="h-full right-0 absolute flex space-x-4 items-center">
                       <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
-                        max
+                        {tcommon("max")}
                       </div>
                       <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
                     </div>
                   </div>
                   {/*--- balance ---*/}
-                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">Balance: {cexBalance} USDC</div>
+                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
+                    {tcommon("balance")}: {cexBalance} USDC
+                  </div>
                 </div>
 
                 {/*--- ARROW ---*/}
@@ -1011,7 +1037,7 @@ const CashOut = ({
                       <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
                     </div>
                     <div className="textBase ml-3 flex flex-col">
-                      <div className="leading-none font-medium">To: Bank</div>
+                      <div className="leading-none font-medium">{tcommon("toBank")}</div>
                       <div className="leading-tight text-slate-500">{cbBankAccountName}</div>
                     </div>
                   </div>
@@ -1033,12 +1059,12 @@ const CashOut = ({
                 <div className="transferModalButtonContainer">
                   {transferState == "initial" ? (
                     <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
-                      Transfer To Bank
+                      {tcommon("transferToBank")}
                     </button>
                   ) : (
                     <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
                       <SpinningCircleGray />
-                      &nbsp; Transferring...
+                      &nbsp; {tcommon("transferring")}...
                     </div>
                   )}
                 </div>
@@ -1068,9 +1094,9 @@ const CashOut = ({
           {/*--- CONTENT ---*/}
           <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
             <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
-            <div className="text3xl font-medium">Transfer successful!</div>
+            <div className="text3xl font-medium">{tcommon("transferSuccessful")}!</div>
             <div className="text2xl font-bold">{usdcTransferToCex} USDC</div>
-            <div className="textLg text-center">was sent to your Coinbase account. Please wait a few minutes for your Coinbase balance to update.</div>
+            <div className="textLg text-center">{t("successModal", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
             {/*--- button ---*/}
             <div className="w-full py-8">
               <button
@@ -1082,7 +1108,7 @@ const CashOut = ({
                   setUsdcTransferToCex(null);
                 }}
               >
-                CLOSE
+                {tcommon("close")}
               </button>
             </div>
           </div>
@@ -1109,19 +1135,19 @@ const CashOut = ({
           {/*--- CONTENT ---*/}
           <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
             <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
-            <div className="text3xl font-medium">Deposit successful!</div>
+            <div className="text3xl font-medium">{tcommon("transferSuccessful")}</div>
             <div className="textLg space-y-3">
               <div>
-                <span className="font-bold">{Number(usdcTransferToBank).toFixed(2)} USDC</span> was deducted from your Coinbase account.
+                <span className="font-bold">{Number(usdcTransferToBank).toFixed(2)} USDC</span> {t("transferToBankSuccessModal.text-1")}
               </div>
               <div>
                 <span className="font-bold">
                   {currency2symbol[paymentSettingsState?.merchantCurrency!]}
                   {fiatDeposited}
                 </span>{" "}
-                was deposited to your bank.
+                {t("transferToBankSuccessModal.text-2")}
               </div>
-              <div>Please wait 1-2 business days for the deposit to show.</div>
+              <div>{t("transferToBankSuccessModal.text-3")}</div>
             </div>
             {/*--- button ---*/}
             <div className="w-full py-8">
@@ -1134,7 +1160,7 @@ const CashOut = ({
                   setUsdcTransferToBank(null);
                 }}
               >
-                CLOSE
+                {tcommon("close")}
               </button>
             </div>
           </div>
