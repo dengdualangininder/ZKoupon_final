@@ -92,8 +92,16 @@
     @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm;
   }
 
+  .textBasePx {
+    @apply text-[16px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px];
+  }
+
   .textLg {
     @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base;
+  }
+
+  .textLgPx {
+    @apply text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[16px];
   }
 
   .textXl {
@@ -305,7 +313,7 @@
   }
 
   .howNumber {
-    @apply mr-4 w-[44px] h-[44px] text-2xl font-bold flex justify-center items-center rounded-full bg-darkButton;
+    @apply mr-4 w-[44px] h-[44px] text-[24px] font-bold flex justify-center items-center rounded-full bg-darkButton;
   }
 
   .howHeader2Font {
@@ -401,7 +409,7 @@
   }
 
   .menuText {
-    @apply mt-1 text-xs portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
+    @apply mt-[3px] text-sm portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
   }
 
   /* MODAL CSS */
@@ -461,7 +469,7 @@
   }
 
   .transferModalSize {
-    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[620px];
+    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] landscape:xl:desktop:h-[640px] landscape:xl:desktop:max-h-[95%];
   }
 
   .emailModalSize {
@@ -534,6 +542,10 @@
     @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[24px];
   }
 
+  .transferModalHeader {
+    @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[18px] landscape:xl:desktop:py-[20px];
+  }
+
   .modalHeaderFont {
     @apply text-center text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl font-semibold;
   }
@@ -548,10 +560,6 @@
 
   .searchModalHeader {
     @apply text-2xl font-semibold;
-  }
-
-  .modalContentContainer {
-    @apply cursor-pointer;
   }
 
   .transferSuccessModalHeaderContainer {
@@ -572,6 +580,10 @@
 
   .modalContentContainer {
     @apply mt-2 sm:mt-4 sm:mx-4 text-lg leading-snug md:text-base md:leading-snug px-2 sm:px-3 md:px-4 lg:px-5;
+  }
+
+  .transferModalContentContainer {
+    @apply flex-1 w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[72px] flex flex-col items-center overflow-y-auto;
   }
 
   .modalNumber {
@@ -783,19 +795,31 @@
   }
 
   .transferCard {
-    @apply flex-none w-full px-5 portrait:sm:px-8 landscape:lg:px-8 landscape:xl:desktop:px-6 flex flex-col items-center bg-light3 dark:bg-dark4 rounded-3xl relative border-none border-slate-400 dark:border-slate-600;
+    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[24px] flex flex-col items-center bg-light3 dark:bg-dark4 rounded-[24px] relative border-none border-slate-400 dark:border-slate-600;
+  }
+
+  .transferFromCard {
+    @apply pt-[24px] pb-[48px] landscape:xl:desktop:pb-[36px] transferCard;
+  }
+
+  .transferToCard {
+    @apply pt-[40px] landscape:xl:desktop:pt-[36px] pb-[24px] transferCard;
   }
 
   .transferIcon {
     @apply relative w-[52px] h-[52px] rounded-lg overflow-hidden flex-none;
   }
 
+  .transferUsdc {
+    @apply pr-[12px] text-[24px] landscape:xl:desktop:text-[20px] font-semibold leading-none;
+  }
+
   .transferAmountFromBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-3xl landscape:xl:desktop:text-2xl rounded-xl pl-4 pr-[140px];
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-[30px] landscape:xl:desktop:text-[24px] rounded-[6px] pl-[12px] pr-[124px];
   }
 
   .transferAmountToBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-3xl landscape:xl:desktop:text-2xl rounded-xl pl-4 pr-0 mt-4 flex items-center justify-between border border-slate-300 dark:border-dark6;
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-[30px] landscape:xl:desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
   }
 
   .transferArrowContainer {
@@ -803,11 +827,11 @@
   }
 
   .transferArrowFont {
-    @apply text-base desktop:text-sm ml-2 leading-tight desktop:leading-tight;
+    @apply text-[16px] desktop:text-[14px] ml-[8px] leading-tight desktop:leading-tight;
   }
 
   .transferArrowArrow {
-    @apply text-[34px] landscape:xl:desktop:text-3xl text-lightText1 dark:text-darkText1;
+    @apply text-[34px] landscape:xl:desktop:text-[30px] text-lightText1 dark:text-darkText1;
   }
 
   .sidebar {

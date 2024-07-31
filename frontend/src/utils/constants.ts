@@ -437,7 +437,7 @@ type currencyToDataValue = {
 export const currencyToData: { [key: string]: currencyToDataValue } = {
   USD: { cex: "Coinbase", symbol: "$", offrampNetwork: "ACH", offrampFee: "$0", conversionFee: "0.001%" },
   EUR: { cex: "Coinbase", symbol: "€", offrampNetwork: "SEPA", offrampFee: "€0", conversionFee: "0.001%" },
-  TWD: { cex: "Max", symbol: "NT", offrampNetwork: "CIFS", offrampFee: "NT15", conversionFee: "0.3%" },
+  TWD: { cex: "MAX", symbol: "NT", offrampNetwork: "CIFS", offrampFee: "NT15", conversionFee: "0.3%" },
 };
 
 export const abb2full: { [key: string]: string } = {

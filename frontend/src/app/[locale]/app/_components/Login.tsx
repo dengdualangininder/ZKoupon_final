@@ -35,7 +35,6 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("App.Login");
-  console.log("locale:", locale);
 
   // define myConnectors
   if (isMobile) {

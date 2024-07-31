@@ -11,7 +11,7 @@ import { renderToStream, pdf, Document, Page, Path, Svg, View } from "@react-pdf
 import { saveAs } from "file-saver";
 // components
 import FlashToBankAnimation from "./FlashToBankAnimation";
-import IntroErrorModal from "./modals/IntroErrorModal";
+import ErrorModalLight from "./modals/ErrorModalLight";
 import Placard from "./placard/Placard";
 
 // constants
@@ -56,7 +56,7 @@ const Intro = ({
   const [expand, setExpand] = useState(false);
   // modal states
   const [errorMsg, setErrorMsg] = useState<any>("");
-  const [introErrorModal, setIntroErrorModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
   const [isIOS, setIsIOS] = useState(true);
 
   // hooks
@@ -74,13 +74,20 @@ const Intro = ({
   const sendEmail = async () => {
     // check if form completed
     if (!paymentSettingsState.merchantName) {
-      setIntroErrorModal(true);
-      setErrorMsg("Please enter the name of your business");
+      setErrorMsg(t("errors.enterName"));
+      setErrorModal(true);
       return;
     }
     if (!paymentSettingsState.merchantEmail) {
-      setIntroErrorModal(true);
-      setErrorMsg("Please enter an email address");
+      setErrorMsg(t("errors.enterEmail"));
+      setErrorModal(true);
+      return;
+    }
+
+    // check valid email
+    if (!paymentSettingsState.merchantEmail.split("@")[1]?.includes(".")) {
+      setErrorMsg(t("errors.validEmail"));
+      setErrorModal(true);
       return;
     }
 
@@ -100,16 +107,14 @@ const Intro = ({
         console.log("settings saved");
       } else {
         setErrorMsg("Internal server error. Data was not saved.");
-        setIntroErrorModal(true);
+        setErrorModal(true);
         return;
       }
     } catch (e) {
       setErrorMsg("Server request error. Data was not saved.");
-      setIntroErrorModal(true);
+      setErrorModal(true);
       return;
     }
-
-    return;
 
     // create PDF file string
     const el = document.getElementById("introQrCode");
@@ -597,7 +602,7 @@ const Intro = ({
           </div>
         )}
       </div>
-      {introErrorModal && <IntroErrorModal errorMsg={errorMsg} setIntroErrorModal={setIntroErrorModal} />}
+      {errorModal && <ErrorModalLight errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </div>
   );
 };

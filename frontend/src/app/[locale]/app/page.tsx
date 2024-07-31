@@ -52,13 +52,13 @@ const User = () => {
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [bannerModal, setBannerModal] = useState(false);
   const [cbIntroModal, setCbIntroModal] = useState(false);
-  const [cashoutIntroModal, setCashoutIntroModal] = useState(true);
+  const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
   const [cashbackModal, setCashbackModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [tradeMAXModal, setTradeMAXModal] = useState(false);
   // other
-  const [isAdmin, setIsAdmin] = useState(true); // need to change to false
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isUsabilityTest, setIsUsabilityTest] = useState(searchParams.get("test") == "true" ? true : false);
   // for verification

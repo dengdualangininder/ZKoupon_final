@@ -14,13 +14,12 @@ import { SlGlobe } from "react-icons/sl";
 const Navbar = () => {
   const [isScrollTop, setIsScrollTop] = useState(true);
   const [mobileMenuModal, setMobileMenuModal] = useState(false);
-  const [showLangs, setShowLangs] = useState(false);
+  const [langModal, setLangModal] = useState(false);
 
   // hooks
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("HomePage.Navbar");
-  console.log("locale:", locale);
 
   useEffect(() => {
     window.onscroll = () => {
@@ -110,18 +109,25 @@ const Navbar = () => {
             isScrollTop ? "h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px]" : "h-[40px] lg:h-[56px] landscape:xl:desktop:h-[32px]"
           } hidden lg:flex items-center absolute right-0 transition-all duration-[1200ms] z-[100]`}
         >
+          {/*--- enter button ---*/}
+          <button
+            className={`heroButton h-full w-[130px] ${isScrollTop ? "" : "landscape:xl:desktop:w-[100px] desktop:text-sm"} transition-[height,font-size,width] duration-[1200ms]`}
+            onClick={() => router.push("/app")}
+          >
+            {t("enterApp")}
+          </button>
           {/*--- lang ---*/}
           <div
             className={`${
-              showLangs ? "bg-slate-300" : ""
-            } h-full cursor-pointer flex items-center desktop:hover:bg-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg mr-[16px] px-[8px] relative`}
-            onClick={() => setShowLangs(!showLangs)}
+              langModal ? "bg-slate-300" : ""
+            } h-full cursor-pointer flex items-center desktop:hover:bg-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg ml-[16px] px-[8px] relative`}
+            onClick={() => setLangModal(!langModal)}
           >
             <SlGlobe size={40} className="mr-1 w-[22px] h-[22px]" />
             <FaCaretDown size={40} className="w-[18px] h-[18px]" />
             {/*--- lang modal ---*/}
-            {showLangs && (
-              <div className="absolute top-[calc(100%)] right-0 border border-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg py-[24px] px-[24px] space-y-[32px] text-[20px] font-medium bg-light2">
+            {langModal && (
+              <div className="absolute top-[calc(100%)] right-0 py-[24px] px-[24px] space-y-[32px] text-[18px] desktop:text-[16px] font-medium bg-light2 border border-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg">
                 {langObjectArray.map((langObject) => (
                   <div
                     key={langObject.id}
@@ -136,17 +142,10 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          {/*--- enter button ---*/}
-          <button
-            className={`heroButton h-full w-[130px] ${isScrollTop ? "" : "landscape:xl:desktop:w-[100px] desktop:text-sm"} transition-[height,font-size,width] duration-[1200ms]`}
-            onClick={() => router.push("/app")}
-          >
-            {t("enterApp")}
-          </button>
         </div>
 
         {/*---showLang mask---*/}
-        {showLangs && <div className="hidden lg:block absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setShowLangs(false)}></div>}
+        {langModal && <div className="hidden lg:block absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
 
         {/*--- MOBILE MENU ICON ---*/}
         <div className="lg:hidden absolute right-[12px] cursor-pointer">
@@ -177,7 +176,7 @@ const Navbar = () => {
             onClick={async () => {
               setMobileMenuModal(false);
               document.body.classList.remove("halfHideScrollbar");
-              setShowLangs(false);
+              setLangModal(false);
             }}
           />
         </div>
@@ -191,11 +190,11 @@ const Navbar = () => {
           <div className="" onClick={onClickLink}>
             {t("support")}
           </div>
-          <div className="flex items-center" onClick={() => (showLangs ? setShowLangs(false) : setShowLangs(true))}>
+          <div className="flex items-center" onClick={() => (langModal ? setLangModal(false) : setLangModal(true))}>
             <SlGlobe size={40} className="mr-1 w-[22px] h-[22px]" />
             <FaCaretDown size={40} className="w-[20px] h-[20px]" />
           </div>
-          {showLangs && (
+          {langModal && (
             <div className="w-[280px] grid grid-cols-2 gap-y-[44px] gap-x-[40px]">
               {langObjectArray.map((langObject) => (
                 <div key={langObject.id}>

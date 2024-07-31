@@ -187,18 +187,14 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
                     })}
                   </div>
                 </div>
-                <div className="flex">
-                  <div className="mr-2">2.</div>
-                  <div>{t("step-4-2")}</div>
-                </div>
                 <div>{t("step-4-cashout")}</div>
                 <div className="flex">
                   <div className="mr-2.5">1.</div>
-                  <div>{t("step-4-3")}</div>
+                  <div>{t("step-4-2")}</div>
                 </div>
                 <div className="flex">
                   <div className="mr-2">2.</div>
-                  <div>{t("step-4-4")}</div>
+                  <div>{t("step-4-3")}</div>
                 </div>
               </div>
             )}

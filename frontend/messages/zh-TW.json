@@ -26,13 +26,12 @@
       "step-4-1cb": "要出金，您先必須有個 Coinbase 帳戶",
       "step-4-2cb": "在 Flash App，點 \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "在 Flash App，點 \u0022出金\u0022 並依照螢幕上的指示操作。當您出金時，USDC幣 將自動兌換成 {merchantCurrency}<span> at a 1:1 rate</span>，並會出金到您的銀行（~0%費用)",
-      "step-4-1": "<a>下載 MAX交易所 App</a> 並註冊帳號",
-      "step-4-2": "複製您 MAX 帳戶的 USDC幣 存款地址 (Polygon鏈) 並貼在 Flash App 的 \u0022設定\u0022 選項裡",
-      "step-4-3": "在 Flash App，轉帳 USDC幣 到您的 MAX 帳戶",
-      "step-4-4": "在 MAX交易所 App，賣出 USDC幣 買入 TWD* 並出金至您的銀行",
+      "step-4-1": "<a>下載 MAX 交易所 App</a> 並註冊一個帳戶",
+      "step-4-2": "在 Flash App，出金 USDC 至您 MAX 帳戶",
+      "step-4-3": "在 MAX交易所 App，賣出 USDC / 買入 TWD* 並出金至您的銀行",
       "step-4-setup": "設定",
       "step-4-cashout": "出金",
-      "step-4-notUSD": "Flash 的設計讓您不會因匯率波動而損失金錢 <span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>",
+      "step-4-notUSD": "Flash 的設計讓您不會因為匯率波動而損失金錢 <span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>",
       "setup": "花1分鐘建立帳戶",
       "signup": "註冊"
     },
@@ -154,7 +153,7 @@
       "cashoutNoCb-1": {
         "title": "我如何出金？",
         "text-1": "首先，您必須有一個{cex}帳戶。",
-        "text-2": "您想出金時，您要先從 Flash 轉 USDC 幣到{cex}。然後，在{cex}上賣出 USDC / 買入 {merchantCurrency}{asterix}，並出金至您的銀行。",
+        "text-2": "您想出金時，您要先從 Flash App 出金 USDC至您{cex}。然後，在{cex} App (或官網)上賣出 USDC / 買入 {merchantCurrency}{asterix}，並出金至您的銀行。",
         "text-3": "*您不會因匯率波動而損失金錢<span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>。",
         "button-1": "我有{cex}帳戶",
         "button-2": "我沒有{cex}帳戶"
@@ -166,17 +165,18 @@
       },
       "cashoutNoCb-3": {
         "title": "沒有{cex}帳戶?",
-        "text-1": "不用擔心，建立{cex}帳戶只需要幾分鐘。要註冊帳戶，請下載{cex} App<span> (推薦) 或去{cex}的官網</span>:",
-        "text-1-noCex": "不用擔心，建立加密貨交易所帳戶只需要幾分鐘。重要的一點是您必須選擇可以將 USDC 兌換為當地貨幣的加密貨幣交易所。",
-        "text-2": "當您取得帳戶後，Flash App 裡會有說明如何出金到您的銀行。",
+        "text-1": "不用擔心，建立{cex}帳戶只需要幾分鐘。我們建議您透過{cex} App 註冊帳戶。您也可以去官網註冊:",
+        "text-1-noCex": "不用擔心，建立加密貨交易所帳戶只需要幾分鐘。重要的一點是您必須先確認加密貨交易所允許您把 USDC 兌換為當地貨幣並讓您出金至銀行。",
+        "text-2": "註冊完後，Flash App 裡會有說明如何出金至銀行。",
         "desktop": "{cex}官網",
         "mobile": " 下載{cex}App"
       },
       "final": {
-        "text-1": "註冊完成！您的 Flash App 可以開始接受付款",
-        "text-2": "如果您有問題，Flash App 裡有詳細說明 (點 \u0022<span1>設定</span1>\u0022 再點 \u0022<span2>說明書</span2>\u0022)，或發送電子郵件至 support@flashpayments.xyz",
+        "text-1": "註冊完成，您的 Flash App 可以開始接受付款!",
+        "text-2": "有問題時，請參考 Flash App 裡的詳細說明書 (點 \u0022<span1>設定</span1>\u0022 再點 \u0022<span2>說明書</span2>\u0022)，或發送電子郵件至 support@flashpayments.xyz",
         "finish": "完成"
-      }
+      },
+      "errors": { "enterName": "請輸入您的企業名稱", "enterEmail": "請輸入您的電子信箱", "validEmail": "請輸入有效的電子郵件" }
     },
     "SaveToHome": {},
     "Payments": {
@@ -210,7 +210,7 @@
         "clear": "清除",
         "search": "搜尋"
       },
-      "downloadModal": { "title": "下載收款清單", "start": "起始月/年", "end": "結束月/年", "download": "下載" },
+      "downloadModal": { "title": "下載收款清單", "start": "起始月/年", "end": "結束月/年", "download": "下載", "errors": { "noPayments": "沒有收款可以下載" } },
       "qrCodeModal": {
         "emailPdf": "Email PDF檔",
         "downloadPdf": "下載 PDF檔",
@@ -233,8 +233,8 @@
       "rate": "匯率",
       "rateTooltip": "現在的 USDC\u2192{merchantCurrency} 匯率",
       "linkCoinbase": "連結您的 Coinbase 帳戶",
-      "error": {
-        "platformAddress": "請先在 \u0022<span>設定</span>\u0022 裡輸入您的 \u0022<span2>出金平台地址</span2>\u0022",
+      "errors": {
+        "platformAddress": "請先在 \u0022<span1>設定</span1>\u0022 裡輸入您的 \u0022<span2>出金平台地址</span2>\u0022",
         "linkCb": "請先連結您的 Coinbase 帳戶",
         "enterAmount": "請輸入金額",
         "minUSDC": "1 USDC 最低出金金額",
@@ -246,6 +246,8 @@
         "lowBalance": "金額超過餘額",
         "unknownTransferError": "出金失敗，請重試或聯絡我們。對於造成的不便，我們深表歉意。"
       },
+      "toAddress": "接收 EVM 地址",
+      "enterAnEvmAddress": "輸入地址",
       "successModal": "已出金到您的{cex}帳戶。請等 1-5 分鐘以便您的{cex}餘額更新。",
       "transferToBankSuccessModal": {
         "text-1": "已從您的 Coinbase 帳戶中扣除。",
@@ -304,7 +306,7 @@
       "step-1-2": "在 \u0022<span1>Flash 帳戶</span1>\u0022 下，點 \u0022<span2>{transferToCEX}</span2>\u0022。從 Flash 轉移 USDC 至{cex}。",
       "step-2-1": "步驟 2 之 2",
       "step-2-2": "登入 {cex} (可以用 App 或網站) 賣出USDC/買入{merchantCurrency}。然後，提款到您的銀行。",
-      "step-2-2cb": "在 \u0022<span1>Coinbase 帳戶</span1>\u0022 下，點 \u0022<span2>{transferToBank}</span2>\u0022。從這裡您可以輕鬆出金您至的銀行。",
+      "step-2-2cb": "在 \u0022<span1>Coinbase 帳戶</span1>\u0022 下，點 \u0022<span2>{transferToBank}</span2>\u0022。從這裡您可以輕鬆出金至銀行。",
       "step-2-max": "我要怎麼賣出USDC/買入TWD"
     },
     "CbIntroModal": {
@@ -382,7 +384,7 @@
       "rate-1USD": "USDC 以 1:1 的匯率兌換成美元，不收取任何費用。"
     },
     "IntroErrorModal": {},
-    "CbAuth": "連接 Coinbase 中"
+    "CbAuth": { "connecting": "連接 Coinbase 中" }
   },
   "Common": {
     "close": "關閉",

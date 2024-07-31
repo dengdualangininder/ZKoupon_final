@@ -5,11 +5,13 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 const cbAuth = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialized = useRef(false);
+  const t = useTranslations("App.CbAuth");
 
   // need useEffect because need to access window object
   useEffect(() => {
@@ -48,7 +50,7 @@ const cbAuth = () => {
       <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin">
         <Image src="/loadingCircleBlack.svg" alt="loading" fill />
       </div>
-      <div className="mt-4 textLg">Connecting To Coinbase...</div>
+      <div className="mt-4 textLg">{t("connecting")}...</div>
     </div>
   );
 };

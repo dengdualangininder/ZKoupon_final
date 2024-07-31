@@ -27,9 +27,8 @@
       "step-4-2cb": "In the Flash app, click \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "Click \u0022Cash Out\u0022 and follow the on-screen instructions. USDC will be automatically converted to {merchantCurrency}<span> at a 1:1 rate</span> and the money sent to your bank (~0% fees)",
       "step-4-1": "<a>Download the MAX Exchange App</a> and register an account",
-      "step-4-2": "Copy your MAX account's USDC deposit address (for Polygon) and paste it into the Flash App (in the \u0022Cash Out Platform\u0022 field under \u0022Settings\u0022)",
-      "step-4-3": "In the Flash app, transfer USDC to your MAX Exchange account",
-      "step-4-4": "In the MAX Exchange App, sell USDC for TWD* and withdraw the money to your bank",
+      "step-4-2": "In the Flash app, transfer USDC to your MAX Exchange account",
+      "step-4-3": "In the MAX Exchange App, sell USDC for TWD* and withdraw the money to your bank",
       "step-4-setup": "Set Up",
       "step-4-cashout": "Cash Out",
       "step-4-notUSD": "Flash is designed so that you will not lose money from fluctuating exchange rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>",
@@ -176,7 +175,8 @@
         "text-1": "Your Flash account is ready and can start accepting payments!",
         "text-2": "If you have any questions, you can refer to the <span1>Instructions</span1> located in the <span2>Settings</span2> menu or email support@flashpayments.xyz",
         "finish": "FINISH"
-      }
+      },
+      "errors": { "enterName": "Please enter the name of your business", "enterEmail": "Please enter your email address", "validEmail": "Please enter a valid email" }
     },
     "SaveToHome": {},
     "Payments": {
@@ -210,7 +210,13 @@
         "clear": "Clear",
         "search": "Search"
       },
-      "downloadModal": { "title": "Download Payments", "start": "Starting Month/Year", "end": "Ending Month/Year", "download": "Download" },
+      "downloadModal": {
+        "title": "Download Payments",
+        "start": "Starting Month/Year",
+        "end": "Ending Month/Year",
+        "download": "Download",
+        "errors": { "noPayments": "No payments to download" }
+      },
       "qrCodeModal": {
         "emailPdf": "Email PDF file",
         "downloadPdf": "Download PDF file",
@@ -246,6 +252,8 @@
         "lowBalance": "Amount exceeds balance",
         "unknownTransferError": "Something happened and the transfer was not made. Please try again or contact us. We apologize for the inconvenience."
       },
+      "toAddress": "EVM address",
+      "enterAnEvmAddress": "Enter an EVM address",
       "transferToCexSuccessModal": "was sent to your {cex} account. Please wait 1-5 minutes for your {cex} balance to update.",
       "transferToBankSuccessModal": {
         "text-1": "was deducted from your Coinbase account.",
@@ -381,7 +389,7 @@
       "rate-1USD": "USDC is converted to USD at a 1:1 rate with no fees."
     },
     "IntroErrorModal": {},
-    "CbAuth": "Connecting to Coinbase"
+    "CbAuth": { "connecting": "Connecting to Coinbase" }
   },
   "Common": {
     "close": "CLOSE",

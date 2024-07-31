@@ -44,7 +44,7 @@ const CashoutIntroModal = ({
                   {/*--- image container ---*/}
                   <div className="w-full h-[210px] portrait:sm:h-[260px] landscape:lg:h-[260px] landscape:xl:desktop:h-[220px] relative">
                     {/*--- image ---*/}
-                    <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
+                    <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] dark:shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
                       <div className="cashoutHeader h-[36px] flex items-center">Flash {tcommon("account")}</div>
                       <div className="cashoutBalanceContainer">
                         <div className="cashoutBalance">
@@ -93,7 +93,7 @@ const CashoutIntroModal = ({
                   {/*--- image container ---*/}
                   <div className="w-full h-[210px] portrait:sm:h-[260px] landscape:lg:h-[260px] landscape:xl:desktop:h-[220px] relative">
                     {/*--- image ---*/}
-                    <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
+                    <div className="cashoutContainer absolute scale-[0.86] portrait:sm:scale-[0.8] landscape:lg:scale-[0.8] dark:shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
                       <div className="cashoutHeader h-[36px] flex items-center">Coinbase {tcommon("account")}</div>
                       <div className="cashoutBalanceContainer">
                         <div className="cashoutBalance">

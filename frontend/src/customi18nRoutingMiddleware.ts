@@ -11,7 +11,6 @@ export function middleware(request: NextRequest) {
   const headers = { "accept-language": request.headers.get("accept-language") || "en-US,en;q=0.5" };
   const userLocales = new Negotiator({ headers }).languages();
   const locale = match(userLocales, supportedLocales, defaultLocale); // determine the appropriate locale
-  console.log("locale:", locale);
   const { pathname } = request.nextUrl;
 
   // if default locale is in the pathname, remove it

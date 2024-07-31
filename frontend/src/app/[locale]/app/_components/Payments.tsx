@@ -356,8 +356,13 @@ const Payments = ({
                 <div
                   className="paymentsIconContainer"
                   onClick={() => {
-                    createDownloadDates();
-                    setExportModal(true);
+                    if (transactionsState.length > 0) {
+                      createDownloadDates();
+                      setExportModal(true);
+                    } else {
+                      setErrorMsg(t("downloadModal.errors.noPayments"));
+                      setErrorModal(true);
+                    }
                   }}
                 >
                   <div className="paymentsIcon">

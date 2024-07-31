@@ -514,9 +514,9 @@ const CashOut = ({
   console.log("before render", "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible, "\ncexBalance:", cexBalance);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="py-6 portrait:sm:py-8 landscape:lg:py-8 portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto bg-light2 dark:bg-dark1">
+    <section className="py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto bg-light2 dark:bg-dark1">
       {/*---Flash Account + Coinbase Account + Statistics ---*/}
-      <div className="w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[400px] flex flex-col space-y-6 portrait:sm:space-y-8 landscape:lg:space-y-8">
+      <div className="w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[400px] flex flex-col space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px]">
         {/*---FLASH CARD ---*/}
         <div className="cashoutContainer">
           {/*--- title ---*/}
@@ -788,143 +788,142 @@ const CashOut = ({
       {transferToCexModal && (
         <div className="">
           <div className="transferModal">
-            {/*--- CLOSE (tablet/desktop) ---*/}
+            {/*--- desktop/tablet close ---*/}
             <div
               className="xButtonContainer"
               onClick={() => {
                 setTransferToCexModal(false);
                 setUsdcTransferToCex(null);
+                setTransferToAnyAddress(false);
               }}
             >
               <div className="xButton">&#10005;</div>
             </div>
-
-            {/*--- HEADER ---*/}
-            <div className="detailsModalHeaderContainer">
-              {/*--- header ---*/}
-              <div className="detailsModalHeader whitespace-nowrap">{tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? cashoutSettingsState.cex : tcommon("CEX") })}</div>
-              {/*--- mobile back ---*/}
-              <div className="mobileBack">
-                <FontAwesomeIcon
-                  icon={faAngleLeft}
-                  onClick={() => {
-                    setTransferToCexModal(false);
-                    setUsdcTransferToCex(null);
-                  }}
-                />
-              </div>
+            {/*--- mobile back ---*/}
+            <div className="mobileBack">
+              <FontAwesomeIcon
+                icon={faAngleLeft}
+                onClick={() => {
+                  setTransferToCexModal(false);
+                  setUsdcTransferToCex(null);
+                  setTransferToAnyAddress(false);
+                }}
+              />
             </div>
 
+            {/*--- header ---*/}
+            <div className="transferModalHeader whitespace-nowrap">{tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? cashoutSettingsState.cex : tcommon("CEX") })}</div>
+
             {/*--- CONTENT ---*/}
-            <div className="flex-1 w-full flex justify-center overflow-y-auto">
-              <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] max-w-[500px] h-full flex flex-col items-center">
-                {/*--- FROM container ---*/}
-                <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
-                  {/*--- info ---*/}
+            <div className="transferModalContentContainer">
+              {/*--- FROM container ---*/}
+              <div className="transferFromCard">
+                {/*--- info ---*/}
+                <div className="w-full flex items-center">
+                  <div className="transferIcon">
+                    <Image src="/logoBlackBgNoText.svg" alt="flashLogo" fill />
+                  </div>
+                  <div className="ml-[12px] flex flex-col">
+                    <div className="textBase leading-none font-medium">{tcommon("fromFlash")}</div>
+                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
+                    <div className="textBasePx leading-tight break-all text-slate-500">
+                      {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
+                    </div>
+                  </div>
+                </div>
+                {/*--- from amount ---*/}
+                <div className="mt-[16px] w-full flex items-center relative">
+                  <input
+                    className="transferAmountFromBox inputColor border-slate-500 placeholderColor placeholder:not-italic dark:bg-dark2"
+                    type="number"
+                    inputMode="decimal"
+                    onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
+                    value={usdcTransferToCex || ""}
+                    onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToCex(Number(e.currentTarget.value).toFixed(2)) : null)}
+                    placeholder="0"
+                  />
+                  {/*--- max + USDC ---*/}
+                  <div className="h-full right-0 absolute flex space-x-[12px] items-center">
+                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
+                      {tcommon("max")}
+                    </div>
+                    <div className="transferUsdc">USDC</div>
+                  </div>
+                </div>
+                {/*--- balance ---*/}
+                <div className="textBase w-full pl-[4px] mt-[1px] flex items-center text-slate-500">
+                  {tcommon("balance")}: {flashBalance} USDC
+                </div>
+              </div>
+
+              {/*--- ARROW ---*/}
+              <div className="flex-none w-full h-[24px] landscape:xl:desktop:h-[16px] flex justify-center relative z-[1]">
+                <div className="transferArrowContainer">
+                  <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
+                  <div className="transferArrowFont">
+                    {blockchainFee} USDC <br />
+                    {tcommon("blockchainFee")}
+                  </div>
+                </div>
+              </div>
+
+              {/*--- TO container ---*/}
+              <div className="transferToCard">
+                {/*--- info ---*/}
+                {!transferToAnyAddress && (
                   <div className="w-full flex items-center">
                     <div className="transferIcon">
-                      <Image src="/logoBlackBgNoText.svg" alt="flashLogo" fill />
+                      {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                      {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="max" fill />}
+                      {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="bitopro" fill />}
+                      {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
                     </div>
-                    <div className="textBase ml-3 flex flex-col">
-                      <div className="leading-none font-medium">{tcommon("fromFlash")}</div>
-                      <div className="leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
-                      <div className="leading-tight break-all text-slate-500">
-                        {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
+                    <div className="ml-[12px] flex flex-col">
+                      <div className="textBase leading-none font-medium">
+                        {tcommon("toCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}
+                      </div>
+                      <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                      <div className="textBasePx leading-tight break-all text-slate-500">
+                        {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
                       </div>
                     </div>
                   </div>
-                  {/*--- from amount ---*/}
-                  <div className="mt-4 w-full flex items-center relative">
-                    <input
-                      className="transferAmountFromBox inputColor border-slate-500 placeholderColor placeholder:not-italic dark:bg-dark2"
-                      type="number"
-                      inputMode="decimal"
-                      onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
-                      value={usdcTransferToCex || ""}
-                      onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToCex(Number(e.currentTarget.value).toFixed(2)) : null)}
-                      placeholder="0"
+                )}
+                {transferToAnyAddress && (
+                  <div className="w-full flex flex-col">
+                    <label className="w-full font-medium">{t("toAddress")}:</label>
+                    <textarea
+                      id="settingsCexDepositAddress"
+                      rows={1}
+                      className="mt-[1px] py-[8px] px-[12px] textLgPx leading-normal inputColor border-slate-500 placeholderColor rounded-[6px] dark:bg-dark2 resize-none"
+                      placeholder={t("enterAnEvmAddress")}
+                      onChange={(e) => {
+                        let element = document.getElementById("settingsCexDepositAddress") as HTMLTextAreaElement;
+                        e.target.value ? (element.rows = 2) : (element.rows = 1);
+                        setAnyAddress(e.target.value);
+                      }}
                     />
-                    {/*--- max + USDC ---*/}
-                    <div className="h-full right-0 absolute flex space-x-4 items-center">
-                      <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
-                        {tcommon("max")}
-                      </div>
-                      <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
-                    </div>
                   </div>
-                  {/*--- balance ---*/}
-                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
-                    {tcommon("balance")}: {flashBalance} USDC
-                  </div>
+                )}
+                {/*--- to amount ---*/}
+                <div className="transferAmountToBox">
+                  <div className="">{Number(usdcTransferToCex) >= 1 ? (Number(usdcTransferToCex) - blockchainFee).toFixed(2) : "0"}</div>
+                  <div className="transferUsdc">USDC</div>
                 </div>
+              </div>
 
-                {/*--- ARROW ---*/}
-                <div className="flex-none w-full h-[24px] flex justify-center relative z-[1]">
-                  <div className="transferArrowContainer">
-                    <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
-                    <div className="transferArrowFont">
-                      {blockchainFee} USDC <br />
-                      {tcommon("blockchainFee")}
-                    </div>
+              {/*--- buttons ---*/}
+              <div className="transferModalButtonContainer">
+                {transferState == "initial" ? (
+                  <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
+                    {tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex).replace(" Exchange", "") : tcommon("CEX") })}
+                  </button>
+                ) : (
+                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
+                    <SpinningCircleGray />
+                    &nbsp; {tcommon("transferring")}...
                   </div>
-                </div>
-
-                {/*--- TO container ---*/}
-                <div className="pt-10 landscape:xl:desktop:pt-9 pb-6 transferCard">
-                  {/*--- info ---*/}
-                  {!transferToAnyAddress && (
-                    <div className="w-full flex items-center">
-                      <div className="transferIcon">
-                        {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                        {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="max" fill />}
-                        {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="bitopro" fill />}
-                        {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
-                      </div>
-                      <div className="textBase ml-3 flex flex-col">
-                        <div className="leading-none font-medium">{tcommon("toCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
-                        <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
-                        <div className="leading-tight break-all text-slate-500">
-                          {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {transferToAnyAddress && (
-                    <div className="w-full flex flex-col">
-                      <label className="w-full font-medium">To:</label>
-                      <textarea
-                        id="settingsCexDepositAddress"
-                        rows={1}
-                        className="mt-1 textBase inputColor border-slate-500 placeholderColor rounded-lg dark:bg-dark2 resize-none"
-                        placeholder="Enter an EVM address"
-                        onChange={(e) => {
-                          let element = document.getElementById("settingsCexDepositAddress") as HTMLTextAreaElement;
-                          e.target.value ? (element.rows = 2) : (element.rows = 1);
-                          setAnyAddress(e.target.value);
-                        }}
-                      />
-                    </div>
-                  )}
-                  {/*--- to amount ---*/}
-                  <div className="transferAmountToBox">
-                    <div className="">{Number(usdcTransferToCex) >= 1 ? (Number(usdcTransferToCex) - blockchainFee).toFixed(2) : "0"}</div>
-                    <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
-                  </div>
-                </div>
-
-                {/*--- buttons ---*/}
-                <div className="transferModalButtonContainer">
-                  {transferState == "initial" ? (
-                    <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
-                      {tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex).replace(" Exchange", "") : tcommon("CEX") })}
-                    </button>
-                  ) : (
-                    <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
-                      <SpinningCircleGray />
-                      &nbsp; {tcommon("transferring")}...
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -952,122 +951,116 @@ const CashOut = ({
             >
               <div className="xButton">&#10005;</div>
             </div>
-
-            {/*--- HEADER ---*/}
-            <div className="detailsModalHeaderContainer">
-              {/*--- header ---*/}
-              <div className="detailsModalHeader whitespace-nowrap">{tcommon("transferToBank")}</div>
-              {/*--- mobile back ---*/}
-              <div className="mobileBack">
-                <FontAwesomeIcon
-                  icon={faAngleLeft}
-                  onClick={() => {
-                    setTransferToBankModal(false);
-                    setUsdcTransferToBank(null);
-                  }}
-                />
-              </div>
+            {/*--- mobile back ---*/}
+            <div className="mobileBack">
+              <FontAwesomeIcon
+                icon={faAngleLeft}
+                onClick={() => {
+                  setTransferToBankModal(false);
+                  setUsdcTransferToBank(null);
+                }}
+              />
             </div>
 
+            {/*--- header ---*/}
+            <div className="transferModalHeader whitespace-nowrap">{tcommon("transferToBank")}</div>
+
             {/*--- CONTENT ---*/}
-            <div className="flex-1 w-full flex justify-center overflow-y-auto">
-              <div className="w-[92%] portrait:sm:w-[85%] landscape:lg:w-[85%] max-w-[500px] h-full flex flex-col items-center">
-                {/*--- FROM container ---*/}
-                <div className="pt-6 pb-12 landscape:xl:desktop:pb-9 transferCard">
-                  {/*--- info ---*/}
-                  <div className="w-full flex items-center">
-                    <div className="transferIcon">
-                      {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                      {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="coinbase" fill />}
-                      {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                      {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                    </div>
-                    <div className="textBase ml-3 flex flex-col">
-                      <div className="leading-none font-medium">{tcommon("fromCoinbase")}</div>
-                      <div className="leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
-                      <div className="leading-tight break-all text-slate-500">
-                        {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
-                      </div>
-                    </div>
+            <div className="transferModalContentContainer">
+              {/*--- FROM container ---*/}
+              <div className="transferFromCard">
+                {/*--- info ---*/}
+                <div className="w-full flex items-center">
+                  <div className="transferIcon">
+                    {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
                   </div>
-                  {/*--- from amount ---*/}
-                  <div className="mt-4 w-full flex items-center relative">
-                    <input
-                      className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
-                      type="number"
-                      inputMode="decimal"
-                      onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
-                      value={usdcTransferToBank || ""}
-                      onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToBank(Number(e.currentTarget.value).toFixed(2)) : null)}
-                      placeholder="0"
-                    />
-                    {/*--- max + USDC ---*/}
-                    <div className="h-full right-0 absolute flex space-x-4 items-center">
-                      <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
-                        {tcommon("max")}
-                      </div>
-                      <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
-                    </div>
-                  </div>
-                  {/*--- balance ---*/}
-                  <div className="pl-1 mt-0.5 w-full textBase text-slate-500">
-                    {tcommon("balance")}: {cexBalance} USDC
-                  </div>
-                </div>
-
-                {/*--- ARROW ---*/}
-                <div className="flex-none w-full h-[24px] flex justify-center relative z-[1]">
-                  <div className="transferArrowContainer">
-                    <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
-                    <div className="transferArrowFont">
-                      <div className="">
-                        1 USDC <span>={paymentSettingsState?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                        {rates.usdcToLocal}
-                      </div>
-                      {paymentSettingsState?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
+                  <div className="ml-[12px] flex flex-col">
+                    <div className="textBase leading-none font-medium">{tcommon("fromCoinbase")}</div>
+                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                    <div className="textBasePx leading-tight break-all text-slate-500">
+                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
                     </div>
                   </div>
                 </div>
-
-                {/*--- TO container ---*/}
-                <div className="pt-12 landscape:xl:desktop:pt-9 pb-6 transferCard">
-                  {/*--- info ---*/}
-                  <div className="w-full flex items-center">
-                    <div className="transferIcon bg-light5 dark:bg-slate-700">
-                      <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
+                {/*--- from amount ---*/}
+                <div className="mt-4 w-full flex items-center relative">
+                  <input
+                    className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
+                    type="number"
+                    inputMode="decimal"
+                    onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
+                    value={usdcTransferToBank || ""}
+                    onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToBank(Number(e.currentTarget.value).toFixed(2)) : null)}
+                    placeholder="0"
+                  />
+                  {/*--- max + USDC ---*/}
+                  <div className="h-full right-0 absolute flex space-x-4 items-center">
+                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
+                      {tcommon("max")}
                     </div>
-                    <div className="textBase ml-3 flex flex-col">
-                      <div className="leading-none font-medium">{tcommon("toBank")}</div>
-                      <div className="leading-tight text-slate-500">{cbBankAccountName}</div>
-                    </div>
+                    <div className="pr-[16px] text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
                   </div>
-                  {/*--- to amount ---*/}
-                  <div className="transferAmountToBox">
+                </div>
+                {/*--- balance ---*/}
+                <div className="pl-[4px] mt-[2px] w-full textBase text-slate-500">
+                  {tcommon("balance")}: {cexBalance} USDC
+                </div>
+              </div>
+
+              {/*--- ARROW ---*/}
+              <div className="flex-none w-full h-[24px] flex justify-center relative z-[1]">
+                <div className="transferArrowContainer">
+                  <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
+                  <div className="transferArrowFont">
                     <div className="">
-                      {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
-                      {usdcTransferToBank
-                        ? paymentSettingsState?.merchantCurrency == "USD"
-                          ? ((Number(usdcTransferToBank) - 0.01) * 0.99987).toFixed(2)
-                          : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])
-                        : (0).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                      1 USDC <span>={paymentSettingsState?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                      {rates.usdcToLocal}
                     </div>
-                    <div className="pr-4 text-2xl landscape:xl:desktop:text-xl font-semibold leading-none"></div>
+                    {paymentSettingsState?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
                   </div>
                 </div>
+              </div>
 
-                {/*--- buttons ---*/}
-                <div className="transferModalButtonContainer">
-                  {transferState == "initial" ? (
-                    <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
-                      {tcommon("transferToBank")}
-                    </button>
-                  ) : (
-                    <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
-                      <SpinningCircleGray />
-                      &nbsp; {tcommon("transferring")}...
-                    </div>
-                  )}
+              {/*--- TO container ---*/}
+              <div className="transferToCard">
+                {/*--- info ---*/}
+                <div className="w-full flex items-center">
+                  <div className="transferIcon bg-light5 dark:bg-slate-700">
+                    <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
+                  </div>
+                  <div className="ml-[12px] flex flex-col">
+                    <div className="textBase leading-none font-medium">{tcommon("toBank")}</div>
+                    <div className="textBasePx leading-tight text-slate-500">{cbBankAccountName}</div>
+                  </div>
                 </div>
+                {/*--- to amount ---*/}
+                <div className="transferAmountToBox">
+                  <div className="">
+                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
+                    {usdcTransferToBank
+                      ? paymentSettingsState?.merchantCurrency == "USD"
+                        ? ((Number(usdcTransferToBank) - 0.01) * 0.99987).toFixed(2)
+                        : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])
+                      : (0).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                  </div>
+                </div>
+              </div>
+
+              {/*--- buttons ---*/}
+              <div className="transferModalButtonContainer">
+                {transferState == "initial" ? (
+                  <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
+                    {tcommon("transferToBank")}
+                  </button>
+                ) : (
+                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
+                    <SpinningCircleGray />
+                    &nbsp; {tcommon("transferring")}...
+                  </div>
+                )}
               </div>
             </div>
           </div>
