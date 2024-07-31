@@ -178,7 +178,13 @@
       },
       "errors": { "enterName": "Please enter the name of your business", "enterEmail": "Please enter your email address", "validEmail": "Please enter a valid email" }
     },
-    "SaveToHome": {},
+    "SaveToHome": {
+      "title": "Add To Home Screen",
+      "text-1": "To use this App, you need to add this website to your home screen.",
+      "text-2": "In the {location} of your browser, tap the share icon <span1>(<icon></icon>)</span1> and choose <span2>Add to Home Screen</span2>. Then, from your home screen, open the saved website.",
+      "bottomMenu": "bottom menu bar",
+      "topRight": "top right corner"
+    },
     "Payments": {
       "time": "Time",
       "customer": "Customer",

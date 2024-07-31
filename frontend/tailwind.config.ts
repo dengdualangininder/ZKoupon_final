@@ -30,7 +30,6 @@ module.exports = {
         lightButtonHover: "#1E293B",
         lightText1: "#000000",
         lightText2: "#94A3B8",
-        dualGray: "#94A3B8",
         dark1: "#000000",
         dark2: "#111114",
         dark3: "#1A1A1F",

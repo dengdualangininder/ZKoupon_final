@@ -553,12 +553,12 @@ const Settings = ({
               >
                 <div
                   id="employeePassMask"
-                  className="peer w-full h-full px-3 text-end rounded-md flex items-center justify-end desktop:hover:text-slate-500 transition-all duration-[300ms]"
+                  className="peer w-full h-full px-[12px] text-end rounded-md flex items-center justify-end desktop:hover:text-slate-500 transition-all duration-[300ms]"
                 >
                   {cashoutSettingsState.isEmployeePass ? (
                     "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
                   ) : (
-                    <div className="italic pr-[2px] font-normal text-slate-400 dark:text-slate-600">{t("empty")}</div>
+                    <div className="italic pr-[3px] font-normal text-slate-400 dark:text-slate-500">{t("empty")}</div>
                   )}
                 </div>
                 <div className="pt-[2px] text-[18px] desktop:peer-hover:text-slate-500 transition-all duration-[300ms]">&#10095;</div>

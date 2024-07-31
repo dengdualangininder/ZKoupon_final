@@ -13,8 +13,7 @@ import { useTheme } from "next-themes";
 // others
 import Pusher from "pusher-js";
 import { getPublic } from "@toruslabs/eccrypto";
-import { QRCodeSVG } from "qrcode.react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 // constants
 import { txns } from "@/utils/txns";
 // components
@@ -68,7 +67,6 @@ const User = () => {
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
 
   // hooks
-  const locale = useLocale();
   const t = useTranslations("App.Page");
   const tcommon = useTranslations("Common");
   const { theme, setTheme } = useTheme();
@@ -160,12 +158,11 @@ const User = () => {
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     const isMobileAndNotStandaloneTemp = !isDesktop && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
-    console.log("isMobile:", !isDesktop);
     setIsMobile(!isDesktop);
     if (isMobileAndNotStandaloneTemp) {
-      console.log("detected mobile & not standalone");
-      // setPage("saveToHome");
-      // return;
+      // uncomment for production
+      setPage("saveToHome");
+      return;
     }
 
     // detect and set light/dark mode; set dark mode as default
@@ -218,7 +215,7 @@ const User = () => {
 
   useEffect(() => {
     if (newTxn) {
-      console.log("add new txn to transactionsState...");
+      console.log("added new txn to transactionsState");
       setTransactionsState([...transactionsState, newTxn]);
       setBannerModal(true);
       setTimeout(() => {

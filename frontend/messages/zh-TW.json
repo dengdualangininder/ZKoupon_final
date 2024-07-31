@@ -178,7 +178,13 @@
       },
       "errors": { "enterName": "請輸入您的企業名稱", "enterEmail": "請輸入您的電子信箱", "validEmail": "請輸入有效的電子郵件" }
     },
-    "SaveToHome": {},
+    "SaveToHome": {
+      "title": "加入主畫面",
+      "text-1": "要使用 Flash App，先把此網站加入您的主畫面。",
+      "text-2": "在您瀏覽器{location}，點分享圖示<span1>(<icon></icon>)</span1>並點 \u0022<span2>加入主畫面</span2>\u0022。然後，從您主畫面開啟剛儲存的網站。",
+      "bottomMenu": "下方的選項",
+      "topRight": "右上角"
+    },
     "Payments": {
       "time": "時間",
       "customer": "客戶地址",
