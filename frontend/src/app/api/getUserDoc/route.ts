@@ -24,6 +24,7 @@ export const POST = async (request: Request) => {
   // return doc of existing user or create new user
   await dbConnect();
   try {
+    console.log("merchantEvmAddress:", merchantEvmAddress);
     const doc = await UserModel.findOne({ "paymentSettings.merchantEvmAddress": merchantEvmAddress });
     if (doc) {
       console.log("verified & fetched doc");

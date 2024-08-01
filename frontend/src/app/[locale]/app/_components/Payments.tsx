@@ -426,7 +426,7 @@ const Payments = ({
                     {txn.toRefund && (
                       <div
                         // @ts-ignore
-                        style={{ "writing-mode": "tb-rl" }}
+                        style={{ "writing-mode": "vertical-rl" }}
                         className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] landscape:xl:desktop:left-[-24px] portrait:pr-[4px] portrait:sm:pr-0 bottom-0 text-center text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px] font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
                       >
                         To Refund
