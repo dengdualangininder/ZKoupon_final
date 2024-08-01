@@ -161,8 +161,8 @@ const User = () => {
     setIsMobile(!isDesktop);
     if (isMobileAndNotStandaloneTemp) {
       // uncomment for production
-      setPage("saveToHome");
-      return;
+      // setPage("saveToHome");
+      // return;
     }
 
     // detect and set light/dark mode; set dark mode as default
@@ -389,7 +389,7 @@ const User = () => {
   };
 
   return (
-    <div className="pl-[calc(100vw-100%)] bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1">
+    <div className="pl-[calc(100vw-100%)] bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1" style={{ touchAction: "none" }}>
       {page === "loading" && (
         <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light2">
           <div className="w-[92%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
