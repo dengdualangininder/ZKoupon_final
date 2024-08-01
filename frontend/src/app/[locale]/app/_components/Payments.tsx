@@ -415,13 +415,13 @@ const Payments = ({
                     isAdmin
                       ? "portrait:h-[calc((100vh-84px-140px)/6)] portrait:sm:h-[calc((100vh-140px-180px)/6)]"
                       : "portrait:h-[calc((100vh-0px-140px)/6)] portrait:sm:h-[calc((100vh-0px-180px)/6)]"
-                  } w-full landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer relative`}
+                  } w-full landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer`}
                   id={txn.txnHash}
                   key={index}
                   onClick={onClickTxn}
                 >
                   {/*---Time---*/}
-                  <td className="portrait:pl-[8px] portrait:sm:pl-0 w-[28%]">
+                  <td className="portrait:pl-[8px] portrait:sm:pl-0 w-[28%] relative">
                     {/*--- "to refund" ---*/}
                     {txn.toRefund && (
                       <div
