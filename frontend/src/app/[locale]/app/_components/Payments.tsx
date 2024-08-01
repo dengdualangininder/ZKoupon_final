@@ -401,15 +401,14 @@ const Payments = ({
 
       {/*--- Table or "no payments" ---*/}
       <div
-        draggable="false"
         id="table"
         className={`${
           isAdmin ? "portrait:h-[calc(100vh-84px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
-        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto select-none relative`}
+        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto overflow-x-hidden select-none relative`}
       >
         {transactionsState.length != 0 && (
-          <table className="paymentsWidth table-fixed text-left relative" draggable="false">
-            <tbody draggable="false">
+          <table className="paymentsWidth table-fixed text-left relative">
+            <tbody>
               {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
                 <tr
                   className={`${txn.refund ? "opacity-50" : ""} ${
