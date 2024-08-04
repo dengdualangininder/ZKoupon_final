@@ -422,6 +422,10 @@
     @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
   }
 
+  .sidebarModalBase {
+    @apply fixed left-0 flex flex-col items-center z-[20] transition-all duration-500;
+  }
+
   .modalColor {
     @apply bg-light2 dark:bg-dark4 border-2 border-light5 dark:border-dark4;
   }
@@ -523,7 +527,7 @@
   }
 
   .sidebarModal {
-    @apply sidebarModalSize sidebarModalColor absolute left-0 flex flex-col items-center z-[20] transition-all duration-500;
+    @apply sidebarModalSize sidebarModalColor sidebarModalBase;
   }
 
   .emailModal {
