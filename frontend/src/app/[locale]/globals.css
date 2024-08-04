@@ -430,6 +430,10 @@
     @apply bg-white dark:bg-dark4 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
   }
 
+  .sidebarModalColor {
+    @apply bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600;
+  }
+
   /* specific modal sizes (smallest to largest) and fonts */
 
   .errorModalSize {
@@ -466,6 +470,10 @@
 
   .detailsModalSize {
     @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[740px] landscape:lg:h-[95%] landscape:xl:desktop:h-[600px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[95%];
+  }
+
+  .sidebarModalSize {
+    @apply w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen;
   }
 
   .transferModalSize {
@@ -512,6 +520,10 @@
 
   .transferModal {
     @apply modalFullBase modalFullColor dark:bg-dark2 transferModalSize pb-[24px];
+  }
+
+  .sidebarModal {
+    @apply sidebarModalSize sidebarModalColor absolute left-0 flex flex-col items-center z-[20] transition-all duration-500;
   }
 
   .emailModal {
@@ -832,10 +844,6 @@
 
   .transferArrowArrow {
     @apply text-[34px] landscape:xl:desktop:text-[30px] text-lightText1 dark:text-darkText1;
-  }
-
-  .sidebar {
-    @apply absolute left-0 w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen flex flex-col items-center overflow-y-auto bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600 z-[20] transition-all duration-500;
   }
 
   .sidebarBodyContainer {

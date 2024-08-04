@@ -404,7 +404,7 @@ const Payments = ({
         id="table"
         className={`${
           isAdmin ? "portrait:h-[calc(100vh-84px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
-        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto overflow-x-hidden select-none relative`}
+        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
       >
         {transactionsState.length != 0 && (
           <table className="paymentsWidth table-fixed text-left relative">
@@ -516,7 +516,7 @@ const Payments = ({
 
       {/*--- SEARCH MODAL ---*/}
       <div className={`${searchModal ? "" : "hidden"} fixed inset-0 z-10`}></div>
-      <div className={`${searchModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebar`}>
+      <div className={`${searchModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebarModal`}>
         {/*--- HEADER ---*/}
         <div className="w-full flex justify-center">
           <div className="sidebarModalHeader">{t("searchModal.title")}</div>
@@ -596,7 +596,7 @@ const Payments = ({
       </div>
 
       {showCalendar && (
-        <div className="sidebar z-[21]">
+        <div className="sidebarModal z-[21]">
           {/*--- HEADER ---*/}
           <div className="detailsModalHeaderContainer">
             <div className="sidebarModalHeader">{t("searchModal.selectDatesCap")}</div>
@@ -659,7 +659,7 @@ const Payments = ({
 
       {/*--- EXPORT MODAL ---*/}
       <div className={`${exportModal ? "" : "hidden"} fixed inset-0 z-10`} onClick={() => setExportModal(false)}></div>
-      <div id="exportModal" className={`${exportModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebar`}>
+      <div id="exportModal" className={`${exportModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebarModal`}>
         {/*--- HEADER ---*/}
         <div className="detailsModalHeaderContainer">
           <div className="sidebarModalHeader">{t("downloadModal.title")}</div>
