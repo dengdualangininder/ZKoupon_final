@@ -477,7 +477,7 @@
   }
 
   .sidebarModalSize {
-    @apply w-full portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen;
+    @apply w-full max-w-[450px] portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen;
   }
 
   .transferModalSize {
@@ -600,6 +600,10 @@
 
   .transferModalContentContainer {
     @apply flex-1 w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[72px] flex flex-col items-center overflow-y-auto;
+  }
+
+  .sidebarModalContentContainer {
+    @apply w-full mt-4 px-[12px] portrait:sm:px-[24px] landscape:lg:px-[24px] flex flex-col items-center overflow-y-auto;
   }
 
   .modalNumber {

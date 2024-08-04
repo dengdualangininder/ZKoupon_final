@@ -517,30 +517,20 @@ const Payments = ({
       {/*--- SEARCH MODAL ---*/}
       <div className={`${searchModal ? "" : "hidden"} fixed inset-0 z-10`}></div>
       <div className={`${searchModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebarModal`}>
-        {/*--- HEADER ---*/}
-        <div className="w-full flex justify-center">
-          <div className="sidebarModalHeader">{t("searchModal.title")}</div>
-          {/*--- mobile back ---*/}
-          <div className="mobileBack">
-            <FontAwesomeIcon
-              icon={faAngleLeft}
-              onClick={() => {
-                setSearchModal(false);
-              }}
-            />
-          </div>
-          {/*--- tablet/desktop close ---*/}
-          <div
-            className="xButtonContainer rounded-tr-none"
-            onClick={() => {
-              setSearchModal(false);
-            }}
-          >
-            <div className="xButton">&#10005;</div>
-          </div>
+        {/*--- mobile back ---*/}
+        <div className="mobileBack">
+          <FontAwesomeIcon icon={faAngleLeft} onClick={() => setSearchModal(false)} />
         </div>
-        {/*--- BODY ---*/}
-        <div className="mt-4 sidebarBodyContainer">
+        {/*--- tablet/desktop close ---*/}
+        <div className="xButtonContainer rounded-tr-none" onClick={() => setSearchModal(false)}>
+          <div className="xButton">&#10005;</div>
+        </div>
+
+        {/*--- HEADER ---*/}
+        <div className="detailsModalHeader">{t("searchModal.title")}</div>
+
+        {/*--- contents ---*/}
+        <div className="sidebarModalContentContainer">
           {/*--- filters ---*/}
           <div className="flex-none w-full h-[360px] textLg flex flex-col">
             {/*--- filter 1 - customer's address ---*/}
@@ -597,32 +587,31 @@ const Payments = ({
 
       {showCalendar && (
         <div className="sidebarModal z-[21]">
-          {/*--- HEADER ---*/}
-          <div className="detailsModalHeaderContainer">
-            <div className="sidebarModalHeader">{t("searchModal.selectDatesCap")}</div>
-            {/*--- mobile back ---*/}
-            <div className="mobileBack">
-              <FontAwesomeIcon
-                icon={faAngleLeft}
-                onClick={() => {
-                  setShowCalendar(false);
-                  setSearchDate(undefined);
-                }}
-              />
-            </div>
-            {/*--- tablet/desktop close ---*/}
-            <div
-              className="xButtonContainer rounded-tr-none"
+          {/*--- mobile back ---*/}
+          <div className="mobileBack">
+            <FontAwesomeIcon
+              icon={faAngleLeft}
               onClick={() => {
                 setShowCalendar(false);
                 setSearchDate(undefined);
               }}
-            >
-              <div className="xButton">&#10005;</div>
-            </div>
+            />
           </div>
-          {/*--- BODY ---*/}
-          <div className="mt-2 sidebarBodyContainer">
+          {/*--- tablet/desktop close ---*/}
+          <div
+            className="xButtonContainer rounded-tr-none"
+            onClick={() => {
+              setShowCalendar(false);
+              setSearchDate(undefined);
+            }}
+          >
+            <div className="xButton">&#10005;</div>
+          </div>
+          {/*--- header ---*/}
+          <div className="detailsModalHeader">{t("searchModal.selectDatesCap")}</div>
+
+          {/*--- content ---*/}
+          <div className="sidebarModalContentContainer overflow-x-hidden">
             {/*--- calendar ---*/}
             <DayPicker mode="range" selected={searchDate} onSelect={setSearchDate} />
             {/*--- date range ---*/}
@@ -661,33 +650,31 @@ const Payments = ({
       <div className={`${exportModal ? "" : "hidden"} fixed inset-0 z-10`} onClick={() => setExportModal(false)}></div>
       <div id="exportModal" className={`${exportModal ? "translate-x-[0%]" : "translate-x-[-100%]"} sidebarModal`}>
         {/*--- HEADER ---*/}
-        <div className="detailsModalHeaderContainer">
-          <div className="sidebarModalHeader">{t("downloadModal.title")}</div>
-          {/*--- mobile back ---*/}
-          <div className="mobileBack">
-            <FontAwesomeIcon
-              icon={faAngleLeft}
-              onClick={() => {
-                setExportModal(false);
-                setExportStartMonth("select");
-                setExportEndMonth("select");
-              }}
-            />
-          </div>
-          {/*--- tablet/desktop close ---*/}
-          <div
-            className="xButtonContainer rounded-tr-none"
+        <div className="detailsModalHeader">{t("downloadModal.title")}</div>
+        {/*--- mobile back ---*/}
+        <div className="mobileBack">
+          <FontAwesomeIcon
+            icon={faAngleLeft}
             onClick={() => {
               setExportModal(false);
               setExportStartMonth("select");
               setExportEndMonth("select");
             }}
-          >
-            <div className="xButton">&#10005;</div>
-          </div>
+          />
+        </div>
+        {/*--- tablet/desktop close ---*/}
+        <div
+          className="xButtonContainer rounded-tr-none"
+          onClick={() => {
+            setExportModal(false);
+            setExportStartMonth("select");
+            setExportEndMonth("select");
+          }}
+        >
+          <div className="xButton">&#10005;</div>
         </div>
         {/*--- content ---*/}
-        <div className="mt-12 textLg w-[85%] flex flex-col space-y-10">
+        <div className="sidebarModalContentContainer">
           {/*---start month---*/}
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.start")}</div>
@@ -698,7 +685,7 @@ const Payments = ({
             </select>
           </div>
           {/*---end month---*/}
-          <div className="w-full flex items-center justify-between">
+          <div className="mt-[32px] w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.end")}</div>
             <select className="w-[130px] textLg inputColor px-3 py-2 rounded-md" value={exportEndMonth} onChange={(e) => setExportEndMonth(e.target.value)}>
               {downloadDates.map((i) => (
