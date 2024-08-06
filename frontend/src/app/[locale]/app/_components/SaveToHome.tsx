@@ -49,7 +49,7 @@ const SaveToHome = () => {
     <div className="h-[100dvh] py-[24px] flex flex-col items-center dark:bg-light2 dark:text-black overflow-y-auto">
       <div className="w-full flex flex-col items-center pb-[48px] my-auto">
         {/*---image---*/}
-        <div className="flex-none relative h-[320px] w-[160px] drop-shadow-[0px_4px_8px_rgb(0,0,0,0.3)] overflow-visible">
+        <div className="flex-none relative h-[320px] w-[160px] rounded-[16px] shadow-[0px_2px_20px_0px_rgb(0,0,0,0.3)]">
           <Image src="/PWA.png" alt="phone" fill />
         </div>
         {/*---text---*/}

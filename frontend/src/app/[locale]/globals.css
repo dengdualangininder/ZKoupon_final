@@ -791,7 +791,7 @@
   }
 
   .cashoutMoreOptionsContainer {
-    @apply top-[calc(100%+8px)] right-0 px-5 py-3 desktop:py-2 textLg rounded-lg border bg-slate-100 dark:bg-dark5 border-transparent dark:border-slate-600 desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark6 active:bg-slate-200 whitespace-nowrap drop-shadow-md;
+    @apply top-[calc(100%+8px)] right-0 px-[20px] py-[12px] desktop:py-[8px] textLg rounded-[8px] border bg-slate-100 dark:bg-dark5 border-slate-300 dark:border-slate-600 desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark6 active:bg-slate-200 whitespace-nowrap;
   }
 
   .cashoutArrowContainer {

@@ -599,7 +599,7 @@ const CashOut = ({
 
         {/*--- CEX CARD ---*/}
         <div className={`${paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
-          {/*--- header + moreOptions ---*/}
+          {/*--- header + linkPopup ---*/}
           <div className="w-full flex justify-between items-center">
             <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
 
