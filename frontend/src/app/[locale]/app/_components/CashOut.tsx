@@ -514,9 +514,9 @@ const CashOut = ({
   console.log("before render", "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible, "\ncexBalance:", cexBalance);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] portrait:min-h-[calc(100vh-84px)] portrait:sm:min-h-[calc(100vh-140px)] w-full flex flex-col items-center overflow-y-auto bg-light2 dark:bg-dark1">
+    <section className="appSectionSize bg-light2 dark:bg-dark1">
       {/*---Flash Account + Coinbase Account + Statistics ---*/}
-      <div className="w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[400px] flex flex-col space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px]">
+      <div className="py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[400px] flex flex-col space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px]">
         {/*---FLASH CARD ---*/}
         <div className="cashoutContainer">
           {/*--- title ---*/}

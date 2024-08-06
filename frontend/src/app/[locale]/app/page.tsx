@@ -440,11 +440,11 @@ const User = () => {
         />
       )}
       {page === "app" && (
-        <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row">
+        <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
           {/*---MENU: LEFT (w120/160/200px) or BOTTOM (h-84/140px) ---*/}
           {isAdmin && (
-            <div className="flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] portrait:bg-gradient-to-t landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1] relative">
-              <div className="portrait:bottom-0 w-full portrait:h-[84px] portrait:sm:h-[140px] landscape:h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] flex landscape:flex-col items-center justify-around portrait:pb-[10px] portrait:px-1">
+            <div className="fixed flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] bg-white dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1]">
+              <div className="w-full h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] portrait:pb-[10px] portrait:px-[4px] flex landscape:flex-col items-center justify-around">
                 {[
                   { id: "payments", title: t("payments"), imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },
                   { id: "cashOut", title: t("cashout"), imgWhite: "/cashOutWhite.svg", imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
@@ -479,7 +479,7 @@ const User = () => {
                       }
                     }}
                   >
-                    <div className="relative w-[22px] h-[22px] portrait:sm:w-[28px] portrait:sm:h-[28px] landscape:lg:w-[28px] landscape:lg:h-[28px]">
+                    <div className="relative w-[20px] h-[20px] portrait:sm:w-[28px] portrait:sm:h-[28px] landscape:lg:w-[28px] landscape:lg:h-[28px]">
                       <Image src={theme == "dark" ? i.imgWhite : i.imgBlack} alt={i.id} fill />
                     </div>
                     <div className="menuText">{i.title}</div>

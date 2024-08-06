@@ -61,13 +61,13 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
           <div className="xButton">&#10005;</div>
         </div>
         {/*--- content ---*/}
-        <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-8 flex flex-col overflow-y-auto scrollbar textLg font-medium">
+        <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col overflow-y-auto scrollbar textLg font-medium">
           {/*--- questions ---*/}
           {titles.map((i, index) => (
             <div
               className={`${
                 titles.length == index + 1 ? "border-b" : ""
-              } desktop:px-[12px] py-[16px] desktop:py-[10px] flex items-center justify-between cursor-pointer desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 border-t border-slate-300 dark:border-dark6 transition-all ease-in duration-[100ms] desktop:hover:!duration-[300ms]`}
+              } desktop:px-[12px] py-[16px] desktop:py-[10px] flex items-center justify-between cursor-pointer desktop:hover:bg-light3 dark:desktop:hover:bg-dark5 border-t border-slate-300 dark:border-dark6 transition-all ease-in duration-[100ms] desktop:hover:!duration-[300ms]`}
               onClick={() => setExpand(i.id)}
             >
               <div className="">{i.title}</div>
@@ -173,7 +173,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
             {expand == "confirm" && (
               <div className="flex flex-col items-center space-y-3">
                 <div className="relative w-[200px] h-[330px]">
-                  <Image src="/phone.png" alt="payments" fill />
+                  <Image src={"/phoneConfirmPayment.png"} alt="phoneConfirmPayment" fill style={{ objectFit: "contain" }} />
                 </div>
                 <p>{t.rich("confirm-1", { span: (chunks) => <span className="font-bold">{chunks}</span> })}</p>
               </div>
@@ -188,7 +188,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
               <div className="space-y-3">
                 <p>{t.rich("refund-1", { span: (chunks) => <span className="font-bold">{chunks}</span> })}</p>
                 <p>{t("refund-2")}</p>
-                <p>{t.rich("refund-3", { span: (chunks) => <span className="font-bold">{chunks}</span> })}</p>
+                <p>{t.rich("refund-3", { span1: (chunks) => <span className="font-bold">{chunks}</span>, span2: (chunks) => <span className="font-bold">{chunks}</span> })}</p>
                 <p>{t("refund-4")}</p>
               </div>
             )}

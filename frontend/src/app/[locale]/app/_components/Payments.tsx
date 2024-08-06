@@ -336,7 +336,7 @@ const Payments = ({
   };
 
   return (
-    <section className="w-full flex flex-col items-center">
+    <section className="appSectionSize">
       {/*--- TOP BAR h-140px/180px/160px ---*/}
       <div className="flex-none w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] landscape:xl:desktop:h-[160px] flex flex-col">
         {/*--- shaded region ---*/}
@@ -572,7 +572,6 @@ const Payments = ({
               </div>
             </div>
           </div>
-
           {/*--- button ---*/}
           <div className="mt-8 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex justify-between">
             <button className="buttonSecondary w-[35%]" onClick={clearFilter}>
@@ -678,7 +677,7 @@ const Payments = ({
           {/*---start month---*/}
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.start")}</div>
-            <select className="w-[130px] textLg inputColor px-3 py-2 rounded-md" value={exportStartMonth} onChange={(e) => setExportStartMonth(e.target.value)}>
+            <select className="textLgPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]" value={exportStartMonth} onChange={(e) => setExportStartMonth(e.target.value)}>
               {downloadDates.map((i) => (
                 <option>{i}</option>
               ))}
@@ -687,18 +686,18 @@ const Payments = ({
           {/*---end month---*/}
           <div className="mt-[32px] w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.end")}</div>
-            <select className="w-[130px] textLg inputColor px-3 py-2 rounded-md" value={exportEndMonth} onChange={(e) => setExportEndMonth(e.target.value)}>
+            <select className="textLgPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]" value={exportEndMonth} onChange={(e) => setExportEndMonth(e.target.value)}>
               {downloadDates.map((i) => (
                 <option className="">{i}</option>
               ))}
             </select>
           </div>
-        </div>
-        {/*--- button ---*/}
-        <div className="my-12 w-[85%]">
-          <button className={`${showCalendar ? "hidden" : ""} buttonPrimary`} onClick={exportTxns}>
-            {t("downloadModal.download")}
-          </button>
+          {/*--- button ---*/}
+          <div className="my-[48px] w-full">
+            <button className={`${showCalendar ? "hidden" : ""} buttonPrimary`} onClick={exportTxns}>
+              {t("downloadModal.download")}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -706,18 +705,7 @@ const Payments = ({
       {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettingsState={paymentSettingsState} />}
 
       {/*--- DETAILS MODAL ---*/}
-      {detailsModal && (
-        <DetailsModal
-          clickedTxn={clickedTxn}
-          setClickedTxn={setClickedTxn}
-          refundStatus={refundStatus}
-          toRefundStatus={toRefundStatus}
-          setDetailsModal={setDetailsModal}
-          isAdmin={isAdmin}
-          onClickRefund={onClickRefund}
-          onClickToRefund={onClickToRefund}
-        />
-      )}
+      {detailsModal && <DetailsModal clickedTxn={clickedTxn} setDetailsModal={setDetailsModal} isAdmin={isAdmin} onClickToRefund={onClickToRefund} />}
 
       {/*---signOutModal---*/}
       {signOutModal && (

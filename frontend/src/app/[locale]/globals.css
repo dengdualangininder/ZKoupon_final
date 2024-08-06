@@ -113,7 +113,7 @@
   }
 
   .text2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl leading-normal portrait:sm:leading-normal landscape:lg:leading-normal landscape:xl:desktop:leading-normal;
+    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-xl leading-normal portrait:sm:leading-normal landscape:lg:leading-normal landscape:xl:desktop:leading-normal;
   }
 
   .text3xl {
@@ -210,6 +210,10 @@
 
   .homeSectionSize {
     @apply w-[356px] sm:w-[590px] xl:w-[1200px] xl:desktop:w-[77%] py-[100px];
+  }
+
+  .appSectionSize {
+    @apply flex-1 portrait:w-full landscape:pl-[120px] landscape:lg:pl-[140px] landscape:xl:desktop:pl-[200px] portrait:pb-[84px] portrait:sm:pb-[140px] landscape:h-full flex flex-col items-center;
   }
 
   .whiteCard {
@@ -409,7 +413,7 @@
   }
 
   .menuText {
-    @apply mt-[3px] text-sm portrait:md:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
+    @apply mt-[3px] text-[0.8125rem] portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
   }
 
   /* MODAL CSS */
@@ -445,7 +449,7 @@
   }
 
   .errorModalFont {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
+    @apply text-xl portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
   }
 
   .modalSize {
@@ -598,12 +602,16 @@
     @apply mt-2 sm:mt-4 sm:mx-4 text-lg leading-snug md:text-base md:leading-snug px-2 sm:px-3 md:px-4 lg:px-5;
   }
 
+  .detailsModalContentContainer {
+    @apply flex-1 w-full px-[24px] portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-[32px] space-y-[12px] overflow-y-auto scrollbar;
+  }
+
   .transferModalContentContainer {
-    @apply flex-1 w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[72px] flex flex-col items-center overflow-y-auto;
+    @apply flex-1 w-full pt-[12px] portrait:sm:pt-[0px] landscape:lg:pt-[0px] px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[72px] flex flex-col items-center overflow-y-auto;
   }
 
   .sidebarModalContentContainer {
-    @apply w-full mt-4 px-[12px] portrait:sm:px-[24px] landscape:lg:px-[24px] flex flex-col items-center overflow-y-auto;
+    @apply textLg w-full pt-[16px] px-[16px] portrait:sm:px-[24px] landscape:lg:px-[24px] flex flex-col items-center overflow-y-auto;
   }
 
   .modalNumber {
@@ -651,7 +659,7 @@
   }
 
   .xButtonBanner {
-    @apply p-2 mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
+    @apply p-[8px] mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-3xl cursor-pointer desktop:hover:text-slate-500;
   }
 
   .mobileBack {
@@ -659,7 +667,7 @@
   }
 
   .detailsLabelText {
-    @apply text-xl leading-snug portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base text-slate-500;
+    @apply text-lg leading-snug portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base text-slate-500 font-semibold;
   }
 
   .detailsValueText {
