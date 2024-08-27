@@ -134,7 +134,10 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       {/*--- export options ---*/}
       {qrCodeModalExportOptions && (
         <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-[32px] portrait:sm:bottom-[110px] landscape:lg:left-[32px] landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 text-black rounded-xl z-[13]">
-          <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50 border-b border-gray-300" onClick={() => setEmailModal(true)}>
+          <div
+            className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50 border-b border-gray-300"
+            onClick={() => setEmailModal(true)}
+          >
             {t("emailPdf")}
           </div>
           <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50" onClick={downloadQrCode}>
@@ -213,15 +216,18 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
                   <div className="textXl mt-[12px]">{t("emailModal.text")}</div>
                   <div className="w-full">
                     <label className="textLg font-semibold">{t("emailModal.label")}</label>
-                    <div className="mt-[2px] flex items-center relative">
+                    <div className="mt-[4px] flex items-center relative">
                       <input
-                        className="text-[18px] portrait:sm:text-[24px] landscape:lg:text-[24px] landscape:xl:desktop:text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[48px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
+                        className="text-[18px] portrait:sm:text-[24px] landscape:lg:text-[24px] landscape:xl:desktop:text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[44px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
                         onChange={(e) => setEmail(e.currentTarget.value)}
                         value={email}
                         placeholder="Enter an email address"
                       />
                       {email && (
-                        <div className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden" onClick={() => setEmail("")}>
+                        <div
+                          className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden"
+                          onClick={() => setEmail("")}
+                        >
                           &#10005;
                         </div>
                       )}

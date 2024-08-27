@@ -431,8 +431,8 @@ const CashOut = ({
       }
     };
 
-    await makeGaslessTransfer();
-    // await makeStandardTransfer();
+    // await makeGaslessTransfer();
+    await makeStandardTransfer();
   };
 
   const onClickTransferToBank = async () => {
