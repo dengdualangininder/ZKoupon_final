@@ -314,7 +314,7 @@ const CashOut = ({
     }
 
     // determine toAddress
-    let toAddress;
+    let toAddress: string;
     if (transferToAnyAddress) {
       if (anyAddress) {
         console.log("anyAddress:", anyAddress);
@@ -416,7 +416,7 @@ const CashOut = ({
           address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
           abi: ERC20ABI,
           functionName: "transfer",
-          args: [toAddress, 0xa206df5844da81470c82d07ae1b797d139be58c2],
+          args: [toAddress, "0xa206df5844da81470c82d07ae1b797d139be58c2"],
         });
         console.log(txnHashTemp);
         setTxnHash(txnHashTemp);
