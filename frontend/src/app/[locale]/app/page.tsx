@@ -160,7 +160,6 @@ const User = () => {
     const isMobileAndNotStandaloneTemp = !isDesktop && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
     setIsMobile(!isDesktop);
     if (isMobileAndNotStandaloneTemp) {
-      // uncomment for production
       if (process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL != "http://localhost:3000") {
         setPage("saveToHome");
         return;

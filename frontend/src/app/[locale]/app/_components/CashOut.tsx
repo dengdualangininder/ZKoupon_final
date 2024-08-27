@@ -4,15 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "@/navigation";
 // wagmi & viem & ethers
-import { useConfig, useAccount, useClient } from "wagmi";
-import { readContract, writeContract } from "@wagmi/core";
-import { parseUnits, formatUnits, encodeFunctionData, isAddress } from "viem";
-import { ethers } from "ethers";
+import { useConfig, useAccount } from "wagmi";
+import { readContract, writeContract, signTypedData } from "@wagmi/core";
+import { parseUnits, formatUnits, encodeFunctionData, hexToSignature, isAddress, Abi, Address } from "viem";
 // other
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useTheme } from "next-themes";
-import { GelatoRelay } from "@gelatonetwork/relay-sdk";
+import { GelatoRelay, CallWithSyncFeeRequest } from "@gelatonetwork/relay-sdk";
 import { useTranslations, useLocale } from "next-intl";
 // constants and functions
 import { clientToProvider } from "@/utils/functions";
@@ -25,7 +24,16 @@ import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleInfo,
+  faArrowDown,
+  faEllipsisVertical,
+  faInfinity,
+  faAngleDown,
+  faAngleUp,
+  faCircleCheck,
+  faAngleLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { FaEllipsisVertical } from "react-icons/fa6";
 
 import Lottie from "lottie-react";
@@ -98,7 +106,6 @@ const CashOut = ({
   const router = useRouter();
   const account = useAccount();
   const config = useConfig();
-  const client = useClient();
   const { theme } = useTheme();
   const t = useTranslations("App.CashOut");
   const tcommon = useTranslations("Common");
@@ -168,7 +175,11 @@ const CashOut = ({
               window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
             }
             // update state
-            setCashoutSettingsState({ ...cashoutSettingsState, cexEvmAddress: data.cexEvmAddress, cexAccountName: data.cexAccountName });
+            setCashoutSettingsState({
+              ...cashoutSettingsState,
+              cexEvmAddress: data.cexEvmAddress,
+              cexAccountName: data.cexAccountName,
+            });
           } else if (data.status === "error") {
             setIsCexAccessible(false);
           }
@@ -320,7 +331,8 @@ const CashOut = ({
         // this condition should not be possible but will add anyway
         setErrorModal(true);
         <div className="">
-          Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>
+          Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under{" "}
+          <span className="font-semibold">Settings</span>
         </div>;
         return;
       }
@@ -335,60 +347,92 @@ const CashOut = ({
 
     setTransferState("sending");
 
-    // // sign EIP712 permit and make Gelato Relay API call
-    // const usdcAddress = "";
-    // const tokenContract = "";
-    // const tokenName = await tokenContract.name();
-    // const tokenVersion = await tokenContract.EIP712_VERSION();
-    // const nonce = 1;
-    // const chainId = 137;
-    // const flashAddress = "";
-    // const deadline = "";
-
-    // // sign EIP712 permit
-    // const permitDomain = { name: tokenName, version: tokenVersion, chainId: chainId, verifyingContract: flashAddress };
-    // const permitTypes = {
-    //   Permit: [
-    //     { name: "owner", type: "address" },
-    //     { name: "spender", type: "address" },
-    //     { name: "value", type: "uint256" },
-    //     { name: "nonce", type: "uint256" },
-    //     { name: "deadline", type: "uint256" },
-    //   ],
-    // };
-    // const permitValues = { owner: paymentSettingsState?.merchantEvmAddress, spender: flashAddress, value: usdcTransferToCex, nonce: nonce, deadline: deadline };
-    // // get ethers provider
-    // const provider = clientToProvider(client);
-    // //@ts-ignore
-    // const typedSignature = await signer._signTypedData(permitDomain, permitTypes, permitValues); // sign
-    // const permitSignature = ethers.utils.splitSignature(typedSignature); // format signature
-
-    // // make Gelato Relay API call
-    // const payCallDataNotEncoded = { from: flashAddress, to: cashoutSettingsState?.cexEvmAddress, amount: usdcTransferToCex, permitData: { deadline: deadline, signature: permitSignature } };
-    // const payCallData = encodeFunctionData("pay", [payCallDataNotEncoded]);
-    // const gelatoRelay = new GelatoRelay();
-    // const { taskId } = await gelatoRelay.callWithSyncFee({ chainId: chainId, target: flashAddress, data: payCallData, feeToken: usdcAddress, isRelayContext: true });
-    // return;
-
-    // normal txn
-    try {
-      const txnHashTemp = await writeContract(config, {
-        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
+    const makeGaslessTransfer = async () => {
+      // sign EIP712 permit and make Gelato Relay API call
+      const usdcAddress = "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359";
+      const chainId = 137;
+      const flashAddress = "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359";
+      const flashAbi = ERC20ABI;
+      const deadline = Math.floor(Date.now() / 1000) + 60 * 3; // 3 minute deadline
+      const nonce = (await readContract(config, {
+        address: usdcAddress,
         abi: ERC20ABI,
-        functionName: "transfer",
-        args: [toAddress, parseUnits(usdcTransferToCex, 6)],
+        functionName: "nonces",
+        args: [account.address],
+      })) as number;
+
+      const typedSignature = await signTypedData(config, {
+        domain: { name: "USD Coin", version: "1", chainId: chainId, verifyingContract: usdcAddress },
+        types: {
+          Permit: [
+            { name: "owner", type: "address" },
+            { name: "spender", type: "address" },
+            { name: "value", type: "uint256" },
+            { name: "nonce", type: "uint256" },
+            { name: "deadline", type: "uint256" },
+          ],
+        },
+        primaryType: "Permit",
+        message: {
+          owner: paymentSettingsState?.merchantEvmAddress as Address,
+          spender: flashAddress,
+          value: parseUnits(usdcTransferToCex, 6),
+          nonce: BigInt(nonce),
+          deadline: BigInt(deadline),
+        },
       });
-      console.log(txnHashTemp);
-      setTxnHash(txnHashTemp);
-      setTransferState("sent");
-      setTransferToCexSuccessModal(true);
-    } catch (err) {
-      console.log(err);
-      console.log("transfer not sent");
-      setErrorModal(true);
-      setErrorMsg(t("errors.transferFailed"));
+
+      const { v, r, s } = hexToSignature(typedSignature);
+
+      const payCalldata = {
+        from: paymentSettingsState?.merchantEvmAddress,
+        to: flashAddress,
+        amount: parseUnits(usdcTransferToCex, 6),
+        permitData: { deadline: deadline, signature: { v, r, s } },
+      };
+      console.log("payCalldata:", payCalldata);
+      const payCalldataEncoded = encodeFunctionData({ abi: flashAbi, functionName: "pay", args: [payCalldata] });
+      console.log("payCalldataEncoded:", payCalldataEncoded);
+
+      // make Gelato Relay API call
       setTransferState("initial");
-    }
+      return;
+
+      const relay = new GelatoRelay();
+      const request: CallWithSyncFeeRequest = {
+        chainId: BigInt(chainId),
+        target: flashAddress,
+        data: payCalldataEncoded,
+        feeToken: usdcAddress,
+        isRelayContext: true,
+      };
+      const { taskId } = await relay.callWithSyncFee(request);
+      console.log(taskId);
+    };
+
+    const makeStandardTransfer = async () => {
+      try {
+        const txnHashTemp = await writeContract(config, {
+          address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
+          abi: ERC20ABI,
+          functionName: "transfer",
+          args: [toAddress, 0xa206df5844da81470c82d07ae1b797d139be58c2],
+        });
+        console.log(txnHashTemp);
+        setTxnHash(txnHashTemp);
+        setTransferState("sent");
+        setTransferToCexSuccessModal(true);
+      } catch (err) {
+        console.log(err);
+        console.log("transfer not sent");
+        setErrorModal(true);
+        setErrorMsg(t("errors.transferFailed"));
+        setTransferState("initial");
+      }
+    };
+
+    await makeGaslessTransfer();
+    // await makeStandardTransfer();
   };
 
   const onClickTransferToBank = async () => {
@@ -531,7 +575,10 @@ const CashOut = ({
                 }
               }}
             >
-              <FontAwesomeIcon icon={faEllipsisVertical} className={`${flashMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
+              <FontAwesomeIcon
+                icon={faEllipsisVertical}
+                className={`${flashMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`}
+              />
               <div
                 className={`${flashMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`}
                 onClick={() => {
@@ -550,7 +597,9 @@ const CashOut = ({
               <div className={`cashoutBalance`}>
                 <div>
                   {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                  <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}</span>
+                  <span>
+                    {(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                  </span>
                 </div>
                 {/*--- down arrow ---*/}
                 <div className="cashoutArrowContainer" onClick={() => setFlashDetails(!flashDetails)}>
@@ -579,7 +628,9 @@ const CashOut = ({
                     {t("rate")}
                     <div className="group flex items-center">
                       <FontAwesomeIcon icon={faCircleInfo} className="px-2 info" />
-                      <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
+                      <div className="w-full top-0 left-0 cashoutTooltip">
+                        {t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}
+                      </div>
                     </div>
                   </div>
                   <div className="">{rates.usdcToLocal}</div>
@@ -598,7 +649,11 @@ const CashOut = ({
         </div>
 
         {/*--- CEX CARD ---*/}
-        <div className={`${paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
+        <div
+          className={`${
+            paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"
+          } cashoutContainer`}
+        >
           {/*--- header + linkPopup ---*/}
           <div className="w-full flex justify-between items-center">
             <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
@@ -612,7 +667,10 @@ const CashOut = ({
                 }
               }}
             >
-              <FontAwesomeIcon icon={faEllipsisVertical} className={`${cexMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
+              <FontAwesomeIcon
+                icon={faEllipsisVertical}
+                className={`${cexMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`}
+              />
               <div className={`${cexMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`} onClick={onClickUnlink}>
                 {t("unlink")}
               </div>
@@ -655,7 +713,9 @@ const CashOut = ({
                       {t("rate")}
                       <div className="group flex items-center">
                         <FontAwesomeIcon icon={faCircleInfo} className="px-2 text-gray-400 textXs" />
-                        <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
+                        <div className="w-full top-0 left-0 cashoutTooltip">
+                          {t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}
+                        </div>
                       </div>
                     </div>
                     <div className="">{rates.usdcToLocal}</div>
@@ -685,7 +745,11 @@ const CashOut = ({
           {/*--- header ---*/}
           <div className="flex items-center">
             <span className="cashoutHeader">Your Savings</span>
-            <FontAwesomeIcon icon={savingsDetails ? faAngleUp : faAngleDown} className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
+            <FontAwesomeIcon
+              icon={savingsDetails ? faAngleUp : faAngleDown}
+              className="ml-4 pt-1 cashoutArrow"
+              onClick={() => setSavingsDetails(!savingsDetails)}
+            />
           </div>
           {/*--- earnings ---*/}
           <div className="mt-2 px-2 flex justify-between">
@@ -770,7 +834,9 @@ const CashOut = ({
             <div>Savings Over Credit Card</div>
             <div>
               {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-              {(stats.totalCurrencyAmount * 0.03 + transactionsState?.length! * 0.1 - stats.totalCashbackGiven).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+              {(stats.totalCurrencyAmount * 0.03 + transactionsState?.length! * 0.1 - stats.totalCashbackGiven).toFixed(
+                currency2decimal[paymentSettingsState?.merchantCurrency!]
+              )}
             </div>
           </div>
         </div>
@@ -812,7 +878,11 @@ const CashOut = ({
             </div>
 
             {/*--- header ---*/}
-            <div className="transferModalHeader whitespace-nowrap">{tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? cashoutSettingsState.cex : tcommon("CEX") })}</div>
+            <div className="transferModalHeader whitespace-nowrap">
+              {transferToAnyAddress
+                ? tcommon("transfer")
+                : tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? cashoutSettingsState.cex : tcommon("CEX") })}
+            </div>
 
             {/*--- CONTENT ---*/}
             <div className="transferModalContentContainer">
@@ -827,7 +897,8 @@ const CashOut = ({
                     <div className="textBase leading-none font-medium">{tcommon("fromFlash")}</div>
                     <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
                     <div className="textBasePx leading-tight break-all text-slate-500">
-                      {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...{paymentSettingsState?.merchantEvmAddress.slice(-8)}
+                      {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...
+                      {paymentSettingsState?.merchantEvmAddress.slice(-8)}
                     </div>
                   </div>
                 </div>
@@ -844,7 +915,10 @@ const CashOut = ({
                   />
                   {/*--- max + USDC ---*/}
                   <div className="h-full right-0 absolute flex space-x-[12px] items-center">
-                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
+                    <div
+                      className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer"
+                      onClick={() => setUsdcTransferToCex(flashBalance)}
+                    >
                       {tcommon("max")}
                     </div>
                     <div className="transferUsdc">USDC</div>
@@ -880,11 +954,14 @@ const CashOut = ({
                     </div>
                     <div className="ml-[12px] flex flex-col">
                       <div className="textBase leading-none font-medium">
-                        {tcommon("toCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}
+                        {tcommon("toCEX", {
+                          cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                        })}
                       </div>
                       <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
                       <div className="textBasePx leading-tight break-all text-slate-500">
-                        {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                        {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...
+                        {cashoutSettingsState?.cexEvmAddress.slice(-8)}
                       </div>
                     </div>
                   </div>
@@ -916,7 +993,11 @@ const CashOut = ({
               <div className="transferModalButtonContainer">
                 {transferState == "initial" ? (
                   <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
-                    {tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex).replace(" Exchange", "") : tcommon("CEX") })}
+                    {transferToAnyAddress
+                      ? tcommon("transfer")
+                      : tcommon("transferToCEX", {
+                          cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex).replace(" Exchange", "") : tcommon("CEX"),
+                        })}
                   </button>
                 ) : (
                   <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
@@ -981,7 +1062,8 @@ const CashOut = ({
                     <div className="textBase leading-none font-medium">{tcommon("fromCoinbase")}</div>
                     <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
                     <div className="textBasePx leading-tight break-all text-slate-500">
-                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...{cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...
+                      {cashoutSettingsState?.cexEvmAddress.slice(-8)}
                     </div>
                   </div>
                 </div>
@@ -998,7 +1080,10 @@ const CashOut = ({
                   />
                   {/*--- max + USDC ---*/}
                   <div className="h-full right-0 absolute flex space-x-4 items-center">
-                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
+                    <div
+                      className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer"
+                      onClick={() => setUsdcTransferToBank(cexBalance)}
+                    >
                       {tcommon("max")}
                     </div>
                     <div className="pr-[16px] text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
@@ -1016,7 +1101,8 @@ const CashOut = ({
                   <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
                   <div className="transferArrowFont">
                     <div className="">
-                      1 USDC <span>={paymentSettingsState?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                      1 USDC <span>={paymentSettingsState?.merchantCurrency != "USD" && <br />}</span>{" "}
+                      {currency2symbol[paymentSettingsState?.merchantCurrency!]}
                       {rates.usdcToLocal}
                     </div>
                     {paymentSettingsState?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
@@ -1043,7 +1129,9 @@ const CashOut = ({
                     {usdcTransferToBank
                       ? paymentSettingsState?.merchantCurrency == "USD"
                         ? ((Number(usdcTransferToBank) - 0.01) * 0.99987).toFixed(2)
-                        : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])
+                        : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(
+                            currency2decimal[paymentSettingsState?.merchantCurrency!]
+                          )
                       : (0).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
                   </div>
                 </div>
@@ -1089,7 +1177,11 @@ const CashOut = ({
             <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
             <div className="text3xl font-medium">{tcommon("transferSuccessful")}!</div>
             <div className="text2xl font-bold">{usdcTransferToCex} USDC</div>
-            <div className="textLg text-center">{t("successModal", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
+            <div className="textLg text-center">
+              {t("successModal", {
+                cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+              })}
+            </div>
             {/*--- button ---*/}
             <div className="w-full py-8">
               <button
