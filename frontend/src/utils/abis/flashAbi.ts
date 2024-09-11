@@ -1,4 +1,4 @@
-export const flashAbi = [
+const flashAbi = [
   {
     inputs: [],
     stateMutability: "nonpayable",
@@ -417,3 +417,5 @@ export const flashAbi = [
     type: "function",
   },
 ];
+
+export default flashAbi;

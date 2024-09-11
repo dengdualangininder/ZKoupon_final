@@ -17,8 +17,8 @@ import ErrorModal from "./modals/ErrorModal";
 // constants and functions
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import { networkToInfo } from "@/utils/web3Constants";
-import { erc20Abi } from "@/utils/abis/erc20Abi";
-import { flashAbi } from "@/utils/abis/flashAbi";
+import erc20Abi from "@/utils/abis/erc20Abi";
+import flashAbi from "@/utils/abis/flashAbi";
 // images
 import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 import "@fortawesome/fontawesome-svg-core/styles.css";

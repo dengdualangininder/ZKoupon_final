@@ -11,7 +11,7 @@ import QrCodeModal from "./modals/QrCodeModal";
 import ErrorModal from "./modals/ErrorModal";
 import DetailsModal from "./modals/DetailsModal";
 // constants
-import { erc20Abi } from "@/utils/abis/erc20Abi";
+import erc20Abi from "@/utils/abis/erc20Abi";
 import { currency2decimal } from "@/utils/constants";
 // other
 import { DateRange, DayPicker } from "react-day-picker";
