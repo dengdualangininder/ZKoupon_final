@@ -469,7 +469,12 @@ const User = () => {
                         const res = await fetch("/api/saveSettings", {
                           method: "POST",
                           headers: { "content-type": "application/json" },
-                          body: JSON.stringify({ paymentSettings: paymentSettingsState, cashoutSettings: { ...cashoutSettingsState, cashoutIntro: false }, idToken, publicKey }),
+                          body: JSON.stringify({
+                            paymentSettings: paymentSettingsState,
+                            cashoutSettings: { ...cashoutSettingsState, cashoutIntro: false },
+                            idToken,
+                            publicKey,
+                          }),
                         });
                         const data = await res.json();
                         if (data === "saved") {

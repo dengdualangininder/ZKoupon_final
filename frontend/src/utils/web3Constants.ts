@@ -24,7 +24,7 @@ export const tokenAddresses: TokenAddresses = {
     USDT: { address: "0x55d398326f99059ff775485246999027b3197955", decimals: 18 },
   },
   Optimism: {
-    USDC: { address: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607", decimals: 6 },
+    USDC: { address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", decimals: 6 },
     USDT: { address: "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", decimals: 6 },
   },
   Avalanche: {
@@ -47,6 +47,17 @@ export const tokenAddresses: TokenAddresses = {
   Base: {
     USDC: { address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", decimals: 6 },
   },
+};
+
+export type NetworkToInfo = { [key: string]: { name: string; usdcAddress: `0x${string}`; flashAddress: `0x${string}` } };
+export const networkToInfo: NetworkToInfo = {
+  "10": { name: "Optimism", usdcAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", flashAddress: "0x0" },
+  "137": {
+    name: "Polgyon",
+    usdcAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+    flashAddress: "0xb064c9EBB4dbf5955055Df1F6bC153957484B343",
+  },
+  "8453": { name: "Base", usdcAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", flashAddress: "0x0" },
 };
 
 type ChainIds = {
