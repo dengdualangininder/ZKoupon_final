@@ -9,29 +9,22 @@ import { readContract, writeContract, signTypedData } from "@wagmi/core";
 import { parseUnits, formatUnits, encodeFunctionData, hexToSignature, isAddress, Abi, Address, TypedData } from "viem";
 // other
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import { useTheme } from "next-themes";
 import { GelatoRelay, CallWithSyncFeeRequest } from "@gelatonetwork/relay-sdk";
 import { useTranslations, useLocale } from "next-intl";
+// components
+import ErrorModal from "./modals/ErrorModal";
 // constants and functions
-import { clientToProvider } from "@/utils/functions";
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import { networkToInfo } from "@/utils/web3Constants";
 import { erc20Abi } from "@/utils/abis/erc20Abi";
 import { flashAbi } from "@/utils/abis/flashAbi";
-
-// components
-import ErrorModal from "./modals/ErrorModal";
 // images
 import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
-import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FaEllipsisVertical } from "react-icons/fa6";
-
-import Lottie from "lottie-react";
-import checkSimple from "@/utils/lotties/checkSimple.json";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
 import { Rates } from "@/utils/types";
@@ -312,10 +305,9 @@ const CashOut = ({
     }
 
     // determine toAddress
-    let toAddress: string;
     if (transferToAnyAddress) {
       if (anyAddress) {
-        toAddress = anyAddress;
+        var toAddress = anyAddress;
       } else {
         setErrorModal(true);
         setErrorMsg(t("errors.toEvmAddress"));
@@ -387,7 +379,7 @@ const CashOut = ({
         } as const satisfies TypedData, // must const-assert
         primaryType: "Pay",
         domain: { name: "FlashPayments", version: "1", chainId: chainId, verifyingContract: flashAddress },
-        message: { toAddress: toAddress, nonce: nonce },
+        message: { toAddress: toAddress as Address, nonce: nonce },
       });
 
       // 3. get v, r, s, from permitSignature and paySignature
