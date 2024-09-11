@@ -17,8 +17,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { clientToProvider } from "@/utils/functions";
 import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
 import { networkToInfo } from "@/utils/web3Constants";
-import erc20Abi from "@/utils/abis/erc20Abi.json";
-import flashAbi from "@/utils/abis/flashAbi.json";
+import { erc20Abi } from "@/utils/abis/erc20Abi";
+import { flashAbi } from "@/utils/abis/flashAbi";
 
 // components
 import ErrorModal from "./modals/ErrorModal";

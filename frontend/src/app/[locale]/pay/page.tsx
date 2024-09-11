@@ -19,7 +19,7 @@ import Inperson from "./_components/Inperson";
 // constants
 import { currency2decimal, currency2rateDecimal, currency2symbol, currency2correction } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
-import erc20ABI from "@/utils/abis/erc20Abi.json";
+import erc20ABI from "@/utils/abis/erc20Abi";
 import { getLocalDateWords, getLocalTime, getLocalDate } from "../app/_components/Payments";
 // types
 import { Rates } from "@/utils/types";
@@ -217,10 +217,7 @@ const Pay = () => {
     txn.customerAddress = await signer.getAddress();
     const contract = new ethers.Contract(tokenAddresses[selectedNetwork][selectedToken]["address"], erc20ABI, signer);
     try {
-      const txResponse = await contract.transfer(
-        merchantEvmAddress,
-        ethers.parseUnits(tokenAmount, tokenAddresses[selectedNetwork][selectedToken]["decimals"])
-      );
+      const txResponse = await contract.transfer(merchantEvmAddress, ethers.parseUnits(tokenAmount, tokenAddresses[selectedNetwork][selectedToken]["decimals"]));
       const txReceipt = await txResponse.wait();
       txn.txnHash = txReceipt.hash;
     } catch (err: any) {
@@ -351,8 +348,7 @@ const Pay = () => {
           {/*---details---*/}
           <div className="w-[340px] flex flex-col items-center text-xl space-y-4">
             <div className="w-full">
-              <span className="font-semibold">Time</span>: {getLocalDateWords(date?.toString())} | {getLocalTime(date?.toString())?.time}{" "}
-              {getLocalTime(date?.toString())?.ampm}
+              <span className="font-semibold">Time</span>: {getLocalDateWords(date?.toString())} | {getLocalTime(date?.toString())?.time} {getLocalTime(date?.toString())?.ampm}
             </div>
             <div className="w-full">
               <span className="font-semibold">To</span>: {urlParams.merchantName}

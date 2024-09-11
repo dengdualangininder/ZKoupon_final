@@ -11,7 +11,7 @@ import QrCodeModal from "./modals/QrCodeModal";
 import ErrorModal from "./modals/ErrorModal";
 import DetailsModal from "./modals/DetailsModal";
 // constants
-import erc20Abi from "@/utils/abis/erc20Abi.json";
+import { erc20Abi } from "@/utils/abis/erc20Abi";
 import { currency2decimal } from "@/utils/constants";
 // other
 import { DateRange, DayPicker } from "react-day-picker";
@@ -75,9 +75,7 @@ const Payments = ({
   const [selectedEndMonth, setSelectedEndMonth] = useState("select");
   const [exportStartMonth, setExportStartMonth] = useState("select");
   const [exportEndMonth, setExportEndMonth] = useState("select");
-  const [fillerRows, setFillerRows] = useState<number[] | null>(
-    transactionsState.length < 6 ? Array.from(Array(6 - transactionsState.length).keys()) : null
-  );
+  const [fillerRows, setFillerRows] = useState<number[] | null>(transactionsState.length < 6 ? Array.from(Array(6 - transactionsState.length).keys()) : null);
   const [scrollWidth, setScrollWidth] = useState("16");
   // modal states
   const [errorModal, setErrorModal] = useState(false);
@@ -106,8 +104,7 @@ const Payments = ({
   const tcommon = useTranslations("Common");
 
   useEffect(() => {
-    const scrollWidthTemp =
-      (document?.querySelector("#table") as HTMLElement).offsetWidth - (document?.querySelector("#table") as HTMLElement).clientWidth;
+    const scrollWidthTemp = (document?.querySelector("#table") as HTMLElement).offsetWidth - (document?.querySelector("#table") as HTMLElement).clientWidth;
     setScrollWidth(scrollWidthTemp.toString());
   }, []);
 
@@ -414,9 +411,7 @@ const Payments = ({
       <div
         id="table"
         className={`${
-          isAdmin
-            ? "portrait:h-[calc(100vh-84px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]"
-            : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
+          isAdmin ? "portrait:h-[calc(100vh-84px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
         } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
       >
         {transactionsState.length != 0 && (
@@ -447,12 +442,8 @@ const Payments = ({
                     )}
                     {/*--- time/date ---*/}
                     <div className="relative">
-                      <span className="text-[24px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px]">
-                        {getLocalTime(txn.date)?.time}
-                      </span>
-                      <span className="text-[14px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[4px] font-medium">
-                        {getLocalTime(txn.date)?.ampm}
-                      </span>
+                      <span className="text-[24px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px]">{getLocalTime(txn.date)?.time}</span>
+                      <span className="text-[14px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[4px] font-medium">{getLocalTime(txn.date)?.ampm}</span>
                       <div className="text-[14px] portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[14px] leading-[14px] portrait:sm:leading-[8px] landscape:lg:leading-[8px] landscape:xl:desktop:leading-[14px] absolute bottom-[calc(100%+1px)] font-medium text-dualGray">
                         {getLocalDateWords(txn.date)?.toUpperCase()}
                       </div>
@@ -517,9 +508,7 @@ const Payments = ({
         {clearSearchModal && (
           <div
             className={`${
-              isAdmin
-                ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]"
-                : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
+              isAdmin ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
             } fixed landscape:bottom-2 landscape:lg:bottom-6 w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[72px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center items-center`}
           >
             <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 text-black">
@@ -530,9 +519,7 @@ const Payments = ({
             </div>
           </div>
         )}
-        {transactionsState.length == 0 && (
-          <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">{t("noPayments")}</div>
-        )}
+        {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">{t("noPayments")}</div>}
       </div>
 
       {/*--- SEARCH MODAL ---*/}
@@ -573,22 +560,12 @@ const Payments = ({
             {/*--- filter 2 - "to refund" payments ---*/}
             <div className="searchModalCategoryContainer">
               <div className="font-medium">{t("searchModal.toRefund")}</div>
-              <input
-                type="checkbox"
-                className="checkbox"
-                onChange={(e) => (e.target.checked ? setShowToRefund(true) : setShowToRefund(false))}
-                checked={showToRefund}
-              />
+              <input type="checkbox" className="checkbox" onChange={(e) => (e.target.checked ? setShowToRefund(true) : setShowToRefund(false))} checked={showToRefund} />
             </div>
             {/*--- filter 3 - refunded payments ---*/}
             <div className="searchModalCategoryContainer">
               <div className="font-medium">{t("searchModal.refunded")}</div>
-              <input
-                type="checkbox"
-                className="checkbox"
-                onChange={(e) => (e.target.checked ? setShowRefunded(true) : setShowRefunded(false))}
-                checked={showRefunded}
-              />
+              <input type="checkbox" className="checkbox" onChange={(e) => (e.target.checked ? setShowRefunded(true) : setShowRefunded(false))} checked={showRefunded} />
             </div>
             {/*--- filter 4 - date ---*/}
             <div className="searchModalCategoryContainer border-none">
@@ -599,9 +576,7 @@ const Payments = ({
                 } inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
                 onClick={() => setShowCalendar(!showCalendar)}
               >
-                {searchDate && searchDate.to
-                  ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}`
-                  : t("searchModal.selectDates")}
+                {searchDate && searchDate.to ? `${searchDate.from?.toLocaleDateString()} - ${searchDate.to.toLocaleDateString()}` : t("searchModal.selectDates")}
               </div>
             </div>
           </div>
@@ -711,11 +686,7 @@ const Payments = ({
           {/*---start month---*/}
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.start")}</div>
-            <select
-              className="textLgPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]"
-              value={exportStartMonth}
-              onChange={(e) => setExportStartMonth(e.target.value)}
-            >
+            <select className="textLgPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]" value={exportStartMonth} onChange={(e) => setExportStartMonth(e.target.value)}>
               {downloadDates.map((i) => (
                 <option>{i}</option>
               ))}
@@ -724,11 +695,7 @@ const Payments = ({
           {/*---end month---*/}
           <div className="mt-[32px] w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.end")}</div>
-            <select
-              className="textLgPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]"
-              value={exportEndMonth}
-              onChange={(e) => setExportEndMonth(e.target.value)}
-            >
+            <select className="textLgPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]" value={exportEndMonth} onChange={(e) => setExportEndMonth(e.target.value)}>
               {downloadDates.map((i) => (
                 <option className="">{i}</option>
               ))}
@@ -747,9 +714,7 @@ const Payments = ({
       {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettingsState={paymentSettingsState} />}
 
       {/*--- DETAILS MODAL ---*/}
-      {detailsModal && (
-        <DetailsModal clickedTxn={clickedTxn} setDetailsModal={setDetailsModal} isAdmin={isAdmin} onClickToRefund={onClickToRefund} />
-      )}
+      {detailsModal && <DetailsModal clickedTxn={clickedTxn} setDetailsModal={setDetailsModal} isAdmin={isAdmin} onClickToRefund={onClickToRefund} />}
 
       {/*---signOutModal---*/}
       {signOutModal && (
