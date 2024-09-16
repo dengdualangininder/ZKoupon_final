@@ -2,8 +2,8 @@
 // nextjs
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "@/navigation";
-// other
+// i18n
+import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 // constants
 import { langObjectArray } from "@/utils/constants";
@@ -11,9 +11,9 @@ import { langObjectArray } from "@/utils/constants";
 import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
 import { SlGlobe } from "react-icons/sl";
 
-const Navbar = () => {
+export default function Navbar() {
   const [isScrollTop, setIsScrollTop] = useState(true);
-  const [mobileMenuModal, setMobileMenuModal] = useState(false);
+  const [menuModal, setMenuModal] = useState(false);
   const [langModal, setLangModal] = useState(false);
 
   // hooks
@@ -33,7 +33,7 @@ const Navbar = () => {
 
   const onClickLink = (e: any) => {
     document.getElementById(e.target.id.replace("NavLink", ""))?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setMobileMenuModal(false);
+    setMenuModal(false);
   };
 
   const navLinks = [
@@ -56,8 +56,8 @@ const Navbar = () => {
       className={`${
         isScrollTop
           ? "h-[92px] portrait:sm:h-[108px] landscape:lg:h-[108px]"
-          : "h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[40px] bg-[rgb(241,245,249,0.8)] border-b border-slate-400"
-      } w-full fixed flex justify-center z-50 backdrop-blur-md transition-all duration-1000`}
+          : "h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[40px] border-b border-slate-300"
+      } w-full fixed flex justify-center z-50 backdrop-blur-md transition-all duration-1000 bg-light2 bg-opacity-80`}
     >
       <div className="mx-[12px] sm:mx-[16px] w-full landscape:xl:max-w-[1140px] h-full flex justify-center items-center relative">
         {/*---LOGO---*/}
@@ -152,7 +152,7 @@ const Navbar = () => {
           <FaBars
             size={36}
             onClick={async () => {
-              setMobileMenuModal(true);
+              setMenuModal(true);
               document.body.classList.add("halfHideScrollbar");
             }}
           />
@@ -162,7 +162,7 @@ const Navbar = () => {
       {/*---mobile menu modal---*/}
       <div
         className={`${
-          mobileMenuModal ? "opacity-100 z-[100]" : "opacity-0 z-[-10] pointer-events-none"
+          menuModal ? "opacity-100 z-[100]" : "opacity-0 z-[-10] pointer-events-none"
         } w-full h-screen absolute left-0 top-0 bg-light2 transition-all duration-[700ms] overflow-y-auto`}
       >
         {/*--- close button ---*/}
@@ -174,7 +174,7 @@ const Navbar = () => {
           <FaX
             size={32}
             onClick={async () => {
-              setMobileMenuModal(false);
+              setMenuModal(false);
               document.body.classList.remove("halfHideScrollbar");
               setLangModal(false);
             }}
@@ -212,6 +212,4 @@ const Navbar = () => {
       </div>
     </div>
   );
-};
-
-export default Navbar;
+}

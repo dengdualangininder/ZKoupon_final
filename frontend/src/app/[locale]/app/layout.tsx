@@ -1,6 +1,9 @@
 "use client";
-import ContextProvider from "@/app/provider/ContextProvider";
+import ContextProvider from "@/contexts/ContextProvider";
+// import { cookieToInitialState } from "wagmi"; // this is in default wagmi setup
+
 export default function Layout({ children }: { children: React.ReactNode }) {
-  console.log("/app, layout.tsx rendered once");
-  return <ContextProvider>{children}</ContextProvider>;
+  // const initialState = cookieToInitialState(config, headers().get("cookie")); // this is in default wagmi set up
+
+  return <ContextProvider>{children}</ContextProvider>; // in docs, initialstate prop is added
 }

@@ -1,7 +1,7 @@
 "use client";
 // nextjs
 import { useState, useEffect } from "react";
-import { useRouter } from "@/navigation";
+import { useRouter } from "@/i18n/routing";
 // other
 import { useTheme } from "next-themes";
 import { Buffer } from "buffer";
@@ -25,7 +25,6 @@ const Settings = ({
   cashoutSettingsState,
   setCashoutSettingsState,
   setPage,
-  isMobile,
   idToken,
   publicKey,
   isUsabilityTest,
@@ -35,7 +34,6 @@ const Settings = ({
   cashoutSettingsState: CashoutSettings;
   setCashoutSettingsState: any;
   setPage: any;
-  isMobile: boolean;
   idToken: string;
   publicKey: string;
   isUsabilityTest: boolean;

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 // other
 import { QRCodeSVG } from "qrcode.react";
-import { renderToStream, pdf, Document, Page, Path, Svg, View, Font } from "@react-pdf/renderer";
+import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
 // components
@@ -134,10 +134,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       {/*--- export options ---*/}
       {qrCodeModalExportOptions && (
         <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-[32px] portrait:sm:bottom-[110px] landscape:lg:left-[32px] landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 text-black rounded-xl z-[13]">
-          <div
-            className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50 border-b border-gray-300"
-            onClick={() => setEmailModal(true)}
-          >
+          <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50 border-b border-gray-300" onClick={() => setEmailModal(true)}>
             {t("emailPdf")}
           </div>
           <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50" onClick={downloadQrCode}>
@@ -148,7 +145,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       {/*--- placard ---*/}
       <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] portrait:max-w-[560px] portrait:max-h-[calc(560px*1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-[11]">
         <div className="w-full h-full relative">
-          <Image src="/placard.svg" alt="placard" fill />
+          <Image src="/placard.svg" alt="placard" fill priority />
         </div>
       </div>
       {/*--- qr code ---*/}
@@ -224,10 +221,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
                         placeholder="Enter an email address"
                       />
                       {email && (
-                        <div
-                          className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden"
-                          onClick={() => setEmail("")}
-                        >
+                        <div className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden" onClick={() => setEmail("")}>
                           &#10005;
                         </div>
                       )}

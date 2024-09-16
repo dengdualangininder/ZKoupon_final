@@ -2,7 +2,7 @@
 // next
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "@/navigation";
+import { useRouter } from "@/i18n/routing";
 // wagmi & viem & ethers
 import { useConfig, useAccount } from "wagmi";
 import { readContract, writeContract, signTypedData } from "@wagmi/core";
@@ -34,7 +34,6 @@ const CashOut = ({
   cashoutSettingsState,
   setCashoutSettingsState,
   transactionsState,
-  isMobile,
   idToken,
   publicKey,
   isUsabilityTest,
@@ -43,7 +42,6 @@ const CashOut = ({
   cashoutSettingsState: CashoutSettings;
   setCashoutSettingsState: any;
   transactionsState: Transaction[];
-  isMobile: boolean;
   idToken: string;
   publicKey: string;
   isUsabilityTest: boolean;

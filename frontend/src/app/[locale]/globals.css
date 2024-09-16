@@ -77,9 +77,19 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
-}
 
-@layer components {
+  .homeTextXs {
+    @apply text-sm desktop:text-xs;
+  }
+
+  .homeTextSm {
+    @apply text-base desktop:text-sm;
+  }
+
+  .homeTextBase {
+    @apply text-lg desktop:text-base;
+  }
+
   .textXs {
     @apply text-xs portrait:sm:text-sm landscape:lg:text-sm landscape:xl:desktop:text-xs;
   }
@@ -151,7 +161,9 @@
   .text3xl2 {
     @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
   }
+}
 
+@layer components {
   .checkbox {
     @apply w-[30px] h-[30px] rounded-md checkboxColor cursor-pointer;
   }
@@ -185,11 +197,11 @@
   }
 
   .link {
-    @apply cursor-pointer text-blue-500 dark:text-blue-400 xs:hover:underline active:underline;
+    @apply cursor-pointer text-blue-600 dark:text-blue-400 xs:hover:underline active:underline;
   }
 
   .linkLight {
-    @apply cursor-pointer text-blue-500 xs:hover:underline active:underline;
+    @apply cursor-pointer text-blue-600 xs:hover:underline active:underline;
   }
 
   .linkDark {
@@ -257,15 +269,15 @@
   }
 
   .tooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg xl:desktop:px-[12px] xl:desktop:py-[8px] bg-slate-700 text-white border-slate-500 border z-[1];
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg xl:desktop:px-[12px] xl:desktop:py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
   }
 
   .heroTooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg textLg bg-slate-700 text-white border border-slate-500 z-[1];
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg textLg bg-slate-800 text-white border border-slate-500 z-[1];
   }
 
   .cashoutTooltip {
-    @apply invisible group-hover:visible absolute px-[12px] py-[8px] rounded-lg text-base landscape:xl:desktop:text-sm leading-snug bg-slate-700 text-white border border-slate-500 z-[1];
+    @apply invisible group-hover:visible absolute px-[12px] py-[8px] rounded-lg text-base landscape:xl:desktop:text-sm leading-snug bg-slate-800 text-white border border-slate-500 z-[1];
   }
 
   .whyCard {
@@ -320,8 +332,12 @@
     @apply mr-4 w-[44px] h-[44px] text-[24px] font-bold flex justify-center items-center rounded-full bg-darkButton;
   }
 
+  .howHeader1Font {
+    @apply text-xl sm:text-lg md:text-2xl xl:desktop:text-lg font-medium;
+  }
+
   .howHeader2Font {
-    @apply text-xl sm:text-lg md:text-2xl xl:desktop:text-lg font-medium leading-tight sm:leading-tight xl:desktop:leading-tight;
+    @apply text-2xl sm:text-lg md:text-2xl xl:desktop:text-xl font-semibold;
   }
 
   .howStepTitle {
@@ -699,15 +715,11 @@
   }
 
   .buttonSecondaryColor {
-    @apply bg-transparent text-slate-500 border-slate-500 active:text-slate-400 desktop:hover:text-slate-400 transition-all duration-[300ms];
-  }
-
-  .buttonStart {
-    @apply w-[240px] h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:desktop:xl:h-[48px] textLg font-semibold tracking-wide rounded-md bg-black text-white desktop:hover:opacity-80 active:opacity-80 animate-fadeInAnimation;
+    @apply bg-transparent text-slate-500 border-slate-500 active:text-slate-400 active:border-slate-400 desktop:hover:text-slate-400 desktop:hover:border-slate-400 transition-all duration-[300ms];
   }
 
   .introLabelFont {
-    @apply font-medium text-xl;
+    @apply font-medium text-lg;
   }
 
   .loginInputFont {
@@ -715,7 +727,7 @@
   }
 
   .introInputFont {
-    @apply mt-1 w-full max-w-[480px] h-[52px] landscape:xl:desktop:h-[48px] px-[12px] text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] bg-white border border-slate-400 focus:border-blue-500 outline-none transition-colors duration-500 rounded-[4px] placeholder:italic;
+    @apply mt-1 w-full max-w-[480px] h-[52px] landscape:xl:desktop:h-[44px] px-[12px] text-[18px] bg-white border border-slate-400 focus:border-blue-500 outline-none transition-all duration-[500ms] rounded-[4px] placeholder:italic;
   }
 
   .introInputFontSmall {
@@ -735,31 +747,31 @@
   }
 
   .introButtonContainer {
-    @apply w-full px-2 pt-[32px] pb-[44px] flex justify-between flex-none;
+    @apply w-full px-2 desktop:px-0 pt-[32px] pb-[44px] flex justify-between flex-none;
   }
 
   .introHeaderFont {
-    @apply text-2xl font-bold text-center;
+    @apply text-[1.8rem] leading-[2rem] font-bold text-center;
   }
 
   .introNumber {
-    @apply flex-none mr-2 w-[28px] h-[28px] bg-blue-500 rounded-full flex justify-center items-center font-bold text-base text-white;
+    @apply flex-none mt-[1px] mr-[12px] w-[24px] h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-sm text-white;
   }
 
   .introButtonBlack {
-    @apply w-full bg-black text-white border-2 border-black text-base font-bold py-[16px] rounded-full desktop:hover:bg-slate-800;
+    @apply w-full h-[48px] border-2 buttonPrimaryColorLight text-base font-medium rounded-full;
   }
 
   .introButtonWhite {
-    @apply w-full bg-transparent text-slate-500 border-2 border-slate-500 text-base font-bold py-[16px] rounded-full desktop:hover:opacity-70;
+    @apply w-full h-[48px] border-2 buttonSecondaryColor text-base font-medium rounded-full;
   }
 
   .introNext {
-    @apply mr-1 w-[104px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-semibold text-white bg-black border-2 border-black active:opacity-80 lg:hover:opacity-80 rounded-md;
+    @apply mr-1 w-[104px] h-[52px] portrait:sm:w-[120px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] textLg font-semibold buttonPrimaryColorLight rounded-md;
   }
 
   .introBack {
-    @apply ml-1 w-[104px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[100px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-base landscape:desktop:xl:text-base font-semibold text-slate-400 border-2 border-transparent active:brightness-[1.2] lg:hover:brightness-[1.2] rounded-[4px];
+    @apply ml-2 xs:ml-0 h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:desktop:xl:h-[48px] textLg font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
   }
 
   .cashoutIntroButtonContainer {
@@ -868,72 +880,6 @@
 
   .qrCodeModalIconContainer {
     @apply absolute w-[60px] h-[60px] rounded-full portrait:sm:border-2 landscape:lg:border-2 border-white flex items-center justify-center cursor-pointer desktop:hover:opacity-80 active:opacity-80;
-  }
-
-  /* ----UNUSED---- */
-
-  .faqModal {
-    @apply w-full portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[540px] landscape:xl:w-[540px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[80%] portrait:sm:max-h-[850px] portrait:lg:h-[900px] portrait:lg:max-h-none landscape:lg:h-[90%] px-6 portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-8 pb-8 text-start flex flex-col items-center portrait:sm:rounded-2xl landscape:lg:rounded-2xl bg-white absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[90];
-  }
-
-  .advantageHeader {
-    @apply font-bold text-lg sm:text-base;
-  }
-
-  .advantageLearnWord {
-    @apply text-blue-300 lg:hover:text-blue-500 active:text-blue-500 cursor-pointer font-normal ml-2 whitespace-nowrap text-base sm:text-sm;
-  }
-
-  .advantageBody {
-    @apply leading-tight text-lg sm:text-base text-slate-300 font-normal;
-  }
-
-  .introWidth {
-    @apply portrait:w-[88%] landscape:w-[600px] portrait:sm:w-[590px] landscape:lg:w-[630px] portrait:lg:w-[630px] landscape:lg:desktop:w-[540px];
-  }
-
-  .introWidthHowTo {
-    @apply w-[88%] landscape:lg:w-[630px] portrait:lg:w-[630px];
-  }
-
-  .startHeader {
-    @apply w-[calc(100%-55px)] xs:w-[250px] flex-none sm:w-auto sm:flex text-2xl leading-tight font-bold;
-  }
-
-  .startStepChip {
-    @apply text-lg sm:text-2xl px-3 py-0.5 mr-2 md:mr-3 font-bold text-white bg-orange-500 rounded-md;
-  }
-
-  .startStart {
-    @apply sm:ml-4 md:ml-8 text-lg bg-blue-500 hover:bg-blue-700 cursor-pointer rounded-md font-bold text-white px-4 py-2;
-  }
-
-  .startTime {
-    @apply absolute md:static md:ml-1 left-[3px] sm:left-[20px] text-center md:text-start w-[68px] bottom-[-15px] text-sm leading-none md:text-base md:leading-none;
-  }
-
-  .startStartNow {
-    @apply bg-blue-500 hover:bg-blue-700 py-1.5 px-3 rounded-md text-white font-bold cursor-pointer;
-  }
-
-  .faqContainer {
-    @apply desktop:px-3 flex items-center justify-between cursor-pointer desktop:hover:bg-slate-200 border-t py-4 desktop:py-3 border-slate-300;
-  }
-
-  .faqModalBody {
-    @apply ml-2 mt-2 text-base leading-snug xs:text-sm xs:leading-snug;
-  }
-
-  .faqQuestionFont {
-    @apply textLg font-medium;
-  }
-
-  .faqLine1 {
-    @apply absolute left-[8.5px] bottom-[3px] w-[2px] h-[16px] bg-blue-600 transition-all duration-500;
-  }
-
-  .faqLine2 {
-    @apply rotate-90 absolute left-[8.5px] bottom-[3px] w-[2px] h-[16px] bg-blue-600;
   }
 }
 

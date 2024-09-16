@@ -18,7 +18,7 @@ import Learn from "./_components/Learn";
 import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 
-const Home = () => {
+export default function Home() {
   // states
   const [merchantCurrency, setMerchantCurrency] = useState("EUR");
 
@@ -73,6 +73,7 @@ const Home = () => {
 
   return (
     <div className="overflow-x-hidden">
+      {/* 1440px wrapper put into Navbar because want a conditional border-b across entire screen */}
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">
@@ -124,6 +125,4 @@ const Home = () => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}

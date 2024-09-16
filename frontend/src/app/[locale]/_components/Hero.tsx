@@ -1,4 +1,4 @@
-import { useRouter } from "@/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
 export default function Hero({ merchantCurrency }: { merchantCurrency: string }) {

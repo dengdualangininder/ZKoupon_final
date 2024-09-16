@@ -8,7 +8,7 @@ import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
 import { useAccount, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
 // react hooks
-import { useWeb3Auth } from "@/app/provider/ContextProvider";
+import { useWeb3Auth } from "@/contexts/ContextProvider";
 import { useTheme } from "next-themes";
 // others
 import Pusher from "pusher-js";
@@ -74,7 +74,6 @@ const User = () => {
   const { data: walletClient } = useWalletClient();
   console.log("walletClient:", walletClient);
   let web3Auth = useWeb3Auth();
-  console.log("web3Auth:", web3Auth);
 
   const { disconnectAsync } = useDisconnect();
 
@@ -153,17 +152,14 @@ const User = () => {
       return;
     }
 
-    // if mobile & not standalone, then redirect to "Save To Homescreen"
-    // const isMobileTemp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // need "temp" because using it inside this useEffect
+    // if mobile & not standalone, then redirect to "saveToHome" page
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     const isMobileAndNotStandaloneTemp = !isDesktop && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
     setIsMobile(!isDesktop);
-    if (isMobileAndNotStandaloneTemp) {
-      if (process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL != "http://localhost:3000") {
-        setPage("saveToHome");
-        return;
-      }
+    if (isMobileAndNotStandaloneTemp && process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL != "http://localhost:3000") {
+      setPage("saveToHome");
+      return;
     }
 
     // detect and set light/dark mode; set dark mode as default
@@ -292,7 +288,7 @@ const User = () => {
             substate == "fromIntro" ? setCbIntroModal(true) : null;
             window.sessionStorage.removeItem("cbRandomSecure");
           }
-          setPage("app"); // starthere
+          setPage("intro"); // starthere
         }
         // if new user
         if (data == "create new user") {
@@ -359,12 +355,12 @@ const User = () => {
       var merchantCountry = abb2full[res.data.country] ?? "Other";
       var merchantCurrency = countryData[merchantCountry]?.currency ?? "USD";
       var cex = countryData[merchantCountry]?.CEXes[0] ?? "";
-      console.log("detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
+      console.log("createNewUser: detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
     } catch (err) {
       merchantCountry = "U.S.";
       merchantCurrency = "USD";
       cex = "Coinbase";
-      console.log("detect country API failed, set default to US, USD, and Coinbase. Error:", err);
+      console.log("createNewUser error: country not detect, set to default");
     }
     // set merchantEmail and merchantEvmAddress
     const merchantEmail = (await web3Auth?.getUserInfo())?.email || ""; // TODO:check if this works for Apple login
@@ -423,11 +419,10 @@ const User = () => {
       )}
 
       {page === "saveToHome" && <SaveToHome />}
-      {page === "login" && <Login isMobile={isMobile} setPage={setPage} isUsabilityTest={isUsabilityTest} />}
+      {page === "login" && <Login setPage={setPage} isUsabilityTest={isUsabilityTest} />}
       {page === "intro" && (
         <Intro
           isMobile={isMobile}
-          page={page}
           setPage={setPage}
           idToken={idToken}
           publicKey={publicKey}
@@ -511,7 +506,6 @@ const User = () => {
               cashoutSettingsState={cashoutSettingsState!}
               setCashoutSettingsState={setCashoutSettingsState}
               transactionsState={transactionsState}
-              isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}
               isUsabilityTest={isUsabilityTest}
@@ -524,7 +518,6 @@ const User = () => {
               cashoutSettingsState={cashoutSettingsState!}
               setCashoutSettingsState={setCashoutSettingsState}
               setPage={setPage}
-              isMobile={isMobile}
               idToken={idToken}
               publicKey={publicKey}
               isUsabilityTest={isUsabilityTest}

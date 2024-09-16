@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import "./globals.css";
-import Theme from "@/app/provider/ThemeProvider";
+import Theme from "@/contexts/ThemeProvider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
@@ -13,17 +13,9 @@ export const metadata: Metadata = {
   icons: "/logoBlackBgNoText.svg",
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  // userScalable: false,
-};
-
 // inter.className to inter.variable
 // root layout must contain <html> and <body> tags
 export default async function RootLayout({ children, params: { locale } }: { children: React.ReactNode; params: { locale: string } }) {
-  console.log("layout lang:", locale);
   const messages = await getMessages();
 
   return (

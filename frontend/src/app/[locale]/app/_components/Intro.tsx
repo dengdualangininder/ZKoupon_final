@@ -2,20 +2,18 @@
 // nextjs
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "@/navigation";
+import { useRouter } from "@/i18n/routing";
 // other
 import { v4 as uuidv4 } from "uuid";
 import { QRCodeSVG } from "qrcode.react";
 import { useTranslations } from "next-intl";
-import { renderToStream, pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
-import { saveAs } from "file-saver";
+import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
 // components
 import FlashToBankAnimation from "./FlashToBankAnimation";
 import ErrorModalLight from "./modals/ErrorModalLight";
 import Placard from "./placard/Placard";
-
 // constants
-import { countryData, countryCurrencyList, cexToLinks, merchantType2data, cexToName } from "@/utils/constants";
+import { countryData, countryCurrencyList, cexToLinks, merchantType2data, cexToName, abb2full } from "@/utils/constants";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,7 +26,6 @@ const Intro = ({
   setPaymentSettingsState,
   cashoutSettingsState,
   setCashoutSettingsState,
-  page,
   setPage,
   isMobile,
   idToken,
@@ -41,7 +38,6 @@ const Intro = ({
   setPaymentSettingsState: any;
   cashoutSettingsState: CashoutSettings;
   setCashoutSettingsState: any;
-  page: string;
   setPage: any;
   isMobile: boolean;
   idToken: string;
@@ -51,25 +47,17 @@ const Intro = ({
   setCashbackModal: any;
 }) => {
   const [step, setStep] = useState("welcome");
-  const [url, setUrl] = useState("");
   const [save, setSave] = useState(false);
   const [expand, setExpand] = useState(false);
-  // modal states
   const [errorMsg, setErrorMsg] = useState<any>("");
   const [errorModal, setErrorModal] = useState(false);
-  const [isIOS, setIsIOS] = useState(true);
 
   // hooks
   const router = useRouter();
   const t = useTranslations("App.Intro");
   const tcommon = useTranslations("Common");
 
-  useEffect(() => {
-    const isIOSTemp = /iPad|iPhone|iPod|MacIntel/.test(navigator.platform);
-    console.log("platform:", navigator.platform);
-    console.log("isIOS:", isIOSTemp);
-    setIsIOS(isIOSTemp);
-  }, []);
+  const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
 
   const sendEmail = async () => {
     // check if form completed
@@ -138,6 +126,7 @@ const Intro = ({
     ).toString();
 
     // make api call
+    return;
     const res = await fetch("/api/emailQrCode", {
       method: "POST",
       body: JSON.stringify({ merchantEmail: paymentSettingsState.merchantEmail, dataString }),
@@ -145,7 +134,6 @@ const Intro = ({
 
     // api response
     const response = await res.json();
-    console.log(response);
     if (response == "email sent") {
       console.log("email sent");
     } else {
@@ -172,26 +160,23 @@ const Intro = ({
   };
 
   return (
-    <div className="text-lg w-full h-screen flex justify-center overflow-y-auto bg-light2 text-black">
-      <div className="w-[85%] min-w-[354px] max-w-[420px] desktop:max-w-[420px] h-screen my-auto max-h-[850px]">
+    <div className="w-full h-screen flex justify-center bg-light2 text-black overflow-y-auto">
+      <div className="w-[88%] min-w-[354px] max-w-[480px] h-screen my-auto max-h-[800px]">
         <div className="hidden">
           <QRCodeSVG id="introQrCode" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettingsState.qrCodeUrl} />
         </div>
 
         {/*--- welcome ---*/}
         {step == "welcome" && (
-          <div className="text-xl w-full h-full flex flex-col items-center justify-center">
-            <div className="pb-16 w-full flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
-              <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
-                <Image src="/logo.svg" alt="logo" fill />
-              </div>
-              <div className="pb-4 text-center animate-fadeInAnimation leading-relaxed font-medium">
+          <div className="w-full h-full flex flex-col items-center justify-center ">
+            <div className="pb-16 w-full flex flex-col items-center portrait:space-y-[60px] landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 desktop:!space-y-16">
+              <Image src="/logo.svg" width={0} height={0} alt="logo" className="w-[230px] h-auto mr-1" />
+              <div className="pb-4 text-center animate-fadeInAnimation textXl leading-relaxed font-medium">
                 {t("welcome.text-1")}
                 <br />
                 {t("welcome.text-2")}
               </div>
-              {/*--- buttons ---*/}
-              <button className="buttonStart" onClick={() => setStep("info")}>
+              <button className="w-[230px] py-4 textLg font-semibold tracking-wide rounded-full buttonPrimaryColorLight animate-fadeInAnimation" onClick={() => setStep("info")}>
                 {t("welcome.start")}
               </button>
             </div>
@@ -200,14 +185,14 @@ const Intro = ({
 
         {/*--- info ---*/}
         {step == "info" && (
-          <div className="text-xl h-full flex flex-col">
+          <div className="h-full flex flex-col">
             {/*--- spacer ---*/}
-            <div className="h-[8%] landscape:xl:desktop:h-[12%] min-h-[40px]"></div>
+            <div className="h-[8%] desktop:h-[12%] min-h-[40px]"></div>
             {/*--- content ---*/}
-            <div className="px-1 flex-1 space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px] landscape:xl:desktop:space-y-[32px]">
-              <div className="">{t("info.text-1")}:</div>
-              <div className="flex flex-col">
-                <label className="w-full introLabelFont">{t("info.label-1")}</label>
+            <div className="flex-1 space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px] landscape:xl:desktop:space-y-[32px]">
+              <div className="text-xl landscape:xl:desktop:text-lg">{t("info.text-1")}:</div>
+              <div>
+                <label className="introLabelFont">{t("info.label-1")}</label>
                 <input
                   className="introInputFont"
                   onChange={(e) =>
@@ -220,11 +205,11 @@ const Intro = ({
                   value={paymentSettingsState.merchantName}
                 ></input>
               </div>
-              <div className="flex flex-col">
-                <label className="w-full introLabelFont">{t("info.label-2")}</label>
+              <div>
+                <label className="introLabelFont">{t("info.label-2")}</label>
                 <select
                   className="introInputFont"
-                  onChange={async (e: React.ChangeEvent<HTMLSelectElement>) => {
+                  onChange={async (e) => {
                     const merchantCountryTemp = e.target.value.split(" / ")[0];
                     const merchantCurrencyTemp = e.target.value.split(" / ")[1];
                     const cexTemp = merchantCountryTemp == "Other" ? "" : countryData[merchantCountryTemp].CEXes[0];
@@ -244,8 +229,8 @@ const Intro = ({
                   ))}
                 </select>
               </div>
-              <div className="flex flex-col">
-                <label className="w-full introLabelFont">{t("info.label-3")}</label>
+              <div>
+                <label className="introLabelFont">{t("info.label-3")}</label>
                 <input
                   className="introInputFont"
                   onChange={(e) =>
@@ -273,12 +258,10 @@ const Intro = ({
 
         {/*--- emailSent ---*/}
         {step == "emailSent" && (
-          <div className="text-xl w-full h-full flex flex-col items-center">
-            {/*--- spacer ---*/}
-            <div className="h-[8%] landscape:xl:desktop:h-[12%] min-h-[40px]"></div>
+          <div className="w-full h-full flex flex-col items-center">
             {/*--- text ---*/}
-            <div className="px-3 flex-1 flex flex-col space-y-8">
-              <div className="font-semibold">{t("emailSent.text-1")}</div>
+            <div className="px-3 flex-1 flex flex-col justify-center space-y-8">
+              <div className="text-xl font-semibold">{t("emailSent.text-1")}</div>
               <div className="">{t("emailSent.text-2")}</div>
             </div>
             {/*--- buttons ---*/}
@@ -297,15 +280,13 @@ const Intro = ({
         {step == "how" && (
           <div className="pt-[28px] flex-none w-full h-full flex flex-col items-center">
             {/*--- content ---*/}
-            <div className="flex-1 w-full flex flex-col items-center space-y-[20px]">
-              {/*--- title ---*/}
+            <div className="flex-1 w-full flex flex-col items-center space-y-[28px]">
               <div className="introHeaderFont">{t("how.title")}</div>
-              {/*--- image ---*/}
-              <div className="flex-none relative w-[340px] h-[calc(340px*(3/4))]">
-                <Image src="/intro-scan.png" alt="scan" fill />
+              <div className="relative w-full desktop:w-[85%] aspect-[16/9]">
+                <Image src="/intro-scan.png" alt="scan" fill className="object-cover rounded-3xl" />
               </div>
               {/*--- text ---*/}
-              <div className="flex flex-col space-y-[12px]">
+              <div className="flex flex-col space-y-[12px] desktop:space-y-[20px]">
                 <div className="relative flex">
                   <div className="introNumber">1</div>
                   <div>
@@ -353,7 +334,7 @@ const Intro = ({
           </div>
         )}
 
-        {/*--- cashoutCb-1 ---*/}
+        {/*--- cashout coinbase link ---*/}
         {step == "cashoutCb-1" && (
           <div className="pt-[28px] flex-none w-full h-full flex flex-col items-center">
             {/*--- content ---*/}
@@ -361,11 +342,12 @@ const Intro = ({
               {/*--- title ---*/}
               <div className="introHeaderFont">{t("cashoutCb-1.title")}</div>
               {/*--- animation ---*/}
-              <div className="w-full flex items-center justify-center">
+              <div className="py-[8px] w-full flex items-center justify-center">
                 <FlashToBankAnimation paymentSettingsState={paymentSettingsState} />
               </div>
+
               {/*--- text ---*/}
-              <div className="pt-2 space-y-[12px]">
+              <div className="pt-2 space-y-[12px] desktop:space-y-[16px] leading-tight">
                 <div className="relative flex">
                   <div className="introNumber">1</div>
                   <div>
@@ -378,28 +360,32 @@ const Intro = ({
                     })}
                   </div>
                 </div>
-                <div className="relative flex">
+                <div className="flex">
                   <div className="introNumber">2</div>
                   <div>{t("cashoutCb-1.text-2")}</div>
                 </div>
-                <div className="relative">
-                  {t.rich("cashoutCb-1.text-3", {
-                    span1: (chunks: any) => <span className="group">{chunks}</span>,
-                    span2: (chunks: any) => <span className="linkLight">{chunks}</span>,
-                    span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
-                    span4: (chunks: any) => <span className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
-                    div: (chunks: any) => <div className="w-full bottom-[28px] whitespace-normal tooltip text-base">{chunks}</div>,
-                    tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency }),
-                    merchantCurrency: paymentSettingsState.merchantCurrency,
-                  })}
+                <div className="flex">
+                  <div className="introNumber">3</div>
+                  <div>{t("cashoutCb-1.text-3")}</div>
                 </div>
               </div>
+              <div className="relative">
+                {t.rich("cashoutCb-1.text-4", {
+                  span1: (chunks: any) => <span className="group">{chunks}</span>,
+                  span2: (chunks: any) => <span className="linkLight">{chunks}</span>,
+                  span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
+                  span4: (chunks: any) => <span className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
+                  div: (chunks: any) => <div className="w-full bottom-[28px] whitespace-normal tooltip text-base">{chunks}</div>,
+                  tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency }),
+                  merchantCurrency: paymentSettingsState.merchantCurrency,
+                })}
+              </div>
               {/*--- buttons ---*/}
-              <div className="pt-[4px] w-full space-y-[24px] flex flex-col items-center">
-                <button className="introButtonBlack" onClick={onClickSIWC}>
+              <div className="pt-[12px] w-full space-y-[28px] flex flex-col items-center">
+                <button className="introButtonBlack w-[240px]" onClick={onClickSIWC}>
                   {t("cashoutCb-1.button-1")}
                 </button>
-                <button className="introButtonWhite" onClick={() => setStep("cashoutCb-2")}>
+                <button className="introButtonWhite w-[240px]" onClick={() => setStep("cashoutCb-2")}>
                   {t("cashoutCb-1.button-2")}
                 </button>
               </div>
@@ -413,21 +399,36 @@ const Intro = ({
           </div>
         )}
 
-        {/*--- cashoutCb-2 ---*/}
+        {/*--- cash out Coinbase download ---*/}
         {step == "cashoutCb-2" && (
-          <div className="pt-8 w-full h-full flex flex-col items-center">
+          <div className="pt-12 w-full h-full flex flex-col items-center">
             {/*--- content ---*/}
             <div className="flex-1 flex flex-col items-center space-y-8">
               <div className="introHeaderFont">{t("cashoutCb-2.title")}</div>
-              <div>{t.rich("cashoutCb-2.text-1", { span: (chunks) => <span className={`${isMobile ? "hidden" : ""}`}>{chunks}</span> })}</div>
-              <button className="introButtonBlack" onClick={() => window.open("https://www.coinbase.com/signup", "_blank")}>
-                Download Coinbase App
-              </button>
-              <button className={`${isMobile ? "hidden" : ""} introButtonBlack`}>
-                Coinbase's Official Website
-                <FontAwesomeIcon icon={faExternalLink} className="ml-2" />
-              </button>
-              <div>{t("cashoutCb-2.text-2")}</div>
+              <div className="space-y-3">
+                <div>
+                  {t.rich("cashoutCb-2.text-1", {
+                    span: (chunks) => <span className="hidden desktop:inline">{chunks}</span>,
+                    a1: (chunks) => (
+                      <a
+                        href={
+                          isApple ? "https://apps.apple.com/us/app/coinbase-buy-bitcoin-ether/id886427730" : "https://play.google.com/store/apps/details?id=com.coinbase.android"
+                        }
+                        target="_blank"
+                        className="linkLight"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                    a2: (chunks) => (
+                      <a href="https://www.coinbase.com/signup" target="_blank" className="linkLight">
+                        {chunks}
+                      </a>
+                    ),
+                  })}
+                </div>
+                <div>{t("cashoutCb-2.text-2")}</div>
+              </div>
               {/*--- can I use another cex? ---*/}
               <div className="w-full flex flex-col bg-gray-200 p-4 text-base cursor-pointer rounded-[4px]" onClick={() => setExpand(!expand)}>
                 <div className="flex space-x-3">
@@ -459,16 +460,48 @@ const Intro = ({
               {/*--- title ---*/}
               <div className="introHeaderFont">{t("cashoutNoCb-1.title")}</div>
               {/*--- body ---*/}
-              <div className="w-full">{t("cashoutNoCb-1.text-1", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
-              <div>
-                {t("cashoutNoCb-1.text-2", {
-                  cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : `${tcommon("your")}${tcommon("CEX")}`,
-                  merchantCurrency: paymentSettingsState.merchantCurrency,
-                  asterix: paymentSettingsState.merchantCurrency == "USD" ? "" : "*",
-                })}
+              <div className="w-full flex relative">
+                <div className="introNumber">1</div>
+                <div className="w-full">
+                  {cashoutSettingsState.cex != "MAX" && t("cashoutNoCb-1.text-1", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("aCEX") })}
+                  {cashoutSettingsState.cex == "MAX" &&
+                    t.rich("cashoutNoCb-1.text-1MAX", {
+                      span1: (chunks) => <span className="group">{chunks}</span>,
+                      span2: (chunks) => <span className="linkLight">{chunks}</span>,
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                      div: (chunks) => <div className="left-0 top-[calc(100%-20px)] tooltip text-base">{chunks}</div>,
+                      tooltip: t("cashoutNoCb-1.tooltipMAX"),
+                    })}
+                </div>
               </div>
+              <div className="w-full flex">
+                <div className="introNumber">2</div>
+                <div>
+                  {t("cashoutNoCb-1.text-2", {
+                    cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : `${tcommon("your")}${tcommon("CEX")}`,
+                    merchantCurrency: paymentSettingsState.merchantCurrency,
+                    asterix: paymentSettingsState.merchantCurrency == "USD" ? "" : "*",
+                  })}
+                </div>
+              </div>
+              <div className="w-full flex">
+                <div className="introNumber">3</div>
+                <div>
+                  {cashoutSettingsState.cex != "MAX" &&
+                    t("cashoutNoCb-1.text-3", {
+                      cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : `${tcommon("CEX")}`,
+                      merchantCurrency: paymentSettingsState.merchantCurrency,
+                    })}
+                  {cashoutSettingsState.cex == "MAX" &&
+                    t("cashoutNoCb-1.text-3MAX", {
+                      cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : `${tcommon("CEX")}`,
+                      merchantCurrency: paymentSettingsState.merchantCurrency,
+                    })}
+                </div>
+              </div>
+              {/*--- flash minimizes loss ---*/}
               <div className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""} w-full relative`}>
-                {t.rich("cashoutNoCb-1.text-3", {
+                {t.rich("cashoutNoCb-1.text-4", {
                   span1: (chunks: any) => <span className="group">{chunks}</span>,
                   span2: (chunks: any) => <span className="linkLight">{chunks}</span>,
                   span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
@@ -534,27 +567,14 @@ const Intro = ({
         {step == "cashoutNoCb-3" && (
           <div className="pt-8 w-full h-full flex flex-col items-center">
             {/*--- content ---*/}
-            <div className="flex-1 flex flex-col items-center space-y-8">
+            <div className="flex-1 flex flex-col items-center space-y-4">
               <div className="introHeaderFont">{t("cashoutNoCb-3.title", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}</div>
-              <div className={`${cashoutSettingsState.cex ? "" : "hidden"}`}>
+              <div className={`${cashoutSettingsState.cex ? "" : "hidden"} pt-4`}>
                 {t.rich("cashoutNoCb-3.text-1", {
                   span: (chunks) => <span className={`${isMobile ? "hidden" : ""}`}>{chunks}</span>,
                   cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
                 })}
               </div>
-              <button
-                className={`${!cashoutSettingsState.cex ? "hidden" : ""} introButtonBlack`}
-                onClick={() => window.open(isIOS ? cexToLinks[cashoutSettingsState.cex].appleStore : cexToLinks[cashoutSettingsState.cex].googlePlay, "_blank")}
-              >
-                {t("cashoutNoCb-3.mobile", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}
-              </button>
-              <button
-                className={`${!cashoutSettingsState.cex ? "hidden" : ""} ${isMobile ? "hidden" : ""} introButtonBlack`}
-                onClick={() => window.open(cexToLinks[cashoutSettingsState.cex].website, "_blank")}
-              >
-                {t("cashoutNoCb-3.desktop", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX") })}{" "}
-                <FontAwesomeIcon icon={faExternalLink} className="ml-2" />
-              </button>
               <div className={`${cashoutSettingsState.cex ? "hidden" : ""}`}>{t("cashoutNoCb-3.text-1-noCex")}</div>
               <div>{t("cashoutNoCb-3.text-2")}</div>
             </div>
@@ -575,11 +595,9 @@ const Intro = ({
             {/*--- spacer ---*/}
             <div className="h-[25%] min-h-[120px]"></div>
             {/*--- content ---*/}
-            <div className="flex-1 text-center flex flex-col items-center space-y-12">
+            <div className="flex-1 flex flex-col items-center space-y-12">
               <div className="text-3xl font-semibold leading-normal">{t("final.text-1")}</div>
-              <div className="leading-normal">
-                {t.rich("final.text-2", { span1: (chunks) => <span className="font-bold">{chunks}</span>, span2: (chunks) => <span className="font-bold">{chunks}</span> })}
-              </div>
+              <div className="leading-normal">{t.rich("final.text-2", { span: (chunks) => <span className="font-bold">{chunks}</span> })}</div>
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">

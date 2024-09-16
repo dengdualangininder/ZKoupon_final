@@ -2,7 +2,7 @@
 // nextjs
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "@/navigation";
+import { useRouter } from "@/i18n/routing";
 // other
 import { useTranslations } from "next-intl";
 // constants
@@ -22,7 +22,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
         <div className="homeHeaderFont text-center">{t("header")}</div>
         {/*--- select currency ---*/}
         <div className="my-[48px] pb-[16px] w-full flex flex-col sm:flex-row justify-center items-center">
-          <label className="sm:mr-3 howHeader2Font">{t("selectCurrency")}: </label>
+          <label className="sm:mr-3 howHeader1Font">{t("selectCurrency")}: </label>
           <select
             className="mt-4 sm:mt-0 h-[44px] sm:h-[36px] py-0 font-medium pr-10 text-xl sm:text-base leading-none border bg-dark6 border-slate-600 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-colors duration-500 rounded-md"
             onChange={async (e) => {
@@ -48,7 +48,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
           {/*---title---*/}
           <div className="w-full h-[64px] flex items-center">
             <div className="howNumber">1</div>
-            <div className={`howStepTitle`}>{t("step-1")}</div>
+            <div className="howStepTitle">{t("step-1")}</div>
           </div>
           {/*--- image ---*/}
           <div className="relative w-[180px] h-[260px] sm:h-[368px]">
@@ -170,24 +170,15 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
             {/*--- TWD ---*/}
             {merchantCurrency == "TWD" && (
               <div className="howBulletPoints">
-                <div>{t("step-4-setup")}</div>
-                <div className="flex">
-                  <div className="mr-2.5">1.</div>
-                  <div>
-                    {t.rich("step-4-1", {
-                      a: (chunks: any) => (
-                        <a
-                          href="https://apps.apple.com/tw/app/max-%E8%99%9B%E6%93%AC%E8%B2%A8%E5%B9%A3%E4%BA%A4%E6%98%93%E6%89%80/id1370837255"
-                          target="_blank"
-                          className="linkDark"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                    })}
-                  </div>
+                <div>
+                  {t.rich("step-4-1", {
+                    a: (chunks: any) => (
+                      <a href="https://apps.apple.com/tw/app/max-%E8%99%9B%E6%93%AC%E8%B2%A8%E5%B9%A3%E4%BA%A4%E6%98%93%E6%89%80/id1370837255" target="_blank" className="linkDark">
+                        {chunks}
+                      </a>
+                    ),
+                  })}
                 </div>
-                <div>{t("step-4-cashout")}</div>
                 <div className="flex">
                   <div className="mr-2.5">1.</div>
                   <div>{t("step-4-2")}</div>
@@ -201,7 +192,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
             {/*--- non-USD ---*/}
             {merchantCurrency != "USD" && (
               <div className="flex relative">
-                <div className="mr-2">&nbsp;*</div>
+                <div className="mr-2">&nbsp;&nbsp;{`\u20F0`}&nbsp;</div>
                 <div className="">
                   {t.rich("step-4-notUSD", {
                     span1: (chunks: any) => <span className="group">{chunks}</span>,

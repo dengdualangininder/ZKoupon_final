@@ -1,4 +1,4 @@
-const erc20Abi = [
+export default [
   {
     anonymous: false,
     inputs: [
@@ -284,5 +284,3 @@ const erc20Abi = [
     type: "function",
   },
 ];
-
-export default erc20Abi;

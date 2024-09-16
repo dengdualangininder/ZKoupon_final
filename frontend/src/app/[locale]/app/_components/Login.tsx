@@ -2,7 +2,7 @@
 // nextjs
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "@/navigation";
+import { useRouter } from "@/i18n/routing";
 // other
 import { useConnect } from "wagmi";
 import { useLocale, useTranslations } from "next-intl";
@@ -19,7 +19,7 @@ import { faAngleDown, faAngleUp, faBars, faCaretDown, faGlobe, faX } from "@fort
 import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
 import { SlGlobe } from "react-icons/sl";
 
-const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setPage: any; isUsabilityTest: boolean }) => {
+const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: boolean }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
@@ -36,24 +36,30 @@ const Login = ({ isMobile, setPage, isUsabilityTest }: { isMobile: boolean; setP
   const locale = useLocale();
   const t = useTranslations("App.Login");
 
-  // define myConnectors
-  if (isMobile) {
+  // include AppleID login or not
+  const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
+  if (isApple) {
     var myConnectors = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
       { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
       { name: "Apple", img: "/apple.svg", connectorIndex: 2 },
+    ];
+    var myConnectorsMore = [
+      { name: "Telegram", img: "/telegram.svg", connectorIndex: 3 },
+      { name: "Line", img: "/line.svg", connectorIndex: 4 },
+      { name: "Discord", img: "/discord.svg", connectorIndex: 5 },
     ];
   } else {
     var myConnectors = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
       { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
     ];
+    var myConnectorsMore = [
+      { name: "Telegram", img: "/telegram.svg", connectorIndex: 2 },
+      { name: "Line", img: "/line.svg", connectorIndex: 3 },
+      { name: "Discord", img: "/discord.svg", connectorIndex: 4 },
+    ];
   }
-  const myConnectorsMore = [
-    { name: "Discord", img: "/discord.svg", connectorIndex: 3 },
-    { name: "Telegram", img: "/telegram.svg", connectorIndex: 4 },
-    { name: "Line", img: "/line.svg", connectorIndex: 4 },
-  ];
 
   const employeeLogin = async () => {
     setIsLoggingIn(true);
