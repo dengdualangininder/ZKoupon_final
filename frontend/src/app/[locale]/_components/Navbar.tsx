@@ -83,11 +83,13 @@ export default function Navbar() {
             </div>
           ))}
         </div>
-        {/*--- ANIMATED ENTER BUTTON             isScrollTop ? "translate-y-[calc(84px+(100vh-92px)*(6.5/10))]" : "translate-x-[24px] xs:translate-x-0"    ---*/}
+        {/*--- ANIMATED ENTER BUTTON  ---*/}
         <div
           id="heroButtonContainer"
           className={`${
-            isScrollTop ? "translate-y-[calc(74px+100vh*5.5/10)]" : "translate-x-[24px] xs:translate-x-0"
+            isScrollTop
+              ? "landscape:translate-y-[400px] landscape:lg:translate-y-[calc(74px+100vh*5.5/10)] portrait:translate-y-[calc(74px+100vh*5.5/10)]"
+              : "translate-x-[24px] xs:translate-x-0"
           } lg:hidden w-full flex justify-center absolute left-0 transition-transform duration-[1200ms]`}
         >
           <button className={`${isScrollTop ? "heroButton" : "heroButtonSmall"} transition-all duration-[1200ms]`} onClick={() => router.push("/app")}>

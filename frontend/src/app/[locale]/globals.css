@@ -292,7 +292,7 @@
   }
 
   .heroTooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg textLg bg-slate-800 text-white border border-slate-500 z-[1];
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg homeTextBase bg-slate-800 text-darkText1 border border-slate-500 z-[1];
   }
 
   .cashoutTooltip {
