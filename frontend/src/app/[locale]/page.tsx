@@ -19,14 +19,12 @@ import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 
 export default function Home() {
-  // states
   const [merchantCurrency, setMerchantCurrency] = useState("EUR");
 
-  // hooks
   const { setTheme } = useTheme();
 
   useEffect(() => {
-    setTheme("light");
+    // setTheme("light");
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -72,12 +70,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="homeTextBase overflow-x-hidden">
       {/* 1440px wrapper put into Navbar because want a conditional border-b across entire screen */}
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
+        <div className="w-full flex justify-center xl:max-w-[1280px]">
           <Hero merchantCurrency={merchantCurrency} />
         </div>
       </div>
@@ -88,10 +86,12 @@ export default function Home() {
         </div>
       </div>
 
-      <div id="LowCost" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <LowCost merchantCurrency={merchantCurrency} />
-        </div>
+      <div
+        id="LowCost"
+        data-show="yes"
+        className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_300%]"
+      >
+        <LowCost merchantCurrency={merchantCurrency} />
       </div>
 
       <div id="Simple" data-show="yes" className="opacity-0 bg-dark1 text-darkText1 w-full flex justify-center transition-all duration-1500">

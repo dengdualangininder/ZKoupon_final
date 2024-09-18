@@ -105,7 +105,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
       <div className="mt-2 mb-8 md:mb-12 text-lg font-medium text-center sm:w-[440px] lg:w-auto">{t("subheader")}</div>
       <div className="w-full flex flex-col ">
         {titles.map((i, index) => (
-          <div className={`${index == 0 ? "border-t-2" : ""} border-b-2 border-slate-300`}>
+          <div key={i.id} className={`${index == 0 ? "border-t-2" : ""} border-b-2 border-slate-300`}>
             {/*--- TITLE ---*/}
             <div
               className={`py-3 w-full flex justify-between items-center cursor-pointer desktop:hover:bg-[#1D364F]`}

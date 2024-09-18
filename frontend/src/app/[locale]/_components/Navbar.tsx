@@ -9,7 +9,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { langObjectArray } from "@/utils/constants";
 // images
 import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
-import { SlGlobe } from "react-icons/sl";
+import { SlGlobe, SlMenu } from "react-icons/sl";
+import { CgClose, CgMenu } from "react-icons/cg";
+import { BsXLg } from "react-icons/bs";
 
 export default function Navbar() {
   const [isScrollTop, setIsScrollTop] = useState(true);
@@ -22,6 +24,8 @@ export default function Navbar() {
   const t = useTranslations("HomePage.Navbar");
 
   useEffect(() => {
+    window.scrollY < 20 ? setIsScrollTop(true) : setIsScrollTop(false);
+
     window.onscroll = () => {
       if (window.scrollY < 20) {
         setIsScrollTop(true);
@@ -54,30 +58,23 @@ export default function Navbar() {
   return (
     <div
       className={`${
-        isScrollTop
-          ? "h-[92px] portrait:sm:h-[108px] landscape:lg:h-[108px]"
-          : "h-[52px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[40px] border-b border-slate-300"
-      } w-full fixed flex justify-center z-50 backdrop-blur-md transition-all duration-1000 bg-light2 bg-opacity-80`}
+        isScrollTop ? "h-[84px]" : "h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] border-b border-slate-300"
+      } w-full fixed flex justify-center transition-all duration-[1000ms] bg-light2 bg-opacity-70 backdrop-blur-md z-50`}
     >
-      <div className="mx-[12px] sm:mx-[16px] w-full landscape:xl:max-w-[1140px] h-full flex justify-center items-center relative">
-        {/*---LOGO---*/}
-        <div
-          className={`${
-            isScrollTop
-              ? "w-[160px] portrait:sm:w-[190px] landscape:lg:w-[190px] landscape:xl:desktop:w-[180px]"
-              : "w-[96px] portrait:sm:w-[140px] landscape:lg:w-[140px] landscape:xl:desktop:w-[96px]"
-          } h-full absolute left-0 transition-all duration-1000`}
-        >
-          <Image src="/logo.svg" alt="logo" fill />
-        </div>
-
+      <div className="mx-[12px] sm:mx-[16px] w-full landscape:xl:max-w-[1440px] h-full flex justify-center items-center relative">
+        {/*---logo ---*/}
+        <Image
+          src="/logo.svg"
+          alt="logo"
+          width={0}
+          height={0}
+          className={`${isScrollTop ? "w-[150px] desktop:w-[150px]" : "w-[100px] desktop:w-[90px]"} absolute left-0 h-full transition-all duration-[1000ms]`}
+        />
         {/*---DESKTOP MENU LINKS---*/}
-        <div className="hidden lg:flex w-[500px] xl:w-[560px] xl:desktop:w-[500px] justify-between">
+        <div className="hidden lg:flex space-x-[36px] xl:space-x-[60px] justify-between">
           {navLinks.map((navLink, index) => (
             <div
-              className={`${
-                isScrollTop ? "xl:desktop:text-lg" : "xl:desktop:text-base"
-              } text-xl text-center font-semibold cursor-pointer desktop:xl:hover:text-slate-700 desktop:xl:hover:underline underline-offset-[6px] [transition:font-size_1s_cubic-bezier(0,0,1,1),font-weight_1s_cubic-bezier(0,0,1,1),transform_.3s_cubic-bezier(0,0,1,1)]`}
+              className={`font-semibold cursor-pointer active:underline desktop:active:no-underline underline-offset-4 desktop:underlineAni relative`}
               id={navLink.id}
               key={index}
               onClick={onClickLink}
@@ -86,71 +83,61 @@ export default function Navbar() {
             </div>
           ))}
         </div>
-
-        {/*--- ANIMATED START BUTTON---*/}
+        {/*--- ANIMATED ENTER BUTTON             isScrollTop ? "translate-y-[calc(84px+(100vh-92px)*(6.5/10))]" : "translate-x-[24px] xs:translate-x-0"    ---*/}
         <div
+          id="heroButtonContainer"
           className={`${
-            isScrollTop ? "scale-[1.15] translate-y-[calc(84px+(100vh-92px)*(6.5/10))]" : "portrait:translate-x-[20px]"
+            isScrollTop ? "translate-y-[calc(74px+100vh*5.5/10)]" : "translate-x-[24px] xs:translate-x-0"
           } lg:hidden w-full flex justify-center absolute left-0 transition-transform duration-[1200ms]`}
         >
-          <button
-            className={`heroButton ${
-              isScrollTop ? "" : "h-[40px] lg:h-[56px] xl:desktop:h-[32px] landscape:xl:desktop:w-[100px] desktop:text-sm"
-            } transition-[height,font-size,width] duration-[1200ms]`}
-            onClick={() => router.push("/app")}
-          >
+          <button className={`${isScrollTop ? "heroButton" : "heroButtonSmall"} transition-all duration-[1200ms]`} onClick={() => router.push("/app")}>
             {t("enterApp")}
           </button>
         </div>
 
-        {/*--- LANG + ENTER BUTTON ---*/}
-        <div
-          className={`${
-            isScrollTop ? "h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px]" : "h-[40px] lg:h-[56px] landscape:xl:desktop:h-[32px]"
-          } hidden lg:flex items-center absolute right-0 transition-all duration-[1200ms] z-[100]`}
-        >
-          {/*--- enter button ---*/}
-          <button
-            className={`heroButton h-full w-[130px] ${isScrollTop ? "" : "landscape:xl:desktop:w-[100px] desktop:text-sm"} transition-[height,font-size,width] duration-[1200ms]`}
-            onClick={() => router.push("/app")}
-          >
+        {/*--- BUTTON + LANG ---*/}
+        <div className={`absolute right-0 hidden h-full lg:flex items-center space-x-[24px] z-[100]`}>
+          {/*--- button ---*/}
+          <button className="heroButtonSmall" onClick={() => router.push("/app")}>
             {t("enterApp")}
           </button>
           {/*--- lang ---*/}
-          <div
-            className={`${
-              langModal ? "bg-slate-300" : ""
-            } h-full cursor-pointer flex items-center desktop:hover:bg-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg ml-[16px] px-[8px] relative`}
-            onClick={() => setLangModal(!langModal)}
-          >
-            <SlGlobe size={40} className="mr-1 w-[22px] h-[22px]" />
-            <FaCaretDown size={40} className="w-[18px] h-[18px]" />
-            {/*--- lang modal ---*/}
-            {langModal && (
-              <div className="absolute top-[calc(100%)] right-0 py-[24px] px-[24px] space-y-[32px] text-[18px] desktop:text-[16px] font-medium bg-light2 border border-slate-300 rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg">
-                {langObjectArray.map((langObject) => (
-                  <div
-                    key={langObject.id}
-                    className={`${
-                      langObject.id == locale ? "underline decoration-[2px] underline-offset-[8px]" : ""
-                    } xl:desktop:hover:underline xl:desktop:hover:decoration-[2px] xl:desktop:hover:underline-offset-[8px] cursor-pointer`}
-                    onClick={() => router.replace("/", { locale: langObject.id })}
-                  >
-                    {langObject.text}
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="relative flex items-center h-full">
+            <div
+              className="flex space-x-1 cursor-pointer desktop:hover:text-slate-600"
+              onClick={() => {
+                setLangModal(!langModal);
+                const el = document.getElementById("homeLangModal");
+                console.log(el?.scrollHeight);
+              }}
+            >
+              <SlGlobe className="w-[22px] h-[22px]" />
+              <FaCaretDown className="w-[18px] h-[18px]" />
+            </div>
+          </div>
+          {/*--- lang modal ---*/}
+          <div id="homeLangModal" className={`${langModal ? "max-h-[260px]" : "max-h-0"}  [transition:max-height_300ms] absolute top-[100%] right-0 overflow-hidden`}>
+            <div className="py-[20px] px-[16px] space-y-[24px] text-[18px] desktop:text-[16px] font-medium bg-light2 bg-opacity-80 backdrop-blur-md border border-slate-500 rounded-lg">
+              {langObjectArray.map((langObject) => (
+                <div
+                  key={langObject.id}
+                  className={`${langObject.id == locale ? "underline underline-offset-[6px]" : ""} desktop:hover:underline desktop:hover:underline-offset-[6px] cursor-pointer`}
+                  onClick={() => router.replace("/", { locale: langObject.id })}
+                >
+                  {langObject.text}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/*---showLang mask---*/}
-        {langModal && <div className="hidden lg:block absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
+        {langModal && <div className="hidden lg:block absolute w-screen h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
 
         {/*--- MOBILE MENU ICON ---*/}
-        <div className="lg:hidden absolute right-[12px] cursor-pointer">
-          <FaBars
-            size={36}
+        <div className="lg:hidden absolute right-[16px] cursor-pointer">
+          <SlMenu
+            size={32}
             onClick={async () => {
               setMenuModal(true);
               document.body.classList.add("halfHideScrollbar");
@@ -168,11 +155,11 @@ export default function Navbar() {
         {/*--- close button ---*/}
         <div
           className={`${
-            isScrollTop ? "pt-[30px] portrait:sm:pt-[38px]" : "pt-[14px] portrait:sm:pt-[18px]"
-          } pr-[26px] sm:pr-[30px] transition-all duration-[500ms] w-full flex justify-end`}
+            isScrollTop ? "pt-[25px] portrait:sm:pt-[33px]" : "pt-[14px] portrait:sm:pt-[18px]"
+          } pr-[22px] sm:pr-[27px] transition-all duration-[800ms] w-full flex justify-end cursor-pointer`}
         >
-          <FaX
-            size={32}
+          <CgClose
+            size={44}
             onClick={async () => {
               setMenuModal(false);
               document.body.classList.remove("halfHideScrollbar");
@@ -183,15 +170,15 @@ export default function Navbar() {
         {/*--- menu contents ---*/}
         <div className="font-medium text-2xl px-[9%] pt-[6%] pb-[48px] w-full flex flex-col items-start relative space-y-[44px]">
           {navLinks.map((navLink, index) => (
-            <div key={index} id={navLink.id} onClick={onClickLink} className="">
+            <div key={index} id={navLink.id} onClick={onClickLink} className="desktop:hover:underline decoration-[2px] underline-offset-[8px] cursor-pointer">
               {navLink.title}
             </div>
           ))}
-          <div className="" onClick={onClickLink}>
+          <div className="desktop:hover:underline decoration-[2px] underline-offset-[8px] cursor-pointer" onClick={onClickLink}>
             {t("support")}
           </div>
-          <div className="flex items-center" onClick={() => (langModal ? setLangModal(false) : setLangModal(true))}>
-            <SlGlobe size={40} className="mr-1 w-[22px] h-[22px]" />
+          <div className="flex items-center cursor-pointer" onClick={() => (langModal ? setLangModal(false) : setLangModal(true))}>
+            <SlGlobe size={40} className="mr-1 w-[24px] h-[24px]" />
             <FaCaretDown size={40} className="w-[20px] h-[20px]" />
           </div>
           {langModal && (
@@ -199,7 +186,7 @@ export default function Navbar() {
               {langObjectArray.map((langObject) => (
                 <div key={langObject.id}>
                   <span
-                    className={`${langObject.id == locale ? "underline decoration-[2px] underline-offset-[8px]" : ""} text-xl`}
+                    className={`${langObject.id == locale ? "underline" : ""} text-xl decoration-[2px] underline-offset-[8px] desktop:hover:underline cursor-pointer`}
                     onClick={() => router.replace("/", { locale: langObject.id })}
                   >
                     {langObject.text}

@@ -176,7 +176,10 @@ const Intro = ({
                 <br />
                 {t("welcome.text-2")}
               </div>
-              <button className="w-[230px] py-4 textLg font-semibold tracking-wide rounded-full buttonPrimaryColorLight animate-fadeInAnimation" onClick={() => setStep("info")}>
+              <button
+                className="w-[230px] buttonHeight textLg font-semibold tracking-wide rounded-full buttonPrimaryColorLight animate-fadeInAnimation"
+                onClick={() => setStep("info")}
+              >
                 {t("welcome.start")}
               </button>
             </div>

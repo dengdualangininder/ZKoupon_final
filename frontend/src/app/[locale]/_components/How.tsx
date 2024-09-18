@@ -170,38 +170,43 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
             {/*--- TWD ---*/}
             {merchantCurrency == "TWD" && (
               <div className="howBulletPoints">
-                <div>
-                  {t.rich("step-4-1", {
-                    a: (chunks: any) => (
-                      <a href="https://apps.apple.com/tw/app/max-%E8%99%9B%E6%93%AC%E8%B2%A8%E5%B9%A3%E4%BA%A4%E6%98%93%E6%89%80/id1370837255" target="_blank" className="linkDark">
-                        {chunks}
-                      </a>
-                    ),
-                  })}
-                </div>
                 <div className="flex">
                   <div className="mr-2.5">1.</div>
+                  <div>
+                    {" "}
+                    {t.rich("step-4-1", {
+                      a: (chunks: any) => (
+                        <a
+                          href="https://apps.apple.com/tw/app/max-%E8%99%9B%E6%93%AC%E8%B2%A8%E5%B9%A3%E4%BA%A4%E6%98%93%E6%89%80/id1370837255"
+                          target="_blank"
+                          className="linkDark"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </div>
+                </div>
+                <div className="flex">
+                  <div className="mr-2.5">2.</div>
                   <div>{t("step-4-2")}</div>
                 </div>
                 <div className="flex">
-                  <div className="mr-2">2.</div>
+                  <div className="mr-2">3.</div>
                   <div>{t("step-4-3")}</div>
                 </div>
               </div>
             )}
             {/*--- non-USD ---*/}
             {merchantCurrency != "USD" && (
-              <div className="flex relative">
-                <div className="mr-2">&nbsp;&nbsp;{`\u20F0`}&nbsp;</div>
-                <div className="">
-                  {t.rich("step-4-notUSD", {
-                    span1: (chunks: any) => <span className="group">{chunks}</span>,
-                    span2: (chunks: any) => <span className="linkDark">{chunks}</span>,
-                    span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
-                    div: (chunks: any) => <div className="w-full bottom-[calc(100%+4px)] left-0 tooltip whitespace-normal">{chunks}</div>,
-                    tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: merchantCurrency }),
-                  })}
-                </div>
+              <div className="relative">
+                {t.rich("step-4-notUSD", {
+                  span1: (chunks: any) => <span className="group">{chunks}</span>,
+                  span2: (chunks: any) => <span className="linkDark">{chunks}</span>,
+                  span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
+                  div: (chunks: any) => <div className="w-full bottom-[calc(100%+4px)] left-0 tooltip whitespace-normal">{chunks}</div>,
+                  tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: merchantCurrency }),
+                })}
               </div>
             )}
           </div>

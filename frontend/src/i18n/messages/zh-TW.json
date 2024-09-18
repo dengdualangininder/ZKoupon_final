@@ -26,9 +26,9 @@
       "step-4-1cb": "要出金，您先必須有個 Coinbase 帳戶",
       "step-4-2cb": "在 Flash App，點 \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "在 Flash App，點 \u0022出金\u0022 並依照螢幕上的指示操作。當您出金時，USDC幣 將自動兌換成 {merchantCurrency}<span> at a 1:1 rate</span>，並會出金到您的銀行（~0%費用)",
-      "step-4-1": "<a>下載 MAX 交易所 App</a> 並註冊一個帳戶",
+      "step-4-1": "下載 <a>MAX 交易所 App</a> 並註冊一個帳戶",
       "step-4-2": "在 Flash App，出金 USDC 至您 MAX 帳戶",
-      "step-4-3": "在 MAX交易所 App，賣出 USDC / 買入 TWD* 並出金至您的銀行",
+      "step-4-3": "在 MAX App，賣出 USDC / 買入 TWD 並出金至您的銀行",
       "step-4-notUSD": "Flash 的設計讓您不會因為匯率波動而損失金錢 <span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>",
       "setup": "花1分鐘建立帳戶",
       "signup": "註冊"

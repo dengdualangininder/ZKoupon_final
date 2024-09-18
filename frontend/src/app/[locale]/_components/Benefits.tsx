@@ -30,24 +30,24 @@ const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
   };
 
   return (
-    <div className="homeSectionSize">
+    <div className="pt-20 pb-24 homeSectionSizeNew flex flex-col items-center">
       {/*--- HEADER ---*/}
-      <div className="w-full homeHeaderFont text-center">{t("header")}</div>
-      {/*--- BODY ---*/}
+      <div className="w-full homeHeaderFont">{t("header")}</div>
+      {/*--- CONTENT ---*/}
       <div
         className={`${
-          merchantCurrency == "USD" ? "xl:h-[250px]" : "xl:h-[350px] xl:desktop:h-[325px]"
-        } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full flex flex-col items-center xl:flex-row xl:justify-center xl:space-x-16 space-y-6 xl:space-y-0`}
+          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[350px] lg:desktop:h-[325px]"
+        } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full lg:max-w-[1050px] flex flex-col items-center lg:flex-row lg:justify-between lg:space-x-[12px] space-y-6 lg:space-y-0`}
       >
         {/*--- card1 ---*/}
         <div className="whyCard">
-          <div className="whyCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+          <div className="lowCostCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
           <div className="whyCardBody">{t("card-1-body")}</div>
         </div>
         {/*--- card2 ---*/}
         {merchantCurrency != "USD" && (
           <div className="whyCard">
-            <div className="whyCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+            <div className="lowCostCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
             <div className="whyCardBody space-y-4">
               <div>
                 {t.rich("card-2-body", {
@@ -75,13 +75,13 @@ const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
         {/*--- card2 (USD only) ---*/}
         {merchantCurrency == "USD" && (
           <div className="whyCard">
-            <div className="whyCardHeader">{t.rich("card-2-usd-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+            <div className="lowCostCardHeader">{t.rich("card-2-usd-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
             <div className="whyCardBody">{t("card-2-usd-body")}</div>
           </div>
         )}
         {/*--- card3 ---*/}
         <div className="whyCard">
-          <div className="whyCardHeader">{t.rich("card-3-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+          <div className="lowCostCardHeader">{t.rich("card-3-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
           <div className="whyCardBody">{t("card-3-body")}</div>
         </div>
       </div>

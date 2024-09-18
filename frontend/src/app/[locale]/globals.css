@@ -78,6 +78,25 @@
     scrollbar-width: none; /* Firefox */
   }
 
+  .underlineAni::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    opacity: 0;
+    transition: opacity 300ms, transform 300ms;
+    transform: scale(0);
+    transform-origin: center;
+  }
+
+  .underlineAni:hover::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   .homeTextXs {
     @apply text-sm desktop:text-xs;
   }
@@ -88,6 +107,10 @@
 
   .homeTextBase {
     @apply text-lg desktop:text-base;
+  }
+
+  .homeTextLg {
+    @apply text-xl desktop:text-lg;
   }
 
   .textXs {
@@ -209,11 +232,7 @@
   }
 
   .homeHeaderFont {
-    @apply text-[2.75rem] sm:text-6xl text-center portrait:sm:text-start landscape:lg:text-start font-medium leading-normal sm:leading-tight;
-  }
-
-  .homeBodyFont {
-    @apply text-lg sm:text-xl xl:desktop:text-base leading-normal sm:leading-normal;
+    @apply text-[2.75rem] leading-[3rem] xs:text-[3rem] xs:leading-[3.5rem] min-[1150px]:text-[3.5rem] min-[1150px]:leading-[4.25rem] font-semibold xs:font-medium;
   }
 
   .homeBody2Font {
@@ -224,12 +243,16 @@
     @apply w-[356px] sm:w-[590px] xl:w-[1200px] xl:desktop:w-[77%] py-[100px];
   }
 
+  .homeSectionSizeNew {
+    @apply px-[12px] w-full max-w-[calc(600px-16px)] lg:px-[32px] lg:max-w-[calc(1280px-80px*2+32px*2-16px)];
+  }
+
   .appSectionSize {
     @apply flex-1 portrait:w-full landscape:pl-[120px] landscape:lg:pl-[140px] landscape:xl:desktop:pl-[200px] portrait:pb-[84px] portrait:sm:pb-[140px] landscape:h-full flex flex-col items-center;
   }
 
   .whiteCard {
-    @apply px-[16px] py-[24px] sm:p-[24px] bg-white rounded-[20px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+    @apply bg-opacity-60 px-[16px] py-[20px] sm:p-[20px] bg-white rounded-[20px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
   }
 
   .navbarButtonHeight {
@@ -240,16 +263,12 @@
     @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px];
   }
 
-  .heroSubheaderWidth {
-    @apply w-[97%] portrait:max-w-[372px] landscape:max-w-[620px] portrait:sm:max-w-[744px] landscape:lg:max-w-[744px] landscape:xl:desktop:max-w-[716px];
-  }
-
-  .heroSubheaderFont {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl leading-normal portrait:sm:leading-normal landscape:lg:leading-normal landscape:xl:desktop:leading-relaxed;
-  }
-
   .heroButton {
-    @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px] w-[120px] portrait:sm:w-[148px] landscape:lg:w-[148px] landscape:xl:desktop:w-[130px] text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg font-medium bg-black text-white rounded-md portrait:sm:rounded-lg landscape:lg:rounded-lg cursor-pointer desktop:xl:hover:bg-slate-800 active:bg-slate-800;
+    @apply w-[200px] desktop:w-[144px] h-[64px] desktop:h-[48px] homeTextLg font-medium buttonPrimaryColorLight rounded-full;
+  }
+
+  .heroButtonSmall {
+    @apply w-[132px] portrait:sm:w-[124px] landscape:lg:w-[124px] desktop:!w-[116px] h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] desktop:!h-[36px] homeTextBase font-normal buttonPrimaryColorLight rounded-full;
   }
 
   .learnAnswerContainer {
@@ -281,15 +300,15 @@
   }
 
   .whyCard {
-    @apply w-full xl:desktop:w-[312px] h-full whiteCard;
+    @apply w-full lg:w-[312px] h-full whiteCard;
   }
 
   .whyCardHeader {
-    @apply text-2xl font-semibold;
+    @apply text-[1.375rem] leading-[1.875rem] font-semibold;
   }
 
   .whyCardBody {
-    @apply mt-4 homeBody2Font;
+    @apply mt-4 text-base leading-tight xs:leading-normal;
   }
 
   .customerChip {
@@ -349,15 +368,15 @@
   }
 
   .lowCostCard {
-    @apply w-full xl:w-[430px] whiteCard;
+    @apply w-full lg:w-[420px] whiteCard;
   }
 
   .lowCostCardHeader {
-    @apply text-2xl font-semibold;
+    @apply text-[1.375rem] leading-[1.875rem] font-semibold;
   }
 
   .lowCostCardBody {
-    @apply homeBody2Font mt-3 space-y-3;
+    @apply text-base leading-tight xs:leading-normal mt-2 xs:mt-3 space-y-3;
   }
 
   .footerHeader {
@@ -694,8 +713,16 @@
     @apply h-[25%] flex items-center justify-between border-b border-slate-300 dark:border-dark6;
   }
 
+  .buttonHeight {
+    @apply h-[60px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px];
+  }
+
+  .buttonHeightSmall {
+    @apply h-[40px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[36px];
+  }
+
   .buttonPrimary {
-    @apply buttonPrimaryColor flex-none w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
+    @apply buttonPrimaryColor w-full buttonHeight textLg font-medium border-2 rounded-md;
   }
 
   .buttonPrimaryLight {
@@ -707,7 +734,7 @@
   }
 
   .buttonPrimaryColorLight {
-    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-lightButtonHover active:bg-lightButtonHover transition-all duration-[300ms];
+    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-slate-700 active:bg-slate-700 transition-all duration-[200ms];
   }
 
   .buttonSecondary {
