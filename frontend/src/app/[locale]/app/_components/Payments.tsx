@@ -357,7 +357,7 @@ const Payments = ({
             <div className="h-full flex items-center space-x-[32px] portrait:sm:space-x-[56px] landscape:lg:space-x-[56px]">
               <div className="paymentsIconContainer" onClick={() => setSearchModal(true)}>
                 <div className="paymentsIcon">
-                  <Image src={theme == "dark" ? "/searchWhite.svg" : "/searchBlack.svg"} alt="search" fill />
+                  <Image src={theme == "dark" ? "/searchWhite.svg" : "/searchBlack.svg"} alt="search icon" fill />
                 </div>
               </div>
               {isAdmin && (
@@ -374,14 +374,14 @@ const Payments = ({
                   }}
                 >
                   <div className="paymentsIcon">
-                    <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export" fill />
+                    <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export icon" fill />
                   </div>
                 </div>
               )}
               {!isAdmin && (
                 <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
                   <div className="paymentsIcon">
-                    <Image src={theme == "dark" ? "/signOutWhite.svg" : "/signOutBlack.svg"} alt="signOut" fill />
+                    <Image src={theme == "dark" ? "/signOutWhite.svg" : "/signOutBlack.svg"} alt="sign out icon" fill />
                   </div>
                 </div>
               )}
@@ -389,7 +389,7 @@ const Payments = ({
             {/*--- qrCode button ---*/}
             <div className="paymentsIconContainer" onClick={() => setQrCodeModal(true)}>
               <div className="paymentsIcon">
-                <Image src={theme == "dark" ? "/qrWhite.svg" : "/qrBlack.svg"} alt="qrCode" fill />
+                <Image src={theme == "dark" ? "/qrWhite.svg" : "/qrBlack.svg"} alt="qr code icon" fill />
               </div>
             </div>
           </div>

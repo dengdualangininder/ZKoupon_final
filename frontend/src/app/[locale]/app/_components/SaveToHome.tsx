@@ -50,7 +50,7 @@ const SaveToHome = () => {
       <div className="w-full flex flex-col items-center pb-[48px] my-auto">
         {/*---image---*/}
         <div className="flex-none relative h-[320px] w-[160px] rounded-[16px] shadow-[0px_2px_20px_0px_rgb(0,0,0,0.3)]">
-          <Image src="/PWA.png" alt="phone" fill />
+          <Image src="/PWA.png" alt="phone showing homescreen" fill />
         </div>
         {/*---text---*/}
         <div className={`${browser && os ? "" : "invisible"} mt-[48px] flex flex-col items-center`}>

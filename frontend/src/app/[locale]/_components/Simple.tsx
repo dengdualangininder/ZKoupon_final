@@ -5,7 +5,7 @@ export default function Simple() {
   const t = useTranslations("HomePage.Simple");
 
   return (
-    <div className="pt-20 pb-24 homeSectionSizeNew flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
+    <div className="pt-[80px] pb-[96px] homeSectionSize flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
       {/*--- LEFT ---*/}
       <div className="w-full lg:w-[50%]">
         {/*--- header ---*/}
@@ -23,7 +23,7 @@ export default function Simple() {
       {/*--- RIGHT ---*/}
       <div className="mt-10 lg:mt-0 w-full lg:w-[42%] flex items-center justify-center lg:justify-end">
         <div className="w-full aspect-[3/2] rounded-3xl overflow-hidden relative">
-          <Image src="/pos.jpg" alt="pointOfSale" fill />
+          <Image src="/pos.jpg" alt="Point-of-sale device" sizes={"480px"} fill />
         </div>
       </div>
     </div>

@@ -1,12 +1,10 @@
 "use client";
 // next
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 // other
 import axios from "axios";
 // constants
-import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
-
+import { abb2full, countryData } from "@/utils/constants";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
@@ -19,13 +17,9 @@ import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 
 export default function Home() {
-  const [merchantCurrency, setMerchantCurrency] = useState("EUR");
-
-  const { setTheme } = useTheme();
+  const [merchantCurrency, setMerchantCurrency] = useState<string | undefined>();
 
   useEffect(() => {
-    // setTheme("light");
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -59,10 +53,10 @@ export default function Home() {
         const res = await axios.get("https://api.country.is");
         const merchantCountry = abb2full[res.data.country] ?? "Other";
         merchantCurrencyTemp = countryData[merchantCountry]?.currency ?? "USD";
-        console.log("homePage detected currency:", merchantCurrencyTemp);
+        console.log("currency set to ", merchantCurrencyTemp);
       } catch (err) {
         merchantCurrencyTemp = "USD";
-        console.log("homePage detect country failed, set to USD. Error:", err);
+        console.log("detect country failed, currency set to USD. Error:", err);
       }
       setMerchantCurrency(merchantCurrencyTemp);
     };
@@ -70,14 +64,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="homeTextBase overflow-x-hidden">
-      {/* 1440px wrapper put into Navbar because want a conditional border-b across entire screen */}
+    <div className="homeTextBase">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">
-        <div className="w-full flex justify-center xl:max-w-[1280px]">
-          <Hero merchantCurrency={merchantCurrency} />
-        </div>
+        <Hero merchantCurrency={merchantCurrency} />
       </div>
 
       <div id="How" className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
@@ -95,33 +86,23 @@ export default function Home() {
       </div>
 
       <div id="Simple" data-show="yes" className="opacity-0 bg-dark1 text-darkText1 w-full flex justify-center transition-all duration-1500">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Simple />
-        </div>
+        <Simple />
       </div>
 
       <div id="Benefits" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Benefits merchantCurrency={merchantCurrency} />
-        </div>
+        <Benefits merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="Learn" data-show="yes" className="bg-[#0A2540] text-white flex w-full justify-center opacity-0 transition-all duration-1000">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Learn merchantCurrency={merchantCurrency} />
-        </div>
+      <div id="Learn" data-show="yes" className="bg-[#0A2540] text-white w-full flex justify-center opacity-0 transition-all duration-1000">
+        <Learn merchantCurrency={merchantCurrency} />
       </div>
 
       <div data-show="yes" className="bg-dark1 text-white w-full flex justify-center opacity-0 transition-all duration-1000">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Support />
-        </div>
+        <Support />
       </div>
 
       <div className="bg-gradient-to-b from-dark1 to-dark5 text-white w-full flex justify-center">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </div>
   );

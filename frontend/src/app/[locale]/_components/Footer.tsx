@@ -26,38 +26,23 @@ const Footer = () => {
   ];
 
   return (
-    <div className="w-full lg:w-[760px] xl:desktop:w-[800px] py-[80px] flex flex-col-reverse items-center lg:flex-row lg:items-start lg:justify-between">
-      {/*--- logo + copyright---*/}
-      <div className="mt-20 lg:mt-0 lg:w-1/3 lg:h-full flex flex-col items-center lg:items-start lg:justify-between">
-        <div className="relative w-[140px] h-[80px]">
-          <Image src="logoWhiteNoBg.svg" alt="Flash" fill />
-        </div>
-        <div className="mt-6 lg:mt-0 text-sm lg:text-xs">&copy; 2024 Flash Payments. All rights reserved.</div>
+    <div className="py-[80px] homeSectionSize grid grid-cols-[140px_140px] md:grid-cols-[300px_140px_140px] gap-x-[20px] xs:gap-x-[90px] md:gap-[32px] gap-y-[80px] justify-center">
+      <div className="flex flex-col items-center md:items-start md:justify-between space-y-6 col-span-full order-last md:col-span-1 md:order-none">
+        <Image src="logoWhiteNoBg.svg" width={150} height={80} alt="Flash logo" className="" />
+        <div className="text-sm lg:text-xs">&copy; 2024 Flash Payments. All rights reserved.</div>
       </div>
-      <div className="homeFontBody w-full flex lg:w-2/3 justify-evenly lg:justify-around">
-        {/*--- Company ---*/}
-        <div className="flex flex-col space-y-5 text-lg">
-          <div className="footerHeader">{t("company")}</div>
-          <div className="footerLink">{t("about")}</div>
-        </div>
-        {/*--- Links ---*/}
-        <div className="flex flex-col space-y-5 text-lg">
-          <div className="footerHeader">{t("links")}</div>
-          {navLinks.map((navLink, index) => (
-            <div className="footerLink" id={navLink.id} key={index} onClick={onClickLink}>
-              {navLink.title}
-            </div>
-          ))}
-        </div>
+      <div className="flex flex-col space-y-6">
+        <div className="footerHeader">{t("company")}</div>
+        <div className="footerLink">{t("about")}</div>
       </div>
-      {/*--- Socials ---*/}
-      {/* <div className="hidden">
-        <div>Facebook</div>
-        <div>Twitter</div>
-        <div>Discord</div>
-      </div> */}
-      {/*--- spaceer ---*/}
-      <div></div>
+      <div className="flex flex-col space-y-6">
+        <div className="footerHeader">{t("links")}</div>
+        {navLinks.map((navLink, index) => (
+          <div className="footerLink" id={navLink.id} key={index} onClick={onClickLink}>
+            {navLink.title}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

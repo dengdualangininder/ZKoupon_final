@@ -6,7 +6,7 @@
       "title2": "WITH 0% FEES",
       "subtitle1": "With a",
       "trueP2P": " true peer-2-peer",
-      "subtitle2": " payments design, Flash is a minimalistic and low-cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
+      "subtitle2": " payments design, Flash is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
       "enterApp": "Enter App",
       "tooltip1": "True P2P payments mean that there is no middlemen, meaning Flash can not charge any processing fees, forever.",
       "tooltip2": "True P2P payments mean that there is no middlemen. Therefore, Flash cannot charge fees or make profit by giving you or your customers bad token-fiat exchange rates."
@@ -23,7 +23,7 @@
       "step-2-2": "The customer enters the amount of {merchantCurrency} for payment",
       "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app",
       "step-3-1": "~5 seconds after payment, you'll receive a notification in the Flash app. Employees can also access your Flash app to confirm successful payments.",
-      "step-4-1cb": "To transfer funds to your bank, you must have a Coinbase account",
+      "step-4-1cb": "Register an account on Coinbase",
       "step-4-2cb": "In the Flash app, click \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "Click \u0022Cash Out\u0022 and follow the on-screen instructions. USDC will be automatically converted to {merchantCurrency}<span> at a 1:1 rate</span> and the money sent to your bank (~0% fees)",
       "step-4-1": "Download MaiCoin's <a>MAX App</a> and register an account",

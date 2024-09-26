@@ -893,7 +893,7 @@ const CashOut = ({
                 {/*--- info ---*/}
                 <div className="w-full flex items-center">
                   <div className="transferIcon">
-                    <Image src="/logoBlackBgNoText.svg" alt="flashLogo" fill />
+                    <Image src="/logoBlackBgNoText.svg" alt="Flash logo" fill />
                   </div>
                   <div className="ml-[12px] flex flex-col">
                     <div className="textBase leading-none font-medium">{tcommon("fromFlash")}</div>
@@ -946,9 +946,9 @@ const CashOut = ({
                 {!transferToAnyAddress && (
                   <div className="w-full flex items-center">
                     <div className="transferIcon">
-                      {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                      {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="max" fill />}
-                      {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="bitopro" fill />}
+                      {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                      {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
+                      {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="BitoPro icon" fill />}
                       {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
                     </div>
                     <div className="ml-[12px] flex flex-col">
@@ -1045,10 +1045,10 @@ const CashOut = ({
                 {/*--- info ---*/}
                 <div className="w-full flex items-center">
                   <div className="transferIcon">
-                    {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                    {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="coinbase" fill />}
-                    {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="coinbase" fill />}
-                    {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="coinbase" fill />}
+                    {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                    {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
+                    {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                    {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
                   </div>
                   <div className="ml-[12px] flex flex-col">
                     <div className="textBase leading-none font-medium">{tcommon("fromCoinbase")}</div>

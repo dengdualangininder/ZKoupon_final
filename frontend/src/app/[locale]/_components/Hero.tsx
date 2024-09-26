@@ -1,14 +1,12 @@
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
-export default function Hero({ merchantCurrency }: { merchantCurrency: string }) {
-  // hooks
+export default function Hero({ merchantCurrency }: { merchantCurrency: string | undefined }) {
   const router = useRouter();
   const t = useTranslations("HomePage.Hero");
 
-  // max-h-1180px to fit iPad Air in portrait
   return (
-    <div id="hero" className="h-screen min-h-[520px] flex flex-col lg:justify-center">
+    <div id="hero" className="homeSectionSize h-screen min-h-[520px] flex flex-col lg:justify-center">
       {/*--- navbar spacer ---*/}
       <div className="h-[84px]"></div>
       {/*--- container ---*/}

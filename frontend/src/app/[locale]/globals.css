@@ -240,11 +240,7 @@
   }
 
   .homeSectionSize {
-    @apply w-[356px] sm:w-[590px] xl:w-[1200px] xl:desktop:w-[77%] py-[100px];
-  }
-
-  .homeSectionSizeNew {
-    @apply px-[12px] w-full max-w-[calc(600px-16px)] lg:px-[32px] lg:max-w-[calc(1280px-80px*2+32px*2-16px)];
+    @apply mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[calc(600px-24px*2)] lg:max-w-[1100px];
   }
 
   .appSectionSize {
@@ -300,15 +296,15 @@
   }
 
   .whyCard {
-    @apply w-full lg:w-[312px] h-full whiteCard;
+    @apply w-full lg:max-w-[330px] h-full whiteCard;
   }
 
   .whyCardHeader {
-    @apply text-[1.375rem] leading-[1.875rem] font-semibold;
+    @apply text-[1.5rem] leading-[1.875rem] font-semibold;
   }
 
   .whyCardBody {
-    @apply mt-4 text-base leading-tight xs:leading-normal;
+    @apply mt-4 text-base;
   }
 
   .customerChip {
@@ -348,7 +344,7 @@
   }
 
   .howNumber {
-    @apply mr-4 w-[44px] h-[44px] text-[24px] font-bold flex justify-center items-center rounded-full bg-darkButton;
+    @apply w-[44px] h-[44px] flex justify-center items-center rounded-full bg-darkButton text-[24px] font-bold;
   }
 
   .howHeader1Font {
@@ -363,8 +359,8 @@
     @apply flex-1 howHeader2Font;
   }
 
-  .howBulletPoints {
-    @apply text-base md:text-lg xl:desktop:text-sm space-y-2;
+  .howBulletFont {
+    @apply text-base md:text-lg xl:desktop:text-sm;
   }
 
   .lowCostCard {
@@ -372,11 +368,11 @@
   }
 
   .lowCostCardHeader {
-    @apply text-[1.375rem] leading-[1.875rem] font-semibold;
+    @apply text-2xl font-semibold;
   }
 
   .lowCostCardBody {
-    @apply text-base leading-tight xs:leading-normal mt-2 xs:mt-3 space-y-3;
+    @apply text-base mt-2 xs:mt-3 space-y-3;
   }
 
   .footerHeader {
@@ -734,7 +730,7 @@
   }
 
   .buttonPrimaryColorLight {
-    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-slate-700 active:bg-slate-700 transition-all duration-[200ms];
+    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-slate-700 active:bg-slate-700;
   }
 
   .buttonSecondary {
@@ -928,6 +924,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     -webkit-border-radius: 0px;
+    border-radius: none;
     padding-right: 0px;
     padding-left: 0px;
   }

@@ -1,21 +1,29 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useLayoutEffect } from "react";
 // others
 import { useTranslations } from "next-intl";
 // constants
 import { currencyToData } from "@/utils/constants";
 // images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 
-const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
+const Learn = ({ merchantCurrency }: { merchantCurrency: string | undefined }) => {
   const [lesson, setLesson] = useState("");
+  const [heights, setHeights] = useState<number[]>([1350, 1350, 1350, 1350, 1350]);
 
   //hooks
   const t = useTranslations("HomePage.Learn");
   const tcommon = useTranslations("Common");
+
+  useLayoutEffect(() => {
+    console.log("useLayoutEffect run once");
+    const elements = document.querySelectorAll<HTMLElement>(".learnAnswerContainer");
+    let heightsTemp: number[] = [];
+    elements?.forEach((i) => {
+      heightsTemp.push(i.offsetHeight);
+    });
+    setHeights(heightsTemp);
+  }, []);
 
   const titles = [
     { id: "lesson1", title: `${t("lesson")} 1`, subtitle: t("title1"), color: "4285f4" },
@@ -25,7 +33,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
     { id: "lesson5", title: `${t("lesson")} 5`, subtitle: t("title5"), color: "000000" },
   ];
 
-  const learnContent: any = {
+  const learnContent: { [key: string]: React.ReactNode } = {
     lesson1: (
       <div className="learnAnswerContainer">
         <div>{t.rich("lesson-1-1", { span: (chunks: any) => <span className="learnBoldFont">{chunks}</span> })}</div>
@@ -64,7 +72,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
         <div>
           {t.rich("lesson-4-1", {
             span: (chunks: any) => <span className="learnBoldFont">{chunks}</span>,
-            merchantCurrency: merchantCurrency,
+            merchantCurrency: merchantCurrency ?? "USD",
           })}
         </div>
         <div>
@@ -79,7 +87,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
     lesson5: (
       <div className="learnAnswerContainer">
         <div>{t("lesson-5-1")}</div>
-        {merchantCurrency != "USD" && (
+        {merchantCurrency && merchantCurrency != "USD" && (
           <div className="relative">
             {t.rich("lesson-5-2", {
               span1: (chunks: any) => <span className="group">{chunks}</span>,
@@ -91,7 +99,7 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
           </div>
         )}
         <div>
-          {currencyToData[merchantCurrency].cex == "Coinbase" && <span>{t("lesson-5-3")}</span>}
+          {currencyToData[merchantCurrency ?? "USD"].cex == "Coinbase" && <span>{t("lesson-5-3")}</span>}
           {t("lesson-5-4")}
         </div>
         <div>{t("lesson-5-5")}</div>
@@ -99,43 +107,41 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string }) => {
     ),
   };
 
+  console.log(heights);
+
   return (
-    <div className="homeSectionSize xl:w-[840px] flex flex-col items-center">
-      <div className="homeHeaderFont text-center">{t("header")}</div>
-      <div className="mt-2 mb-8 md:mb-12 text-lg font-medium text-center sm:w-[440px] lg:w-auto">{t("subheader")}</div>
-      <div className="w-full flex flex-col ">
+    <div className="pt-[80px] pb-[96px] homeSectionSize max-w-[800px] flex flex-col items-center">
+      <div className="homeHeaderFont">{t("header")}</div>
+      <div className="mt-2 mb-8 md:mb-12 text-lg font-medium">{t("subheader")}</div>
+      <div className="w-full flex flex-col">
         {titles.map((i, index) => (
           <div key={i.id} className={`${index == 0 ? "border-t-2" : ""} border-b-2 border-slate-300`}>
-            {/*--- TITLE ---*/}
+            {/*--- QUESTION ---*/}
             <div
-              className={`py-3 w-full flex justify-between items-center cursor-pointer desktop:hover:bg-[#1D364F]`}
+              className="px-[4px] py-[12px] flex justify-between items-center desktop:cursor-pointer desktop:hover:bg-[#1D364F]"
               onClick={() => (lesson == i.id ? setLesson("") : setLesson(i.id))}
             >
-              {/*---content ---*/}
-              <div className="flex flex-col items-start">
-                <div className="text-base font-semibold leading-none py-[8px] px-[12px] rounded-lg" style={{ backgroundColor: `#${i.color}` }}>
+              {/*--- text ---*/}
+              <div className="flex flex-col items-start xs:flex-row xs:items-center gap-1 xs:gap-4">
+                <div className="text-base font-semibold py-[4px] px-[16px] rounded-full" style={{ backgroundColor: `#${i.color}` }}>
                   {i.title}
                 </div>
-                <div className="mt-2 text-lg leading-none">{i.subtitle}</div>
+                <div className="text-lg">{i.subtitle}</div>
               </div>
-              {/*--- learn/arrow (right) ---*/}
-              <div className="mr-2">
-                {lesson == i.id ? (
-                  <FontAwesomeIcon icon={faAngleUp} className="text-xl ml-2" />
-                ) : (
-                  <span>
-                    <FontAwesomeIcon icon={faAngleDown} className="text-xl ml-2" />
-                  </span>
-                )}
-              </div>
+              {/*--- angle down/up ---*/}
+              <FaAngleDown className={`${i.id == lesson ? "rotate-180" : "rotate-0"} [transition:transform_300ms] text-xl`} />
             </div>
-            {/*--- CONTENT ---*/}
+            {/*--- ANSWER ---*/}
+            {/* <div
+              style={{ maxHeight: lesson == i.id ? `${heights[index] + 16}px` : "0px", transition: `max-height ${heights[index] * 1.3}ms` }}
+              className={`overflow-hidden ease-out`}
+            > */}
+            {/* <div className={`${lesson == i.id ? "max-h-[1350px]" : "max-h-0"} overflow-hidden [transition:max-height_500ms]`}> */}
             <div
-              className={`${
-                lesson == i.id ? "max-h-[1300px] sm:max-h-[650px]" : "max-h-0"
-              } text-sm xs:text-base leading-tight xs:leading-tight overflow-hidden transition-all duration-[600ms]`}
+              style={{ transition: `grid ${heights[index] * 1.3}ms, opacity 500ms` }}
+              className={`${lesson == i.id ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"} grid`}
             >
-              {learnContent[i.id]}
+              <div className="overflow-hidden">{learnContent[i.id]}</div>
             </div>
           </div>
         ))}

@@ -286,7 +286,7 @@ const Pay = () => {
                   {/*--- usdc balance ---*/}
                   <div className="flex items-center text-2xl font-medium">
                     <div className="relative w-[22px] h-[22px] mr-0.5">
-                      <Image src="/usdc.svg" alt="usdc" fill />
+                      <Image src="/usdc.svg" alt="USDC" fill />
                     </div>
                     <div className="mr-2">USDC</div>
                     <div>{Number(USDCBalance).toFixed(2)}</div>

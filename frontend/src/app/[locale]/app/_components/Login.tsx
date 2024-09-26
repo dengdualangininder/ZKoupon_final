@@ -127,7 +127,7 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
           {/*--- logo ---*/}
           <div className="w-full flex flex-col items-center justify-center">
             <div className="relative w-full h-[88px] mr-1">
-              <Image src="/logo.svg" alt="logo" fill />
+              <Image src="/logo.svg" alt="Flash logo" fill />
             </div>
             <div className="my-4 textBase text-center">{t("subheader")}</div>
           </div>
@@ -212,7 +212,7 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
                         show ? setShow(false) : setShow(true);
                       }}
                     >
-                      <Image src={show ? "/eyesOpen.svg" : "/eyesClosed.svg"} alt="eye" fill />
+                      <Image src={show ? "/eyesOpen.svg" : "/eyesClosed.svg"} alt="eye icon" fill />
                     </div>
                   </div>
                 </div>

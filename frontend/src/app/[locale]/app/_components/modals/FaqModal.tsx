@@ -130,7 +130,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                 <div className="relative w-full max-w-[320px] sm:max-w-[300px] h-[calc(100vw*(3/4*0.85))] max-h-[calc(320px*(3/4))] sm:max-h-[calc(300px*(3/4))] flex-none">
                   <Image
                     src="/intro-scan.png"
-                    alt="scan"
+                    alt="customer scanning qr code"
                     fill
                     style={{
                       objectFit: "cover",
@@ -173,7 +173,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
             {expand == "confirm" && (
               <div className="flex flex-col items-center space-y-3">
                 <div className="relative w-[200px] h-[330px]">
-                  <Image src={"/phoneConfirmPayment.png"} alt="phoneConfirmPayment" fill style={{ objectFit: "contain" }} />
+                  <Image src={"/phoneConfirmPayment.png"} alt="confirming payment" fill style={{ objectFit: "contain" }} />
                 </div>
                 <p>{t.rich("confirm-1", { span: (chunks) => <span className="font-bold">{chunks}</span> })}</p>
               </div>

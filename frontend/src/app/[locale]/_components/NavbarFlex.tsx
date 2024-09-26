@@ -93,7 +93,7 @@ export default function Navbar() {
               : "translate-x-[24px] xs:translate-x-0"
           } lg:hidden w-full flex justify-center absolute left-0 transition-transform duration-[1200ms]`}
         >
-          <button className={`${isScrollTop ? "heroButton" : "heroButtonSmall"} [transition:height_1.2s,width_1.2s,font-size_1.2s]`} onClick={() => router.push("/app")}>
+          <button className={`${isScrollTop ? "heroButton" : "heroButtonSmall"} transition-all duration-[1200ms]`} onClick={() => router.push("/app")}>
             {t("enterApp")}
           </button>
         </div>

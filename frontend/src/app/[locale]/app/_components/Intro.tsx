@@ -170,7 +170,7 @@ const Intro = ({
         {step == "welcome" && (
           <div className="w-full h-full flex flex-col items-center justify-center ">
             <div className="pb-16 w-full flex flex-col items-center portrait:space-y-[60px] landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 desktop:!space-y-16">
-              <Image src="/logo.svg" width={0} height={0} alt="logo" className="w-[230px] h-auto mr-1" />
+              <Image src="/logo.svg" width={0} height={0} alt="Flash logo" className="w-[230px] h-auto mr-1" />
               <div className="pb-4 text-center animate-fadeInAnimation textXl leading-relaxed font-medium">
                 {t("welcome.text-1")}
                 <br />
@@ -286,7 +286,7 @@ const Intro = ({
             <div className="flex-1 w-full flex flex-col items-center space-y-[28px]">
               <div className="introHeaderFont">{t("how.title")}</div>
               <div className="relative w-full desktop:w-[85%] aspect-[16/9]">
-                <Image src="/intro-scan.png" alt="scan" fill className="object-cover rounded-3xl" />
+                <Image src="/intro-scan.png" alt="customer scanning QR code" fill className="object-cover rounded-3xl" />
               </div>
               {/*--- text ---*/}
               <div className="flex flex-col space-y-[12px] desktop:space-y-[20px]">

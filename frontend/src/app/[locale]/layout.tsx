@@ -8,13 +8,12 @@ import { getMessages } from "next-intl/server";
 const inter = Inter({ subsets: ["latin"], display: "swap" }); // inter is variable font so no "weight" needed, recommended
 
 export const metadata: Metadata = {
-  title: "Flash Pay",
-  description: "Zero Fee Payments",
+  title: "Crypto payments with 0% fees",
+  description: "With a true peer-2-peer payments design, Flash is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
   icons: "/logoBlackBgNoText.svg",
 };
 
 // inter.className to inter.variable
-// root layout must contain <html> and <body> tags
 export default async function RootLayout({ children, params: { locale } }: { children: React.ReactNode; params: { locale: string } }) {
   const messages = await getMessages();
 

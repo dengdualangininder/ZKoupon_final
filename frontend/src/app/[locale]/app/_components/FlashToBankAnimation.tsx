@@ -11,11 +11,11 @@ const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: 
         <div className="w-[52px] h-[68px] flex items-center justify-center relative">
           {/*--- solid img ---*/}
           <div className="absolute w-[52px] h-[68px] animate-flashSolid">
-            <Image src="/ani-flash-solid.svg" alt="flashSolid" fill />
+            <Image src="/ani-flash-solid.svg" alt="Flash logo" fill />
           </div>
           {/*--- outline img ---*/}
           <div className="absolute w-[52px] h-[68px] animate-flashOutline">
-            <Image src="/ani-flash-outline.svg" alt="flashOutline" fill />
+            <Image src="/ani-flash-outline.svg" alt="Flash logo outline" fill />
           </div>
           <div className="w-full absolute left-0 bottom-[-14px] animate-flashText text-center text-[18px]">Flash</div>
         </div>
@@ -35,11 +35,11 @@ const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: 
         <div className="w-[68px] h-[68px] flex items-center justify-center relative">
           {/*--- solid img ---*/}
           <div className="absolute w-[68px] h-[68px] animate-bankSolid">
-            <Image src="/ani-bank-solid.svg" alt="bankSolid" fill />
+            <Image src="/ani-bank-solid.svg" alt="bank" fill />
           </div>
           {/*--- outline img ---*/}
           <div className="absolute w-[68px] h-[68px] animate-bankOutline">
-            <Image src="/ani-bank-outline.svg" alt="bankOutline" fill />
+            <Image src="/ani-bank-outline.svg" alt="bank outline" fill />
           </div>
           <div className="w-full absolute left-0 bottom-[-14px] animate-bankText text-center text-[18px]">Bank</div>
         </div>
@@ -51,11 +51,11 @@ const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: 
         <div className="w-[32px] h-[32px] flex items-center justify-center relative">
           {/*--- solid img ---*/}
           <div className="absolute w-[32px] h-[32px] animate-cexSolid">
-            <Image src="/ani-exchange-solid.svg" alt="cexSolid" fill />
+            <Image src="/ani-exchange-solid.svg" alt="CEX" fill />
           </div>
           {/*--- outline img ---*/}
           <div className="absolute w-[32px] h-[32px] animate-cexOutline">
-            <Image src="/ani-exchange-outline.svg" alt="cexOutline" fill />
+            <Image src="/ani-exchange-outline.svg" alt="CEX outline" fill />
           </div>
         </div>
       </div>

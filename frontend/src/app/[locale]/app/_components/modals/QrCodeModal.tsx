@@ -127,7 +127,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
           }}
         >
           <div className="relative w-[32px] h-[32px]">
-            <Image src="/exportWhite.svg" alt="export" fill />
+            <Image src="/exportWhite.svg" alt="export icon" fill />
           </div>
         </div>
       </div>

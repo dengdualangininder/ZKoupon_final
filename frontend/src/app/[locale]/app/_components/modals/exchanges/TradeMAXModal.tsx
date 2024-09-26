@@ -30,7 +30,7 @@ const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {
           <div className="w-full">
             <div>在MAX 賬戶的上方，點“交易”</div>
             <div className="mt-1 mb-1 flex justify-center">
-              <Image src={"/tradeMAX1.png"} alt="tradeMAX1" width="0" height="0" sizes="100vw" className="w-full h-auto rounded-xl border border-slate-400 overflow-hidden" />
+              <Image src={"/tradeMAX1.png"} alt="trade MAX 1" width="0" height="0" sizes="100vw" className="w-full h-auto rounded-xl border border-slate-400 overflow-hidden" />
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {
             {/*---image---*/}
             <div className="w-full flex justify-center">
               <div className="mt-1 mb-1 flex justify-center">
-                <Image src={"/tradeMAX2.png"} alt="tradeMAX1" width="0" height="0" sizes="100vw" className="w-full h-auto rounded-xl border border-slate-400 overflow-hidden" />
+                <Image src={"/tradeMAX2.png"} alt="trade MAX 2" width="0" height="0" sizes="100vw" className="w-full h-auto rounded-xl border border-slate-400 overflow-hidden" />
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@ const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {
             <div>點"錢包"(上方)返回主頁。點"提領"。按照指示進行提領。</div>
             <div className="flex justify-center">
               <div className="mt-1 mb-1 flex justify-center">
-                <Image src={"/tradeMAX3.png"} alt="tradeMAX1" width="0" height="0" sizes="100vw" className="w-full h-auto rounded-xl border border-slate-400 overflow-hidden" />
+                <Image src={"/tradeMAX3.png"} alt="trade MAX 3" width="0" height="0" sizes="100vw" className="w-full h-auto rounded-xl border border-slate-400 overflow-hidden" />
               </div>
             </div>
           </div>

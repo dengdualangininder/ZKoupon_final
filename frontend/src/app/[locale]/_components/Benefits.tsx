@@ -2,12 +2,11 @@ import { currency2rateDecimal, currency2bank, currency2cex } from "@/utils/const
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
-const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
+const Benefits = ({ merchantCurrency }: { merchantCurrency: string | undefined }) => {
   const [rates, setRates] = useState({ usdcToLocal: 0, usdToLocal: 0 });
-
-  //hooks
   const t = useTranslations("HomePage.Why");
 
+  // this useEffect will be called twice as merchantCurrency will go from undefined to defined
   useEffect(() => {
     getRates();
   }, [merchantCurrency]);
@@ -22,7 +21,6 @@ const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
         headers: { "content-type": "application/json" },
       });
       const ratesData = await ratesRes.json();
-      console.log("ratesData", ratesData);
       if (ratesData.status == "success") {
         setRates({ usdcToLocal: Number(ratesData.usdcToLocal), usdToLocal: Number(ratesData.usdToLocal) });
       }
@@ -30,14 +28,14 @@ const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
   };
 
   return (
-    <div className="pt-20 pb-24 homeSectionSizeNew flex flex-col items-center">
+    <div className="pt-[80px] pb-[96px] homeSectionSize flex flex-col items-center">
       {/*--- HEADER ---*/}
       <div className="w-full homeHeaderFont">{t("header")}</div>
       {/*--- CONTENT ---*/}
       <div
         className={`${
-          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[350px] lg:desktop:h-[325px]"
-        } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full lg:max-w-[1050px] flex flex-col items-center lg:flex-row lg:justify-between lg:space-x-[12px] space-y-6 lg:space-y-0`}
+          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[350px]"
+        } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full flex flex-col items-center lg:flex-row lg:justify-between lg:space-x-[12px] space-y-6 lg:space-y-0`}
       >
         {/*--- card1 ---*/}
         <div className="whyCard">
@@ -45,7 +43,7 @@ const Benefits = ({ merchantCurrency }: { merchantCurrency: string }) => {
           <div className="whyCardBody">{t("card-1-body")}</div>
         </div>
         {/*--- card2 ---*/}
-        {merchantCurrency != "USD" && (
+        {merchantCurrency && merchantCurrency != "USD" && (
           <div className="whyCard">
             <div className="lowCostCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
             <div className="whyCardBody space-y-4">

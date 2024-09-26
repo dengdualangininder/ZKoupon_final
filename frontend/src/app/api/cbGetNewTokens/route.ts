@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const POST = async (request: Request) => {
+export async function POST(request: Request) {
   console.log("entered cbGetNewTokens api");
   const { code } = await request.json();
 
@@ -17,4 +17,4 @@ export const POST = async (request: Request) => {
   } catch (err) {
     return Response.json("failed getting cbTokens");
   }
-};
+}

@@ -1,8 +1,12 @@
 import axios from "axios";
 
-export const POST = async (request: Request) => {
+export async function POST(request: Request) {
   console.log("entered getRates api");
   const { merchantCurrency } = await request.json();
+
+  if (!merchantCurrency) {
+    return Response.json({ status: "error", message: "merchantCurrency undefined" });
+  }
 
   const sheetOrder = ["EUR", "GBP", "TWD"];
   const sheetIndex = sheetOrder.findIndex((i) => i == merchantCurrency);
@@ -28,4 +32,4 @@ export const POST = async (request: Request) => {
     console.log({ status: "error", message: "Could not get rates" });
     return Response.json({ status: "error", message: "Could not get rates" });
   }
-};
+}
