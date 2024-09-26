@@ -14,7 +14,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
   const tcommon = useTranslations("Common");
 
   return (
-    <div className="w-full flex flex-col items-center pt-[80px] pb-[96px]">
+    <div className="pt-[80px] pb-[96px] w-full max-w-[1440px] flex flex-col items-center">
       {/*--- header + select currency ---*/}
       <div data-show="yes" className="opacity-0 transition-all duration-1000">
         {/*--- header ---*/}

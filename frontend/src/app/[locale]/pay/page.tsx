@@ -6,10 +6,8 @@ import Image from "next/image";
 // other
 import { ethers } from "ethers";
 import detectEthereumProvider from "@metamask/detect-provider";
-import axios from "axios";
 import Lottie from "lottie-react";
 // images
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import circleCheck from "@/utils/lotties/circleCheck.json";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

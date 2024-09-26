@@ -72,36 +72,34 @@ export default function Home() {
       </div>
 
       <div id="How" className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
-        <div className="w-full flex justify-center xl:max-w-[1440px]">
-          <How merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
-        </div>
+        <How merchantCurrency={merchantCurrency} setMerchantCurrency={setMerchantCurrency} />
       </div>
 
       <div
         id="LowCost"
         data-show="yes"
-        className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_300%]"
+        className="w-full flex justify-center opacity-0 transition-all duration-1500 bg-light2 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_300%]"
       >
         <LowCost merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="Simple" data-show="yes" className="opacity-0 bg-dark1 text-darkText1 w-full flex justify-center transition-all duration-1500">
+      <div id="Simple" data-show="yes" className="w-full flex justify-center opacity-0 bg-dark1 text-darkText1 transition-all duration-1500">
         <Simple />
       </div>
 
-      <div id="Benefits" data-show="yes" className="opacity-0 bg-light2 w-full flex justify-center transition-all duration-1500">
+      <div id="Benefits" data-show="yes" className="w-full flex justify-center opacity-0 bg-light2 transition-all duration-1500">
         <Benefits merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="Learn" data-show="yes" className="bg-[#0A2540] text-white w-full flex justify-center opacity-0 transition-all duration-1000">
+      <div id="Learn" data-show="yes" className="w-full flex justify-center bg-[#0A2540] text-white opacity-0 transition-all duration-1000">
         <Learn merchantCurrency={merchantCurrency} />
       </div>
 
-      <div data-show="yes" className="bg-dark1 text-white w-full flex justify-center opacity-0 transition-all duration-1000">
+      <div data-show="yes" className="w-full flex justify-center bg-dark1 text-white opacity-0 transition-all duration-1000">
         <Support />
       </div>
 
-      <div className="bg-gradient-to-b from-dark1 to-dark5 text-white w-full flex justify-center">
+      <div className="w-full flex justify-center bg-gradient-to-b from-dark1 to-dark5 text-white">
         <Footer />
       </div>
     </div>

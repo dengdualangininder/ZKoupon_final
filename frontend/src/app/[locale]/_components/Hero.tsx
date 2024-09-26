@@ -13,11 +13,11 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string | 
       <div className="flex-1 flex flex-col justify-center">
         <div className="landscape:pb-[180px] portrait:pb-[calc((100vh-84px)*3/10+30px)] landscape:lg:pb-[15%] flex flex-col items-center portrait:space-y-8 landscape:space-y-3 portrait:sm:space-y-14 landscape:lg:space-y-14">
           {/*--- header ---*/}
-          <div className="text-4xl leading-[3rem] xs:text-[2.75rem] sm:text-5xl sm:leading-[4rem] lg:text-[4rem] lg:leading-tight font-extrabold text-center">
+          <h1 className="text-4xl leading-[3rem] xs:text-[2.75rem] sm:text-5xl sm:leading-[4rem] lg:text-[4rem] lg:leading-tight font-extrabold text-center">
             {t("title1")}
             <br />
             {t("title2")}
-          </div>
+          </h1>
           {/*--- body ---*/}
           <div className="relative w-[97%] xs:w-[94%] max-w-[372px] xs:max-w-[600px] lg:w-[800px] lg:max-w-none homeTextLg">
             {t("subtitle1")}
