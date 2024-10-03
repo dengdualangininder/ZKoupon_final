@@ -1,4 +1,4 @@
-import { Transaction } from "@/db/models/UserModel";
+import { Transaction } from "@/db/UserModel";
 
 export const fakePaymentSettings = {
   merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",

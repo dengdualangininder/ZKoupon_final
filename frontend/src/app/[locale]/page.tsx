@@ -78,7 +78,7 @@ export default function Home() {
       <div
         id="LowCost"
         data-show="yes"
-        className="w-full flex justify-center opacity-0 transition-all duration-1500 bg-light2 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_300%]"
+        className="w-full flex justify-center opacity-0 transition-all duration-1500 bg-light2 text-lightText1 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_300%]"
       >
         <LowCost merchantCurrency={merchantCurrency} />
       </div>
@@ -87,7 +87,7 @@ export default function Home() {
         <Simple />
       </div>
 
-      <div id="Benefits" data-show="yes" className="w-full flex justify-center opacity-0 bg-light2 transition-all duration-1500">
+      <div id="Benefits" data-show="yes" className="w-full flex justify-center opacity-0 bg-light2 text-lightText1 transition-all duration-1500">
         <Benefits merchantCurrency={merchantCurrency} />
       </div>
 

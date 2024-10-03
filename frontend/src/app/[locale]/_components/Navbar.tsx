@@ -58,7 +58,7 @@ export default function Navbar() {
     <div
       className={`${
         isScrollTop ? "h-[84px]" : "h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] border-b border-slate-300"
-      } w-full fixed flex justify-center transition-all duration-[1000ms] bg-light2 bg-opacity-70 backdrop-blur-md z-50`}
+      } w-full fixed flex justify-center transition-all duration-[1000ms] bg-light2 text-lightText1 bg-opacity-70 backdrop-blur-md z-50`}
     >
       <div className="mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[1440px] h-full flex justify-center items-center relative">
         {/*---logo ---*/}
