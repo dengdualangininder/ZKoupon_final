@@ -254,7 +254,6 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
                   key={i.name}
                   className="flex flex-col items-center"
                   onClick={async () => {
-                    console.log("login page, clicked connect, set page to Loading");
                     setPage("loading");
                     await connectAsync({ connector: connectors[i.connectorIndex] });
                     console.log("login page, finished connecting");

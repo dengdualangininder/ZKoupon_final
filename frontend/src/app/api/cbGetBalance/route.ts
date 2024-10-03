@@ -1,6 +1,6 @@
 import axios from "axios";
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 import { keccak256, getAddress } from "viem";
 import * as jose from "jose";
 
@@ -66,7 +66,7 @@ const getCbBalance = async (cbAccessToken: string) => {
 
 const saveToDb = async (publicKey: string, idToken: string, cexEvmAddress: string, cexAccountName: string): Promise<boolean> => {
   try {
-    await dbConnect; // connect to db
+    await dbConnect(); // connect to db
     // compute publicKeyCompressed and merchantEvmAddress from publicKey
     const prefix = ["0", "2", "4", "6", "8", "a", "c", "e"].includes(publicKey.slice(-1)) ? "02" : "03"; // if y is even, then prefix is 02
     const publicKeyCompressed = prefix + publicKey.substring(2).slice(0, -64); // substring(2) removes first 2 chars, slice(0, -64) removes last 64 chars

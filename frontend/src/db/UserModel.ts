@@ -61,7 +61,7 @@ export interface IUser extends Document {
   transactions: Transaction[];
 }
 
-const userSchema: Schema = new mongoose.Schema<IUser>({
+const UserSchema: Schema = new Schema<IUser>({
   hashedEmployeePass: String,
   paymentSettings: {
     merchantEvmAddress: String,
@@ -118,6 +118,6 @@ const userSchema: Schema = new mongoose.Schema<IUser>({
   ],
 });
 
-const UserModel = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
+const UserModel = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
 export default UserModel;

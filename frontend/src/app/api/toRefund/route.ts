@@ -1,5 +1,5 @@
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 
 export const POST = async (request: Request) => {
   console.log("toRefund api");

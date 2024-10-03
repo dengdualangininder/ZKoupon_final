@@ -1,5 +1,5 @@
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 import { NextResponse } from "next/server";
 
 export const POST = async (request: Request) => {

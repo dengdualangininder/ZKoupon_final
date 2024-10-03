@@ -82,19 +82,6 @@ export default function ContextProvider({ children }: { children: React.ReactNod
   //   })();
   // }, []);
 
-  web3AuthInstance.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-    console.log("connected to wallet", data); // web3auth.provider is now available; data = {adapter: "openLogin", reconnected: true}
-  });
-  web3AuthInstance.on(ADAPTER_EVENTS.CONNECTING, () => {
-    console.log("connecting to web3Auth");
-  });
-  web3AuthInstance.on(ADAPTER_EVENTS.DISCONNECTED, () => {
-    console.log("disconnected from web3Auth");
-  });
-  web3AuthInstance.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
-    console.log("error when connecting to web3Auth", error);
-  });
-
   return (
     <Web3AuthContext.Provider value={web3AuthInstance}>
       <WagmiProvider config={config}>

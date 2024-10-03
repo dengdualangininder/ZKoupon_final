@@ -1,5 +1,5 @@
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 import Pusher from "pusher";
 import { ethers } from "ethers";
 import { rpcUrls } from "@/utils/web3Constants";

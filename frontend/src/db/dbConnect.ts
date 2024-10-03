@@ -1,14 +1,40 @@
 import mongoose from "mongoose";
 
-let connection: { isConnected?: number } = {};
+declare global {
+  var mongoose: any;
+}
 
-const dbConnect = async () => {
-  if (connection.isConnected) {
-    return;
+const MONGO_URI = process.env.MONGO_URI!;
+
+if (!MONGO_URI) {
+  throw new Error("Please define the MONGODB_URI environment variabl");
+}
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+export default async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGO_URI, {
+        bufferCommands: false,
+      })
+      .then((mongoose) => {
+        return mongoose;
+      });
+  }
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
   }
 
-  const db = await mongoose.connect(process.env.MONGO_URI!);
-  connection.isConnected = db.connections[0].readyState;
-};
-
-export default dbConnect;
+  return cached.conn;
+}

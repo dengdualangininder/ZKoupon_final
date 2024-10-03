@@ -1,5 +1,5 @@
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 import { keccak256, getAddress } from "viem";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";

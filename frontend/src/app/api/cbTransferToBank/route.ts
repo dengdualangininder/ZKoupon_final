@@ -1,6 +1,6 @@
 import axios from "axios";
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 import { keccak256, getAddress } from "viem";
 import * as jose from "jose";
 

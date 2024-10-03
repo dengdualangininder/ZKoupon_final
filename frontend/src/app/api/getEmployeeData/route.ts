@@ -1,5 +1,5 @@
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
+import UserModel from "@/db/UserModel";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 

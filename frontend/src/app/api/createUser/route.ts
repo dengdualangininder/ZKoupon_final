@@ -1,12 +1,11 @@
 import dbConnect from "@/db/dbConnect";
-import UserModel from "@/db/models/UserModel";
-import { NextResponse } from "next/server";
+import UserModel from "@/db/UserModel";
+import { NextResponse, NextRequest } from "next/server";
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest) => {
   console.log("entered createUser api");
   const { merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex } = await request.json();
 
-  // connect db
   await dbConnect();
 
   // return doc of existing user or create new user
@@ -26,6 +25,7 @@ export const POST = async (request: Request) => {
         "paymentSettings.merchantBusinessType": "",
         "paymentSettings.merchantFields": [],
         "paymentSettings.merchantGoogleId": "",
+        "paymentSettings.qrCodeUrl": "",
         "cashoutSettings.isEmployeePass": false,
         "cashoutSettings.cex": cex,
         "cashoutSettings.cexEvmAddress": "",

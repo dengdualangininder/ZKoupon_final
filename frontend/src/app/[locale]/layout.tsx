@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     url: "https://www.flashpayments.xyz",
-    title: "Flash | Crypto payments with 0% fees",
+    title: "Flash Payments | Crypto payments with 0% fees",
     description:
-      "With a true peer-2-peer payments design, Flash is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
+      "With a true peer-2-peer payments design, Flash Payments is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
     images: [
       {
         url: "/logo.png",

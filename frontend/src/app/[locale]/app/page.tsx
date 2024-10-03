@@ -1,12 +1,13 @@
 "use client";
 // nextjs
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
 import { useAccount, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
+import { ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
 // react hooks
 import { useWeb3Auth } from "@/contexts/ContextProvider";
 import { useTheme } from "next-themes";
@@ -15,7 +16,7 @@ import Pusher from "pusher-js";
 import { getPublic } from "@toruslabs/eccrypto";
 import { useTranslations } from "next-intl";
 // constants
-import { txns } from "@/utils/txns";
+import { fakePaymentSettings, fakeCashoutSettings, fakeTxns } from "@/utils/txns";
 // components
 import Login from "./_components/Login";
 import Payments from "./_components/Payments";
@@ -72,10 +73,10 @@ const User = () => {
   const { theme, setTheme } = useTheme();
   const account = useAccount();
   const { data: walletClient } = useWalletClient();
-  console.log("walletClient:", walletClient);
   let web3Auth = useWeb3Auth();
-
+  const isConnectedRef = useRef(false); // this is set to true when onConnect event fires
   const { disconnectAsync } = useDisconnect();
+  // const runOnce = useRef(true);
 
   // if (isStandalone) {
   //   PullToRefresh.init({
@@ -92,86 +93,61 @@ const User = () => {
   useAccountEffect({
     onConnect(data) {
       console.log("WAGMI Connected!", data);
+      isConnectedRef.current = true;
     },
     onDisconnect() {
       console.log("WAGMI Disconnected!");
     },
   });
 
-  // IF NOT LOGGED IN
-  // onClick => loading page, exit loading page when connected to web3Auth and wagmi
-  // 1st useEffect run => web3Auth.status returns "ready", web3Auth.connected returns true, account.address returns address, walletClient is detected
-  // IF PREVIOUSLY LOGGED IN
-  // 1st useEffect run => web3Auth.status returns "ready", web3Auth.connected returns false, account.address returns the address, walletClient is not detected
-  // useEffect ends and web3Auth even lsitener will log "connecting", and then "connected". /app will then be rendered twice (why??) but useEffect is not run
-  // 2nd run => web3Auth.status returns "connected", web3Auth.connected returns true, account.address returns the address, walletClient is detected
+  // if (runOnce.current) {
+  //   runOnce.current = false;
+  //   addEventListener("storage", (event) => {
+  //     console.log("hi");
+  //   });
+
+  //   web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
+  //     console.log("connected to web3Auth", data);
+  //   });
+  //   web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
+  //     console.log("connecting to web3Auth");
+  //   });
+  //   web3Auth?.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+  //     console.log("disconnected from web3Auth");
+  //   });
+  //   web3Auth?.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
+  //     console.log("error when connecting to web3Auth", error);
+  //   });
+  // }
+
   useEffect(() => {
-    console.log("/app, page.tsx, useEffect run once");
-    // usability test
-    if (isUsabilityTest) {
-      // detect and set light/dark mode
-      if (window.localStorage.theme) {
-        if (window.localStorage.theme == "dark") {
-          setTheme("dark");
-        } else if (window.localStorage.theme == "light") {
-          setTheme("light");
-        }
-      } else {
-        window.localStorage.setItem("theme", "dark");
-        setTheme("dark");
-      }
+    console.log("/app useEffect run once");
 
-      if (!paymentSettingsState) {
-        const paymentSettings = {
-          merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-          merchantEmail: "germany@gmail.com",
-          merchantName: "",
-          merchantCountry: "Germany",
-          merchantCurrency: "EUR",
-          merchantPaymentType: "inperson",
-          merchantWebsite: "",
-          merchantBusinessType: "",
-          merchantFields: [],
-          merchantGoogleId: "",
-          qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=inperson&merchantName=A%20Store%20In%20Europe&merchantCurrency=EUR&merchantEvmAddress=0xA206df5844dA81470C82d07AE1b797d139bE58C2`,
-        };
-        const cashoutSettings = {
-          cex: "Coinbase",
-          cexEvmAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-          cexAccountName: "Tester Account",
-          isEmployeePass: false,
-          cashoutIntro: true,
-        };
-        setPaymentSettingsState(paymentSettings);
-        setCashoutSettingsState(cashoutSettings);
-        setTransactionsState(txns);
-        setIsAdmin(true);
-        console.log("set to login page 1");
-        setPage("login");
-      }
-      return;
-    }
-
-    // if mobile & not standalone, then redirect to "saveToHome" page
-    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    const isMobileAndNotStandaloneTemp = !isDesktop && !isStandalone ? true : false; // need "temp" because will be using it inside this useEffect
-    setIsMobile(!isDesktop);
-    if (isMobileAndNotStandaloneTemp && process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL != "http://localhost:3000") {
-      setPage("saveToHome");
-      return;
-    }
-
-    // detect and set light/dark mode; set dark mode as default
+    // set dark mode as default
     if (window.localStorage.theme) {
-      if (window.localStorage.theme == "dark") {
-        setTheme("dark");
-      } else if (window.localStorage.theme == "light") {
-        setTheme("light");
-      }
+      setTheme(window.localStorage.theme);
     } else {
       window.localStorage.setItem("theme", "dark");
       setTheme("dark");
+    }
+
+    // usability test
+    if (isUsabilityTest) {
+      setPaymentSettingsState(fakePaymentSettings);
+      setCashoutSettingsState(fakeCashoutSettings);
+      setTransactionsState(fakeTxns);
+      setIsAdmin(true);
+      setPage("intro");
+      return;
+    }
+
+    // redirect to "saveToHome" page if mobile & not standalone
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    setIsMobile(!isDesktop);
+    if (!isDesktop && !isStandalone) {
+      setPage("saveToHome");
+      return;
     }
 
     // check if employee login
@@ -181,34 +157,33 @@ const User = () => {
       return;
     }
 
-    // query localStorage to determine user logged into web3Auth (TODO: is sessionId sometimes invalid?)
-    const sessionIdObject = window.localStorage.getItem("openlogin_store") || "";
-    if (sessionIdObject && JSON.parse(sessionIdObject).sessionId) {
-      // web3Auth sessionId detected
-    } else {
-      console.log("no web3Auth sessionId, page set to Login");
-      console.log("set to login page 2");
+    // if no sessionId in local storage, then redirect to login
+    const openLoginJson = window.localStorage.getItem("openlogin_store") || "";
+    if (!openLoginJson || !JSON.parse(openLoginJson).sessionId) {
+      console.log("no web3Auth sessionId, redirect to Login");
       setPage("login");
       return;
     }
 
-    console.log("web3Auth.status:", web3Auth?.status, "| web3Auth.connected:", web3Auth?.connected);
-    console.log("account.address:", account.address);
+    // if sessionId exists and if not connected after 6s, then redirect to login; important as sessionId expires after 7 days
+    // account.address is required, as after linking Coinbase, isConnectedRef returns false for some reason
+    if (JSON.parse(openLoginJson).sessionId) {
+      setTimeout(() => {
+        console.log("isConnectedRef", isConnectedRef);
+        console.log("account.address", account.address);
+        if (!isConnectedRef.current && !account.address) {
+          setPage("login");
+        }
+      }, 6000);
+    }
 
-    // prevent further work from being done if walletClient not loaded
-    if (walletClient) {
-      console.log("walletClient detected");
-    } else {
-      console.log("walletClient not detected");
+    // if no walletClient, then try again
+    if (!walletClient) {
       return;
     }
 
     verifyAndGetData();
-
-    console.log("/app, page.tsx, useEffect ended");
   }, [walletClient]);
-  // if you use web3Auth in dependency array, web3Auth.status will show "connected" but walletClient will still be undefined
-  // if you use wagmi's "account" in dependency array, will achieve workable results, but too many rerenders, as account changes more frequently than walletClient
 
   useEffect(() => {
     if (newTxn) {
@@ -222,34 +197,24 @@ const User = () => {
     }
   }, [newTxn]);
 
-  const verifyAndGetData = async () => {
+  async function verifyAndGetData() {
     console.log("/app, verifyAndGetData() run once");
+    if (!walletClient) {
+      console.log("veryifyandGetData function, no walletClient");
+      return;
+    }
 
-    // get idToken from web3Auth
+    // get idToken and publicKey
     try {
       const userInfo = await web3Auth?.getUserInfo();
       var idTokenTemp = userInfo?.idToken;
-      console.log("/app, useEffect, verifyAndGetData, userInfo", userInfo);
-    } catch (e) {
-      console.log("error: could not get web3Auth.userInfo, page set to Login");
-      console.log("set to login page 3");
-      setPage("login");
-    }
-
-    // get publicKey from window
-    try {
-      if (!walletClient) {
-        console.log("veryifyandGetData function, no walletClient");
-        return;
-      }
       const privateKey = (await walletClient?.request({
         // @ts-ignore
         method: "eth_private_key", // it somehow works even if not typed
       })) as string;
       var publicKeyTemp = getPublic(Buffer.from(privateKey?.padStart(64, "0"), "hex")).toString("hex");
     } catch (e) {
-      console.log("error: could not get publicKey, page set to Login");
-      console.log("set to login page 4");
+      console.log("error: could not get idToken and publicKey, page set to Login");
       setPage("login");
       return;
     }
@@ -268,10 +233,10 @@ const User = () => {
           headers: { "content-type": "application/json" },
         });
         const data = await res.json();
-        console.log(data);
+        console.log(data.doc);
         // if success
         if (data.status == "success") {
-          console.log("fetched doc and set states");
+          console.log("doc fetched, setting states...");
           // set states
           setPaymentSettingsState(data.doc.paymentSettings);
           setCashoutSettingsState(data.doc.cashoutSettings);
@@ -281,14 +246,14 @@ const User = () => {
           // check if redirected from Coinbase
           const cbRandomSecure = window.sessionStorage.getItem("cbRandomSecure");
           if (cbRandomSecure) {
-            console.log("substate logic");
+            console.log("cbRandomSecure", cbRandomSecure);
             const substate = cbRandomSecure.split("SUBSTATE")[1];
             console.log("substate", substate);
             substate == "cashOut" ? setMenu("cashOut") : null;
             substate == "fromIntro" ? setCbIntroModal(true) : null;
             window.sessionStorage.removeItem("cbRandomSecure");
           }
-          setPage("intro"); // starthere
+          setPage("app"); // starthere
         }
         // if new user
         if (data == "create new user") {
@@ -298,21 +263,17 @@ const User = () => {
         if (data.status == "error") {
           console.log(data);
           await disconnectAsync();
-          console.log("set to login page 5");
-
           setPage("login");
         }
       } catch (err) {
         console.log("error: api request to getUserDoc failed");
         await disconnectAsync();
-        console.log("set to login page 6");
-
         setPage("login");
       }
     }
-  };
+  }
 
-  const verifyAndGetEmployeeData = async () => {
+  async function verifyAndGetEmployeeData() {
     console.log("verifyAndGetEmployeeData()");
     const res = await fetch("/api/getEmployeeData", {
       method: "GET",
@@ -329,7 +290,7 @@ const User = () => {
       console.log("employee login failed");
       setPage("login");
     }
-  };
+  }
 
   const subscribePusher = async (merchantEvmAddress: string) => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER! });

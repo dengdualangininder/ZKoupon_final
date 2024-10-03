@@ -1,6 +1,27 @@
 import { Transaction } from "@/db/models/UserModel";
 
-export const txns: Transaction[] = [
+export const fakePaymentSettings = {
+  merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  merchantEmail: "germany@gmail.com",
+  merchantName: "",
+  merchantCountry: "Germany",
+  merchantCurrency: "EUR",
+  merchantPaymentType: "inperson",
+  merchantWebsite: "",
+  merchantBusinessType: "",
+  merchantFields: [],
+  merchantGoogleId: "",
+  qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=inperson&merchantName=A%20Store%20In%20Europe&merchantCurrency=EUR&merchantEvmAddress=0xA206df5844dA81470C82d07AE1b797d139bE58C2`,
+};
+export const fakeCashoutSettings = {
+  cex: "Coinbase",
+  cexEvmAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+  cexAccountName: "Tester Account",
+  isEmployeePass: false,
+  cashoutIntro: true,
+};
+
+export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T18:31:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",

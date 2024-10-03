@@ -60,6 +60,11 @@ const Intro = ({
   const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
 
   const sendEmail = async () => {
+    if (isUsabilityTest) {
+      setStep("emailSent");
+      return;
+    }
+
     // check if form completed
     if (!paymentSettingsState.merchantName) {
       setErrorMsg(t("errors.enterName"));

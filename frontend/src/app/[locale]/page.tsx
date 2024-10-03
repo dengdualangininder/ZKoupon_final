@@ -64,7 +64,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="homeTextBase">
+    <div className="homeTextBase overflow-x-hidden">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">
