@@ -19,7 +19,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faCircleCheck, faPlus, faMinus, faX, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 // types
-import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
+import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 
 const Intro = ({
   paymentSettingsState,

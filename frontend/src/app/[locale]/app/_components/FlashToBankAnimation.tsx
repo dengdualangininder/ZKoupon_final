@@ -1,7 +1,7 @@
 // nextjs
 import Image from "next/image";
 // types
-import { PaymentSettings } from "@/db/models/UserModel";
+import { PaymentSettings } from "@/db/UserModel";
 
 const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: PaymentSettings }) => {
   return (

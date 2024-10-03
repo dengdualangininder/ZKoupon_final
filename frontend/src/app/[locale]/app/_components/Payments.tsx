@@ -24,7 +24,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 // types
-import { PaymentSettings, Transaction } from "@/db/models/UserModel";
+import { PaymentSettings, Transaction } from "@/db/UserModel";
 
 // functions
 export const getLocalTime = (mongoDate: string | undefined) => {

@@ -35,7 +35,7 @@ import { abb2full, countryData, currency2decimal, merchantType2data } from "@/ut
 // import PullToRefresh from "pulltorefreshjs";
 
 // types
-import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
+import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
 
 const User = () => {
   console.log("/app, page.tsx rendered once");

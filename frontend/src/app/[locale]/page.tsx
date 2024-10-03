@@ -29,7 +29,7 @@ export default function Home() {
           }
         });
       },
-      { rootMargin: "-100px" }
+      { rootMargin: "-100px" } // default = root: null, threshold: 0
     );
     document.querySelectorAll("div[data-show='yes']").forEach((el) => observer.observe(el));
 

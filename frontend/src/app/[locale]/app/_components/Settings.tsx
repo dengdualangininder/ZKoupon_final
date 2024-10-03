@@ -17,7 +17,7 @@ import { countryData, countryCurrencyList, merchantType2data, langObjectArray } 
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { LuCopy } from "react-icons/lu";
 // types
-import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
+import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 
 const Settings = ({
   paymentSettingsState,

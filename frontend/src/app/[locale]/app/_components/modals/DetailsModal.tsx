@@ -10,7 +10,7 @@ import { faAngleLeft, faFileInvoiceDollar, faList, faXmark } from "@fortawesome/
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 // types
-import { Transaction } from "@/db/models/UserModel";
+import { Transaction } from "@/db/UserModel";
 
 const DetailsModal = ({
   clickedTxn,

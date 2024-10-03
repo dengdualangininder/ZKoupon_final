@@ -11,7 +11,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 // types
-import { PaymentSettings, CashoutSettings } from "@/db/models/UserModel";
+import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 
 const CashoutIntroModal = ({
   paymentSettingsState,

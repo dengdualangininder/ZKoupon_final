@@ -13,7 +13,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 // types
-import { PaymentSettings, Transaction } from "@/db/models/UserModel";
+import { PaymentSettings, Transaction } from "@/db/UserModel";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
 const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettingsState: PaymentSettings; setQrCodeModal: any }) => {

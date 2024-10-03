@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FaEllipsisVertical } from "react-icons/fa6";
 // types
-import { PaymentSettings, CashoutSettings, Transaction } from "@/db/models/UserModel";
+import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
 import { Rates } from "@/utils/types";
 
 const CashOut = ({
