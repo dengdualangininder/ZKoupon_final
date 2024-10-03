@@ -5,7 +5,7 @@ export default function LowCost({ merchantCurrency }: { merchantCurrency: string
   const t = useTranslations("HomePage.LowCost");
 
   return (
-    <div className="pt-[80px] pb-[96px] homeSectionSize flex flex-col items-center lg:flex-row lg:items-start">
+    <div className="pt-[80px] pb-[96px] homeSectionSize min-h-[700px] flex flex-col items-center lg:flex-row lg:items-start">
       {/*--- LEFT ---*/}
       <div className="w-full lg:w-[50%] lg:pr-[16px]">
         {/*--- header ---*/}

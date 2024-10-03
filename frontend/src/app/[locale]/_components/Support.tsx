@@ -13,7 +13,7 @@ const Support = () => {
       {/*---Header---*/}
       <div className="homeHeaderFont">{t("header")}</div>
       {/*---Content---*/}
-      <div className="homeBodyFont mt-10 w-full xl:max-w-[810px] md:text-center">{t("body")}</div>
+      <div className="text-xl desktop:text-lg mt-10 w-full xl:max-w-[810px]">{t("body")}</div>
     </div>
   );
 };

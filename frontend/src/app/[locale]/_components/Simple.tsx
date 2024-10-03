@@ -5,7 +5,7 @@ export default function Simple() {
   const t = useTranslations("HomePage.Simple");
 
   return (
-    <div className="pt-[80px] pb-[96px] homeSectionSize flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
+    <div className="pt-[80px] pb-[96px] homeSectionSize min-h-[650px] flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
       {/*--- LEFT ---*/}
       <div className="w-full lg:w-[50%]">
         {/*--- header ---*/}
@@ -17,7 +17,7 @@ export default function Simple() {
         {/*--- body ---*/}
         <div className="homeTextLg mt-8 w-full space-y-6">
           <p>{t("body-1")}</p>
-          <p>{t.rich("body-2", { span: (chunks) => <span className="text-2xl">{chunks}</span> })}</p>
+          <p>{t.rich("body-2", { span: (chunks) => <span className="text-blue-400">{chunks}</span> })}</p>
         </div>
       </div>
       {/*--- RIGHT ---*/}

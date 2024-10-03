@@ -78,7 +78,7 @@ export default function Home() {
       <div
         id="LowCost"
         data-show="yes"
-        className="w-full flex justify-center opacity-0 transition-all duration-1500 bg-light2 text-lightText1 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_300%]"
+        className="w-full flex justify-center opacity-0 transition-all duration-1500 bg-light2 text-lightText1 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_350%]"
       >
         <LowCost merchantCurrency={merchantCurrency} />
       </div>
@@ -95,7 +95,7 @@ export default function Home() {
         <Learn merchantCurrency={merchantCurrency} />
       </div>
 
-      <div data-show="yes" className="w-full flex justify-center bg-dark1 text-white opacity-0 transition-all duration-1000">
+      <div id="Support" data-show="yes" className="w-full flex justify-center bg-dark1 text-white opacity-0 transition-all duration-1000">
         <Support />
       </div>
 

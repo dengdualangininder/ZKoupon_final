@@ -28,13 +28,13 @@ const Benefits = ({ merchantCurrency }: { merchantCurrency: string | undefined }
   };
 
   return (
-    <div className="pt-[80px] pb-[96px] homeSectionSize flex flex-col items-center">
+    <div className="pt-[80px] pb-[96px] homeSectionSize min-h-[650px] flex flex-col items-center">
       {/*--- HEADER ---*/}
       <div className="w-full homeHeaderFont">{t("header")}</div>
       {/*--- CONTENT ---*/}
       <div
         className={`${
-          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[350px]"
+          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[310px]"
         } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full flex flex-col items-center lg:flex-row lg:justify-between lg:space-x-[12px] space-y-6 lg:space-y-0`}
       >
         {/*--- card1 ---*/}

@@ -79,7 +79,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
           {/*---bullet points---*/}
           <div className="grid grid-cols-[auto,auto] gap-[8px] howBulletFont">
             <div>1.</div>
-            <div>
+            <div className="relative">
               {t.rich("step-2-1", {
                 span1: (chunks: any) => <span className="group">{chunks}</span>,
                 sup: (chunks: any) => <sup>{chunks}</sup>,
@@ -91,7 +91,7 @@ const How = ({ merchantCurrency, setMerchantCurrency }: { merchantCurrency: stri
             <div>2.</div>
             <div>{t("step-2-2", { merchantCurrency: merchantCurrency })}</div>
             <div>3.</div>
-            <div>
+            <div className="relative">
               {t.rich("step-2-3", {
                 span1: (chunks: any) => <span className="group">{chunks}</span>,
                 sup: (chunks: any) => <sup>{chunks}</sup>,

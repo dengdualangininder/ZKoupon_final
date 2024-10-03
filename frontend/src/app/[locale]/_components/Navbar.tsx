@@ -177,7 +177,13 @@ export default function Navbar() {
               {navLink.title}
             </div>
           ))}
-          <div className="desktop:hover:underline decoration-[2px] underline-offset-[8px] cursor-pointer" onClick={onClickLink}>
+          <div
+            className="desktop:hover:underline decoration-[2px] underline-offset-[8px] cursor-pointer"
+            onClick={() => {
+              document.getElementById("Support")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              setMenuModal(false);
+            }}
+          >
             {t("support")}
           </div>
           <div className="flex items-center cursor-pointer" onClick={() => (langModal ? setLangModal(false) : setLangModal(true))}>
