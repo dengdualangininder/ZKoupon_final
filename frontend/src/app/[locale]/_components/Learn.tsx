@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 // constants
 import { currencyToData } from "@/utils/constants";
 // images
-import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { FaAngleDown } from "react-icons/fa6";
 
 const Learn = ({ merchantCurrency }: { merchantCurrency: string | undefined }) => {
   const [lesson, setLesson] = useState("");
@@ -16,10 +16,8 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string | undefined }) =
   const tcommon = useTranslations("Common");
 
   useLayoutEffect(() => {
-    console.log("useLayoutEffect run once");
-    const elements = document.querySelectorAll<HTMLElement>(".learnAnswerContainer");
     let heightsTemp: number[] = [];
-    elements?.forEach((i) => {
+    document.querySelectorAll<HTMLElement>(".learnAnswerContainer").forEach((i) => {
       heightsTemp.push(i.offsetHeight);
     });
     setHeights(heightsTemp);
@@ -132,11 +130,6 @@ const Learn = ({ merchantCurrency }: { merchantCurrency: string | undefined }) =
               <FaAngleDown className={`${i.id == lesson ? "rotate-180" : "rotate-0"} [transition:transform_300ms] text-xl`} />
             </div>
             {/*--- ANSWER ---*/}
-            {/* <div
-              style={{ maxHeight: lesson == i.id ? `${heights[index] + 16}px` : "0px", transition: `max-height ${heights[index] * 1.3}ms` }}
-              className={`overflow-hidden ease-out`}
-            > */}
-            {/* <div className={`${lesson == i.id ? "max-h-[1350px]" : "max-h-0"} overflow-hidden [transition:max-height_500ms]`}> */}
             <div
               style={{ transition: `grid ${heights[index] * 1.3}ms, opacity 500ms` }}
               className={`${lesson == i.id ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"} grid`}
