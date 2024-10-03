@@ -125,6 +125,10 @@
     @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm;
   }
 
+  .textBaseApp {
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
+  }
+
   .textBasePx {
     @apply text-[16px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px];
   }

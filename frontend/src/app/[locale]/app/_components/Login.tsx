@@ -12,11 +12,8 @@ import ErrorModalLight from "./modals/ErrorModalLight";
 import { langObjectArray } from "@/utils/constants";
 // images
 import { SpinningCircleWhiteLarge } from "@/utils/components/SpinningCircleWhite";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faAngleUp, faBars, faCaretDown, faGlobe, faX } from "@fortawesome/free-solid-svg-icons";
 // images
-import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
+import { FaCaretDown } from "react-icons/fa6";
 import { SlGlobe } from "react-icons/sl";
 
 const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: boolean }) => {
@@ -36,7 +33,7 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
   const locale = useLocale();
   const t = useTranslations("App.Login");
 
-  // include AppleID login or not
+  // create list of connectors (index is important)
   const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
   if (isApple) {
     var myConnectors = [
@@ -91,10 +88,11 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
   };
 
   return (
-    <div className="w-full h-screen font-medium text-lg landscape:xl:desktop:text-base flex flex-col items-center overflow-y-auto bg-light2 text-black">
+    <div className="w-full h-screen font-medium textBaseApp flex flex-col items-center overflow-y-auto bg-light2 text-black">
       {/*---showLang mask---*/}
       {showLangs && <div className="absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setShowLangs(false)}></div>}
-      <div className="w-[344px] portrait:sm:w-[340px] landscape:lg:w-[340px] landscape:xl:desktop:w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
+      {/*--- container ---*/}
+      <div className="w-[340px] desktop:!w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
         {/*--- lang + logo + menu bar ---*/}
         <div className="flex-none w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-between">
           {/*--- lang ---*/}
@@ -133,7 +131,7 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
           </div>
 
           {/*--- menu bar ---*/}
-          <div className="w-full h-[52px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] flex items-center justify-center flex-none relative">
+          <div className="w-full h-[48px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] flex items-center justify-center flex-none relative">
             <div className="absolute w-full h-full rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
             <div
               className={`${
@@ -163,7 +161,7 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
               {myConnectors.map<any>((i: any) => (
                 <div
                   key={i.name}
-                  className="w-full h-[68px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[56px] flex items-center text-gray-700 bg-white rounded-md lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                  className="w-full h-[60px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[56px] flex items-center text-gray-700 bg-white rounded-md lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
                   onClick={async () => {
                     // usability test
                     if (isUsabilityTest) {
