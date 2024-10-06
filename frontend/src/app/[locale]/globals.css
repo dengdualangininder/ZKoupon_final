@@ -129,6 +129,10 @@
     @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
   }
 
+  .textSmApp {
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
+  }
+
   .textBasePx {
     @apply text-[16px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px];
   }
@@ -247,8 +251,8 @@
     @apply mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[calc(600px-24px*2)] lg:max-w-[1100px];
   }
 
-  .appSectionSize {
-    @apply flex-1 portrait:w-full landscape:pl-[120px] landscape:lg:pl-[140px] landscape:xl:desktop:pl-[200px] portrait:pb-[84px] portrait:sm:pb-[140px] landscape:h-full flex flex-col items-center;
+  .appPageContainer {
+    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[140px] desktop:!ml-[200px] flex flex-col items-center;
   }
 
   .whiteCard {
@@ -316,7 +320,7 @@
   }
 
   .paymentsWidth {
-    @apply w-[91%] portrait:sm:w-[540px] landscape:lg:w-[540px] portrait:lg:w-[600px] landscape:xl:w-[600px] landscape:xl:desktop:w-[440px];
+    @apply w-[91%] portrait:sm:w-[540px] landscape:lg:w-[600px] desktop:!w-[440px];
   }
 
   .bannerWidth {
@@ -750,7 +754,7 @@
   }
 
   .loginInputFont {
-    @apply w-full h-[56px] landscape:xl:desktop:h-[44px] px-[8px] text-[18px] landscape:xl:desktop:text-[16px] font-medium rounded-md bg-white outline-none border-2 border-slate-200 focus:border-blue-500 transition-[all] duration-[500ms];
+    @apply w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[48px] px-[12px] font-normal textBaseApp rounded-md bg-white text-lightText1 outline-none border-2 border-slate-200 focus:border-blue-500 transition-[all] duration-[500ms];
   }
 
   .introInputFont {

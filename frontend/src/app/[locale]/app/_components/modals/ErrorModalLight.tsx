@@ -5,7 +5,7 @@ const ErrorModal = ({ errorMsg, setErrorModal }: { errorMsg: any; setErrorModal:
 
   return (
     <div className="z-[200]">
-      <div className="errorModal dark:bg-white dark:border-light5 dark:text-black">
+      <div className="errorModal font-normal dark:bg-light2 dark:border-slate-500 dark:text-lightText1">
         {/*--- content ---*/}
         <div className="modalXpaddingLg overflow-y-auto">
           {/*---text---*/}

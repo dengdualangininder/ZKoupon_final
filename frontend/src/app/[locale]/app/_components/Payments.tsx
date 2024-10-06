@@ -76,7 +76,7 @@ const Payments = ({
   const [exportStartMonth, setExportStartMonth] = useState("select");
   const [exportEndMonth, setExportEndMonth] = useState("select");
   const [fillerRows, setFillerRows] = useState<number[] | null>(transactionsState.length < 6 ? Array.from(Array(6 - transactionsState.length).keys()) : null);
-  const [scrollWidth, setScrollWidth] = useState("16");
+  const [scrollWidth, setScrollWidth] = useState(16);
   // modal states
   const [errorModal, setErrorModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -105,7 +105,7 @@ const Payments = ({
 
   useEffect(() => {
     const scrollWidthTemp = (document?.querySelector("#table") as HTMLElement).offsetWidth - (document?.querySelector("#table") as HTMLElement).clientWidth;
-    setScrollWidth(scrollWidthTemp.toString());
+    setScrollWidth(scrollWidthTemp);
   }, []);
 
   const onClickTxn = async (e: any) => {
@@ -344,183 +344,129 @@ const Payments = ({
   };
 
   return (
-    <section className="appSectionSize">
+    <section className="appPageContainer">
       {/*--- TOP BAR h-140px/180px/160px ---*/}
-      <div className="flex-none w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] landscape:xl:desktop:h-[160px] flex flex-col">
-        {/*--- shaded region ---*/}
-        <div
-          className={`flex-1 flex flex-col items-center bg-gradient-to-br from-[15%] to-[85%] from-light2 to-light4 dark:from-dark2 dark:to-dark4 landscape:dark:to-dark1 landscape:dark:from-dark1 pr-[${scrollWidth}px]`}
-        >
-          {/*--- buttons ---*/}
-          <div className="px-[8px] paymentsWidth h-[65%] flex items-center justify-between">
-            {/*--- left buttons ---*/}
-            <div className="h-full flex items-center space-x-[32px] portrait:sm:space-x-[56px] landscape:lg:space-x-[56px]">
-              <div className="paymentsIconContainer" onClick={() => setSearchModal(true)}>
-                <div className="paymentsIcon">
-                  <Image src={theme == "dark" ? "/searchWhite.svg" : "/searchBlack.svg"} alt="search icon" fill />
-                </div>
-              </div>
-              {isAdmin && (
-                <div
-                  className="paymentsIconContainer"
-                  onClick={() => {
-                    if (transactionsState.length > 0) {
-                      createDownloadDates();
-                      setExportModal(true);
-                    } else {
-                      setErrorMsg(t("downloadModal.errors.noPayments"));
-                      setErrorModal(true);
-                    }
-                  }}
-                >
-                  <div className="paymentsIcon">
-                    <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export icon" fill />
-                  </div>
-                </div>
-              )}
-              {!isAdmin && (
-                <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
-                  <div className="paymentsIcon">
-                    <Image src={theme == "dark" ? "/signOutWhite.svg" : "/signOutBlack.svg"} alt="sign out icon" fill />
-                  </div>
-                </div>
-              )}
-            </div>
-            {/*--- qrCode button ---*/}
-            <div className="paymentsIconContainer" onClick={() => setQrCodeModal(true)}>
-              <div className="paymentsIcon">
-                <Image src={theme == "dark" ? "/qrWhite.svg" : "/qrBlack.svg"} alt="qr code icon" fill />
-              </div>
+      <div
+        className={`flex-none w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] desktop:!h-[160px] flex flex-col items-center`}
+        style={{ paddingRight: `${scrollWidth}px` }}
+      >
+        {/*--- buttons ---*/}
+        <div className="px-[24px] paymentsWidth w-full h-[65%] grid grid-cols-[25%_25%_50%] items-center">
+          {/*--- search ---*/}
+          <div className="paymentsIconContainer" onClick={() => setSearchModal(true)}>
+            <div className="paymentsIcon">
+              <Image src={theme == "dark" ? "/searchWhite.svg" : "/searchBlack.svg"} alt="search icon" fill />
             </div>
           </div>
-
-          {/*--- Table Headers ---*/}
-          <div className="flex-1 w-full flex justify-center items-end portrait:sm:pb-[4px] landscape:lg:pb-[4px]">
-            <div className="paymentsWidth paymentsHeaderFont grid grid-cols-[28%_35%_37%] pb-[8px] landscape:dark:border-b-2 landscape:dark:border-dark5">
-              <div className="portrait:pl-[8px] portrait:sm:pl-0 text-start">{t("time")}</div>
-              <div className="text-end">{paymentSettingsState.merchantCurrency}</div>
-              <div className="text-end">{t("customer")}</div>
+          {/*--- download ---*/}
+          {isAdmin && (
+            <div
+              className="paymentsIconContainer"
+              onClick={() => {
+                if (transactionsState.length > 0) {
+                  createDownloadDates();
+                  setExportModal(true);
+                } else {
+                  setErrorMsg(t("downloadModal.errors.noPayments"));
+                  setErrorModal(true);
+                }
+              }}
+            >
+              <div className="paymentsIcon">
+                <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export icon" fill />
+              </div>
+            </div>
+          )}
+          {/*--- sign out ---*/}
+          {!isAdmin && (
+            <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
+              <div className="paymentsIcon">
+                <Image src={theme == "dark" ? "/signOutWhite.svg" : "/signOutBlack.svg"} alt="sign out icon" fill />
+              </div>
+            </div>
+          )}
+          {/*--- qrCode button ---*/}
+          <div className="paymentsIconContainer justify-self-end bg-red-300" onClick={() => setQrCodeModal(true)}>
+            <div className="paymentsIcon">
+              <Image src={theme == "dark" ? "/qrWhite.svg" : "/qrBlack.svg"} alt="qr code icon" fill />
             </div>
           </div>
         </div>
-        {/*--- spacer ---*/}
-        <div className="flex-none only:w-full h-[8px]"></div>
+        {/*--- Table Headers ---*/}
+        <div className="grow paymentsWidth paymentsHeaderFont grid grid-cols-[1fr_1fr] items-end pb-[8px] border-b border-slate-700 dark:text-slate-500">
+          <div className="portrait:pl-[8px] portrait:sm:pl-0 text-start">{t("time")}</div>
+          <div className="text-end">Amount ({paymentSettingsState.merchantCurrency})</div>
+        </div>
       </div>
 
-      {/*--- Table or "no payments" ---*/}
-      <div
-        id="table"
-        className={`${
-          isAdmin ? "portrait:h-[calc(100vh-84px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
-        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:xl:desktop:h-[calc(100vh-160px)] flex justify-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
-      >
-        {transactionsState.length != 0 && (
-          <table className="paymentsWidth table-fixed text-left relative">
-            <tbody>
-              {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
-                <tr
-                  className={`${txn.refund ? "opacity-50" : ""} ${
-                    isAdmin
-                      ? "portrait:h-[calc((100vh-84px-140px)/6)] portrait:sm:h-[calc((100vh-140px-180px)/6)]"
-                      : "portrait:h-[calc((100vh-0px-140px)/6)] portrait:sm:h-[calc((100vh-0px-180px)/6)]"
-                  } w-full landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/6)] landscape:xl:desktop:h-[calc((100vh-160px)/6)] flex-none border-b border-light5 dark:border-transparent desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 cursor-pointer`}
-                  id={txn.txnHash}
-                  key={index}
-                  onClick={onClickTxn}
+      {/*--- LIST OF PAYMENTS ---*/}
+      {/*--- container ---*/}
+      {transactionsState.length != 0 && (
+        <div
+          id="table"
+          className={`${
+            isAdmin ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
+          } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
+        >
+          {/*--- list ---*/}
+          {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
+            <div
+              className={`${txn.refund ? "opacity-50" : ""} ${
+                isAdmin
+                  ? "portrait:auto-rows-[calc((100vh-80px-140px)/5)] portrait:sm:auto-rows-[calc((100vh-140px-180px)/5)]"
+                  : "portrait:auto-rows-[calc((100vh-0px-140px)/5)] portrait:sm:auto-rows-[calc((100vh-0px-180px)/5)]"
+              } relative paymentsWidth landscape:auto-rows-[80px] landscape:lg:auto-rows-[calc((100vh-180px)/5)] desktop:!auto-rows-[calc((100vh-160px)/5)] grid grid-cols-[1fr_1fr] items-center border-b border-light5 dark:border-slate-700 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
+              id={txn.txnHash}
+              key={index}
+              onClick={onClickTxn}
+            >
+              {/*---Time---*/}
+              <div className="portrait:pl-[8px] portrait:sm:pl-0 relative pb-[16px]">
+                {/*--- time/date ---*/}
+                <span className="text-[36px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px]">{getLocalTime(txn.date)?.time}</span>
+                <span className="text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[4px] font-medium">{getLocalTime(txn.date)?.ampm}</span>
+                <div className="text-[18px] leading-none portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[14px] font-medium text-slate-500">
+                  {getLocalDateWords(txn.date)?.toUpperCase()}
+                </div>
+              </div>
+              {/*---currencyAmount---*/}
+              <div className="text-[36px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px] justify-self-end pb-[16px]">
+                {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
+                <div className="text-end text-[18px] leading-none portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[14px] font-medium text-slate-500">
+                  ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
+                </div>
+              </div>
+
+              {/*--- "to refund" ---*/}
+              {txn.toRefund && (
+                <div
+                  // @ts-ignore
+                  style={{ writingMode: "vertical-rl" }}
+                  className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] landscape:xl:desktop:left-[-24px] portrait:pr-[4px] portrait:sm:pr-0 bottom-0 text-center text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px] font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
                 >
-                  {/*---Time---*/}
-                  <td className="portrait:pl-[8px] portrait:sm:pl-0 w-[28%] relative">
-                    {/*--- "to refund" ---*/}
-                    {txn.toRefund && (
-                      <div
-                        // @ts-ignore
-                        style={{ writingMode: "vertical-rl" }}
-                        className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] landscape:xl:desktop:left-[-24px] portrait:pr-[4px] portrait:sm:pr-0 bottom-0 text-center text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px] font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
-                      >
-                        To Refund
-                      </div>
-                    )}
-                    {/*--- time/date ---*/}
-                    <div className="relative">
-                      <span className="text-[24px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px]">{getLocalTime(txn.date)?.time}</span>
-                      <span className="text-[14px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[4px] font-medium">{getLocalTime(txn.date)?.ampm}</span>
-                      <div className="text-[14px] portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[14px] leading-[14px] portrait:sm:leading-[8px] landscape:lg:leading-[8px] landscape:xl:desktop:leading-[14px] absolute bottom-[calc(100%+1px)] font-medium text-dualGray">
-                        {getLocalDateWords(txn.date)?.toUpperCase()}
-                      </div>
-                    </div>
-                  </td>
-                  {/*---currencyAmount---*/}
-                  <td className="w-[35%] text-[24px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px] text-end">
-                    {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
-                  </td>
-                  {/*---Customer---*/}
-                  <td className="w-[37%] text-[24px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px] text-end">
-                    ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
-                  </td>
-
-                  {/*---Online Options---*/}
-                  {/* {paymentSettingsState.merchantPaymentType === "online" && paymentSettingsState.merchantFields.includes("email") && txn.customerEmail && (
-                  <div className="text-sm leading-tight">
-                    <div>{txn.customerEmail.split("@")[0]}</div>
-                    <div>@{txn.customerEmail.split("@")[1]}</div>
-                  </div>
-                )} */}
-
-                  {/* {paymentSettingsState.merchantFields.includes("daterange") && (
-                  <td className="xs:px-2">
-                    <div className="text-sm leading-tight whitespace-nowrap">
-                      <div>{txn.startDate}</div>
-                      <div>{txn.endDate}</div>
-                    </div>
-                  </td>
-                )}
-                {paymentSettingsState.merchantFields.includes("date") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.singledate}</td>}
-                {paymentSettingsState.merchantFields.includes("time") && <td className="xs:px-2 text-sm leading-tight whitespace-nowrap">{txn.time}</td>}
-                {paymentSettingsState.merchantFields.includes("item") && <td className="xs:px-2 text-sm leading-tight">{txn.item}</td>}
-                {paymentSettingsState.merchantFields.includes("count") && (
-                  <td className={`${paymentSettingsState.merchantPaymentType === "online" ? "hidden md:table-cell" : ""} xs:px-2`}>
-                    {txn.countString && (
-                      <div className="text-sm leading-tight">
-                        <div>{txn.countString.split(", ")[0]}</div>
-                        <div>{txn.countString.split(", ")[1]}</div>
-                      </div>
-                    )}
-                  </td>
-                )}
-                {paymentSettingsState.merchantFields.includes("sku") && <td className="xs:px-2">{txn.sku && <div className="text-lg">{txn.sku}</div>}</td>} */}
-                </tr>
-              ))}
-              {fillerRows?.map((txn: any, index: number) => (
-                <tr
-                  className={`${
-                    isAdmin
-                      ? "portrait:h-[calc((100vh-84px-120px-28px-0px)/6)] portrait:sm:h-[calc((100vh-140px-140px-32px)/6)]"
-                      : "portrait:h-[calc((100vh-0px-120px-28px-0px)/6)] portrait:sm:h-[calc((100vh-0px-140px-32px)/6)]"
-                  } flex-none w-full landscape:h-[80px] landscape:lg:h-[calc((100vh-140px-32px)/6)]`}
-                  key={index}
-                ></tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-
-        {/*--- CLEAR SEARCH MODAL ---*/}
-        {clearSearchModal && (
-          <div
-            className={`${
-              isAdmin ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
-            } fixed landscape:bottom-2 landscape:lg:bottom-6 w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[72px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center items-center`}
-          >
-            <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 text-black">
-              <div className="text2xl">{t("clearSearch")}</div>
-              <div className="xButtonBanner" onClick={clearFilter}>
-                &#10005;
+                  To Refund
+                </div>
+              )}
+            </div>
+          ))}
+          {/*--- clear search modal ---*/}
+          {clearSearchModal && (
+            <div
+              className={`${
+                isAdmin ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
+              } fixed landscape:bottom-2 landscape:lg:bottom-6 w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[72px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center items-center`}
+            >
+              <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 text-black">
+                <div className="text2xl">{t("clearSearch")}</div>
+                <div className="xButtonBanner" onClick={clearFilter}>
+                  &#10005;
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">{t("noPayments")}</div>}
-      </div>
+          )}
+          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">{t("noPayments")}</div>}
+        </div>
+      )}
 
       {/*--- SEARCH MODAL ---*/}
       <div className={`${searchModal ? "" : "hidden"} fixed inset-0 z-10`}></div>

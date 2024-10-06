@@ -100,25 +100,19 @@ const User = () => {
     },
   });
 
-  // if (runOnce.current) {
-  //   runOnce.current = false;
-  //   addEventListener("storage", (event) => {
-  //     console.log("hi");
-  //   });
-
-  //   web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-  //     console.log("connected to web3Auth", data);
-  //   });
-  //   web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
-  //     console.log("connecting to web3Auth");
-  //   });
-  //   web3Auth?.on(ADAPTER_EVENTS.DISCONNECTED, () => {
-  //     console.log("disconnected from web3Auth");
-  //   });
-  //   web3Auth?.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
-  //     console.log("error when connecting to web3Auth", error);
-  //   });
-  // }
+  web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
+    console.log("connected to web3Auth", data);
+    isConnectedRef.current = true;
+  });
+  web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
+    console.log("connecting to web3Auth");
+  });
+  web3Auth?.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+    console.log("disconnected from web3Auth");
+  });
+  web3Auth?.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
+    console.log("error when connecting to web3Auth", error);
+  });
 
   useEffect(() => {
     console.log("/app useEffect run once");
@@ -145,10 +139,10 @@ const User = () => {
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     setIsMobile(!isDesktop);
-    if (!isDesktop && !isStandalone) {
-      setPage("saveToHome");
-      return;
-    }
+    // if (!isDesktop && !isStandalone) {
+    //   setPage("saveToHome");
+    //   return;
+    // }
 
     // check if employee login
     const jwt = getCookie("employeeJwt");
@@ -398,9 +392,9 @@ const User = () => {
       )}
       {page === "app" && (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
-          {/*---MENU: LEFT (w120/160/200px) or BOTTOM (h-84/140px) ---*/}
+          {/*---MENU: LEFT (w120/lg:160/desktop:200px) or BOTTOM (h-80/sm:140px) ---*/}
           {isAdmin && (
-            <div className="fixed flex-none portrait:w-full landscape:w-[120px] landscape:lg:w-[160px] landscape:xl:desktop:w-[200px] landscape:h-screen portrait:h-[84px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center shadow-[-2px_0px_16px_0px_rgb(0,0,0,0.20)] bg-white dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1]">
+            <div className="fixed flex-none landscape:w-[120px] landscape:lg:w-[160px] desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center bg-white dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1]">
               <div className="w-full h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] portrait:pb-[10px] portrait:px-[4px] flex landscape:flex-col items-center justify-around">
                 {[
                   { id: "payments", title: t("payments"), imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },

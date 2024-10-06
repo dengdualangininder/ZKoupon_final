@@ -15,6 +15,7 @@ import { SpinningCircleWhiteLarge } from "@/utils/components/SpinningCircleWhite
 // images
 import { FaCaretDown } from "react-icons/fa6";
 import { SlGlobe } from "react-icons/sl";
+import { PiEyeLight, PiEyeSlashLight, PiGlobeSimpleLight } from "react-icons/pi";
 
 const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: boolean }) => {
   const [merchantEmail, setMerchantEmail] = useState("");
@@ -88,25 +89,25 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
   };
 
   return (
-    <div className="w-full h-screen font-medium textBaseApp flex flex-col items-center overflow-y-auto bg-light2 text-black">
+    <div className="w-full h-screen font-medium textBaseApp flex flex-col items-center overflow-y-auto bg-light2 text-lightText1">
       {/*---showLang mask---*/}
       {showLangs && <div className="absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setShowLangs(false)}></div>}
-      {/*--- container ---*/}
-      <div className="w-[340px] desktop:!w-[300px] h-full max-h-[800px] portrait:sm:max-h-[900px] landscape:lg:max-h-[900px] flex flex-col items-center my-auto">
+      {/*--- container (for some reason, pb does not work, so added to last element) ---*/}
+      <div className="pt-[12px] w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] desktop:!w-[320px] h-full max-h-[900px] flex flex-col items-center my-auto">
         {/*--- lang + logo + menu bar ---*/}
-        <div className="flex-none w-full h-[40%] min-h-[280px] landscape:lg:min-h-[300px] flex flex-col justify-between">
+        <div className="flex-none w-full h-[30%] min-h-[250px] flex flex-col justify-between">
           {/*--- lang ---*/}
-          <div className="flex-none h-[60px] w-full flex justify-end items-end">
+          <div className="flex-none w-full flex justify-end">
             <div
               className={`${
                 showLangs ? "bg-slate-300 rounded-br-none rounded-bl-none" : ""
-              } p-[12px] flex items-center desktop:hover:bg-slate-300 rounded-md relative cursor-pointer `}
+              } p-[8px] flex items-center desktop:hover:bg-slate-300 rounded-md relative cursor-pointer `}
               onClick={() => setShowLangs(!showLangs)}
             >
-              <SlGlobe size={40} className="mr-[4px] w-[24px] h-[24px] landscape:xl:desktop:w-[22px] landscape:xl:desktop:h-[22px]" />
-              <FaCaretDown size={40} className="w-[20px] h-[20px] landscape:xl:desktop:w-[18px] landscape:xl:desktop:h-[18px]" />
+              <PiGlobeSimpleLight className="mr-[2px] text-[32px] desktop:text-[24px]" />
+              <FaCaretDown className="text-[20px] desktop:text-[12px]" />
               {showLangs && (
-                <div className="absolute top-[calc(100%)] right-0 rounded-md rounded-tr-none p-[32px] space-y-[32px] text-xl landscape:xl:desktop:text-base font-medium bg-slate-300 z-[100]">
+                <div className="absolute top-[calc(100%)] right-0 rounded-md rounded-tr-none p-[24px] space-y-[32px] bg-slate-300 z-[100]">
                   {langObjectArray.map((langObject) => (
                     <div
                       key={langObject.id}
@@ -123,28 +124,28 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
             </div>
           </div>
           {/*--- logo ---*/}
-          <div className="w-full flex flex-col items-center justify-center">
+          <div className="pb-[12px] w-full flex flex-col items-center justify-center">
             <div className="relative w-full h-[88px] mr-1">
               <Image src="/logo.svg" alt="Flash logo" fill />
             </div>
-            <div className="my-4 textBase text-center">{t("subheader")}</div>
+            <div className="hidden my-4 textBase text-center">{t("subheader")}</div>
           </div>
 
           {/*--- menu bar ---*/}
-          <div className="w-full h-[48px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] flex items-center justify-center flex-none relative">
-            <div className="absolute w-full h-full rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
+          <div className="w-full h-[48px] portrait:sm:h-[56px] landscape:lg:h-[56px] landscape:xl:desktop:h-[48px] flex relative">
+            <div className="w-full h-full rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
             <div
               className={`${
-                userType == "owners" ? "bg-black w-[54%] drop-shadow-md text-white" : "bg-transparent text-gray-500 w-[46%]"
-              } h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
+                userType == "owners" ? "bg-black drop-shadow-md text-white" : "bg-transparent text-gray-500"
+              } absolute left-0 w-[52%] h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
               onClick={() => setUserType("owners")}
             >
               {t("owners")}
             </div>
             <div
               className={`${
-                userType == "employees" ? "bg-black w-[54%] drop-shadow-md text-white" : "bg-transparent text-gray-500 w-[46%]"
-              }  h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
+                userType == "employees" ? "bg-black drop-shadow-md text-white" : "bg-transparent text-gray-500"
+              } absolute right-0 w-[52%] h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
               onClick={() => setUserType("employees")}
             >
               {t("employees")}
@@ -153,7 +154,7 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
         </div>
 
         {/*--- content below MENU ---*/}
-        <div className="pt-[24px] pb-[32px] w-full landscape:xl:desktop:text-base">
+        <div className="pt-[24px] pb-[48px] w-full">
           {/*--- FOR OWNERS ---*/}
           {userType == "owners" && (
             <div className="pt-[16px] w-full flex flex-col space-y-[32px] portrait:sm:space-y-[32px] landscape:lg:space-y-[28px]">
@@ -188,41 +189,36 @@ const Login = ({ setPage, isUsabilityTest }: { setPage: any; isUsabilityTest: bo
 
           {/*--FOR EMPLOYEES---*/}
           {userType == "employees" && (
-            <div className="w-full flex flex-col items-center">
-              <div className="w-full">
-                {/*--email---*/}
-                <div className="">{t("email")}</div>
-                <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
-                {/*--password---*/}
-                <div className="mt-[16px] portrait:sm:mt-[24px] landscape:lg:mt-[20px] landscape:xl:desktop:mt-[12px]">{t("password")}</div>
-                <div className="w-full relative">
-                  <input
-                    type={show ? "text" : "password"}
-                    autoComplete="none"
-                    autoCapitalize="none"
-                    className="loginInputFont"
-                    onBlur={(e) => setEmployeePass(e.target.value)}
-                  ></input>
-                  <div className="absolute h-full right-4 top-0 flex justify-center items-center z-[2]">
-                    <div
-                      className="relative w-[28px] h-[28px] portrait:sm:w-[36px] portrait:sm:h-[36px] landscape:md:w-[36px] landscape:md:h-[36px] landscape:xl:desktop:w-[24px] landscape:xl:desktop:h-[24px] cursor-pointer"
-                      onClick={() => {
-                        show ? setShow(false) : setShow(true);
-                      }}
-                    >
-                      <Image src={show ? "/eyesOpen.svg" : "/eyesClosed.svg"} alt="eye icon" fill />
-                    </div>
-                  </div>
-                </div>
-                {/*--sign in button---*/}
-                <button
-                  type="submit"
-                  className="buttonPrimaryLight mt-[32px] portrait:sm:mt-[36px] landscape:lg:mt-[36px] landscape:xl:desktop:mt-[32px] w-full flex justify-center items-center"
-                  onClick={employeeLogin}
+            <div className="flex flex-col">
+              {/*--email---*/}
+              <div className="">{t("email")}</div>
+              <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
+              {/*--password---*/}
+              <div className="mt-[16px] portrait:sm:mt-[24px] landscape:lg:mt-[20px] desktop:!mt-[12px]">{t("password")}</div>
+              <div className="w-full relative">
+                <input
+                  type={show ? "text" : "password"}
+                  autoComplete="none"
+                  autoCapitalize="none"
+                  className="loginInputFont peer"
+                  onBlur={(e) => setEmployeePass(e.target.value)}
+                ></input>
+                <div
+                  className="absolute h-full right-4 top-0 flex justify-center items-center z-[2] desktop:cursor-pointer text-slate-400 peer-focus:text-lightText1 [transition:color_500ms]"
+                  onClick={() => setShow(!show)}
                 >
-                  {isLoggingIn ? <SpinningCircleWhiteLarge /> : t("signIn")}
-                </button>
+                  {show ? <PiEyeLight className="text-[24px]" /> : <PiEyeSlashLight className="text-[24px]" />}
+                </div>
               </div>
+              {/*--sign in button---*/}
+              <button
+                type="submit"
+                className="buttonPrimaryLight mt-[32px] portrait:sm:mt-[36px] landscape:lg:mt-[36px] landscape:xl:desktop:mt-[32px] w-full flex justify-center items-center"
+                onClick={employeeLogin}
+              >
+                {isLoggingIn ? <SpinningCircleWhiteLarge /> : t("signIn")}
+              </button>
+              {/*--forgot password?---*/}
               <div
                 className="pt-[48px] textBase text-center link"
                 onClick={() => {
