@@ -23,6 +23,12 @@ import { useTranslations } from "next-intl";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { HiQrCode, HiArrowDownTray, HiOutlineMagnifyingGlass, HiMiniArrowRightStartOnRectangle } from "react-icons/hi2";
+import { HiOutlineDownload, HiOutlineSearch } from "react-icons/hi";
+import { PiMagnifyingGlassBold } from "react-icons/pi";
+import { FiDownload, FiSearch } from "react-icons/fi";
+import { TbDownload } from "react-icons/tb";
+
 // types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
 
@@ -345,18 +351,13 @@ const Payments = ({
 
   return (
     <section className="appPageContainer">
-      {/*--- TOP BAR h-140px/180px/160px ---*/}
-      <div
-        className={`flex-none w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] desktop:!h-[160px] flex flex-col items-center`}
-        style={{ paddingRight: `${scrollWidth}px` }}
-      >
-        {/*--- buttons ---*/}
-        <div className="px-[24px] paymentsWidth w-full h-[65%] grid grid-cols-[25%_25%_50%] items-center">
+      {/*--- top bar container (h-140px/180px/160px) ---*/}
+      <div className={`w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] desktop:!h-[160px] flex flex-col items-center`} style={{ marginRight: `${scrollWidth}px` }}>
+        {/*--- BUTTONS ---*/}
+        <div className="paymentsWidth px-[8px] h-[65%] grid grid-cols-[25%_25%_50%] items-center">
           {/*--- search ---*/}
           <div className="paymentsIconContainer" onClick={() => setSearchModal(true)}>
-            <div className="paymentsIcon">
-              <Image src={theme == "dark" ? "/searchWhite.svg" : "/searchBlack.svg"} alt="search icon" fill />
-            </div>
+            <FiSearch className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
           </div>
           {/*--- download ---*/}
           {isAdmin && (
@@ -372,30 +373,25 @@ const Payments = ({
                 }
               }}
             >
-              <div className="paymentsIcon">
-                <Image src={theme == "dark" ? "/exportWhite.svg" : "/exportBlack.svg"} alt="export icon" fill />
-              </div>
+              <FiDownload className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
             </div>
           )}
           {/*--- sign out ---*/}
           {!isAdmin && (
             <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
-              <div className="paymentsIcon">
-                <Image src={theme == "dark" ? "/signOutWhite.svg" : "/signOutBlack.svg"} alt="sign out icon" fill />
-              </div>
+              <HiMiniArrowRightStartOnRectangle className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
             </div>
           )}
           {/*--- qrCode button ---*/}
-          <div className="paymentsIconContainer justify-self-end bg-red-300" onClick={() => setQrCodeModal(true)}>
-            <div className="paymentsIcon">
-              <Image src={theme == "dark" ? "/qrWhite.svg" : "/qrBlack.svg"} alt="qr code icon" fill />
-            </div>
+          <div className="paymentsIconContainer justify-self-end" onClick={() => setQrCodeModal(true)}>
+            <HiQrCode className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
           </div>
         </div>
-        {/*--- Table Headers ---*/}
-        <div className="grow paymentsWidth paymentsHeaderFont grid grid-cols-[1fr_1fr] items-end pb-[8px] border-b border-slate-700 dark:text-slate-500">
-          <div className="portrait:pl-[8px] portrait:sm:pl-0 text-start">{t("time")}</div>
-          <div className="text-end">Amount ({paymentSettingsState.merchantCurrency})</div>
+        {/*--- HEADERS ---*/}
+        <div className="paymentsWidth pl-[8px] sm:pl-0 sm:!px-[12px] grow paymentsHeaderFont grid grid-cols-[38%_38%_24%] items-center !text-slate-500">
+          <div className="">{t("time")}</div>
+          <div>{paymentSettingsState.merchantCurrency}</div>
+          <div className="justify-self-end">{t("customer")}</div>
         </div>
       </div>
 
@@ -406,47 +402,44 @@ const Payments = ({
           id="table"
           className={`${
             isAdmin ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
-          } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
+          } pl-[8px] sm:pl-0 w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         >
           {/*--- list ---*/}
           {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
             <div
               className={`${txn.refund ? "opacity-50" : ""} ${
                 isAdmin
-                  ? "portrait:auto-rows-[calc((100vh-80px-140px)/5)] portrait:sm:auto-rows-[calc((100vh-140px-180px)/5)]"
-                  : "portrait:auto-rows-[calc((100vh-0px-140px)/5)] portrait:sm:auto-rows-[calc((100vh-0px-180px)/5)]"
-              } relative paymentsWidth landscape:auto-rows-[80px] landscape:lg:auto-rows-[calc((100vh-180px)/5)] desktop:!auto-rows-[calc((100vh-160px)/5)] grid grid-cols-[1fr_1fr] items-center border-b border-light5 dark:border-slate-700 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
+                  ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
+                  : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
+              } relative paymentsWidth flex-none sm:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
               id={txn.txnHash}
               key={index}
               onClick={onClickTxn}
             >
-              {/*---Time---*/}
-              <div className="portrait:pl-[8px] portrait:sm:pl-0 relative pb-[16px]">
-                {/*--- time/date ---*/}
-                <span className="text-[36px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px]">{getLocalTime(txn.date)?.time}</span>
-                <span className="text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[4px] font-medium">{getLocalTime(txn.date)?.ampm}</span>
-                <div className="text-[18px] leading-none portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[14px] font-medium text-slate-500">
-                  {getLocalDateWords(txn.date)?.toUpperCase()}
+              <div className="w-full grid grid-cols-[38%_38%_24%] items-end text-[24px] portrait:sm:text-[36px] landscape:lg:text-[36px] desktop:!text-[24px]">
+                {/*--- "to refund" ---*/}
+                {txn.toRefund && (
+                  <div
+                    // @ts-ignore
+                    style={{ writingMode: "vertical-rl" }}
+                    className="absolute left-[calc(-5%-12px)] portrait:sm:left-[-36px] landscape:lg:left-[-36px] desktop:!left-[-24px] pr-[2px] bottom-0 h-full text-center text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton"
+                  >
+                    To Refund
+                  </div>
+                )}
+                {/*---Time---*/}
+                <div>
+                  <div className="text-[14px] leading-none portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[14px] font-medium text-slate-500">
+                    {getLocalDateWords(txn.date)?.toUpperCase()}
+                  </div>
+                  <span>{getLocalTime(txn.date)?.time}</span>
+                  <span className="text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[6px] font-medium">{getLocalTime(txn.date)?.ampm}</span>
                 </div>
+                {/*--- Amount ---*/}
+                <div>{txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}</div>
+                {/*--- Customer ---*/}
+                <div className="justify-self-end">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</div>
               </div>
-              {/*---currencyAmount---*/}
-              <div className="text-[36px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px] justify-self-end pb-[16px]">
-                {txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}
-                <div className="text-end text-[18px] leading-none portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[14px] font-medium text-slate-500">
-                  ..{txn.customerAddress.substring(txn.customerAddress.length - 4)}
-                </div>
-              </div>
-
-              {/*--- "to refund" ---*/}
-              {txn.toRefund && (
-                <div
-                  // @ts-ignore
-                  style={{ writingMode: "vertical-rl" }}
-                  className="absolute left-[-22px] portrait:sm:left-[-36px] landscape:lg:left-[-36px] landscape:xl:desktop:left-[-24px] portrait:pr-[4px] portrait:sm:pr-0 bottom-0 text-center text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px] font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton h-full"
-                >
-                  To Refund
-                </div>
-              )}
             </div>
           ))}
           {/*--- clear search modal ---*/}

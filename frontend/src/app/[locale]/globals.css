@@ -125,6 +125,10 @@
     @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm;
   }
 
+  .textLgApp {
+    @apply text-xl portrait:sm:text-[1.375rem] landscape:lg:text-[1.375rem] desktop:!text-lg;
+  }
+
   .textBaseApp {
     @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
   }
@@ -252,7 +256,7 @@
   }
 
   .appPageContainer {
-    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[140px] desktop:!ml-[200px] flex flex-col items-center;
+    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center;
   }
 
   .whiteCard {
@@ -320,11 +324,11 @@
   }
 
   .paymentsWidth {
-    @apply w-[91%] portrait:sm:w-[540px] landscape:lg:w-[600px] desktop:!w-[440px];
+    @apply w-[90%] portrait:sm:w-[540px] landscape:lg:w-[600px] desktop:!w-[440px];
   }
 
   .bannerWidth {
-    @apply w-[92%] portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[620px] landscape:xl:w-[620px] landscape:xl:desktop:w-[500px] landscape:xl:desktop:translate-x-[16px];
+    @apply w-[90%] portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[620px] landscape:xl:w-[620px] landscape:xl:desktop:w-[500px] landscape:xl:desktop:translate-x-[16px];
   }
 
   .paymentsIconContainer {
@@ -332,7 +336,7 @@
   }
 
   .paymentsIcon {
-    @apply relative w-[22px] portrait:sm:w-[28px] landscape:lg:w-[28px] landscape:xl:desktop:w-[22px] h-full;
+    @apply relative text-[26px] portrait:sm:text-[28px] landscape:lg:text-[28px] desktop:!text-[22px];
   }
 
   .paymentsHeaderFont {
@@ -462,7 +466,7 @@
   }
 
   .modalFullBase {
-    @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
+    @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
   }
 
   .sidebarModalBase {
@@ -474,7 +478,7 @@
   }
 
   .modalFullColor {
-    @apply bg-white dark:bg-dark4 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
+    @apply bg-light2 dark:bg-dark1 portrait:sm:dark:bg-dark3 landscape:lg:dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
   }
 
   .sidebarModalColor {

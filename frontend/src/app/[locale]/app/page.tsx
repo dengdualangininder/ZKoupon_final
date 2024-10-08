@@ -394,7 +394,7 @@ const User = () => {
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
           {/*---MENU: LEFT (w120/lg:160/desktop:200px) or BOTTOM (h-80/sm:140px) ---*/}
           {isAdmin && (
-            <div className="fixed flex-none landscape:w-[120px] landscape:lg:w-[160px] desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] flex landscape:flex-col justify-center items-center bg-white dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 from-portrait:border-t landscape:border-r dark:landscape:border-none z-[1]">
+            <div className="fixed flex-none landscape:w-[120px] landscape:lg:w-[160px] landscape:desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] flex justify-center items-center bg-white dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 landscape:border-r dark:landscape:border-none z-[1]">
               <div className="w-full h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] portrait:pb-[10px] portrait:px-[4px] flex landscape:flex-col items-center justify-around">
                 {[
                   { id: "payments", title: t("payments"), imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },

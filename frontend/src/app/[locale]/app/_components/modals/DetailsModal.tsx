@@ -29,7 +29,7 @@ const DetailsModal = ({
   const t = useTranslations("App.Payments.detailsModal");
 
   return (
-    <div className="">
+    <>
       <div className="detailsModal">
         {/*--- tablet/desktop close ---*/}
         <div className="xButtonContainer" onClick={() => setDetailsModal(false)}>
@@ -74,25 +74,28 @@ const DetailsModal = ({
           </div>
 
           {/*--- REFUND STATUS ---*/}
-          <div className="modalHeaderFont py-[16px] landscape:xl:desktop:py-[8px]">Refund Status</div>
+          <div className="modalHeaderFont py-[24px] landscape:xl:desktop:py-[8px]">Refund Status</div>
           {clickedTxn?.refund ? (
             <div className="text-center detailsValueText">{t("paymentRefunded")}</div>
           ) : (
             <div className="space-y-[60px] landscape:xl:desktop:space-y-[40px]">
               <div className="w-full flex items-center justify-between">
-                <div className="detailsLabelText">{t("toRefund")}</div>
+                <div className="textBaseApp font-medium text-lightText1 dark:text-darkText1">{t("toRefund")}</div>
                 {/*--- toggle ---*/}
                 <div className="mt-1 desktop:mt-2 w-[56px] h-[30px] desktop:w-[48px] desktop:h-[25px] flex items-center relative cursor-pointer">
                   <input type="checkbox" checked={clickedTxn?.toRefund} className="sr-only peer" />
-                  <div className="w-full h-full bg-gray-200 dark:bg-dualGray peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full" onClick={onClickToRefund}></div>
-                  <div className="w-[26px] h-[26px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] desktop:left-[3px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
+                  <div
+                    className="w-full h-full bg-gray-200 dark:bg-slate-600 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"
+                    onClick={onClickToRefund}
+                  ></div>
+                  <div className="w-[25px] h-[25px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[3px] desktop:left-[3px] border-gray-300 border rounded-full bg-white dark:bg-light2 transition-all pointer-events-none"></div>
                 </div>
               </div>
 
               {/*--- refund button ---*/}
               {isAdmin && (
                 <div className="w-full flex items-center justify-between">
-                  <div className="detailsLabelText">{t("refundNow")}</div>
+                  <div className="textBaseApp font-medium text-lightText1 dark:text-darkText1">{t("refundNow")}</div>
                   <button
                     className="buttonPrimaryColor flex-none w-[120px] landscape:xl:desktop:w-[100px] h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] landscape:xl:desktop:h-[40px] textLg landscape:xl:desktop:text-base font-semibold border-2 rounded-full"
                     onClick={() => setDetailsModal(false)}
@@ -106,7 +109,7 @@ const DetailsModal = ({
         </div>
       </div>
       <div className="modalBlackout" onClick={() => setDetailsModal(false)}></div>
-    </div>
+    </>
   );
 };
 
