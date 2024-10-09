@@ -129,12 +129,16 @@
     @apply text-xl portrait:sm:text-[1.375rem] landscape:lg:text-[1.375rem] desktop:!text-lg;
   }
 
-  .textBaseApp {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
+  .textXsApp {
+    @apply text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-xs;
   }
 
   .textSmApp {
     @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
+  }
+
+  .textBaseApp {
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
   }
 
   .textBasePx {
@@ -150,7 +154,7 @@
   }
 
   .textXl {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg;
+    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg;
   }
 
   .textXl-relaxed {
@@ -195,6 +199,18 @@
 
   .text3xl2 {
     @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
+  }
+
+  .filterGray {
+    filter: invert(40%) sepia(40%) saturate(235%) hue-rotate(175deg) brightness(102%) contrast(94%);
+  }
+
+  .filterWhite {
+    filter: invert(87%) sepia(22%) saturate(113%) hue-rotate(185deg) brightness(106%) contrast(88%);
+  }
+
+  .filterBlack {
+    filter: invert(6%) sepia(2%) saturate(4969%) hue-rotate(169deg) brightness(95%) contrast(81%);
   }
 }
 
@@ -292,11 +308,11 @@
   }
 
   .copiedText {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm;
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
   }
 
   .tooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg xl:desktop:px-[12px] xl:desktop:py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg desktop:!px-[12px] desktop:!py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
   }
 
   .heroTooltip {
@@ -304,7 +320,7 @@
   }
 
   .cashoutTooltip {
-    @apply invisible group-hover:visible absolute px-[12px] py-[8px] rounded-lg text-base landscape:xl:desktop:text-sm leading-snug bg-slate-800 text-white border border-slate-500 z-[1];
+    @apply invisible peer-hover:visible absolute px-[12px] py-[8px] rounded-lg textXsApp font-normal desktop:!text-sm leading-snug bg-slate-800 text-white z-[1];
   }
 
   .whyCard {
@@ -332,11 +348,11 @@
   }
 
   .paymentsIconContainer {
-    @apply w-[44px] h-[44px] portrait:sm:w-[56px] portrait:sm:h-[56px] landscape:lg:w-[56px] landscape:lg:h-[56px] landscape:xl:desktop:w-[48px] landscape:xl:desktop:h-[48px] bg-light1 dark:bg-darkButton shadow-[0px_1px_10px_0px_rgb(0,0,0,0.08)] rounded-full flex items-center justify-center desktop:hover:brightness-[1.2] active:brightness-[1.2] cursor-pointer;
+    @apply w-[44px] h-[44px] portrait:sm:w-[56px] portrait:sm:h-[56px] landscape:lg:w-[56px] landscape:lg:h-[56px] desktop:!w-[44px] desktop:!h-[44px] bg-blue-500 dark:bg-darkButton shadow-[inset_4px_4px_10px_0px_rgba(255,255,255,0.25),inset_-4px_-4px_8px_0px_rgba(0,0,0,0.05)] border border-blue-300 dark:border-none dark:shadow-none rounded-full flex items-center justify-center desktop:hover:brightness-[1.2] active:brightness-[1.2] cursor-pointer;
   }
 
   .paymentsIcon {
-    @apply relative text-[26px] portrait:sm:text-[28px] landscape:lg:text-[28px] desktop:!text-[22px];
+    @apply relative text-[26px] portrait:sm:text-[28px] landscape:lg:text-[28px] desktop:!text-[24px] text-white;
   }
 
   .paymentsHeaderFont {
@@ -474,15 +490,15 @@
   }
 
   .modalColor {
-    @apply bg-light2 dark:bg-dark4 border-2 border-light5 dark:border-dark4;
+    @apply bg-light1 dark:bg-dark4 border-2 border-light5 dark:border-dark4;
   }
 
   .modalFullColor {
-    @apply bg-light2 dark:bg-dark1 portrait:sm:dark:bg-dark3 landscape:lg:dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
+    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark3 landscape:lg:dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
   }
 
   .sidebarModalColor {
-    @apply bg-gradient-to-br from-white to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600;
+    @apply bg-gradient-to-br from-light1 to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600;
   }
 
   /* specific modal sizes (smallest to largest) and fonts */
@@ -821,40 +837,40 @@
     @apply buttonSecondaryColor w-[100px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[90px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-md;
   }
 
-  .cashoutContainer {
-    @apply w-full min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] landscape:xl:desktop:min-h-[220px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] landscape:xl:desktop:py-[24px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+  .cashoutCard {
+    @apply w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] desktop:!w-[400px] min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {
-    @apply textXl font-semibold;
+    @apply text-2xl portrait:sm:text-[1.75rem] landscape:lg:text-[1.75rem] desktop:!text-xl font-semibold;
+  }
+
+  .cashoutBalance {
+    @apply text-[28px] portrait:sm:text-[32px] landscape:lg:text-[32px] desktop:!text-[24px] font-normal flex items-center;
   }
 
   .cashoutBalanceContainer {
     @apply flex-1 flex flex-col mt-[8px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] landscape:xl:mt-[16px];
   }
 
-  .cashoutBalance {
-    @apply text-[30px] portrait:sm:text-[36px] landscape:lg:text-[36px] landscape:xl:desktop:text-[24px] font-normal flex items-center;
-  }
-
   .cashoutMoreOptionsContainer {
-    @apply top-[calc(100%+8px)] right-0 px-[20px] py-[12px] desktop:py-[8px] textLg rounded-[8px] border bg-slate-100 dark:bg-dark5 border-slate-300 dark:border-slate-600 desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark6 active:bg-slate-200 whitespace-nowrap;
+    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-md bg-slate-200 text-black dark:text-darkText1 dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap [transition:opacity_300ms];
   }
 
   .cashoutArrowContainer {
-    @apply ml-4 w-[36px] h-[20px] flex items-center justify-center bg-light2 dark:bg-transparent rounded-xl cursor-pointer active:brightness-[1.2];
+    @apply ml-4 w-[36px] h-[24px] flex items-center justify-center bg-light2 dark:bg-transparent rounded-xl cursor-pointer;
   }
 
   .cashoutArrow {
-    @apply pt-0.5 text-lg text-blue-300 dark:text-darkButton;
+    @apply text-lg text-blue-500 dark:text-darkButton;
   }
 
   .cashoutDetailsContainer {
-    @apply textLg leading-relaxed font-medium w-[220px] portrait:sm:w-[220px] landscape:lg:w-[220px] portrait:lg:w-[260px] landscape:xl:w-[260px] landscape:xl:desktop:w-[220px] overflow-hidden transition-all duration-500 relative;
+    @apply textLg font-medium overflow-hidden transition-all duration-500 relative;
   }
 
   .cashoutDetailsContainer2 {
-    @apply mt-3 mb-4 px-4 py-2 bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg;
+    @apply mt-3 mb-4 px-4 py-2 bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[200px,200px];
   }
 
   .cashoutStats2 {
@@ -866,19 +882,19 @@
   }
 
   .cashoutButton {
-    @apply buttonPrimaryColor textSm font-medium w-[180px] portrait:sm:w-[224px] landscape:lg:w-[224px] landscape:xl:desktop:w-[200px] h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] landscape:xl:desktop:h-[40px] translate-x-[4px] rounded-full;
+    @apply buttonPrimaryColor textSmApp font-medium w-[220px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[200px] h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px] translate-x-[4px] rounded-full;
   }
 
   .transferCard {
-    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[24px] flex flex-col items-center bg-light3 dark:bg-dark4 rounded-[24px] relative border-none border-slate-400 dark:border-slate-600;
+    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[24px] flex flex-col items-center bg-light3 dark:bg-dark4 rounded-[24px] relative border-none border-slate-400 dark:border-slate-600;
   }
 
   .transferFromCard {
-    @apply pt-[24px] pb-[48px] landscape:xl:desktop:pb-[36px] transferCard;
+    @apply pt-[24px] pb-[48px] desktop:!pb-[36px] transferCard;
   }
 
   .transferToCard {
-    @apply pt-[40px] landscape:xl:desktop:pt-[36px] pb-[24px] transferCard;
+    @apply pt-[40px] desktop:!pt-[36px] pb-[24px] transferCard;
   }
 
   .transferIcon {

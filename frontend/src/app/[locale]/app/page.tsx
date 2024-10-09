@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import { getCookie, deleteCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 // wagmi
 import { useAccount, useWalletClient, useDisconnect, useAccountEffect } from "wagmi";
 import { ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
@@ -31,13 +31,13 @@ import ErrorModal from "./_components/modals/ErrorModal";
 import CashbackModal from "./_components/modals/CashbackModal";
 import TradeMAXModal from "./_components/modals/exchanges/TradeMAXModal";
 // constants
-import { abb2full, countryData, currency2decimal, merchantType2data } from "@/utils/constants";
+import { abb2full, countryData, currency2decimal } from "@/utils/constants";
 // import PullToRefresh from "pulltorefreshjs";
 
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
 
-const User = () => {
+export default function App() {
   console.log("/app, page.tsx rendered once");
   const searchParams = useSearchParams();
 
@@ -100,19 +100,22 @@ const User = () => {
     },
   });
 
-  web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
-    console.log("connected to web3Auth", data);
-    isConnectedRef.current = true;
-  });
-  web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
-    console.log("connecting to web3Auth");
-  });
-  web3Auth?.on(ADAPTER_EVENTS.DISCONNECTED, () => {
-    console.log("disconnected from web3Auth");
-  });
-  web3Auth?.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
-    console.log("error when connecting to web3Auth", error);
-  });
+  useEffect(() => {
+    console.log("activate web3Auth event listeners");
+    web3Auth?.on(ADAPTER_EVENTS.CONNECTED, (data: CONNECTED_EVENT_DATA) => {
+      console.log("connected to web3Auth", data);
+      isConnectedRef.current = true;
+    });
+    web3Auth?.on(ADAPTER_EVENTS.CONNECTING, () => {
+      console.log("connecting to web3Auth");
+    });
+    web3Auth?.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+      console.log("disconnected from web3Auth");
+    });
+    web3Auth?.on(ADAPTER_EVENTS.ERRORED, (error: any) => {
+      console.log("error when connecting to web3Auth", error);
+    });
+  }, []);
 
   useEffect(() => {
     console.log("/app useEffect run once");
@@ -343,7 +346,7 @@ const User = () => {
   return (
     <div className="pl-[calc(100vw-100%)] bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1 overscroll-none">
       {page === "loading" && (
-        <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-white">
+        <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light1">
           <div className="w-[92%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
             {/* LOADING */}
             <div className="w-full h-full absolute flex flex-col items-center justify-center">
@@ -394,17 +397,17 @@ const User = () => {
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
           {/*---MENU: LEFT (w120/lg:160/desktop:200px) or BOTTOM (h-80/sm:140px) ---*/}
           {isAdmin && (
-            <div className="fixed flex-none landscape:w-[120px] landscape:lg:w-[160px] landscape:desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] flex justify-center items-center bg-white dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:to-dark4 landscape:border-r dark:landscape:border-none z-[1]">
+            <div className="fixed flex-none landscape:w-[120px] landscape:lg:w-[160px] landscape:desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] flex justify-center items-center bg-light1 dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:via-dark2 dark:to-dark3 from-0% via-80% to-100% portrait:border-t landscape:border-r dark:!border-none border-light5 z-[1]">
               <div className="w-full h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] portrait:pb-[10px] portrait:px-[4px] flex landscape:flex-col items-center justify-around">
                 {[
-                  { id: "payments", title: t("payments"), imgWhite: "/paymentsWhite.svg", imgBlack: "/paymentsBlack.svg" },
-                  { id: "cashOut", title: t("cashout"), imgWhite: "/cashOutWhite.svg", imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
-                  { id: "settings", title: t("settings"), imgWhite: "/settingsWhite.svg", imgBlack: "/settingsBlack.svg" },
+                  { id: "payments", title: t("payments"), imgBlack: "/paymentsBlack.svg" },
+                  { id: "cashOut", title: t("cashout"), imgBlack: "/cashOutBlack.svg", modal: "cashoutIntroModal" },
+                  { id: "settings", title: t("settings"), imgBlack: "/settingsBlack.svg" },
                 ].map((i) => (
                   <div
                     className={`cursor-pointer flex flex-col items-center justify-center ${
-                      menu == i.id ? "opacity-100" : "opacity-50"
-                    } desktop:hover:opacity-100 active:opacity-100`}
+                      menu == i.id ? "filterBlack dark:filterWhite" : "filterGray"
+                    } desktop:hover:filterBlack dark:desktop:hover:filterWhite`}
                     id={i.id}
                     key={i.id}
                     onClick={async (e) => {
@@ -427,18 +430,16 @@ const User = () => {
                           }),
                         });
                         const data = await res.json();
-                        if (data === "saved") {
-                          // good
-                        } else {
+                        if (data != "saved") {
                           console.log("error: cashoutIntro not set to false");
                         }
                       }
                     }}
                   >
                     <div className="relative w-[20px] h-[20px] portrait:sm:w-[28px] portrait:sm:h-[28px] landscape:lg:w-[28px] landscape:lg:h-[28px]">
-                      <Image src={theme == "dark" ? i.imgWhite : i.imgBlack} alt={i.id} fill />
+                      <Image src={i.imgBlack} alt={i.id} fill className="" />
                     </div>
-                    <div className="menuText">{i.title}</div>
+                    <div className="menuText text-black">{i.title}</div>
                   </div>
                 ))}
               </div>
@@ -527,6 +528,4 @@ const User = () => {
       )}
     </div>
   );
-};
-
-export default User;
+}

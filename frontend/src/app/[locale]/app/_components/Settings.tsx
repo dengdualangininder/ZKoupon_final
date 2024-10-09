@@ -11,6 +11,7 @@ import { useDisconnect } from "wagmi";
 // components
 import FaqModal from "./modals/FaqModal";
 import ErrorModal from "./modals/ErrorModal";
+import Toggle from "@/utils/components/Toggle";
 // constants
 import { countryData, countryCurrencyList, merchantType2data, langObjectArray } from "@/utils/constants";
 // images
@@ -203,7 +204,7 @@ const Settings = ({
   // console.log("last render, paymentSettingsState:", paymentSettingsState);
   // console.log("last render, cashoutSettings:", cashoutSettingsState);
   return (
-    <section className="w-full h-full flex flex-col items-center overflow-y-auto">
+    <section className="appPageContainer overflow-y-auto">
       <div className="settingsFont settingsWidth">
         <div className="settingsTitle">{t("settings")}</div>
         {/*---form ---*/}
@@ -617,12 +618,7 @@ const Settings = ({
                 {t("cashback")}
                 <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cashback")} />
               </label>
-              {/*--- toggle ---*/}
-              <div className="w-[56px] h-[30px] desktop:w-[48px] desktop:h-[25px] flex items-center relative cursor-pointer" onClick={() => setInfoModal("cashback")}>
-                <input type="checkbox" checked={true} readOnly className="sr-only peer" />
-                <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
-                <div className="w-[26px] h-[26px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] desktop:left-[3px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
-              </div>
+              <Toggle checked={true} onClick={() => setInfoModal("cashback")} />
             </div>
           )}
 
@@ -631,9 +627,8 @@ const Settings = ({
           {/*---DARK MODE ---*/}
           <div className="settingsField">
             <label className="settingsLabelFont">{t("dark")}</label>
-            {/*--- toggle ---*/}
-            <div
-              className="w-[56px] h-[30px] desktop:w-[48px] desktop:h-[25px] flex items-center relative cursor-pointer"
+            <Toggle
+              checked={theme == "dark" ? true : false}
               onClick={() => {
                 if (theme == "dark") {
                   setTheme("light");
@@ -643,11 +638,7 @@ const Settings = ({
                   window.localStorage.setItem("theme", "dark");
                 }
               }}
-            >
-              <input type="checkbox" checked={theme == "dark" ? true : false} readOnly className="sr-only peer" />
-              <div className="w-full h-full bg-gray-200 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"></div>
-              <div className="w-[26px] h-[26px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[2px] desktop:left-[3px] border-gray-300 border rounded-full bg-white transition-all pointer-events-none"></div>
-            </div>
+            />
           </div>
           {/*---LANGUAGE ---*/}
           <div className="settingsField border-b">

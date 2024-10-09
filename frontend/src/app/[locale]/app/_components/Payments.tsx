@@ -357,7 +357,7 @@ const Payments = ({
         <div className="paymentsWidth px-[8px] h-[65%] grid grid-cols-[25%_25%_50%] items-center">
           {/*--- search ---*/}
           <div className="paymentsIconContainer" onClick={() => setSearchModal(true)}>
-            <FiSearch className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
+            <FiSearch className="paymentsIcon" />
           </div>
           {/*--- download ---*/}
           {isAdmin && (
@@ -373,22 +373,22 @@ const Payments = ({
                 }
               }}
             >
-              <FiDownload className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
+              <FiDownload className="paymentsIcon" />
             </div>
           )}
           {/*--- sign out ---*/}
           {!isAdmin && (
             <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
-              <HiMiniArrowRightStartOnRectangle className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
+              <HiMiniArrowRightStartOnRectangle className="paymentsIcon" />
             </div>
           )}
           {/*--- qrCode button ---*/}
           <div className="paymentsIconContainer justify-self-end" onClick={() => setQrCodeModal(true)}>
-            <HiQrCode className={`${theme == "dark" ? "text-darkText1" : "text-lightText1"} paymentsIcon`} />
+            <HiQrCode className="paymentsIcon" />
           </div>
         </div>
         {/*--- HEADERS ---*/}
-        <div className="paymentsWidth pl-[8px] sm:pl-0 sm:!px-[12px] grow paymentsHeaderFont grid grid-cols-[38%_38%_24%] items-center !text-slate-500">
+        <div className="paymentsWidth pl-[8px] portrait:sm:!px-[12px] landscape:lg:!px-[12px] grow paymentsHeaderFont grid grid-cols-[38%_38%_24%] items-center text-slate-500">
           <div className="">{t("time")}</div>
           <div>{paymentSettingsState.merchantCurrency}</div>
           <div className="justify-self-end">{t("customer")}</div>
@@ -402,7 +402,7 @@ const Payments = ({
           id="table"
           className={`${
             isAdmin ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
-          } pl-[8px] sm:pl-0 w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
+          } pl-[8px] portrait:sm:!px-[12px] landscape:lg:!px-[12px] w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         >
           {/*--- list ---*/}
           {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
@@ -411,7 +411,7 @@ const Payments = ({
                 isAdmin
                   ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
                   : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
-              } relative paymentsWidth flex-none sm:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
+              } relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
               id={txn.txnHash}
               key={index}
               onClick={onClickTxn}
@@ -449,7 +449,7 @@ const Payments = ({
                 isAdmin ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
               } fixed landscape:bottom-2 landscape:lg:bottom-6 w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[72px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center items-center`}
             >
-              <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 text-black">
+              <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 dark:bg-slate-400 text-black">
                 <div className="text2xl">{t("clearSearch")}</div>
                 <div className="xButtonBanner" onClick={clearFilter}>
                   &#10005;

@@ -7,6 +7,7 @@ import { getLocalTime, getLocalDate } from "../Payments";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faFileInvoiceDollar, faList, faXmark } from "@fortawesome/free-solid-svg-icons";
+import Toggle from "@/utils/components/Toggle";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 // types
@@ -79,20 +80,12 @@ const DetailsModal = ({
             <div className="text-center detailsValueText">{t("paymentRefunded")}</div>
           ) : (
             <div className="space-y-[60px] landscape:xl:desktop:space-y-[40px]">
+              {/*--- to refund toggle ---*/}
               <div className="w-full flex items-center justify-between">
                 <div className="textBaseApp font-medium text-lightText1 dark:text-darkText1">{t("toRefund")}</div>
-                {/*--- toggle ---*/}
-                <div className="mt-1 desktop:mt-2 w-[56px] h-[30px] desktop:w-[48px] desktop:h-[25px] flex items-center relative cursor-pointer">
-                  <input type="checkbox" checked={clickedTxn?.toRefund} className="sr-only peer" />
-                  <div
-                    className="w-full h-full bg-gray-200 dark:bg-slate-600 peer-checked:bg-blue-600 dark:peer-checked:bg-darkButton rounded-full"
-                    onClick={onClickToRefund}
-                  ></div>
-                  <div className="w-[25px] h-[25px] desktop:w-[21px] desktop:h-[21px] peer-checked:translate-x-full rtl:peer-checked:-translate-x-full content-[''] absolute left-[3px] desktop:left-[3px] border-gray-300 border rounded-full bg-white dark:bg-light2 transition-all pointer-events-none"></div>
-                </div>
+                <Toggle checked={clickedTxn?.toRefund} onClick={onClickToRefund} />
               </div>
-
-              {/*--- refund button ---*/}
+              {/*--- refund now button ---*/}
               {isAdmin && (
                 <div className="w-full flex items-center justify-between">
                   <div className="textBaseApp font-medium text-lightText1 dark:text-darkText1">{t("refundNow")}</div>

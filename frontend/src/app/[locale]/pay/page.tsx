@@ -370,7 +370,7 @@ const Pay = () => {
       {/*---error modal---*/}
       {errorModal && (
         <div>
-          <div className="modal dark:bg-white dark:text-black">
+          <div className="modal bg-white text-black dark:bg-white dark:text-black">
             {/*---content---*/}
             <div className="modalContent">{errorMsg}</div>
             {/*---button---*/}

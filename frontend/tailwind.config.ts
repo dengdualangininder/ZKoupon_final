@@ -21,14 +21,15 @@ module.exports = {
         1500: "1500ms",
       },
       colors: {
-        light1: "#FFFFFF",
-        light2: "#EEF3F7",
-        light3: "#E2E8F0",
-        light4: "#CBD5E1",
-        light5: "#B0BDCD",
+        light1: "#F9F9F9", // off-white
+        light2: "#EEF3F7", // slate-125
+        light3: "#E2E8F0", // slate-200
+        light4: "#CBD5E1", // slate-300
+        light5: "#B0BDCD", // slate-350
         lightButton: "#000000",
         lightButtonHover: "#1E293B",
-        lightText1: "#000000",
+        lightText0: "#F9F9F9", // off-white
+        lightText1: "#212427", // very dark gray-blue text
         lightText2: "#94A3B8",
         dark1: "#000000",
         dark2: "#111114",
@@ -38,7 +39,7 @@ module.exports = {
         dark6: "#35343B",
         darkButton: "#5370A7",
         darkButtonHover: "#6983B2",
-        darkText1: "#EEF3F7",
+        darkText1: "#E2E8F0", // slate-200
         darkText2: "#00C2FF",
         darkText3: "#6A6D73",
         darkText4: "#53565C",

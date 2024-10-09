@@ -23,8 +23,9 @@ import flashAbi from "@/utils/abis/flashAbi";
 import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faArrowDown, faEllipsisVertical, faInfinity, faAngleDown, faAngleUp, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { FaEllipsisVertical } from "react-icons/fa6";
+import { faCircleInfo, faArrowDown, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FaEllipsisVertical, FaAngleUp, FaAngleDown, FaCircleInfo, FaArrowDown, FaCircleCheck, FaAngleLeft } from "react-icons/fa6";
+import { IoInformationCircleOutline } from "react-icons/io5";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
 import { Rates } from "@/utils/types";
@@ -99,23 +100,9 @@ const CashOut = ({
   // get Flash and CEX balance
   useEffect(() => {
     console.log("/app, Cashout, get balances useEffect start");
-    const getBalances = async () => {
-      // get rates
-      if (paymentSettingsState?.merchantCurrency == "USD") {
-        setRates({ usdcToLocal: 1, usdToLocal: 1 });
-      } else {
-        const ratesRes = await fetch("/api/getRates", {
-          method: "POST",
-          body: JSON.stringify({ merchantCurrency: paymentSettingsState?.merchantCurrency }),
-          headers: { "content-type": "application/json" },
-        });
-        const ratesData = await ratesRes.json();
-        console.log("ratesData", ratesData);
-        if (ratesData.status == "success") {
-          setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
-        }
-      }
 
+    (async () => {
+      await getRates();
       // usability test
       if (isUsabilityTest) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -124,7 +111,6 @@ const CashOut = ({
         setIsCexAccessible(true);
         return;
       }
-
       getFlashBalance();
       getCexBalance();
 
@@ -149,9 +135,25 @@ const CashOut = ({
       //   currentRate: ratesData.usdcToLocal,
       //   cashoutRate: 0,
       // });
-    };
-    getBalances();
+    })();
   }, []);
+
+  const getRates = async () => {
+    if (paymentSettingsState?.merchantCurrency == "USD") {
+      setRates({ usdcToLocal: 1, usdToLocal: 1 });
+    } else {
+      const ratesRes = await fetch("/api/getRates", {
+        method: "POST",
+        body: JSON.stringify({ merchantCurrency: paymentSettingsState?.merchantCurrency }),
+        headers: { "content-type": "application/json" },
+      });
+      const ratesData = await ratesRes.json();
+      console.log("ratesData", ratesData);
+      if (ratesData.status == "success") {
+        setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
+      }
+    }
+  };
 
   const getFlashBalance = async () => {
     const flashBalanceBigInt = (await readContract(config, {
@@ -248,7 +250,7 @@ const CashOut = ({
                 {chunks}
               </span>
             ),
-            icon: () => <FontAwesomeIcon icon={faEllipsisVertical} className="" />,
+            icon: () => <FaEllipsisVertical className="" />,
           })
         );
       }
@@ -584,275 +586,287 @@ const CashOut = ({
   console.log("before render", "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible, "\ncexBalance:", cexBalance);
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="appPageContainer bg-light2 dark:bg-dark1">
-      {/*---Flash Account + Coinbase Account + Statistics ---*/}
-      <div className="py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] landscape:xl:desktop:w-[400px] flex flex-col space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px]">
-        {/*---FLASH CARD ---*/}
-        <div className="cashoutContainer">
+    <section className="appPageContainer bg-light2 dark:bg-dark1 py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px] overflow-y-auto">
+      {/*---FLASH CARD ---*/}
+      <div className="cashoutCard">
+        {/*--- title + more options ---*/}
+        <div className="w-full h-[36px] flex justify-between items-center relative">
           {/*--- title ---*/}
-          <div className="w-full flex justify-between items-center">
-            <div className="cashoutHeader h-[36px] flex items-center">Flash {tcommon("account")}</div>
-            <div
-              className={`${flashBalance ? "" : "hidden"} w-[24px] flex items-center justify-center cursor-pointer group relative`}
-              onClick={() => {
-                setFlashMoreOptions(!flashMoreOptions);
-                if (!flashMoreOptions) {
-                  document.addEventListener("click", hideFlashMoreOptions);
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faEllipsisVertical} className={`${flashMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
-              <div
-                className={`${flashMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`}
-                onClick={() => {
-                  setTransferToCexModal(true);
-                  setTransferToAnyAddress(true);
-                }}
-              >
-                {t("transferToAny")}
+          <div className="cashoutHeader">Flash {tcommon("account")}</div>
+          {/*--- ellipsis ---*/}
+          <div
+            className={`${
+              flashBalance ? "" : "hidden"
+            } w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer`}
+            onClick={() => {
+              setFlashMoreOptions(!flashMoreOptions);
+              if (!flashMoreOptions) {
+                document.addEventListener("click", hideFlashMoreOptions);
+              }
+            }}
+          >
+            <FaEllipsisVertical className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg" />
+          </div>
+          {/*--- flashMoreOptionsModal ---*/}
+          <div
+            className={`${flashMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`}
+            onClick={() => {
+              setTransferToCexModal(true);
+              setTransferToAnyAddress(true);
+            }}
+          >
+            {t("transferToAny")}
+          </div>
+        </div>
+        {/*--- balance + details ---*/}
+        <div className="cashoutBalanceContainer">
+          {/*--- balance ---*/}
+          {flashBalance ? (
+            <div className={`cashoutBalance`}>
+              <div>
+                {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
+                <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}</span>
+              </div>
+              {/*--- arrow ---*/}
+              <div className="cashoutArrowContainer group" onClick={() => setFlashDetails(!flashDetails)}>
+                {flashDetails ? (
+                  <FaAngleUp className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
+                ) : (
+                  <FaAngleDown className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
+          )}
+          {/*---details---*/}
+          <div className={`${flashDetails ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"} grid transition-all duration-500`}>
+            <div className="overflow-hidden flex">
+              <div className="mt-[8px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] textLgApp font-medium relative">
+                {/*--- usdc label ---*/}
+                <div className="flex items-center">
+                  <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] desktop:!w-[18px] desktop:!h-[18px] mr-[4px]">
+                    <Image src="/usdc.svg" alt="USDC" fill />
+                  </div>
+                  USDC
+                </div>
+                {/*--- usdc balance ---*/}
+                <div className="justify-self-end py-[4px]">{flashBalance}</div>
+                {/*--- rate label ---*/}
+                <div className="flex items-center">
+                  <p>{t("rate")}</p>
+                  <IoInformationCircleOutline className="ml-[4px] text-[20px] desktop:text-[16px] peer text-blue-500 dark:text-darkButton" />
+                  <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
+                </div>
+                {/*--- rate value ---*/}
+                <div className="justify-self-end py-[4px]">{rates.usdcToLocal}</div>
               </div>
             </div>
           </div>
-          {/*--- balance + details ---*/}
+        </div>
+        {/*--- button ---*/}
+        {flashBalance && (
+          <div className="cashoutButtonContainer">
+            <button className="cashoutButton" onClick={onClickTransferToCex}>
+              {cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer")}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/*--- CEX CARD ---*/}
+      <div className={`${paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutCard`}>
+        {/*--- title + cex more options ---*/}
+        <div className="w-full h-[36px] flex justify-between items-center relative">
+          {/*--- title ---*/}
+          <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
+          {/*--- ellipsis ---*/}
+          <div
+            className={`${
+              cexBalance ? "" : "hidden"
+            } w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer`}
+            onClick={() => {
+              setCexMoreOptions(!cexMoreOptions);
+              if (!cexMoreOptions) {
+                document.addEventListener("click", hideCexMoreOptions);
+              }
+            }}
+          >
+            <FaEllipsisVertical className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg" />
+          </div>
+          {/*--- cexMoreOptionsModal ---*/}
+          <div className={`${cexMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={onClickUnlink}>
+            {t("unlink")}
+          </div>
+        </div>
+
+        {/*---balance + details ---*/}
+        {isCexAccessible ? (
           <div className="cashoutBalanceContainer">
             {/*--- balance ---*/}
-            {flashBalance ? (
-              <div className={`cashoutBalance`}>
-                <div>
+            {cexBalance ? (
+              <div className="cashoutBalance">
+                <div className="flex items-center">
                   {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                  <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}</span>
+                  {(Number(cexBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
                 </div>
-                {/*--- down arrow ---*/}
-                <div className="cashoutArrowContainer" onClick={() => setFlashDetails(!flashDetails)}>
-                  <FontAwesomeIcon icon={flashDetails ? faAngleUp : faAngleDown} className="cashoutArrow" />
+                <div className="cashoutArrowContainer group" onClick={() => setCexDetails(!cexDetails)}>
+                  {cexDetails ? (
+                    <FaAngleUp className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
+                  ) : (
+                    <FaAngleDown className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
+                  )}
                 </div>
               </div>
             ) : (
               <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
             )}
             {/*---details---*/}
-            <div className={`${flashDetails ? "max-h-[120px]" : "max-h-[0px]"} cashoutDetailsContainer`}>
-              <div className="cashoutDetailsContainer2">
-                {/*--- usdc balance ---*/}
-                <div className="flex justify-between">
+            <div className={`${cexDetails ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"} ${isCexAccessible ? "" : "hidden"} grid transition-all duration-500`}>
+              <div className="overflow-hidden flex">
+                <div className="mt-[8px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] textLgApp font-medium relative">
+                  {/*--- usdc label ---*/}
                   <div className="flex items-center">
-                    <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] mr-[3px]">
+                    <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] desktop:!w-[18px] desktop:!h-[18px] mr-[4px]">
                       <Image src="/usdc.svg" alt="USDC" fill />
                     </div>
                     USDC
                   </div>
-                  <div className="">{flashBalance}</div>
-                </div>
-                {/*--- rate ---*/}
-                <div className="flex justify-between">
-                  <div className="flex items-center">
-                    {t("rate")}
-                    <div className="group flex items-center">
-                      <FontAwesomeIcon icon={faCircleInfo} className="px-2 info" />
-                      <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
-                    </div>
-                  </div>
-                  <div className="">{rates.usdcToLocal}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/*--- button ---*/}
-          {flashBalance && (
-            <div className="cashoutButtonContainer">
-              <button className="cashoutButton" onClick={onClickTransferToCex}>
-                {cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer")}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/*--- CEX CARD ---*/}
-        <div className={`${paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutContainer`}>
-          {/*--- header + linkPopup ---*/}
-          <div className="w-full flex justify-between items-center">
-            <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
-
-            <div
-              className={`${cexBalance ? "" : "hidden"} w-[24px] flex items-center justify-center cursor-pointer group relative`}
-              onClick={() => {
-                setCexMoreOptions(!cexMoreOptions);
-                if (!cexMoreOptions) {
-                  document.addEventListener("click", hideCexMoreOptions);
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faEllipsisVertical} className={`${cexMoreOptions ? "text-slate-500" : ""} textXl desktop:group-hover:text-slate-500`} />
-              <div className={`${cexMoreOptions ? "absolute" : "hidden"} cashoutMoreOptionsContainer`} onClick={onClickUnlink}>
-                {t("unlink")}
-              </div>
-            </div>
-          </div>
-
-          {/*---balance + details ---*/}
-          {isCexAccessible ? (
-            <div className="cashoutBalanceContainer">
-              {/*--- balance ---*/}
-              {cexBalance ? (
-                <div className="cashoutBalance">
-                  <div className="flex items-center">
-                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                    {(Number(cexBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-                  </div>
-                  <div className="cashoutArrowContainer" onClick={() => setCexDetails(!cexDetails)}>
-                    <FontAwesomeIcon icon={cexDetails ? faAngleUp : faAngleDown} className="cashoutArrow" />
-                  </div>
-                </div>
-              ) : (
-                <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
-              )}
-              {/*---details---*/}
-              <div className={`${cexDetails ? "max-h-[120px]" : "max-h-[0px]"} ${isCexAccessible ? "" : "hidden"} cashoutDetailsContainer`}>
-                <div className="cashoutDetailsContainer2">
                   {/*--- usdc balance ---*/}
-                  <div className="flex justify-between">
-                    <div className="flex items-center">
-                      <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] mr-[3px]">
-                        <Image src="/usdc.svg" alt="USDC" fill />
-                      </div>
-                      USDC
-                    </div>
-                    <div className="flex items-center">{cexBalance}</div>
+                  <div className="justify-self-end py-[4px]">{cexBalance}</div>
+                  {/*--- rate label ---*/}
+                  <div className="flex items-center">
+                    <p>{t("rate")}</p>
+                    <IoInformationCircleOutline className="ml-[4px] text-[20px] desktop:text-[16px] peer text-blue-500 dark:text-darkButton" />
+                    <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
                   </div>
-                  {/*--- rate ---*/}
-                  <div className="flex justify-between">
-                    <div className="flex items-center">
-                      {t("rate")}
-                      <div className="group flex items-center">
-                        <FontAwesomeIcon icon={faCircleInfo} className="px-2 text-gray-400 textXs" />
-                        <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
-                      </div>
-                    </div>
-                    <div className="">{rates.usdcToLocal}</div>
-                  </div>
+                  {/*--- rate value ---*/}
+                  <div className="justify-self-end py-[4px]">{rates.usdcToLocal}</div>
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="flex-1 w-full flex justify-center items-center">
-              <div className="link textBase" onClick={onClickSIWC}>
-                {t("linkCoinbase")}
-              </div>
+          </div>
+        ) : (
+          <div className="flex-1 w-full flex justify-center items-center">
+            <div className="link textBase" onClick={onClickSIWC}>
+              {t("linkCoinbase")}
             </div>
+          </div>
+        )}
+        {/*--- button ---*/}
+        <div className="cashoutButtonContainer">
+          {cexBalance && (
+            <button className="cashoutButton" onClick={onClickTransferToBank}>
+              {tcommon("transferToBank")}
+            </button>
           )}
-          {/*--- button ---*/}
-          <div className="cashoutButtonContainer">
-            {cexBalance && (
-              <button className="cashoutButton" onClick={onClickTransferToBank}>
-                {tcommon("transferToBank")}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/*--- Your Savings ---*/}
-        <div className="hidden cashoutContainer min-h-0">
-          {/*--- header ---*/}
-          <div className="flex items-center">
-            <span className="cashoutHeader">Your Savings</span>
-            <FontAwesomeIcon icon={savingsDetails ? faAngleUp : faAngleDown} className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
-          </div>
-          {/*--- earnings ---*/}
-          <div className="mt-2 px-2 flex justify-between">
-            <div>Earnings</div>
-            <div>
-              {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-              {stats.totalCurrencyAmount}
-            </div>
-          </div>
-
-          {/*--- Flash costs ---*/}
-          <div className={`${savingsDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
-            <div className="cashoutStats2">Flash Costs</div>
-            <div className="p-2 border border-gray-400 rounded-md">
-              {/*---Cashback Given = totalCurrencyAmount - totalCurrencyAmountAfterCashback ---*/}
-              <div className="flex justify-between">
-                <div>Cashback Given</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                  {stats.totalCashbackGiven}
-                </div>
-              </div>
-              {/*---gain/loss from rates---*/}
-              <div className="flex justify-between">
-                <div>Est. Gain/Loss from Rates</div>
-                {/*---# times cashout * 0.015 USDC * USDC To currency rate + future ---*/}
-              </div>
-              {/*---gain/loss from rates details---*/}
-              <div className="hidden">
-                <div className="flex justify-between">
-                  <div>USDC Received</div>
-                  <div>{stats.totalTokenAmount} USDC</div>
-                </div>
-                <div className="flex justify-between">
-                  <div>Avg. USDC to EUR Rate</div>
-                  <div>{stats.paymentRate}</div>
-                </div>
-              </div>
-              {/*---total transaction fees---*/}
-              <div className="flex justify-between">
-                <div>Transaction Fees</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                  {(1 * 0.015 * stats.currentRate).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/*--- net earnings ---*/}
-          <div className="px-2 flex justify-between">
-            <div>Net Earnings</div>
-            <div>
-              {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-              {stats.totalCurrencyAmount}
-            </div>
-          </div>
-
-          {/*--- credit card costs ---*/}
-          <div className={`${savingsDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
-            <div className="cashoutStats2">Credit Card Costs</div>
-            <div className="p-2 border border-gray-400 rounded-md">
-              <div className="flex justify-between">
-                <div>Fee Percentage (2.7%)</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                  {(stats.totalCurrencyAmount * 0.03).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div>Fee per Txn ($0.10)</div>
-                <div>
-                  - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                  {(transactionsState?.length! * 0.1).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/*--- savings over credit card ---*/}
-          <div className="px-2 flex justify-between">
-            <div>Savings Over Credit Card</div>
-            <div>
-              {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-              {(stats.totalCurrencyAmount * 0.03 + transactionsState?.length! * 0.1 - stats.totalCashbackGiven).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-            </div>
-          </div>
-        </div>
-
-        {/*--- Transfer History ---*/}
-        <div className="hidden cashoutContainer min-h-0">
-          {/*--- header ---*/}
-          <div className="cashoutHeader">Transfer History</div>
-          {/*--- table ---*/}
-          <div className="mt-2 px-2 flex justify-between"></div>
         </div>
       </div>
+
+      {/*--- Your Savings ---*/}
+      <div className="hidden cashoutCard min-h-0">
+        {/*--- header ---*/}
+        <div className="flex items-center">
+          <span className="cashoutHeader">Your Savings</span>
+          {savingsDetails ? (
+            <FaAngleUp className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
+          ) : (
+            <FaAngleDown className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
+          )}
+        </div>
+        {/*--- earnings ---*/}
+        <div className="mt-2 px-2 flex justify-between">
+          <div>Earnings</div>
+          <div>
+            {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+            {stats.totalCurrencyAmount}
+          </div>
+        </div>
+
+        {/*--- Flash costs ---*/}
+        <div className={`${savingsDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
+          <div className="cashoutStats2">Flash Costs</div>
+          <div className="p-2 border border-gray-400 rounded-md">
+            {/*---Cashback Given = totalCurrencyAmount - totalCurrencyAmountAfterCashback ---*/}
+            <div className="flex justify-between">
+              <div>Cashback Given</div>
+              <div>
+                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {stats.totalCashbackGiven}
+              </div>
+            </div>
+            {/*---gain/loss from rates---*/}
+            <div className="flex justify-between">
+              <div>Est. Gain/Loss from Rates</div>
+              {/*---# times cashout * 0.015 USDC * USDC To currency rate + future ---*/}
+            </div>
+            {/*---gain/loss from rates details---*/}
+            <div className="hidden">
+              <div className="flex justify-between">
+                <div>USDC Received</div>
+                <div>{stats.totalTokenAmount} USDC</div>
+              </div>
+              <div className="flex justify-between">
+                <div>Avg. USDC to EUR Rate</div>
+                <div>{stats.paymentRate}</div>
+              </div>
+            </div>
+            {/*---total transaction fees---*/}
+            <div className="flex justify-between">
+              <div>Transaction Fees</div>
+              <div>
+                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {(1 * 0.015 * stats.currentRate).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/*--- net earnings ---*/}
+        <div className="px-2 flex justify-between">
+          <div>Net Earnings</div>
+          <div>
+            {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+            {stats.totalCurrencyAmount}
+          </div>
+        </div>
+
+        {/*--- credit card costs ---*/}
+        <div className={`${savingsDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
+          <div className="cashoutStats2">Credit Card Costs</div>
+          <div className="p-2 border border-gray-400 rounded-md">
+            <div className="flex justify-between">
+              <div>Fee Percentage (2.7%)</div>
+              <div>
+                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {(stats.totalCurrencyAmount * 0.03).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <div>Fee per Txn ($0.10)</div>
+              <div>
+                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                {(transactionsState?.length! * 0.1).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/*--- savings over credit card ---*/}
+        <div className="px-2 flex justify-between">
+          <div>Savings Over Credit Card</div>
+          <div>
+            {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+            {(stats.totalCurrencyAmount * 0.03 + transactionsState?.length! * 0.1 - stats.totalCashbackGiven).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+          </div>
+        </div>
+      </div>
+
+      {/*--- Transfer History ---*/}
+      {/* <div className="cashoutCard min-h-0">
+        <div className="cashoutHeader">Transfer History</div>
+        <div className="mt-2 px-2 flex justify-between"></div>
+      </div> */}
 
       {/*--- 5 modals---*/}
       {transferToCexModal && (

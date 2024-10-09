@@ -46,7 +46,7 @@ const SaveToHome = () => {
   }, []);
 
   return (
-    <div className="h-[100dvh] py-[24px] flex flex-col items-center dark:bg-light2 dark:text-black overflow-y-auto">
+    <div className="h-[100dvh] py-[24px] flex flex-col items-center dark:bg-light1 dark:text-lightText1 overflow-y-auto">
       <div className="w-full flex flex-col items-center pb-[48px] my-auto">
         {/*---image---*/}
         <div className="flex-none relative h-[320px] w-[160px] rounded-[16px] shadow-[0px_2px_20px_0px_rgb(0,0,0,0.3)]">
