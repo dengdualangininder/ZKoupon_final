@@ -142,10 +142,10 @@ export default function App() {
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     setIsMobile(!isDesktop);
-    // if (!isDesktop && !isStandalone) {
-    //   setPage("saveToHome");
-    //   return;
-    // }
+    if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
+      setPage("saveToHome");
+      return;
+    }
 
     // check if employee login
     const jwt = getCookie("employeeJwt");
