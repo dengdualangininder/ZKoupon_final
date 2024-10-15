@@ -28,7 +28,7 @@ const Footer = () => {
   return (
     <div className="py-[80px] homeSectionSize grid grid-cols-[140px_140px] md:grid-cols-[300px_140px_140px] gap-x-[20px] xs:gap-x-[90px] md:gap-[32px] gap-y-[80px] justify-center">
       <div className="flex flex-col items-center md:items-start md:justify-between space-y-6 col-span-full order-last md:col-span-1 md:order-none">
-        <Image src="logoWhiteNoBg.svg" width={150} height={80} alt="Flash logo" className="" />
+        <Image src="logoNoBg.svg" width={150} height={80} alt="Flash logo" className="" />
         <div className="text-sm lg:text-xs">&copy; 2024 Flash Payments. All rights reserved.</div>
       </div>
       <div className="flex flex-col space-y-6">

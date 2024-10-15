@@ -4,19 +4,19 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Flash Payments",
     short_name: "Flash",
-    description: "fast global payments with zero fees",
+    description: "Crypto payments with 0% fees",
     start_url: "/app",
     display: "standalone",
     icons: [
       {
-        src: "/logoBlackBgNoText.png",
+        src: "/icon-192.png",
+        sizes: "192x192",
         type: "image/png",
-        sizes: "any",
       },
       {
-        src: "/logoBlackBgNoText.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
       },
     ],
   };

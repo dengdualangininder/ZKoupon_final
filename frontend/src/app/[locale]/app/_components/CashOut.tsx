@@ -907,7 +907,7 @@ const CashOut = ({
                 {/*--- info ---*/}
                 <div className="w-full flex items-center">
                   <div className="transferIcon">
-                    <Image src="/logoBlackBgNoText.svg" alt="Flash logo" fill />
+                    <Image src="/icon-svg.svg" alt="Flash logo" fill />
                   </div>
                   <div className="ml-[12px] flex flex-col">
                     <div className="textBase leading-none font-medium">{tcommon("fromFlash")}</div>
