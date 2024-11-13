@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
-import Theme from "@/contexts/ThemeProvider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
@@ -38,8 +37,9 @@ export const metadata: Metadata = {
 };
 
 // inter.className to inter.variable
-export default async function RootLayout({ children, params: { locale } }: { children: React.ReactNode; params: { locale: string } }) {
+export default async function RootLayout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
   const messages = await getMessages();
+  const { locale } = params;
 
   return (
     <html suppressHydrationWarning lang={locale} className={inter.className} style={{ fontSize: locale == "zh-TW" ? "18px" : "16px" }}>
@@ -47,9 +47,7 @@ export default async function RootLayout({ children, params: { locale } }: { chi
         <script src="/maze.js"></script>
       </head>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <Theme>{children}</Theme>
-        </NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );
