@@ -2,7 +2,7 @@
 // nextjs
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 // custom hooks
 import { useUserInfo } from "../_contexts/Web3AuthProvider";
@@ -71,6 +71,7 @@ export default function App() {
   const t = useTranslations("App.Page");
   const tcommon = useTranslations("Common");
   const account = useAccount();
+  const router = useRouter();
   // const runOnce = useRef(true);
 
   // if (isStandalone) {
@@ -106,6 +107,7 @@ export default function App() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ idToken: userInfo!.idToken, publicKey: userInfo!.publicKey, employeeJwt: employeeJwt }),
       });
+      if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
       return json.data;
     },
@@ -120,17 +122,20 @@ export default function App() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ idToken: userInfo!.idToken, publicKey: userInfo!.publicKey }),
       });
+      if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
       return json.data;
     },
     enabled: userInfo ? true : false,
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 
   console.log("/app, page.tsx payments.length:", paymentsQuery?.data?.length);
 
   return (
     <div className="pl-[calc(100vw-100%)] bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1 overscroll-none">
-      {page === "loading" && (
+      {!userInfo && !employeeJwt ? (
         <div className="text-xl w-full h-screen flex justify-center overflow-y-auto bg-light1">
           <div className="w-[92%] max-w-[420px] h-screen min-h-[650px] my-auto max-h-[800px] relative">
             {/* LOADING */}
@@ -159,12 +164,10 @@ export default function App() {
             </div>
           </div>
         </div>
-      )}
-
-      {page === "app" && (
+      ) : (
         <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
           {/*---MENU: LEFT (w120/lg:160/desktop:200px) or BOTTOM (h-80/sm:140px) ---*/}
-          {isAdmin && (
+          {userInfo && (
             <div className="fixed flex-none landscape:w-[120px] landscape:lg:w-[160px] landscape:desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] flex justify-center items-center bg-light1 dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:via-dark2 dark:to-dark3 from-0% via-80% to-100% portrait:border-t landscape:border-r dark:!border-none border-light5 z-[1]">
               <div className="w-full h-full landscape:lg:h-[640px] landscape:xl:desktop:h-[500px] portrait:pb-[10px] portrait:px-[4px] flex landscape:flex-col items-center justify-around">
                 {[
@@ -180,9 +183,8 @@ export default function App() {
                     key={i.id}
                     onClick={async (e) => {
                       setMenu(e.currentTarget.id);
-                      if (i.modal == "cashoutIntroModal" && cashoutSettingsState?.cashoutIntro) {
+                      if (i.modal === "cashoutIntroModal" && userInfo.cashoutSettings.cashoutIntro) {
                         setCashoutIntroModal(true);
-                        setCashoutSettingsState({ ...cashoutSettingsState, cashoutIntro: false });
                         // usability test
                         if (isUsabilityTest) {
                           return;
@@ -191,16 +193,15 @@ export default function App() {
                           method: "POST",
                           headers: { "content-type": "application/json" },
                           body: JSON.stringify({
-                            paymentSettings: paymentSettingsState,
-                            cashoutSettings: { ...cashoutSettingsState, cashoutIntro: false },
-                            idToken,
-                            publicKey,
+                            key: "cashoutSettings.cashoutIntro",
+                            value: false,
+                            idToken: userInfo?.idToken,
+                            publicKey: userInfo?.publicKey,
                           }),
                         });
                         const data = await res.json();
-                        if (data != "saved") {
-                          console.log("error: cashoutIntro not set to false");
-                        }
+                        if (data === "not verified") router.push("/login");
+                        if (data === "failed") console.log("failed to save cashoutSettings.cashoutIntro");
                       }
                     }}
                   >
@@ -215,15 +216,7 @@ export default function App() {
           )}
 
           {/*---menu pages---*/}
-          {menu === "payments" && (
-            <Payments
-              paymentSettingsState={paymentSettingsState!}
-              transactionsState={transactionsState}
-              setTransactionsState={setTransactionsState}
-              isAdmin={isAdmin}
-              setPage={setPage}
-            />
-          )}
+          {menu === "payments" && <Payments />}
           {menu === "cashOut" && isAdmin && (
             <CashOut
               paymentSettingsState={paymentSettingsState!}

@@ -4,8 +4,8 @@ import * as jose from "jose";
 import { keccak256, getAddress } from "viem";
 
 export const POST = async (request: Request) => {
-  console.log("/api/saveSettings");
-  const { key, value, idToken, publicKey } = await request.json();
+  console.log("/api/saveSettingsBulk");
+  const { paymentSettings, cashoutSettings, idToken, publicKey } = await request.json();
   await dbConnect();
 
   // compute publicKeyCompressed and merchantEvmAddress from publicKey
@@ -21,7 +21,7 @@ export const POST = async (request: Request) => {
   // save to db
   if (verified) {
     try {
-      await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress }, { [key]: value });
+      await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress }, { paymentSettings: paymentSettings, cashoutSettings: cashoutSettings });
       console.log("saved");
       return Response.json("saved");
     } catch (e: any) {

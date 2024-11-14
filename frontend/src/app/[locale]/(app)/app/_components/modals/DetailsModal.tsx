@@ -1,4 +1,6 @@
 import { useState } from "react";
+// context
+import { useUserInfo } from "../../../_contexts/Web3AuthProvider";
 // others
 import { useTranslations } from "next-intl";
 // constants
@@ -13,17 +15,8 @@ import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 // types
 import { Transaction } from "@/db/UserModel";
 
-const DetailsModal = ({
-  clickedTxn,
-  setDetailsModal,
-  isAdmin,
-  onClickToRefund,
-}: {
-  clickedTxn: Transaction | null;
-  setDetailsModal: any;
-  isAdmin: boolean;
-  onClickToRefund: any;
-}) => {
+const DetailsModal = ({ clickedTxn, setDetailsModal, onClickToRefund }: { clickedTxn: Transaction | null; setDetailsModal: any; onClickToRefund: any }) => {
+  const userInfo = useUserInfo();
   const [showNote, setShowNote] = useState(false);
 
   // hooks
@@ -86,7 +79,7 @@ const DetailsModal = ({
                 <Toggle checked={clickedTxn?.toRefund} onClick={onClickToRefund} />
               </div>
               {/*--- refund now button ---*/}
-              {isAdmin && (
+              {userInfo && (
                 <div className="w-full flex items-center justify-between">
                   <div className="textBaseApp font-medium text-lightText1 dark:text-darkText1">{t("refundNow")}</div>
                   <button

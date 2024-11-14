@@ -63,14 +63,10 @@ const Payments = ({
   transactionsState,
   setTransactionsState,
   paymentSettingsState,
-  isAdmin,
-  setPage,
 }: {
   transactionsState: Transaction[];
   setTransactionsState: any;
   paymentSettingsState: PaymentSettings;
-  isAdmin: boolean;
-  setPage: any;
 }) => {
   console.log("Payments component rendered");
 
@@ -364,7 +360,7 @@ const Payments = ({
             <FiSearch className="paymentsIcon" />
           </div>
           {/*--- download ---*/}
-          {isAdmin && (
+          {userInfo && (
             <div
               className="paymentsIconContainer"
               onClick={() => {
@@ -381,7 +377,7 @@ const Payments = ({
             </div>
           )}
           {/*--- sign out ---*/}
-          {!isAdmin && (
+          {!userInfo && (
             <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
               <HiMiniArrowRightStartOnRectangle className="paymentsIcon" />
             </div>
@@ -405,14 +401,14 @@ const Payments = ({
         <div
           id="table"
           className={`${
-            isAdmin ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
+            userInfo ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
           } pl-[8px] portrait:sm:!px-[12px] landscape:lg:!px-[12px] w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         >
           {/*--- list ---*/}
           {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
             <div
               className={`${txn.refund ? "opacity-50" : ""} ${
-                isAdmin
+                userInfo
                   ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
                   : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
               } relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
@@ -450,7 +446,7 @@ const Payments = ({
           {clearSearchModal && (
             <div
               className={`${
-                isAdmin ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
+                userInfo ? "portrait:bottom-[calc(84px+12px)] portrait:sm:bottom-[calc(140px+16px)]" : "portrait:bottom-[calc(0px+12px)] portrait:sm:bottom-[calc(0px+16px)]"
               } fixed landscape:bottom-2 landscape:lg:bottom-6 w-full landscape:w-[calc(100%-120px)] landscape:lg:w-[calc(100%-160px)] h-[72px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[84px] flex justify-center items-center`}
             >
               <div className="pl-[4%] h-full bannerWidth flex items-center justify-between rounded-xl bg-yellow-50 dark:bg-slate-400 text-black">
@@ -657,7 +653,7 @@ const Payments = ({
       {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettingsState={paymentSettingsState} />}
 
       {/*--- DETAILS MODAL ---*/}
-      {detailsModal && <DetailsModal clickedTxn={clickedTxn} setDetailsModal={setDetailsModal} isAdmin={isAdmin} onClickToRefund={onClickToRefund} />}
+      {detailsModal && <DetailsModal clickedTxn={clickedTxn} setDetailsModal={setDetailsModal} onClickToRefund={onClickToRefund} />}
 
       {/*---signOutModal---*/}
       {signOutModal && (
@@ -671,8 +667,7 @@ const Payments = ({
                 onClick={() => {
                   deleteCookie("employeeJwt");
                   setSignOutModal(false);
-                  setPage("loading");
-                  window.location.reload();
+                  router.refresh();
                 }}
                 className="mt-10 buttonPrimary"
               >
