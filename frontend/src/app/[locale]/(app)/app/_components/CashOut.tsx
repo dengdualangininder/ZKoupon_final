@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
-// context
-import { useUserInfo } from "../../_contexts/Web3AuthProvider";
+// hooks
+import { useUserInfo } from "../../web3auth-provider";
+import { usePaymentsQuery, useSettingsQuery } from "../../hooks";
 // wagmi & viem & ethers
 import { useConfig, useAccount } from "wagmi";
 import { readContract, writeContract, signTypedData } from "@wagmi/core";
@@ -29,28 +30,10 @@ import { FaEllipsisVertical, FaAngleUp, FaAngleDown, FaCircleInfo, FaArrowDown, 
 import { IoInformationCircleOutline } from "react-icons/io5";
 // types
 import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
-import { Rates } from "@/utils/types";
+import { FlashInfo, Rates } from "@/utils/types";
 
-const CashOut = ({
-  paymentSettingsState,
-  cashoutSettingsState,
-  setCashoutSettingsState,
-  transactionsState,
-  idToken,
-  publicKey,
-  isUsabilityTest,
-}: {
-  paymentSettingsState: PaymentSettings;
-  cashoutSettingsState: CashoutSettings;
-  setCashoutSettingsState: any;
-  transactionsState: Transaction[];
-  idToken: string;
-  publicKey: string;
-  isUsabilityTest: boolean;
-}) => {
+export default function CashOut({ flashInfo }: { flashInfo: FlashInfo }) {
   console.log("CashOut component rendered");
-
-  const userInfo = useUserInfo();
 
   const [flashBalance, setFlashBalance] = useState<string | null>(null);
   const [cexBalance, setCexBalance] = useState<string | null>(null);
@@ -93,6 +76,13 @@ const CashOut = ({
   });
 
   // hooks
+  const userInfo = useUserInfo();
+  // const paymentsQuery = usePaymentsQuery(userInfo, flashInfo);
+  const { data: settings } = useSettingsQuery(userInfo, flashInfo);
+  if (settings) {
+    var paymentSettings = settings.paymentSettings;
+    var cashoutSettings = settings.cashoutSettings;
+  }
   const router = useRouter();
   const account = useAccount();
   const config = useConfig();
@@ -107,7 +97,7 @@ const CashOut = ({
     (async () => {
       await getRates();
       // usability test
-      if (isUsabilityTest) {
+      if (flashInfo.isUsabilityTest) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setFlashBalance("325.12");
         setCexBalance("0.00");
@@ -121,20 +111,20 @@ const CashOut = ({
       // let totalCurrencyAmount = 0;
       // let totalCurrencyAmountAfterCashback = 0;
       // let totalTokenAmount = 0;
-      // if (transactionsState?.length > 0) {
-      //   for (const txn of transactionsState) {
+      // if (transactions?.length > 0) {
+      //   for (const txn of transactions) {
       //     totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
       //     totalCurrencyAmountAfterCashback = totalCurrencyAmountAfterCashback + Number(txn.currencyAmountAfterCashback ?? 0);
       //     totalTokenAmount = totalTokenAmount + Number(txn.tokenAmount);
       //   }
       // }
       // setStats({
-      //   totalTxns: transactionsState?.length,
-      //   totalCurrencyAmount: totalCurrencyAmount.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
-      //   totalCurrencyAmountAfterCashback: totalCurrencyAmountAfterCashback.toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
-      //   totalCashbackGiven: (totalCurrencyAmount - totalCurrencyAmountAfterCashback).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!]),
+      //   totalTxns: transactions?.length,
+      //   totalCurrencyAmount: totalCurrencyAmount.toFixed(currency2decimal[paymentSettings?.merchantCurrency!]),
+      //   totalCurrencyAmountAfterCashback: totalCurrencyAmountAfterCashback.toFixed(currency2decimal[paymentSettings?.merchantCurrency!]),
+      //   totalCashbackGiven: (totalCurrencyAmount - totalCurrencyAmountAfterCashback).toFixed(currency2decimal[paymentSettings?.merchantCurrency!]),
       //   totalTokenAmount: totalTokenAmount.toFixed(2),
-      //   paymentRate: (totalCurrencyAmountAfterCashback / totalTokenAmount).toFixed(currency2rateDecimal[paymentSettingsState?.merchantCurrency!]),
+      //   paymentRate: (totalCurrencyAmountAfterCashback / totalTokenAmount).toFixed(currency2rateDecimal[paymentSettings?.merchantCurrency!]),
       //   currentRate: ratesData.usdcToLocal,
       //   cashoutRate: 0,
       // });
@@ -142,12 +132,12 @@ const CashOut = ({
   }, []);
 
   const getRates = async () => {
-    if (paymentSettingsState?.merchantCurrency == "USD") {
+    if (paymentSettings?.merchantCurrency == "USD") {
       setRates({ usdcToLocal: 1, usdToLocal: 1 });
     } else {
       const ratesRes = await fetch("/api/getRates", {
         method: "POST",
-        body: JSON.stringify({ merchantCurrency: paymentSettingsState?.merchantCurrency }),
+        body: JSON.stringify({ merchantCurrency: paymentSettings?.merchantCurrency }),
         headers: { "content-type": "application/json" },
       });
       const ratesData = await ratesRes.json();
@@ -170,7 +160,7 @@ const CashOut = ({
   };
 
   const getCexBalance = async () => {
-    if (cashoutSettingsState?.cex == "Coinbase") {
+    if (cashoutSettings?.cex == "Coinbase") {
       // get access or refresh tokens
       const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
       const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
@@ -179,7 +169,7 @@ const CashOut = ({
         console.log("calling cbGetBalance API...");
         const res = await fetch("/api/cbGetBalance", {
           method: "POST",
-          body: JSON.stringify({ cbAccessToken, cbRefreshToken, idToken, publicKey }),
+          body: JSON.stringify({ cbAccessToken, cbRefreshToken, userInfo }),
           headers: { "content-type": "application/json" },
         });
         const data = await res.json(); // if success, data.status | data.cbAccessToken | data.cbRefreshToken
@@ -195,11 +185,11 @@ const CashOut = ({
             window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
           }
           // update state
-          setCashoutSettingsState({
-            ...cashoutSettingsState,
-            cexEvmAddress: data.cexEvmAddress,
-            cexAccountName: data.cexAccountName,
-          });
+          // setCashoutSettingsState({
+          //   ...cashoutSettingsState,
+          //   cexEvmAddress: data.cexEvmAddress,
+          //   cexAccountName: data.cexAccountName,
+          // });
         } else if (data.status === "error") {
           setIsCexAccessible(false);
         }
@@ -214,7 +204,7 @@ const CashOut = ({
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
     const scope =
-      paymentSettingsState?.merchantCurrency == "USD"
+      paymentSettings?.merchantCurrency == "USD"
         ? "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:buys:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read"
         : "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read";
     router.push(
@@ -230,10 +220,10 @@ const CashOut = ({
   };
 
   const onClickTransferToCex = async () => {
-    if (cashoutSettingsState?.cexEvmAddress) {
+    if (cashoutSettings?.cexEvmAddress) {
       setTransferToCexModal(true);
     } else {
-      if (cashoutSettingsState?.cex == "Coinbase") {
+      if (cashoutSettings?.cex == "Coinbase") {
         setErrorMsg(t("errors.linkCb"));
       } else {
         setErrorMsg(
@@ -280,7 +270,7 @@ const CashOut = ({
 
   const onClickTransferToCexSubmit = async () => {
     // for usability test
-    if (isUsabilityTest) {
+    if (flashInfo.isUsabilityTest) {
       setTransferState("sending");
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setTransferState("sent");
@@ -317,8 +307,8 @@ const CashOut = ({
         return;
       }
     } else {
-      if (cashoutSettingsState?.cexEvmAddress) {
-        toAddress = cashoutSettingsState?.cexEvmAddress;
+      if (cashoutSettings?.cexEvmAddress) {
+        toAddress = cashoutSettings?.cexEvmAddress;
       } else {
         // this condition should not be possible but will add anyway
         setErrorModal(true);
@@ -366,7 +356,7 @@ const CashOut = ({
         primaryType: "Permit",
         domain: { name: "USD Coin", version: "2", chainId: chainId, verifyingContract: usdcAddress },
         message: {
-          owner: paymentSettingsState?.merchantEvmAddress as Address,
+          owner: paymentSettings?.merchantEvmAddress as Address,
           spender: flashAddress,
           value: parseUnits(usdcTransferToCex, 6),
           nonce: nonce,
@@ -391,7 +381,7 @@ const CashOut = ({
 
       // 4. construct payCalldata & encode the function arguments
       const paymentData = {
-        from: paymentSettingsState?.merchantEvmAddress,
+        from: paymentSettings?.merchantEvmAddress,
         to: toAddress,
         amount: parseUnits(usdcTransferToCex, 6),
         permitData: { deadline: deadline, signature: { v: permitSignature.v, r: permitSignature.r, s: permitSignature.s } },
@@ -469,13 +459,13 @@ const CashOut = ({
 
   const onClickTransferToBank = async () => {
     // usability test
-    if (isUsabilityTest) {
+    if (flashInfo.isUsabilityTest) {
       setCbBankAccountName("Chase Bank, North America\n****9073");
       setTransferToBankModal(true);
       return;
     }
     // coinbase
-    if (cashoutSettingsState?.cex == "Coinbase") {
+    if (cashoutSettings?.cex == "Coinbase") {
       // get access or refresh tokens
       const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
       const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
@@ -511,7 +501,7 @@ const CashOut = ({
 
   const onClickTransferToBankSubmit = async () => {
     // for usability test
-    if (isUsabilityTest) {
+    if (flashInfo.isUsabilityTest) {
       setTransferState("sending");
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setTransferState("sent");
@@ -552,7 +542,7 @@ const CashOut = ({
         method: "POST",
         body: JSON.stringify({
           amount: usdcTransferToBank,
-          merchantCurrency: paymentSettingsState?.merchantCurrency,
+          merchantCurrency: paymentSettings?.merchantCurrency,
           cbAccessToken: window.sessionStorage.getItem("cbAccessToken"),
         }),
         headers: { "content-type": "application/json" },
@@ -627,8 +617,8 @@ const CashOut = ({
           {flashBalance ? (
             <div className={`cashoutBalance`}>
               <div>
-                {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}</span>
+                {currency2symbol[paymentSettings?.merchantCurrency!]}&nbsp;
+                <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}</span>
               </div>
               {/*--- arrow ---*/}
               <div className="cashoutArrowContainer group" onClick={() => setFlashDetails(!flashDetails)}>
@@ -659,7 +649,7 @@ const CashOut = ({
                 <div className="flex items-center">
                   <p>{t("rate")}</p>
                   <IoInformationCircleOutline className="ml-[4px] text-[20px] desktop:text-[16px] peer text-blue-500 dark:text-darkButton" />
-                  <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
+                  <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettings.merchantCurrency })}</div>
                 </div>
                 {/*--- rate value ---*/}
                 <div className="justify-self-end py-[4px]">{rates.usdcToLocal}</div>
@@ -671,14 +661,14 @@ const CashOut = ({
         {flashBalance && (
           <div className="cashoutButtonContainer">
             <button className="cashoutButton" onClick={onClickTransferToCex}>
-              {cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer")}
+              {cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer")}
             </button>
           </div>
         )}
       </div>
 
       {/*--- CEX CARD ---*/}
-      <div className={`${paymentSettingsState?.merchantCountry != "Other" && cashoutSettingsState?.cex == "Coinbase" ? "" : "hidden"} cashoutCard`}>
+      <div className={`${paymentSettings?.merchantCountry != "Other" && cashoutSettings?.cex == "Coinbase" ? "" : "hidden"} cashoutCard`}>
         {/*--- title + cex more options ---*/}
         <div className="w-full h-[36px] flex justify-between items-center relative">
           {/*--- title ---*/}
@@ -710,8 +700,8 @@ const CashOut = ({
             {cexBalance ? (
               <div className="cashoutBalance">
                 <div className="flex items-center">
-                  {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
-                  {(Number(cexBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                  {currency2symbol[paymentSettings?.merchantCurrency!]}&nbsp;
+                  {(Number(cexBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}
                 </div>
                 <div className="cashoutArrowContainer group" onClick={() => setCexDetails(!cexDetails)}>
                   {cexDetails ? (
@@ -741,7 +731,7 @@ const CashOut = ({
                   <div className="flex items-center">
                     <p>{t("rate")}</p>
                     <IoInformationCircleOutline className="ml-[4px] text-[20px] desktop:text-[16px] peer text-blue-500 dark:text-darkButton" />
-                    <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettingsState.merchantCurrency })}</div>
+                    <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettings.merchantCurrency })}</div>
                   </div>
                   {/*--- rate value ---*/}
                   <div className="justify-self-end py-[4px]">{rates.usdcToLocal}</div>
@@ -767,103 +757,6 @@ const CashOut = ({
       </div>
 
       {/*--- Your Savings ---*/}
-      <div className="hidden cashoutCard min-h-0">
-        {/*--- header ---*/}
-        <div className="flex items-center">
-          <span className="cashoutHeader">Your Savings</span>
-          {savingsDetails ? (
-            <FaAngleUp className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
-          ) : (
-            <FaAngleDown className="ml-4 pt-1 cashoutArrow" onClick={() => setSavingsDetails(!savingsDetails)} />
-          )}
-        </div>
-        {/*--- earnings ---*/}
-        <div className="mt-2 px-2 flex justify-between">
-          <div>Earnings</div>
-          <div>
-            {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-            {stats.totalCurrencyAmount}
-          </div>
-        </div>
-
-        {/*--- Flash costs ---*/}
-        <div className={`${savingsDetails ? "max-h-[150px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
-          <div className="cashoutStats2">Flash Costs</div>
-          <div className="p-2 border border-gray-400 rounded-md">
-            {/*---Cashback Given = totalCurrencyAmount - totalCurrencyAmountAfterCashback ---*/}
-            <div className="flex justify-between">
-              <div>Cashback Given</div>
-              <div>
-                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                {stats.totalCashbackGiven}
-              </div>
-            </div>
-            {/*---gain/loss from rates---*/}
-            <div className="flex justify-between">
-              <div>Est. Gain/Loss from Rates</div>
-              {/*---# times cashout * 0.015 USDC * USDC To currency rate + future ---*/}
-            </div>
-            {/*---gain/loss from rates details---*/}
-            <div className="hidden">
-              <div className="flex justify-between">
-                <div>USDC Received</div>
-                <div>{stats.totalTokenAmount} USDC</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Avg. USDC to EUR Rate</div>
-                <div>{stats.paymentRate}</div>
-              </div>
-            </div>
-            {/*---total transaction fees---*/}
-            <div className="flex justify-between">
-              <div>Transaction Fees</div>
-              <div>
-                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                {(1 * 0.015 * stats.currentRate).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/*--- net earnings ---*/}
-        <div className="px-2 flex justify-between">
-          <div>Net Earnings</div>
-          <div>
-            {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-            {stats.totalCurrencyAmount}
-          </div>
-        </div>
-
-        {/*--- credit card costs ---*/}
-        <div className={`${savingsDetails ? "max-h-[120px]" : "max-h-0"} overflow-hidden transition-all duration-500`}>
-          <div className="cashoutStats2">Credit Card Costs</div>
-          <div className="p-2 border border-gray-400 rounded-md">
-            <div className="flex justify-between">
-              <div>Fee Percentage (2.7%)</div>
-              <div>
-                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                {(stats.totalCurrencyAmount * 0.03).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <div>Fee per Txn ($0.10)</div>
-              <div>
-                - {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-                {(transactionsState?.length! * 0.1).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/*--- savings over credit card ---*/}
-        <div className="px-2 flex justify-between">
-          <div>Savings Over Credit Card</div>
-          <div>
-            {currency2symbol[paymentSettingsState?.merchantCurrency!]}
-            {(stats.totalCurrencyAmount * 0.03 + transactionsState?.length! * 0.1 - stats.totalCashbackGiven).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
-          </div>
-        </div>
-      </div>
 
       {/*--- Transfer History ---*/}
       {/* <div className="cashoutCard min-h-0">
@@ -900,7 +793,7 @@ const CashOut = ({
 
             {/*--- header ---*/}
             <div className="transferModalHeader whitespace-nowrap">
-              {transferToAnyAddress ? tcommon("transfer") : tcommon("transferToCEX", { cex: cashoutSettingsState.cex ? cashoutSettingsState.cex : tcommon("CEX") })}
+              {transferToAnyAddress ? tcommon("transfer") : tcommon("transferToCEX", { cex: cashoutSettings.cex ? cashoutSettings.cex : tcommon("CEX") })}
             </div>
 
             {/*--- CONTENT ---*/}
@@ -914,10 +807,10 @@ const CashOut = ({
                   </div>
                   <div className="ml-[12px] flex flex-col">
                     <div className="textBase leading-none font-medium">{tcommon("fromFlash")}</div>
-                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{paymentSettingsState?.merchantName}</div>
+                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{paymentSettings?.merchantName}</div>
                     <div className="textBasePx leading-tight break-all text-slate-500">
-                      {paymentSettingsState?.merchantEvmAddress.slice(0, 10)}...
-                      {paymentSettingsState?.merchantEvmAddress.slice(-8)}
+                      {paymentSettings?.merchantEvmAddress.slice(0, 10)}...
+                      {paymentSettings?.merchantEvmAddress.slice(-8)}
                     </div>
                   </div>
                 </div>
@@ -963,21 +856,21 @@ const CashOut = ({
                 {!transferToAnyAddress && (
                   <div className="w-full flex items-center">
                     <div className="transferIcon">
-                      {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                      {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
-                      {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="BitoPro icon" fill />}
-                      {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
+                      {cashoutSettings?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                      {cashoutSettings?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
+                      {cashoutSettings?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="BitoPro icon" fill />}
+                      {cashoutSettings?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
                     </div>
                     <div className="ml-[12px] flex flex-col">
                       <div className="textBase leading-none font-medium">
                         {tcommon("toCEX", {
-                          cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                          cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
                         })}
                       </div>
-                      <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                      <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettings?.cexAccountName}</div>
                       <div className="textBasePx leading-tight break-all text-slate-500">
-                        {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...
-                        {cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                        {cashoutSettings?.cexEvmAddress.slice(0, 10)}...
+                        {cashoutSettings?.cexEvmAddress.slice(-8)}
                       </div>
                     </div>
                   </div>
@@ -1012,7 +905,7 @@ const CashOut = ({
                     {transferToAnyAddress
                       ? tcommon("transfer")
                       : tcommon("transferToCEX", {
-                          cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex).replace(" Exchange", "") : tcommon("CEX"),
+                          cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex).replace(" Exchange", "") : tcommon("CEX"),
                         })}
                   </button>
                 ) : (
@@ -1062,17 +955,17 @@ const CashOut = ({
                 {/*--- info ---*/}
                 <div className="w-full flex items-center">
                   <div className="transferIcon">
-                    {cashoutSettingsState?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                    {cashoutSettingsState?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
-                    {cashoutSettingsState?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                    {cashoutSettingsState?.cex == "Other" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                    {cashoutSettings?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                    {cashoutSettings?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
+                    {cashoutSettings?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
+                    {cashoutSettings?.cex == "Other" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
                   </div>
                   <div className="ml-[12px] flex flex-col">
                     <div className="textBase leading-none font-medium">{tcommon("fromCoinbase")}</div>
-                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettingsState?.cexAccountName}</div>
+                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettings?.cexAccountName}</div>
                     <div className="textBasePx leading-tight break-all text-slate-500">
-                      {cashoutSettingsState?.cexEvmAddress.slice(0, 10)}...
-                      {cashoutSettingsState?.cexEvmAddress.slice(-8)}
+                      {cashoutSettings?.cexEvmAddress.slice(0, 10)}...
+                      {cashoutSettings?.cexEvmAddress.slice(-8)}
                     </div>
                   </div>
                 </div>
@@ -1107,10 +1000,10 @@ const CashOut = ({
                   <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
                   <div className="transferArrowFont">
                     <div className="">
-                      1 USDC <span>={paymentSettingsState?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                      1 USDC <span>={paymentSettings?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettings?.merchantCurrency!]}
                       {rates.usdcToLocal}
                     </div>
-                    {paymentSettingsState?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
+                    {paymentSettings?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
                   </div>
                 </div>
               </div>
@@ -1130,12 +1023,12 @@ const CashOut = ({
                 {/*--- to amount ---*/}
                 <div className="transferAmountToBox">
                   <div className="">
-                    {currency2symbol[paymentSettingsState?.merchantCurrency!]}{" "}
+                    {currency2symbol[paymentSettings?.merchantCurrency!]}{" "}
                     {usdcTransferToBank
-                      ? paymentSettingsState?.merchantCurrency == "USD"
+                      ? paymentSettings?.merchantCurrency == "USD"
                         ? ((Number(usdcTransferToBank) - 0.01) * 0.99987).toFixed(2)
-                        : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])
-                      : (0).toFixed(currency2decimal[paymentSettingsState?.merchantCurrency!])}
+                        : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])
+                      : (0).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}
                   </div>
                 </div>
               </div>
@@ -1182,7 +1075,7 @@ const CashOut = ({
             <div className="text2xl font-bold">{usdcTransferToCex} USDC</div>
             <div className="textLg text-center">
               {t("transferToCexSuccessModal", {
-                cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
               })}
             </div>
             {/*--- button ---*/}
@@ -1230,7 +1123,7 @@ const CashOut = ({
               </div>
               <div>
                 <span className="font-bold">
-                  {currency2symbol[paymentSettingsState?.merchantCurrency!]}
+                  {currency2symbol[paymentSettings?.merchantCurrency!]}
                   {fiatDeposited}
                 </span>{" "}
                 {t("transferToBankSuccessModal.text-2")}
@@ -1258,6 +1151,4 @@ const CashOut = ({
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );
-};
-
-export default CashOut;
+}

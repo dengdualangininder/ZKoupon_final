@@ -1,13 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
-// context
-import { useUserInfo } from "../../_contexts/Web3AuthProvider";
+// custom hooks
+import { useUserInfo } from "../../web3auth-provider";
+import { usePaymentsQuery, useSettingsQuery } from "../../hooks";
 //wagmi
 import { useConfig } from "wagmi";
 import { writeContract } from "@wagmi/core";
 import { parseUnits } from "viem";
+// i18n
+import { useTranslations } from "next-intl";
 // components
 import QrCodeModal from "./modals/QrCodeModal";
 import ErrorModal from "./modals/ErrorModal";
@@ -18,9 +22,7 @@ import { currency2decimal } from "@/utils/constants";
 // other
 import { DateRange, DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { useTheme } from "next-themes";
 import { deleteCookie } from "cookies-next";
-import { useTranslations } from "next-intl";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,47 +32,27 @@ import { HiOutlineDownload, HiOutlineSearch } from "react-icons/hi";
 import { PiMagnifyingGlassBold } from "react-icons/pi";
 import { FiDownload, FiSearch } from "react-icons/fi";
 import { TbDownload } from "react-icons/tb";
-
+// utils
+import { getLocalTime, getLocalDateWords, getLocalDate } from "@/utils/functions";
 // types
+import { FlashInfo } from "@/utils/types";
 import { PaymentSettings, Transaction } from "@/db/UserModel";
 
-// functions
-export const getLocalTime = (mongoDate: string | undefined) => {
-  if (!mongoDate) {
-    return;
-  }
-  const time = new Date(mongoDate).toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-  const timeObject = { time: time.split(" ")[0], ampm: time.split(" ")[1] };
-  return timeObject;
-};
-
-// return format: April 2
-export const getLocalDateWords = (mongoDate: string | undefined) => {
-  if (!mongoDate) {
-    return;
-  }
-  let date = new Date(mongoDate).toLocaleDateString(undefined, { dateStyle: "long" }).split(",");
-  return date[0];
-};
-
-// return format: 2024-04-02
-export const getLocalDate = (mongoDate: string) => {
-  let date = new Date(mongoDate).toLocaleString("en-GB").split(", ")[0].split("/");
-  return `${date[2]}-${date[1]}-${date[0]}`;
-};
-
-const Payments = ({
-  transactionsState,
-  setTransactionsState,
-  paymentSettingsState,
-}: {
-  transactionsState: Transaction[];
-  setTransactionsState: any;
-  paymentSettingsState: PaymentSettings;
-}) => {
-  console.log("Payments component rendered");
-
+export default function Payments({ flashInfo, paymentSettings }: { flashInfo: FlashInfo; paymentSettings: PaymentSettings }) {
+  // hooks
   const userInfo = useUserInfo();
+  const { data: transactions } = usePaymentsQuery(userInfo, flashInfo);
+  // const { data: settings } = useSettingsQuery(userInfo, flashInfo);
+  // if (settings) {
+  //   var paymentSettings = settings.paymentSettings;
+  //   var cashoutSettings = settings.cashoutSettings;
+  // }
+
+  // time
+  const date = new Date();
+  const time = date.toLocaleTimeString("en-US", { hour12: false }) + `.${date.getMilliseconds()}`;
+  console.log("/app Payments.tsx", time, "flashInfo:", flashInfo, "userInfo:", userInfo, "transactions:", transactions?.length, "paymentSettings:", paymentSettings);
+
   // states
   const [clickedTxn, setClickedTxn] = useState<Transaction | null>(null);
   const [clickedTxnIndex, setClickedTxnIndex] = useState<number | null>(null);
@@ -81,7 +63,6 @@ const Payments = ({
   const [selectedEndMonth, setSelectedEndMonth] = useState("select");
   const [exportStartMonth, setExportStartMonth] = useState("select");
   const [exportEndMonth, setExportEndMonth] = useState("select");
-  const [fillerRows, setFillerRows] = useState<number[] | null>(transactionsState.length < 6 ? Array.from(Array(6 - transactionsState.length).keys()) : null);
   const [scrollWidth, setScrollWidth] = useState(16);
   // modal states
   const [errorModal, setErrorModal] = useState(false);
@@ -105,10 +86,10 @@ const Payments = ({
   // hooks
   const config = useConfig();
   const router = useRouter();
-  const { theme } = useTheme();
   const t = useTranslations("App.Payments");
   const tcommon = useTranslations("Common");
 
+  // set scrollbar width
   useEffect(() => {
     const scrollWidthTemp = (document?.querySelector("#table") as HTMLElement).offsetWidth - (document?.querySelector("#table") as HTMLElement).clientWidth;
     setScrollWidth(scrollWidthTemp);
@@ -116,104 +97,102 @@ const Payments = ({
 
   const onClickTxn = async (e: any) => {
     const txnHash = e.currentTarget.id;
-    const clickedTxnIndexTemp = transactionsState.findIndex((i: any) => i.txnHash === txnHash);
+    const clickedTxnIndexTemp = transactions.findIndex((i: any) => i.txnHash === txnHash);
     if (clickedTxnIndexTemp == undefined) {
       return;
     }
-    const clickedTxnTemp = transactionsState[clickedTxnIndexTemp];
+    const clickedTxnTemp = transactions[clickedTxnIndexTemp];
     setClickedTxnIndex(clickedTxnIndexTemp);
     setClickedTxn(clickedTxnTemp);
     setDetailsModal(true);
   };
 
   const onClickRefund = async () => {
-    console.log("onClickRefund, clickedTxn", clickedTxn);
-    setRefundStatus("processing");
-
-    // send tokens on blockchain
-    let refundHash = "";
-    try {
-      refundHash = await writeContract(config, {
-        address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
-        abi: erc20Abi,
-        functionName: "transfer",
-        args: [clickedTxn?.customerAddress, parseUnits(clickedTxn?.tokenAmount.toString() ?? "0", 6)],
-      });
-      console.log("refundHash", refundHash);
-    } catch (err) {
-      console.log(err);
-      setRefundStatus("initial");
-      setDetailsModal(false);
-      setErrorMsg("Payment was not refunded");
-      setErrorModal(true);
-      return;
-    }
-
-    //save to db
-    try {
-      const res = await fetch("/api/refund", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          merchantEvmAddress: paymentSettingsState.merchantEvmAddress,
-          refundHash: refundHash,
-          txnHash: clickedTxn?.txnHash,
-        }),
-      });
-      var data = await res.json();
-      console.log("refund api response:", data);
-    } catch (e) {
-      console.log(e);
-    }
-
-    // success or fail
-    if (data == "saved") {
-      setRefundStatus("processed");
-      let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
-      transactionsStateTemp[clickedTxnIndex!].refund = true;
-      setTransactionsState(transactionsStateTemp);
-    } else if (data != "saved") {
-      if (data.status == "error") {
-        setErrorMsg(data.message);
-      } else {
-        setErrorMsg("Refund was successful. But, the status was not saved to the database.");
-      }
-      setErrorModal(true);
-      setRefundStatus("initial");
-    }
+    // console.log("onClickRefund, clickedTxn", clickedTxn);
+    // setRefundStatus("processing");
+    // // TODO: check database if this already marked as refunded
+    // // TODO: make this gasless
+    // let refundHash = "";
+    // try {
+    //   refundHash = await writeContract(config, {
+    //     address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on polygon
+    //     abi: erc20Abi,
+    //     functionName: "transfer",
+    //     args: [clickedTxn?.customerAddress, parseUnits(clickedTxn?.tokenAmount.toString() ?? "0", 6)],
+    //   });
+    //   console.log("refundHash", refundHash);
+    // } catch (err) {
+    //   console.log(err);
+    //   setRefundStatus("initial");
+    //   setDetailsModal(false);
+    //   setErrorMsg("Payment was not refunded");
+    //   setErrorModal(true);
+    //   return;
+    // }
+    // //save to db
+    // try {
+    //   const res = await fetch("/api/refund", {
+    //     method: "POST",
+    //     headers: { "content-type": "application/json" },
+    //     body: JSON.stringify({
+    //       userInfo: userInfo,
+    //       refundHash: refundHash,
+    //       txnHash: clickedTxn?.txnHash,
+    //     }),
+    //   });
+    //   var data = await res.json();
+    //   console.log("refund api response:", data);
+    // } catch (e) {
+    //   console.log(e);
+    // }
+    // // success or fail
+    // if (data == "saved") {
+    //   setRefundStatus("processed");
+    //   let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
+    //   transactionsStateTemp[clickedTxnIndex!].refund = true;
+    //   setTransactionsState(transactionsStateTemp);
+    // } else if (data != "saved") {
+    //   if (data.status == "error") {
+    //     setErrorMsg(data.message);
+    //   } else {
+    //     setErrorMsg("Refund was successful. But, the status was not saved to the database.");
+    //   }
+    //   setErrorModal(true);
+    //   setRefundStatus("initial");
+    // }
   };
 
   const onClickToRefund = async () => {
-    console.log("onClickToRefund, clickedTxn:", clickedTxn);
-    // immediately update the state
-    setClickedTxn({ ...clickedTxn!, toRefund: clickedTxn?.toRefund ? false : true });
-    // save to db
-    const res = await fetch("/api/toRefund", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        merchantEvmAddress: paymentSettingsState.merchantEvmAddress,
-        txnHash: clickedTxn?.txnHash,
-        toRefund: clickedTxn?.toRefund,
-      }),
-    });
-    const data = await res.json();
-    if (data == "saved") {
-      console.log('"To Refund" status saved');
-      let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
-      transactionsStateTemp[clickedTxnIndex!].toRefund = transactionsStateTemp[clickedTxnIndex!].toRefund ? false : true;
-      setTransactionsState(transactionsStateTemp);
-    } else {
-      console.log('Error: "To Refund" status not saved');
-      if (data.status == "error") {
-        setErrorMsg(data.message);
-      } else {
-        setErrorMsg("Refund status was not saved to database");
-      }
-      setErrorModal(true);
-      // revert clickedTxn state to match original
-      setClickedTxn({ ...clickedTxn!, toRefund: transactionsState[clickedTxnIndex!].toRefund });
-    }
+    // console.log("onClickToRefund, clickedTxn:", clickedTxn);
+    // // immediately update the state
+    // setClickedTxn({ ...clickedTxn!, toRefund: clickedTxn?.toRefund ? false : true });
+    // // save to db
+    // const res = await fetch("/api/toRefund", {
+    //   method: "POST",
+    //   headers: { "content-type": "application/json" },
+    //   body: JSON.stringify({
+    //     merchantEvmAddress: paymentSettingsState.merchantEvmAddress,
+    //     txnHash: clickedTxn?.txnHash,
+    //     toRefund: clickedTxn?.toRefund,
+    //   }),
+    // });
+    // const data = await res.json();
+    // if (data == "saved") {
+    //   console.log('"To Refund" status saved');
+    //   let transactionsStateTemp = [...transactionsState]; // create shallow copy of transactionsState
+    //   transactionsStateTemp[clickedTxnIndex!].toRefund = transactionsStateTemp[clickedTxnIndex!].toRefund ? false : true;
+    //   setTransactionsState(transactionsStateTemp);
+    // } else {
+    //   console.log('Error: "To Refund" status not saved');
+    //   if (data.status == "error") {
+    //     setErrorMsg(data.message);
+    //   } else {
+    //     setErrorMsg("Refund status was not saved to database");
+    //   }
+    //   setErrorModal(true);
+    //   // revert clickedTxn state to match original
+    //   setClickedTxn({ ...clickedTxn!, toRefund: transactionsState[clickedTxnIndex!].toRefund });
+    // }
   };
 
   const exportTxns = () => {
@@ -221,7 +200,7 @@ const Payments = ({
     const endDate = new Date(Number(selectedEndMonth.split("-")[0]), Number(selectedEndMonth.split("-")[1]), 1); // returns return 1st, 0:00h of the following month
 
     let selectedTxns = [];
-    for (const txn of transactionsState) {
+    for (const txn of transactions) {
       const date = new Date(txn.date);
       if (date > startDate && date < endDate) {
         const newDate = date.toLocaleString([], { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" });
@@ -264,10 +243,10 @@ const Payments = ({
   };
 
   const createDownloadDates = () => {
-    let firstyear = Number(transactionsState[0].date.split("-")[0]);
-    let firstmonth = Number(transactionsState[0].date.split("-")[1]);
-    let lastyear = Number(transactionsState[transactionsState.length - 1].date.split("-")[0]);
-    let lastmonth = Number(transactionsState[transactionsState.length - 1].date.split("-")[1]);
+    let firstyear = Number(transactions[0].date.split("-")[0]);
+    let firstmonth = Number(transactions[0].date.split("-")[1]);
+    let lastyear = Number(transactions[transactions.length - 1].date.split("-")[0]);
+    let lastmonth = Number(transactions[transactions.length - 1].date.split("-")[1]);
     let years = Array.from({ length: lastyear - firstyear + 1 }, (value, index) => firstyear + index);
     let yearmonthArray = [];
     for (let year of years) {
@@ -308,7 +287,6 @@ const Payments = ({
     setSearchDate(undefined);
     setLast4Chars("");
     setSearchedTxns(null);
-    setFillerRows(null);
   };
 
   const search = async () => {
@@ -320,7 +298,7 @@ const Payments = ({
     }
 
     // filter search
-    let searchedTxnsTemp: Transaction[] = transactionsState;
+    let searchedTxnsTemp: Transaction[] = transactions;
     console.log(searchedTxnsTemp);
     if (last4Chars) {
       searchedTxnsTemp = searchedTxnsTemp?.filter((i) => i.customerAddress.toLowerCase().slice(-4) == last4Chars.toLowerCase());
@@ -341,12 +319,6 @@ const Payments = ({
     setSearchedTxns(searchedTxnsTemp);
     setClearSearchModal(true);
     setSearchModal(false);
-
-    if (searchedTxnsTemp.length < 6) {
-      setFillerRows(Array.from(Array(6 - searchedTxnsTemp.length).keys()));
-    } else {
-      setFillerRows([1]); // so that the last txn is visible
-    }
   };
 
   return (
@@ -364,7 +336,7 @@ const Payments = ({
             <div
               className="paymentsIconContainer"
               onClick={() => {
-                if (transactionsState.length > 0) {
+                if (transactions.length > 0) {
                   createDownloadDates();
                   setExportModal(true);
                 } else {
@@ -390,14 +362,14 @@ const Payments = ({
         {/*--- HEADERS ---*/}
         <div className="paymentsWidth pl-[8px] portrait:sm:!px-[12px] landscape:lg:!px-[12px] grow paymentsHeaderFont grid grid-cols-[38%_38%_24%] items-center text-slate-500">
           <div className="">{t("time")}</div>
-          <div>{paymentSettingsState.merchantCurrency}</div>
+          <div>{paymentSettings.merchantCurrency}</div>
           <div className="justify-self-end">{t("customer")}</div>
         </div>
       </div>
 
       {/*--- LIST OF PAYMENTS ---*/}
       {/*--- container ---*/}
-      {transactionsState.length != 0 && (
+      {transactions.length != 0 && (
         <div
           id="table"
           className={`${
@@ -405,7 +377,7 @@ const Payments = ({
           } pl-[8px] portrait:sm:!px-[12px] landscape:lg:!px-[12px] w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         >
           {/*--- list ---*/}
-          {(searchedTxns ? searchedTxns : transactionsState).toReversed().map((txn: any, index: number) => (
+          {(searchedTxns ? searchedTxns : transactions).toReversed().map((txn: any, index: number) => (
             <div
               className={`${txn.refund ? "opacity-50" : ""} ${
                 userInfo
@@ -436,7 +408,7 @@ const Payments = ({
                   <span className="text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] ml-[6px] font-medium">{getLocalTime(txn.date)?.ampm}</span>
                 </div>
                 {/*--- Amount ---*/}
-                <div>{txn.currencyAmount.toFixed(currency2decimal[paymentSettingsState.merchantCurrency])}</div>
+                <div>{txn.currencyAmount.toFixed(currency2decimal[paymentSettings.merchantCurrency])}</div>
                 {/*--- Customer ---*/}
                 <div className="justify-self-end">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</div>
               </div>
@@ -457,7 +429,7 @@ const Payments = ({
               </div>
             </div>
           )}
-          {transactionsState.length == 0 && <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">{t("noPayments")}</div>}
+          {transactions.length == 0 && <div className="w-full h-full flex items-center justify-center paymentsHeaderFont">{t("noPayments")}</div>}
         </div>
       )}
 
@@ -650,7 +622,7 @@ const Payments = ({
       </div>
 
       {/*--- QR CODE MODAL ---*/}
-      {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettingsState={paymentSettingsState} />}
+      {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={paymentSettings} />}
 
       {/*--- DETAILS MODAL ---*/}
       {detailsModal && <DetailsModal clickedTxn={clickedTxn} setDetailsModal={setDetailsModal} onClickToRefund={onClickToRefund} />}
@@ -697,6 +669,4 @@ const Payments = ({
       {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );
-};
-
-export default Payments;
+}

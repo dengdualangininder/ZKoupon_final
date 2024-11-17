@@ -18,7 +18,7 @@ import Inperson from "./_components/Inperson";
 import { currency2decimal, currency2rateDecimal, currency2symbol, currency2correction } from "@/utils/constants";
 import { tokenAddresses, chainIds, addChainParams } from "@/utils/web3Constants";
 import erc20ABI from "@/utils/abis/erc20Abi";
-import { getLocalDateWords, getLocalTime, getLocalDate } from "../(app)/app/_components/Payments";
+import { getLocalDateWords, getLocalTime, getLocalDate } from "../(app)/app/_components/payments";
 // types
 import { Rates } from "@/utils/types";
 

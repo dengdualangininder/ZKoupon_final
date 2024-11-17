@@ -1,11 +1,13 @@
+"use client";
 // nextjs
 import { useState } from "react";
 import Image from "next/image";
 // context
-import { useUserInfo } from "../../../_contexts/Web3AuthProvider";
+// import { useUserInfo } from "../../../web3auth-provider";
 // other
 import { QRCodeSVG } from "qrcode.react";
-import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
+// import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
+import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer/lib/react-pdf.browser";
 import { saveAs } from "file-saver";
 import { useTranslations } from "next-intl";
 // components
@@ -16,12 +18,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 // types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
+// import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
-const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettingsState: PaymentSettings; setQrCodeModal: any }) => {
-  const userInfo = useUserInfo();
+export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { paymentSettings: PaymentSettings; setQrCodeModal: any }) {
+  // const userInfo = useUserInfo();
 
-  const [email, setEmail] = useState(paymentSettingsState.merchantEmail);
+  const [email, setEmail] = useState(paymentSettings.merchantEmail);
   const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
   // modals
   const [qrCodeModalExportOptions, setQrCodeModalExportOptions] = useState(false);
@@ -53,9 +55,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
     const dataString = await pdf(
       <Document>
         <Page size="A5" style={{ position: "relative" }}>
-          <View>
-            <Placard />
-          </View>
+          <View>{/* <Placard /> */}</View>
           <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
             {/* @ts-ignore */}
             <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,26 +88,24 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
   };
 
   const downloadQrCode = async () => {
-    const el = document.getElementById("qrCodeForDownload");
-    const blob = await pdf(
-      <Document>
-        <Page size="A5" style={{ position: "relative" }}>
-          <View>
-            <Placard />
-          </View>
-          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
-            {/* @ts-ignore */}
-            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* @ts-ignore */}
-              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
-              {/* @ts-ignore */}
-              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
-            </Svg>
-          </View>
-        </Page>
-      </Document>
-    ).toBlob();
-    saveAs(blob, "FlashQrCode");
+    // const el = document.getElementById("qrCodeForDownload");
+    // const blob = await pdf(
+    //   <Document>
+    //     <Page size="A5" style={{ position: "relative" }}>
+    //       <View>{/* <Placard /> */}</View>
+    //       <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
+    //         {/* @ts-ignore */}
+    //         <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+    //           {/* @ts-ignore */}
+    //           <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+    //           {/* @ts-ignore */}
+    //           <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
+    //         </Svg>
+    //       </View>
+    //     </Page>
+    //   </Document>
+    // ).toBlob();
+    // saveAs(blob, "FlashQrCode");
   };
 
   return (
@@ -166,20 +164,12 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
           bgColor={"#ffffff"}
           fgColor={"#000000"}
           level={"L"}
-          value={paymentSettingsState?.qrCodeUrl ?? ""}
+          value={paymentSettings?.qrCodeUrl ?? ""}
         />
       </div>
       {/*--- qr code for download purposes ---*/}
       <div className="hidden">
-        <QRCodeSVG
-          id="qrCodeForDownload"
-          xmlns="http://www.w3.org/2000/svg"
-          size={210}
-          bgColor={"#ffffff"}
-          fgColor={"#000000"}
-          level={"L"}
-          value={paymentSettingsState.qrCodeUrl}
-        />
+        <QRCodeSVG id="qrCodeForDownload" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettings.qrCodeUrl} />
       </div>
 
       {emailModal && (
@@ -192,7 +182,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
                   className="xButtonContainer"
                   onClick={() => {
                     setEmailModal(false);
-                    setEmail(paymentSettingsState.merchantEmail);
+                    setEmail(paymentSettings.merchantEmail);
                     setIsSendingEmail("initial");
                   }}
                 >
@@ -204,7 +194,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
                     icon={faAngleLeft}
                     onClick={() => {
                       setEmailModal(false);
-                      setEmail(paymentSettingsState.merchantEmail);
+                      setEmail(paymentSettings.merchantEmail);
                       setIsSendingEmail("initial");
                     }}
                   />
@@ -240,7 +230,7 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
                     )}
                     {isSendingEmail == "sending" && (
                       <div onClick={emailQrCode} className="w-full flex items-center justify-center">
-                        <SpinningCircleGray />
+                        {/* <SpinningCircleGray /> */}
                         <div className="ml-3 textLg">{t("emailModal.sending")}...</div>
                       </div>
                     )}
@@ -273,6 +263,4 @@ const qrCodeModal = ({ paymentSettingsState, setQrCodeModal }: { paymentSettings
       )}
     </div>
   );
-};
-
-export default qrCodeModal;
+}

@@ -2,8 +2,10 @@
 // nextjs
 import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
-// contexts
-import { useUserInfo } from "../../_contexts/Web3AuthProvider";
+// hooks
+import { useUserInfo } from "../../web3auth-provider";
+import { usePaymentsQuery, useSettingsQuery } from "../../hooks";
+
 // other
 import { useTheme } from "next-themes";
 import { Buffer } from "buffer";
@@ -21,29 +23,24 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import { LuCopy } from "react-icons/lu";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
+import { FlashInfo } from "@/utils/types";
 
-const Settings = ({
-  paymentSettingsState,
-  setPaymentSettingsState,
-  cashoutSettingsState,
-  setCashoutSettingsState,
-  setPage,
-  idToken,
-  publicKey,
-  isUsabilityTest,
-}: {
-  paymentSettingsState: PaymentSettings;
-  setPaymentSettingsState: any;
-  cashoutSettingsState: CashoutSettings;
-  setCashoutSettingsState: any;
-  setPage: any;
-  idToken: string;
-  publicKey: string;
-  isUsabilityTest: boolean;
-}) => {
-  console.log("Settings, rendered once");
+export default function Settings({ flashInfo }: { flashInfo: FlashInfo }) {
+  console.log("/app Settings.tsx");
 
+  // hooks
   const userInfo = useUserInfo();
+  // const paymentsQuery = usePaymentsQuery(userInfo, flashInfo);
+  const {
+    data: { paymentSettings },
+    data: { cashoutSettings },
+  } = useSettingsQuery(userInfo, flashInfo);
+  const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const { disconnectAsync } = useDisconnect();
+  const locale = useLocale();
+  const t = useTranslations("App.Settings");
+  const tcommon = useTranslations("Common");
 
   // states
   const [popup, setPopup] = useState("");
@@ -66,33 +63,25 @@ const Settings = ({
   const [apiModal, setApiModal] = useState(false);
   const [depositAddressModal, setDepositAddressModal] = useState(false);
 
-  // hooks
-  const { theme, setTheme } = useTheme();
-  const router = useRouter();
-  const { disconnectAsync } = useDisconnect();
-  const locale = useLocale();
-  const t = useTranslations("App.Settings");
-  const tcommon = useTranslations("Common");
-
   // listens to changes in save and saves the states to db
   useEffect(() => {
     // tempUrl is dependent on the UPDATED settingsState, so must use useEffect. Initially, had all this logic within a function,
     // but could not generate tempUrl with updated settingsState. Using "save" in dependency array instead of settingsState allows
     // control when to specifically trigger this useEffect
     console.log("saveSettings useEffect run once");
-    const merchantNameEncoded = encodeURI(paymentSettingsState.merchantName);
-    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettingsState.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettingsState.merchantCurrency}&merchantEvmAddress=${paymentSettingsState.merchantEvmAddress}`;
-    if (paymentSettingsState.merchantPaymentType === "online") {
+    const merchantNameEncoded = encodeURI(paymentSettings.merchantName);
+    let tempUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettings.merchantPaymentType}&merchantName=${merchantNameEncoded}&merchantCurrency=${paymentSettings.merchantCurrency}&merchantEvmAddress=${paymentSettings.merchantEvmAddress}`;
+    if (paymentSettings.merchantPaymentType === "online") {
       tempUrl =
         tempUrl +
         "&&" +
-        Buffer.from(paymentSettingsState.merchantEmail, "utf8").toString("base64") +
+        Buffer.from(paymentSettings.merchantEmail, "utf8").toString("base64") +
         "&&" +
-        Buffer.from(paymentSettingsState.merchantWebsite, "utf8").toString("base64") +
+        Buffer.from(paymentSettings.merchantWebsite, "utf8").toString("base64") +
         "&&" +
-        paymentSettingsState.merchantBusinessType +
+        paymentSettings.merchantBusinessType +
         "&&" +
-        paymentSettingsState.merchantFields.join(",");
+        paymentSettings.merchantFields.join(",");
     }
     setPaymentSettingsState({ ...paymentSettingsState, qrCodeUrl: tempUrl });
 
@@ -102,7 +91,7 @@ const Settings = ({
         const res = await fetch("/api/saveSettings", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ paymentSettings: { ...paymentSettingsState, qrCodeUrl: tempUrl }, cashoutSettings: cashoutSettingsState, idToken, publicKey }),
+          body: JSON.stringify({ paymentSettings: { ...paymentSettingsState, qrCodeUrl: tempUrl }, cashoutSettings: cashoutSettingsState, userInfo }),
         });
         const data = await res.json();
         if (data === "saved") {
@@ -134,14 +123,14 @@ const Settings = ({
   const missingInfo = () => {
     let missingInfo = [];
     // merchant name
-    if (paymentSettingsState.merchantName === "") {
+    if (paymentSettings.merchantName === "") {
       missingInfo.push("Name of Your Business");
     }
     // website
-    if (paymentSettingsState.merchantPaymentType === "online") {
-      if (paymentSettingsState.merchantWebsite === "") {
+    if (paymentSettings.merchantPaymentType === "online") {
+      if (paymentSettings.merchantWebsite === "") {
         missingInfo.push("Your Website");
-      } else if (paymentSettingsState.merchantWebsite.slice(0, 4) != "http") {
+      } else if (paymentSettings.merchantWebsite.slice(0, 4) != "http") {
         missingInfo.push(`Website must start with "http(s)"`);
       }
     }
@@ -165,7 +154,7 @@ const Settings = ({
   const copyAddress = () => {
     setPopup("copyAddress");
     setTimeout(() => setPopup(""), 1500);
-    navigator.clipboard.writeText(paymentSettingsState.merchantEvmAddress);
+    navigator.clipboard.writeText(paymentSettings.merchantEvmAddress);
   };
 
   const saveEmployeePass = async (e: React.FocusEvent<HTMLInputElement, Element>) => {
@@ -176,7 +165,7 @@ const Settings = ({
       const res = await fetch("/api/saveEmployeePass", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ employeePass: employeePass, idToken, publicKey }),
+        body: JSON.stringify({ employeePass: employeePass, userInfo }),
       });
       const data = await res.json();
       if (data === "saved") {
@@ -202,8 +191,7 @@ const Settings = ({
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     await disconnectAsync();
-    setPage("loading");
-    window.location.reload();
+    router.push("/login");
   };
 
   // console.log("last render, paymentSettingsState:", paymentSettingsState);
@@ -219,7 +207,7 @@ const Settings = ({
             <label className="settingsLabelFont">{t("account")}</label>
             <div className="relative h-full" onClick={copyAddress}>
               <div className="settingsInputFont h-full flex items-center cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[300ms]">
-                {paymentSettingsState.merchantEvmAddress.slice(0, 7)}...{paymentSettingsState.merchantEvmAddress.slice(-5)} <LuCopy className="ml-2 w-[20px] h-[20px]" />
+                {paymentSettings.merchantEvmAddress.slice(0, 7)}...{paymentSettings.merchantEvmAddress.slice(-5)} <LuCopy className="ml-2 w-[20px] h-[20px]" />
               </div>
               {/*--- "copied" popup ---*/}
               {popup == "copyAddress" && (
@@ -242,7 +230,7 @@ const Settings = ({
                 className="settingsInput settingsInputFont peer"
                 onChange={(e) => setPaymentSettingsState({ ...paymentSettingsState, merchantEmail: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
-                value={paymentSettingsState.merchantEmail}
+                value={paymentSettings.merchantEmail}
                 placeholder={t("empty")}
               ></input>
               <div className="settingsRightAngle">&#10095;</div>
@@ -261,7 +249,7 @@ const Settings = ({
                 className="settingsInput settingsInputFont peer"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPaymentSettingsState({ ...paymentSettingsState, merchantName: e.currentTarget.value })}
                 onBlur={() => setSave(!save)}
-                value={paymentSettingsState.merchantName}
+                value={paymentSettings.merchantName}
               ></input>
               <div className="settingsRightAngle">&#10095;</div>
             </div>
@@ -286,7 +274,7 @@ const Settings = ({
                   e.target.closest("select")?.blur();
                   setSave(!save);
                 }}
-                value={`${paymentSettingsState.merchantCountry} / ${paymentSettingsState.merchantCurrency}`}
+                value={`${paymentSettings.merchantCountry} / ${paymentSettings.merchantCurrency}`}
               >
                 {countryCurrencyList.map((i, index) => (
                   <option key={index} className="px-4">
@@ -329,7 +317,7 @@ const Settings = ({
                   }
                   setSave(!save);
                 }}
-                value={paymentSettingsState.merchantPaymentType}
+                value={paymentSettings.merchantPaymentType}
               >
                 <option value="inperson">In-person</option>
                 <option value="online">Online</option>
@@ -337,7 +325,7 @@ const Settings = ({
             </div> */}
 
           {/*---merchantWebsite---*/}
-          {/* <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"} flex flex-col relative`}>
+          {/* <div className={`${paymentSettings.merchantPaymentType === "online" ? "" : "hidden"} flex flex-col relative`}>
             <div className="settingsLabelFont">
               <span className="group">
                 <label className="">
@@ -356,27 +344,27 @@ const Settings = ({
                 setPaymentSettingsState({ ...paymentSettingsState, merchantWebsite: e.target.value });
                 setSave(!save);
               }}
-              value={paymentSettingsState.merchantWebsite}
+              value={paymentSettings.merchantWebsite}
             ></input>
           </div> */}
 
           {/*---merchantBusinessType---*/}
-          {/* <div className={`${paymentSettingsState.merchantPaymentType === "online" ? "" : "hidden"}`}>
+          {/* <div className={`${paymentSettings.merchantPaymentType === "online" ? "" : "hidden"}`}>
             <div className="flex">
               <label className="settingsLabelFont">Your Business Type</label>
             </div>
             <div onClick={() => setMerchantBusinessTypeModal(true)} className="settingsInput settingsInputFont w-full flex items-center cursor-pointer hover:bg-blue-100">
-              {paymentSettingsState.merchantBusinessType && (
+              {paymentSettings.merchantBusinessType && (
                 <div>
-                  <FontAwesomeIcon icon={merchantType2data[paymentSettingsState.merchantBusinessType].fa} className="text-blue-500 mr-1.5" />{" "}
-                  {merchantType2data[paymentSettingsState.merchantBusinessType].text}
+                  <FontAwesomeIcon icon={merchantType2data[paymentSettings.merchantBusinessType].fa} className="text-blue-500 mr-1.5" />{" "}
+                  {merchantType2data[paymentSettings.merchantBusinessType].text}
                 </div>
               )}
             </div>
           </div> */}
 
           {/*---merchantFields---*/}
-          <div className={`${paymentSettingsState.merchantPaymentType === "inperson" ? "hidden" : ""}`}>
+          <div className={`${paymentSettings.merchantPaymentType === "inperson" ? "hidden" : ""}`}>
             {/*---label---*/}
             <div className="flex">
               {/*---container with width matching text width---*/}
@@ -398,7 +386,7 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="email"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("email") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("email") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
@@ -409,18 +397,18 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="item"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("item") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("item") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
-                <label className="ml-1 text-base  leading-none">{merchantType2data[paymentSettingsState.merchantPaymentType]?.itemlabel.toLowerCase() ?? "item name"}</label>
+                <label className="ml-1 text-base  leading-none">{merchantType2data[paymentSettings.merchantPaymentType]?.itemlabel.toLowerCase() ?? "item name"}</label>
               </div>
               <div className="flex items-center">
                 <input
                   data-category="settingsMerchantFields"
                   name="count"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("count") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("count") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
@@ -431,7 +419,7 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="daterange"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("daterange") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("daterange") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
@@ -442,7 +430,7 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="date"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("date") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("date") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
@@ -453,7 +441,7 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="time"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("time") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("time") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
@@ -464,7 +452,7 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="shipping"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("shipping") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("shipping") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox flex-none"
                 ></input>
@@ -475,7 +463,7 @@ const Settings = ({
                   data-category="settingsMerchantFields"
                   name="sku"
                   type="checkbox"
-                  checked={paymentSettingsState.merchantFields.includes("sku") ? true : false}
+                  checked={paymentSettings.merchantFields.includes("sku") ? true : false}
                   onChange={onChangeMerchantFields}
                   className="checkbox"
                 ></input>
@@ -485,7 +473,7 @@ const Settings = ({
           </div>
 
           {/*---cex---*/}
-          {paymentSettingsState.merchantCountry != "Other" && (
+          {paymentSettings.merchantCountry != "Other" && (
             <div className={`${cashoutSettingsState.cex == "Coinbase" ? "border-bnot" : ""} settingsField`}>
               <label className="settingsLabelFont">{t("platform")}</label>
               <div className="h-full flex items-center cursor-pointer">
@@ -499,7 +487,7 @@ const Settings = ({
                   }}
                   value={cashoutSettingsState.cex}
                 >
-                  {countryData[paymentSettingsState.merchantCountry].CEXes.map((i, index) => (
+                  {countryData[paymentSettings.merchantCountry].CEXes.map((i, index) => (
                     <option key={index}>{i}</option>
                   ))}
                 </select>
@@ -509,7 +497,7 @@ const Settings = ({
           )}
 
           {/*---cexEvmAddress---*/}
-          <div className={`${paymentSettingsState.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField`}>
+          <div className={`${paymentSettings.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" ? "hidden" : ""} settingsField`}>
             <label className={`${hidePlatformAddressLabel ? "hidden" : ""} settingsLabelFont w-[160px] sm:w-auto leading-tight`}>
               {t("platformAddress")}
               <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
@@ -602,10 +590,10 @@ const Settings = ({
                   setSave(!save);
                 }}
                 value={
-                  paymentSettingsState.merchantGoogleId
+                  paymentSettings.merchantGoogleId
                     ? hideGoogleLabel
-                      ? paymentSettingsState.merchantGoogleId
-                      : `${paymentSettingsState.merchantGoogleId.slice(0, 7)}...${paymentSettingsState.merchantGoogleId.slice(-5)}`
+                      ? paymentSettings.merchantGoogleId
+                      : `${paymentSettings.merchantGoogleId.slice(0, 7)}...${paymentSettings.merchantGoogleId.slice(-5)}`
                     : ""
                 }
                 placeholder={t("empty")}
@@ -617,7 +605,7 @@ const Settings = ({
           </div>
 
           {/*---2% off---*/}
-          {paymentSettingsState.merchantPaymentType === "inperson" && (
+          {paymentSettings.merchantPaymentType === "inperson" && (
             <div className="settingsField border-b relative">
               <label className="settingsLabelFont">
                 {t("cashback")}
@@ -728,7 +716,7 @@ const Settings = ({
                       {t.rich("info.employeePass.text-1", {
                         span1: (chunks) => <span className="font-bold">{chunks}</span>,
                         span2: (chunks) => <span className="font-bold">{chunks}</span>,
-                        email: paymentSettingsState.merchantEmail,
+                        email: paymentSettings.merchantEmail,
                       })}
                     </p>
                     <p className="pt-2 font-bold">{t("info.employeePass.text-2")}</p>
@@ -786,7 +774,7 @@ const Settings = ({
                   id={`settings${i}`}
                   key={index}
                   className={`${
-                    paymentSettingsState.merchantBusinessType == i ? "bg-blue-100" : ""
+                    paymentSettings.merchantBusinessType == i ? "bg-blue-100" : ""
                   } flex flex-col items-center cursor-pointer rounded-md py-2 border-gray-200 hover:bg-blue-100 transition-transform duration-300 backface-hidden relative`}
                   onClick={(e) => {
                     const merchantBusinessTypeTemp = e.currentTarget.id.replace("settings", "");
@@ -816,6 +804,4 @@ const Settings = ({
       )} */}
     </section>
   );
-};
-
-export default Settings;
+}

@@ -1,7 +1,7 @@
 // nextjs
 import { useState } from "react";
 // context
-import { useUserInfo } from "../../../_contexts/Web3AuthProvider";
+import { useUserInfo } from "../../../web3auth-provider";
 
 // other
 import { useTranslations } from "next-intl";
@@ -17,13 +17,13 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 
 const CashoutIntroModal = ({
-  paymentSettingsState,
-  cashoutSettingsState,
+  paymentSettings,
+  cashoutSettings,
   setCashoutIntroModal,
   setTradeMAXModal,
 }: {
-  paymentSettingsState: PaymentSettings;
-  cashoutSettingsState: CashoutSettings;
+  paymentSettings: PaymentSettings;
+  cashoutSettings: CashoutSettings;
   setCashoutIntroModal: any;
   setTradeMAXModal: any;
 }) => {
@@ -54,7 +54,7 @@ const CashoutIntroModal = ({
                       <div className="cashoutBalanceContainer">
                         <div className="cashoutBalance">
                           <div>
-                            {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
+                            {currency2symbol[paymentSettings?.merchantCurrency!]}&nbsp;
                             <span>123.45</span>
                           </div>
                           <div className="cashoutArrowContainer">
@@ -64,7 +64,7 @@ const CashoutIntroModal = ({
                       </div>
                       <div className="cashoutButtonContainer relative">
                         <div className="absolute w-[calc(180px+24px)] portrait:sm:w-[calc(224px+24px)] landscape:lg:w-[calc(224px+24px)] landscape:xl:desktop:w-[calc(200px+24px)] h-[calc(100%+28px)] border-4 border-red-500 z-[2] bottom-[-14px] right-[-16px]"></div>
-                        <button className="cashoutButton">{cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer")}</button>
+                        <button className="cashoutButton">{cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer")}</button>
                       </div>
                     </div>
                   </div>
@@ -77,8 +77,8 @@ const CashoutIntroModal = ({
                       {t.rich("step-1-2", {
                         span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
                         span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
-                        cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : "cryptocurrency exchange",
-                        transferToCEX: cashoutSettingsState.cex ? tcommon("transferToCEX", { cex: cashoutSettingsState.cex }) : tcommon("transfer"),
+                        cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : "cryptocurrency exchange",
+                        transferToCEX: cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer"),
                       })}
                     </div>
                   </div>
@@ -91,7 +91,7 @@ const CashoutIntroModal = ({
                 </div>
               </div>
             )}
-            {step == "two" && cashoutSettingsState.cex == "Coinbase" && paymentSettingsState.merchantCountry != "Other" && (
+            {step == "two" && cashoutSettings.cex == "Coinbase" && paymentSettings.merchantCountry != "Other" && (
               <div className="h-full flex flex-col">
                 {/*--- image + text ---*/}
                 <div className="flex-1 flex flex-col items-center">
@@ -103,7 +103,7 @@ const CashoutIntroModal = ({
                       <div className="cashoutBalanceContainer">
                         <div className="cashoutBalance">
                           <div>
-                            {currency2symbol[paymentSettingsState?.merchantCurrency!]}&nbsp;
+                            {currency2symbol[paymentSettings?.merchantCurrency!]}&nbsp;
                             <span>123.45</span>
                           </div>
                           <div className="cashoutArrowContainer">
@@ -142,18 +142,18 @@ const CashoutIntroModal = ({
                 </div>
               </div>
             )}
-            {step == "two" && (cashoutSettingsState.cex != "Coinbase" || paymentSettingsState.merchantCountry == "Other") && (
+            {step == "two" && (cashoutSettings.cex != "Coinbase" || paymentSettings.merchantCountry == "Other") && (
               <div className="w-full h-full flex flex-col">
                 {/*--- content ---*/}
                 <div className="textLg2 flex-1 mt-[60px] flex flex-col items-center">
                   <div className="w-full font-semibold dark:font-bold">{t("step-2-1")} :</div>
                   <div className="mt-2">
                     {t("step-2-2", {
-                      cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : "cryptocurrency exchange",
-                      merchantCurrency: paymentSettingsState.merchantCurrency,
+                      cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : "cryptocurrency exchange",
+                      merchantCurrency: paymentSettings.merchantCurrency,
                     })}
                   </div>
-                  {cashoutSettingsState.cex == "MAX" && (
+                  {cashoutSettings.cex == "MAX" && (
                     <div className="w-full mt-4 link" onClick={() => setTradeMAXModal(true)}>
                       {t("step-2-max")}
                     </div>

@@ -1,16 +1,17 @@
 "use client";
 // nextjs
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "@/i18n/routing";
+// cookies
+import { getCookie } from "cookies-next";
 // wagmi
 import { useConnect } from "wagmi";
 // i18n
-import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 // utils
 import ErrorModalLight from "@/utils/components/ErrorModalLight";
 import { langObjectArray } from "@/utils/constants";
-// images
 import { SpinningCircleWhiteLarge } from "@/utils/components/SpinningCircleWhite";
 // images
 import { FaCaretDown } from "react-icons/fa6";
@@ -18,9 +19,21 @@ import { SlGlobe } from "react-icons/sl";
 import { PiEyeLight, PiEyeSlashLight, PiGlobeSimpleLight } from "react-icons/pi";
 
 export default function Login() {
-  // temp
-  const isUsabilityTest = false;
+  // time
+  const date = new Date();
+  const time = date.toLocaleTimeString("en-US", { hour12: false }) + `.${date.getMilliseconds()}`;
+  console.log("/login, page.tsx", time);
 
+  const router = useRouter();
+
+  // if flashToken present, then go to /app => but this should already be caught by middleware
+  const flashToken = getCookie("flashToken");
+  if (flashToken) {
+    router.push("/app");
+  }
+
+  // states
+  const isUsabilityTest = false; // temp
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState(false);
@@ -30,37 +43,66 @@ export default function Login() {
   const [moreOptionsModal, setMoreOptionsModal] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showLangs, setShowLangs] = useState(false);
+  const [isApple, setIsApple] = useState(false);
 
   // hooks
   let { connectAsync, connectors } = useConnect();
-  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("App.Login");
 
-  // create list of connectors (index is important)
-  const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
+  // redirect to "saveToHome" page if mobile & not standalone
+  useEffect(() => {
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
+      router.push("/saveAppToHome");
+      return;
+    }
+
+    // create list of connectors (index is important)
+    const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
+    setIsApple(isApple);
+  }, []);
+
+  type MyConnector = { name: string; img: string; connectorIndex: number };
   if (isApple) {
-    var myConnectors = [
+    var myConnectors: MyConnector[] = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
       { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
       { name: "Apple", img: "/apple.svg", connectorIndex: 2 },
     ];
-    var myConnectorsMore = [
+    var myConnectorsMore: MyConnector[] = [
       { name: "Telegram", img: "/telegram.svg", connectorIndex: 3 },
       { name: "Line", img: "/line.svg", connectorIndex: 4 },
       { name: "Discord", img: "/discord.svg", connectorIndex: 5 },
     ];
   } else {
-    var myConnectors = [
+    var myConnectors: MyConnector[] = [
       { name: "Google", img: "/google.svg", connectorIndex: 0 },
       { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
     ];
-    var myConnectorsMore = [
+    var myConnectorsMore: MyConnector[] = [
       { name: "Telegram", img: "/telegram.svg", connectorIndex: 2 },
       { name: "Line", img: "/line.svg", connectorIndex: 3 },
       { name: "Discord", img: "/discord.svg", connectorIndex: 4 },
     ];
   }
+
+  const merchantLogin = async (connectorIndex: number) => {
+    console.log("/login, onClickOwnerLogin");
+    setIsLoggingIn(true); // consider deleting
+
+    if (isUsabilityTest) {
+      // setPage("loading");
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
+      // setPage("intro");
+      return;
+    }
+
+    await connectAsync({ connector: connectors[connectorIndex] });
+    // wait for web3Auth onConnect to fire and redirect to /app
+    // TODO: possible issue is isLoggingIn never set back to false
+  };
 
   const employeeLogin = async () => {
     setIsLoggingIn(true);
@@ -89,6 +131,45 @@ export default function Login() {
       console.log("failed to login");
     }
     setIsLoggingIn(false);
+  };
+
+  // reason this is not in newuser component is because web3auth context already used here, don't want to use in another component
+  const createNewUser = async () => {
+    console.log("creating new user");
+    // set merchantCountry, merchantCurrency, and cex
+    // try {
+    //   const res = await axios.get("https://api.country.is");
+    //   var merchantCountry = abb2full[res.data.country] ?? "Other";
+    //   var merchantCurrency = countryData[merchantCountry]?.currency ?? "USD";
+    //   var cex = countryData[merchantCountry]?.CEXes[0] ?? "";
+    //   console.log("createNewUser: detected country, currency, and CEX:", merchantCountry, merchantCurrency, cex);
+    // } catch (err) {
+    //   merchantCountry = "U.S.";
+    //   merchantCurrency = "USD";
+    //   cex = "Coinbase";
+    //   console.log("createNewUser error: country not detect, set to default");
+    // }
+    // // set merchantEmail and merchantEvmAddress
+    // const merchantEmail = (await web3Auth?.getUserInfo())?.email || ""; // TODO:check if this works for Apple login
+    // const merchantEvmAddress = account.address;
+    // // create new user in db
+    // try {
+    //   const res = await fetch("/api/createUser", {
+    //     method: "POST",
+    //     headers: { "content-type": "application/json" },
+    //     body: JSON.stringify({ merchantEvmAddress, merchantEmail, merchantCountry, merchantCurrency, cex }),
+    //   });
+    //   const doc = await res.json();
+    //   console.log("new user created, doc:", doc);
+    //   setPaymentSettingsState(doc.paymentSettings);
+    //   setCashoutSettingsState(doc.cashoutSettings);
+    //   setPage("intro");
+    // } catch (error) {
+    //   console.log("request to createUser api failed");
+    //   setErrorMsg(t("error.failedNewAccount"));
+    //   setErrorModal(true);
+    //   setPage("login");
+    // }
   };
 
   return (
@@ -162,23 +243,11 @@ export default function Login() {
           {userType == "owners" && (
             <div className="pt-[16px] w-full flex flex-col space-y-[32px] portrait:sm:space-y-[32px] landscape:lg:space-y-[28px]">
               {/*--- connectors: google, facebook, apple ---*/}
-              {myConnectors.map<any>((i: any) => (
+              {myConnectors.map((i: MyConnector) => (
                 <div
                   key={i.name}
                   className="w-full h-[60px] portrait:sm:h-[68px] landscape:lg:h-[68px] landscape:xl:desktop:h-[56px] flex items-center text-gray-700 bg-white rounded-md lg:hover:opacity-50 active:opacity-50 border border-gray-200 drop-shadow-md cursor-pointer select-none"
-                  onClick={async () => {
-                    // usability test
-                    if (isUsabilityTest) {
-                      // setPage("loading");
-                      // await new Promise((resolve) => setTimeout(resolve, 3000));
-                      // setPage("intro");
-                      return;
-                    }
-
-                    console.log("/app/login, page.tsx, clicked connect");
-                    await connectAsync({ connector: connectors[i.connectorIndex] });
-                    router.push("/app");
-                  }}
+                  onClick={() => merchantLogin(i.connectorIndex)}
                 >
                   <div className="relative ml-[20px] mr-[16px] w-[40px] h-[32px]">
                     <Image src={i.img} alt={i.name} fill />

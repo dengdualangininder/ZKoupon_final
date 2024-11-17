@@ -17,3 +17,28 @@ export function clientToProvider(client: Client<Transport, Chain>) {
   }
   return new JsonRpcProvider(transport.url, network);
 }
+
+// functions
+export const getLocalTime = (mongoDate: string | undefined) => {
+  if (!mongoDate) {
+    return;
+  }
+  const time = new Date(mongoDate).toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
+  const timeObject = { time: time.split(" ")[0], ampm: time.split(" ")[1] };
+  return timeObject;
+};
+
+// return format: April 2
+export const getLocalDateWords = (mongoDate: string | undefined) => {
+  if (!mongoDate) {
+    return;
+  }
+  let date = new Date(mongoDate).toLocaleDateString(undefined, { dateStyle: "long" }).split(",");
+  return date[0];
+};
+
+// return format: 2024-04-02
+export const getLocalDate = (mongoDate: string) => {
+  let date = new Date(mongoDate).toLocaleString("en-GB").split(", ")[0].split("/");
+  return `${date[2]}-${date[1]}-${date[0]}`;
+};

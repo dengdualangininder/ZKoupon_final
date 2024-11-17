@@ -1,10 +1,10 @@
 import { useState } from "react";
 // context
-import { useUserInfo } from "../../../_contexts/Web3AuthProvider";
+import { useUserInfo } from "../../../web3auth-provider";
 // others
 import { useTranslations } from "next-intl";
 // constants
-import { getLocalTime, getLocalDate } from "../Payments";
+import { getLocalTime, getLocalDate } from "@/utils/functions";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
