@@ -16,9 +16,9 @@ import Settings from "./Settings";
 import Loading from "./Loading";
 import Notification from "./Notification";
 import CbIntroModal from "./modals/CbIntroModal";
-import QrCodeModal from "./(payments)/QrCodeModal";
 import CashbackModal from "./modals/CashbackModal";
 import TradeMAXModal from "./modals/exchanges/TradeMAXModal";
+import QrCodeModal from "./(payments)/QrCodeModal";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types
