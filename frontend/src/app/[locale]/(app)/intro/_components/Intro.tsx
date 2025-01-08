@@ -102,7 +102,7 @@ export default function Intro() {
     }
   };
 
-  const saveAndSend = async () => {
+  const saveSettingsAndSendEmail = async () => {
     // show next step
     setStep("emailSent");
     if (isUsabilityTest) {
@@ -125,26 +125,29 @@ export default function Intro() {
       return;
     }
 
-    // save settings
-    const isSaved = await saveSettings({
-      changes: {
-        "paymentSettings.merchantEmail": settings.merchantEmail,
-        "paymentSettings.merchantName": settings.merchantName,
-        "paymentSettings.merchantCountry": settings.merchantCountry,
-        "paymentSettings.merchantCurrency": settings.merchantCurrency,
-        "cashoutSettings.cex": settings.cex,
-        "paymentSettings.qrCodeUrl": settings.qrCodeUrl,
+    // save settings & send email
+    await saveSettings(
+      {
+        changes: {
+          "paymentSettings.merchantEmail": settings.merchantEmail,
+          "paymentSettings.merchantName": settings.merchantName,
+          "paymentSettings.merchantCountry": settings.merchantCountry,
+          "paymentSettings.merchantCurrency": settings.merchantCurrency,
+          "cashoutSettings.cex": settings.cex,
+          "paymentSettings.qrCodeUrl": settings.qrCodeUrl,
+        },
+        w3Info,
       },
-      w3Info,
-    });
-
-    // if saved, then send email; if not, then error popup
-    if (isSaved) {
-      console.log("isSaved", isSaved);
-      // await sendEmail();
-    } else {
-      setErrorModal("Error: Data was not saved. You can proceed and edit your settings later.");
-    }
+      {
+        onSuccess: async () => {
+          console.log("settings saved");
+          // await sendEmail();
+        },
+        onError: () => {
+          setErrorModal("Error: Your information was not saved. You can proceed and edit your information later.");
+        },
+      }
+    );
   };
 
   async function sendEmail() {
@@ -263,7 +266,7 @@ export default function Intro() {
               <button className="introBack" onClick={() => setStep("welcome")}>
                 &#10094;&nbsp; {tcommon("back")}
               </button>
-              <button className="introNext" onClick={saveAndSend}>
+              <button className="introNext" onClick={saveSettingsAndSendEmail}>
                 {tcommon("next")} &nbsp;&#10095;
               </button>
             </div>
