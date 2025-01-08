@@ -25,7 +25,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T18:31:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 100.0,
     currencyAmountAfterCashback: 98.0,
     merchantCurrency: "EUR",
@@ -37,7 +37,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -56,7 +56,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T04:31:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 300000.0,
     currencyAmountAfterCashback: 9800.0,
     merchantCurrency: "EUR",
@@ -68,7 +68,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -87,7 +87,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T08:31:08.434+00:00",
     customerAddress: "0x3c99c4542cEF5E3811e1192ce70d8cC03d5c3c99",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 10.0,
     currencyAmountAfterCashback: 98.0,
     merchantCurrency: "EUR",
@@ -99,7 +99,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -118,7 +118,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-19T02:11:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c9c54",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 325.56,
     currencyAmountAfterCashback: 319.05,
     merchantCurrency: "EUR",
@@ -130,7 +130,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -149,7 +149,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-19T09:03:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5ccEF5",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 2.13,
     currencyAmountAfterCashback: 2.09,
     merchantCurrency: "EUR",
@@ -161,7 +161,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -180,7 +180,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T03:47:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c5E38",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 52.64,
     currencyAmountAfterCashback: 51.59,
     merchantCurrency: "EUR",
@@ -192,7 +192,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -211,7 +211,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T05:28:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5ce119",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 8.36,
     currencyAmountAfterCashback: 8.19,
     merchantCurrency: "EUR",
@@ -223,7 +223,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
@@ -242,7 +242,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T08:02:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c2ce7",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 12.56,
     currencyAmountAfterCashback: 12.31,
     merchantCurrency: "EUR",
@@ -254,7 +254,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec qu",
     // online params
@@ -273,7 +273,7 @@ export const fakeTxns: Transaction[] = [
   {
     date: "2024-05-20T08:31:08.434+00:00",
     customerAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5ccC03",
-    merchantAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     currencyAmount: 24.23,
     currencyAmountAfterCashback: 23.75,
     merchantCurrency: "EUR",
@@ -285,7 +285,7 @@ export const fakeTxns: Transaction[] = [
     fxSavings: "0.1",
     cashback: "0.2",
     totalSavings: "0.3",
-    refund: false,
+    refund: "",
     toRefund: false,
     note: "",
     // online params
