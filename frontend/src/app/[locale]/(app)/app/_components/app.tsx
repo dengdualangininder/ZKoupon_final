@@ -9,11 +9,11 @@ import { useAccount } from "wagmi";
 import Pusher from "pusher-js"; // pusher
 import { useTheme } from "next-themes";
 // components
-import Navbar from "./navbar";
-import Payments from "./payments";
-import CashOut from "./cashout";
-import Settings from "./settings";
-import Loading from "./loading";
+import Navbar from "./Navbar";
+import Payments from "./Payments";
+import CashOut from "./Cashout";
+import Settings from "./Settings";
+import Loading from "./Loading";
 import Notification from "./Notification";
 import CbIntroModal from "./modals/CbIntroModal";
 import QrCodeModal from "./(payments)/QrCodeModal";

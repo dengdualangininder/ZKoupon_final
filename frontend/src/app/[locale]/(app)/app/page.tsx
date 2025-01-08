@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import App from "./_components/app";
+import App from "./_components/App";
 import { FlashInfo } from "@/utils/types";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
