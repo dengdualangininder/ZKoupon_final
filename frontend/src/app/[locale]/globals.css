@@ -97,38 +97,6 @@
     transform: scale(1);
   }
 
-  .homeTextXs {
-    @apply text-sm desktop:text-xs;
-  }
-
-  .homeTextSm {
-    @apply text-base desktop:text-sm;
-  }
-
-  .homeTextBase {
-    @apply text-lg desktop:text-base;
-  }
-
-  .homeTextLg {
-    @apply text-xl desktop:text-lg;
-  }
-
-  .textXs {
-    @apply text-xs portrait:sm:text-sm landscape:lg:text-sm landscape:xl:desktop:text-xs;
-  }
-
-  .textSm {
-    @apply text-sm portrait:sm:text-base landscape:lg:text-base landscape:xl:desktop:text-sm;
-  }
-
-  .textBase {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-sm;
-  }
-
-  .textLgApp {
-    @apply text-xl portrait:sm:text-[1.375rem] landscape:lg:text-[1.375rem] desktop:!text-lg;
-  }
-
   .textXsApp {
     @apply text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-xs;
   }
@@ -137,68 +105,32 @@
     @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
   }
 
+  .textSmAppPx {
+    @apply text-[16px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px];
+  }
+
   .textBaseApp {
     @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
   }
 
-  .textBasePx {
-    @apply text-[16px] portrait:sm:text-[18px] landscape:lg:text-[18px] landscape:xl:desktop:text-[14px];
+  .textBaseAppPx {
+    @apply text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
   }
 
-  .textLg {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base;
+  .textLgApp {
+    @apply text-xl portrait:sm:text-[1.375rem] landscape:lg:text-[1.375rem] desktop:!text-lg;
   }
 
-  .textLgPx {
-    @apply text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[16px];
+  .textLgAppPx {
+    @apply text-[20px] portrait:sm:text-[22px] landscape:lg:text-[22px] desktop:!text-[18px];
   }
 
-  .textXl {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg;
+  .textXlApp {
+    @apply text-2xl portrait:sm:text-[1.65rem] landscape:lg:text-[1.65rem] desktop:!text-xl;
   }
 
-  .textXl-relaxed {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
-  }
-
-  .text2xl {
-    @apply text-2xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-xl leading-normal portrait:sm:leading-normal landscape:lg:leading-normal landscape:xl:desktop:leading-normal;
-  }
-
-  .text3xl {
-    @apply text-3xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-2xl;
-  }
-
-  .text4xl {
-    @apply text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
-  }
-
-  .textSm2 {
-    @apply text-sm portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-base;
-  }
-
-  .textBase2 {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg landscape:xl:desktop:text-base landscape:xl:desktop:leading-normal;
-  }
-
-  .textLg2 {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg;
-  }
-
-  .textXl2 {
-    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl;
-  }
-
-  .textXl2-relaxed {
-    @apply text-xl portrait:sm:text-3xl landscape:lg:text-3xl landscape:xl:desktop:text-2xl portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
-  }
-
-  .text2xl2 {
-    @apply text-2xl portrait:sm:text-4xl landscape:lg:text-4xl landscape:xl:desktop:text-3xl;
-  }
-
-  .text3xl2 {
-    @apply text-3xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-4xl;
+  .text2XlApp {
+    @apply text-3xl portrait:sm:text-3xl landscape:lg:text-3xl desktop:!text-2xl;
   }
 
   .filterGray {
@@ -216,7 +148,7 @@
 
 @layer components {
   .checkbox {
-    @apply w-[30px] h-[30px] rounded-md checkboxColor cursor-pointer;
+    @apply w-[30px] h-[30px] rounded-[6px] checkboxColor cursor-pointer;
   }
 
   .checkboxColor {
@@ -247,6 +179,10 @@
     @apply mt-4 mb-4 md:mb-8 text-xl text-center;
   }
 
+  .dotted {
+    @apply underline underline-offset-[3px] decoration-dotted decoration-blue-600 text-blue-600 cursor-pointer;
+  }
+
   .link {
     @apply cursor-pointer text-blue-600 dark:text-blue-400 xs:hover:underline active:underline;
   }
@@ -264,15 +200,17 @@
   }
 
   .homeBody2Font {
-    @apply text-base leading-snug xl:desktop:text-sm;
+    @apply text-base leading-snug desktop:text-sm;
   }
 
   .homeSectionSize {
     @apply mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[calc(600px-24px*2)] lg:max-w-[1100px];
   }
 
+  /* --- app --- */
+
   .appPageContainer {
-    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center;
+    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center; /* navbar is fixed, so need margins to center */
   }
 
   .whiteCard {
@@ -284,15 +222,23 @@
   }
 
   .navbarButtonHeightScrollTop {
-    @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:xl:desktop:h-[44px];
+    @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px];
+  }
+
+  .heroButtonBase {
+    @apply flex items-center justify-center buttonPrimaryColorLight font-medium rounded-full;
   }
 
   .heroButton {
-    @apply w-[200px] desktop:w-[144px] h-[64px] desktop:h-[48px] homeTextLg font-medium buttonPrimaryColorLight rounded-full;
+    @apply heroButtonBase w-[160px] desktop:w-[140px] h-[56px] desktop:h-[44px] text-lg desktop:text-base;
   }
 
   .heroButtonSmall {
-    @apply w-[132px] portrait:sm:w-[124px] landscape:lg:w-[124px] desktop:!w-[116px] h-[40px] portrait:sm:h-[48px] landscape:lg:h-[48px] desktop:!h-[36px] homeTextBase font-normal buttonPrimaryColorLight rounded-full;
+    @apply heroButtonBase w-[128px] desktop:w-[110px] h-[44px] desktop:h-[36px] text-base desktop:text-sm;
+  }
+
+  .navbarHeight {
+    @apply h-[52px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[44px];
   }
 
   .learnAnswerContainer {
@@ -312,15 +258,15 @@
   }
 
   .tooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg desktop:!px-[12px] desktop:!py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg desktop:px-[12px] desktop:py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
   }
 
   .heroTooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg homeTextBase bg-slate-800 text-darkText1 border border-slate-500 z-[1];
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg text-base bg-slate-800 text-darkText1 border border-slate-500 z-[1];
   }
 
   .cashoutTooltip {
-    @apply invisible peer-hover:visible absolute px-[12px] py-[8px] rounded-lg textXsApp font-normal desktop:!text-sm leading-snug bg-slate-800 text-white z-[1];
+    @apply invisible peer-hover:visible absolute px-[12px] py-[8px] rounded-lg textXsApp font-normal desktop:text-sm leading-snug bg-slate-800 text-white z-[1];
   }
 
   .whyCard {
@@ -339,12 +285,20 @@
     @apply w-full text-lg leading-snug;
   }
 
-  .paymentsWidth {
-    @apply w-[90%] portrait:sm:w-[540px] landscape:lg:w-[600px] desktop:!w-[440px];
+  .paymentsText {
+    @apply text-[24px] portrait:sm:text-[32px] landscape:lg:text-[32px] desktop:!text-[24px];
   }
 
-  .bannerWidth {
-    @apply w-[90%] portrait:sm:w-[560px] landscape:lg:w-[560px] portrait:lg:w-[620px] landscape:xl:w-[620px] landscape:xl:desktop:w-[500px] landscape:xl:desktop:translate-x-[16px];
+  .notificationText {
+    @apply text-[22px] portrait:sm:text-[28px] landscape:lg:text-[28px] desktop:!text-[22px];
+  }
+
+  .paymentsWidth {
+    @apply portrait:sm:px-[12px] landscape:lg:px-[12px] w-[90%] portrait:sm:w-[540px] landscape:lg:w-[600px] desktop:!w-[440px];
+  }
+
+  .paymentsGrid {
+    @apply grid grid-cols-[38%_38%_24%];
   }
 
   .paymentsIconContainer {
@@ -356,7 +310,7 @@
   }
 
   .paymentsHeaderFont {
-    @apply font-semibold text-lg portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg;
+    @apply font-semibold text-lg portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg textGray;
   }
 
   .savingsCountry {
@@ -376,11 +330,11 @@
   }
 
   .howHeader1Font {
-    @apply text-xl sm:text-lg md:text-2xl xl:desktop:text-lg font-medium;
+    @apply text-xl sm:text-lg md:text-2xl desktop:!text-lg font-medium;
   }
 
   .howHeader2Font {
-    @apply text-2xl sm:text-lg md:text-2xl xl:desktop:text-xl font-semibold;
+    @apply text-2xl sm:text-lg md:text-2xl desktop:!text-xl font-semibold;
   }
 
   .howStepTitle {
@@ -412,51 +366,55 @@
   }
 
   .settingsFont {
-    @apply font-medium text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-base;
+    @apply font-medium text-base portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
+  }
+
+  .settingsFontFixed {
+    @apply text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
+  }
+
+  .settingsFontFixedSmall {
+    @apply portrait:text-[13px] landscape:text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
   }
 
   .settingsWidth {
-    @apply px-[12px] w-full portrait:sm:w-[600px] landscape:lg:w-[600px] landscape:xl:desktop:w-[480px];
+    @apply px-[12px] w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[480px];
   }
 
   .settingsTitle {
-    @apply mt-[8px] h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] landscape:xl:h-[90px] text2xl font-bold flex items-center justify-center flex-none text-blue-700 dark:text-white;
+    @apply mt-[8px] h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] desktop:!h-[90px] text-2xl portrait:sm:text-3xl landscape:lg:text-3xl desktop:!text-2xl font-bold flex items-center justify-center flex-none text-blue-700 dark:text-white;
   }
 
   .settingsField {
-    @apply w-full h-[64px] portrait:sm:h-[72px] landscape:lg:h-[72px] landscape:xl:desktop:h-[56px] py-2 flex items-center justify-between border-t border-slate-300 dark:border-dark6;
+    @apply w-full h-[64px] portrait:sm:h-[72px] landscape:lg:h-[72px] desktop:!h-[56px] py-[8px] flex items-center justify-between border-t border-slate-300 dark:border-dark6;
   }
 
-  .settingsLabelFont {
-    @apply flex-none flex items-center tracking-tight mr-3 text-slate-500 dark:text-slate-400;
+  .settingsInputContainer {
+    @apply h-full flex items-center cursor-pointer; /* width needs to be customized on each instance */
   }
 
-  .settingsLabelFontSupport {
-    @apply flex-none flex items-center tracking-tight mr-3;
+  .settingsLabel {
+    @apply settingsLabelNoColor textGray;
+  }
+
+  .settingsLabelNoColor {
+    @apply flex-none flex items-center tracking-tight mr-[12px];
+  }
+
+  .settingsInputColor {
+    @apply outline-none focus:ring-0 bg-transparent focus:bg-white dark:focus:!bg-dark3 border-[1.5px] border-transparent focus:border-blue-500 dark:focus:border-darkButton desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
   }
 
   .settingsInput {
-    @apply w-full h-full px-[12px] py-[4px] text-end cursor-pointer focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms] placeholderColor placeholder:font-normal placeholder:pr-[2px] focus:placeholder:text-transparent;
+    @apply w-full h-full px-[12px] py-[4px] text-end cursor-pointer focus:cursor-text settingsInputColor transition-all duration-[300ms] placeholderColor placeholder:font-normal placeholder:pr-[2px] focus:placeholder:text-transparent rounded-[6px];
   }
 
   .settingsSelect {
-    @apply scrollbar h-full px-[12px] py-[4px] [text-align-last:right] cursor-pointer rounded-md outline-none bg-none bg-transparent focus:bg-white dark:focus:bg-dark3 border border-transparent focus:border-blue-500 focus:dark:border-slate-500 desktop:hover:text-slate-500 focus:desktop:hover:text-lightText1 dark:focus:desktop:hover:text-darkText1 transition-all duration-[300ms];
-  }
-
-  .settingsInputFont {
-    @apply font-medium text-[16px] portrait:sm:text-[24px] landscape:lg:text-[24px] landscape:xl:desktop:text-[16px];
-  }
-
-  .settingsInputFontRem {
-    @apply font-medium text-base portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-base;
-  }
-
-  .settingsInputFontSmall {
-    @apply portrait:text-[13px] landscape:text-base portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base px-1 sm:px-3;
+    @apply h-full px-[12px] py-[4px] [text-align-last:right] cursor-pointer bg-none settingsInputColor transition-all duration-[300ms] rounded-[6px] scrollbar;
   }
 
   .settingsRightAngle {
-    @apply peer-focus:hidden pt-[2px] text-[18px] desktop:peer-hover:text-slate-500 peer-active:text-slate-500 transition-all duration-[300ms];
+    @apply pt-[2px] desktop:pt-[1px] text-[18px] desktop:group-hover:text-slate-500 transition-all duration-[300ms] peer-focus:hidden;
   }
 
   .settingsInfo {
@@ -464,7 +422,7 @@
   }
 
   .info {
-    @apply text-slate-400 dark:text-darkButton textXs;
+    @apply text-slate-400 dark:text-darkButton text-xs portrait:sm:text-sm landscape:lg:text-sm desktop:!text-xs;
   }
 
   .inputOutline {
@@ -472,25 +430,25 @@
   }
 
   .menuText {
-    @apply mt-[3px] text-[0.8125rem] portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base font-semibold select-none;
+    @apply mt-[3px] text-[0.8125rem] portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-semibold select-none;
   }
 
-  /* MODAL CSS */
+  /* modal base & color */
 
   .modalBase {
     @apply flex flex-col items-center rounded-[16px] fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
   }
 
   .modalFullBase {
-    @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
+    @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] desktop:!rounded-[16px] absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
   }
 
   .sidebarModalBase {
-    @apply fixed left-0 flex flex-col items-center z-[20] transition-all duration-500;
+    @apply fixed left-0 flex flex-col items-center z-[20];
   }
 
   .modalColor {
-    @apply bg-light1 dark:bg-dark4 border-2 border-light5 dark:border-dark4;
+    @apply bg-light1 dark:bg-dark3 border-2 border-light5 dark:border-dark4;
   }
 
   .modalFullColor {
@@ -501,76 +459,56 @@
     @apply bg-gradient-to-br from-light1 to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600;
   }
 
-  /* specific modal sizes (smallest to largest) and fonts */
+  /* modal sizes (smallest to largest) */
 
   .errorModalSize {
-    @apply w-[350px] portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[440px] max-h-[90%];
-  }
-
-  .errorModalFont {
-    @apply text-xl portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-lg leading-relaxed portrait:sm:leading-relaxed landscape:lg:leading-relaxed landscape:xl:desktop:leading-relaxed;
-  }
-
-  .modalSize {
-    @apply w-[93%] portrait:sm:w-[420px] landscape:lg:w-[420px] landscape:xl:desktop:w-[370px] max-h-[90%];
+    @apply w-[93%] portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:!max-w-[440px] max-h-[90%];
   }
 
   .cbIntroModalSize {
-    @apply w-[93%] portrait:sm:w-[450px] landscape:lg:w-[450px] landscape:xl:desktop:w-[350px] max-h-[90%];
+    @apply w-[93%] portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[350px] max-h-[90%];
   }
 
   .cashoutIntroModalSize {
-    @apply w-[93%] xs:w-[400px] sm:w-[480px] landscape:xl:desktop:w-[420px] h-[620px] portrait:sm:h-[680px] landscape:lg:h-[680px] landscape:xl:desktop:h-[620px] max-h-[90%];
+    @apply w-[93%] portrait:sm:w-[500px] landscape:lg:w-[500px] desktop:!w-[420px] h-[620px] portrait:sm:h-[680px] landscape:lg:h-[680px] desktop:!h-[620px] max-h-[90%];
   }
 
-  .settingsInfoModalSize {
-    @apply w-[95%] portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[460px] max-h-[93%];
-  }
-
-  .cashbackModalSize {
-    @apply w-[95%] portrait:sm:w-[580px] landscape:lg:w-[580px] landscape:xl:desktop:w-[560px] max-h-[93%];
+  .infoModalSize {
+    @apply w-[95%] portrait:sm:max-w-[700px] landscape:lg:max-w-[700px] desktop:!max-w-[600px] max-h-[90%];
   }
 
   .instructionsModalSize {
-    @apply w-full portrait:sm:w-[590px] landscape:lg:w-[590px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] portrait:sm:max-h-[800px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[650px];
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[600px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .detailsModalSize {
-    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[740px] landscape:lg:h-[95%] landscape:xl:desktop:h-[600px] landscape:lg:max-h-[800px] landscape:xl:desktop:max-h-[95%];
-  }
-
-  .sidebarModalSize {
-    @apply w-full max-w-[450px] portrait:sm:w-[400px] landscape:lg:w-[400px] landscape:xl:desktop:w-[400px] h-screen;
+    @apply w-full portrait:sm:max-w-[600px] landscape:lg:max-w-[600px] desktop:!max-w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .transferModalSize {
-    @apply w-full portrait:sm:w-[500px] landscape:lg:w-[500px] landscape:xl:desktop:w-[500px] h-screen portrait:sm:h-[90%] landscape:lg:h-[95%] landscape:xl:desktop:h-[640px] landscape:xl:desktop:max-h-[95%];
+    @apply w-full portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:!max-w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .emailModalSize {
-    @apply w-full portrait:sm:w-[520px] landscape:lg:w-[520px] landscape:xl:desktop:w-[400px] h-screen portrait:sm:h-[500px] landscape:lg:h-[500px] landscape:xl:desktop:h-[420px] portrait:sm:max-h-[95%] landscape:lg:max-h-[95%];
+    @apply w-full portrait:sm:w-[520px] landscape:lg:w-[520px] desktop:!w-[400px] h-screen portrait:sm:h-[500px] landscape:lg:h-[500px] desktop:!h-[420px] portrait:sm:max-h-[95%] landscape:lg:max-h-[95%];
+  }
+
+  .sidebarModalSize {
+    @apply w-full max-w-[450px] portrait:sm:w-[400px] landscape:lg:w-[400px] desktop:!w-[360px] h-screen;
   }
 
   /* specific modals */
-
-  .modal {
-    @apply modalBase modalColor modalSize modalYpadding;
-  }
 
   .errorModal {
     @apply modalBase modalColor errorModalSize modalYpadding;
   }
 
-  .settingsInfoModal {
-    @apply modalBase modalColor settingsInfoModalSize modalYpadding;
+  .infoModal {
+    @apply modalBase modalColor infoModalSize modalYpadding;
   }
 
   .cbIntroModal {
     @apply modalBase modalColor cbIntroModalSize modalYpadding;
-  }
-
-  .cashbackModal {
-    @apply modalBase modalColor cashbackModalSize modalYpadding;
   }
 
   .cashoutIntroModal {
@@ -586,207 +524,185 @@
   }
 
   .transferModal {
-    @apply modalFullBase modalFullColor dark:bg-dark2 transferModalSize pb-[24px];
-  }
-
-  .sidebarModal {
-    @apply sidebarModalSize sidebarModalColor sidebarModalBase;
+    @apply modalFullBase modalFullColor dark:bg-dark2 transferModalSize desktop:pb-[12px];
   }
 
   .emailModal {
     @apply modalFullBase modalFullColor emailModalSize pb-[24px];
   }
 
+  .sidebarModal {
+    @apply sidebarModalSize sidebarModalColor sidebarModalBase;
+  }
+
+  /* modal styling */
+
   .modalYpadding {
-    @apply py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] landscape:xl:desktop:py-[24px];
+    @apply py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[24px];
   }
 
   .modalXpadding {
-    @apply px-[12px] portrait:sm:px-[40px] landscape:lg:px-[40px] landscape:xl:desktop:px-[32px];
+    @apply px-[12px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px];
   }
 
   .modalXpaddingLg {
-    @apply px-[16px] portrait:sm:px-[40px] landscape:lg:px-[40px] landscape:xl:desktop:px-[32px];
+    @apply px-[16px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px];
   }
 
-  .transferModalButtonContainer {
-    @apply flex-1 min-h-[120px] landscape:xl:desktop:min-h-[90px] w-full flex items-center;
+  .modalHeader {
+    @apply modalHeaderFont w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[280px] py-[24px] desktop:!py-[20px];
   }
 
-  .detailsModalHeader {
-    @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[24px] landscape:xl:desktop:py-[16px];
-  }
-
-  .sidebarModalHeader {
-    @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[24px];
-  }
-
-  .transferModalHeader {
-    @apply modalHeaderFont flex-none w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] landscape:xl:desktop:w-[280px] py-[18px] landscape:xl:desktop:py-[20px];
+  .fullModalHeader {
+    @apply modalHeaderFont w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[280px] py-[23px];
   }
 
   .modalHeaderFont {
-    @apply text-center text-2xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-xl font-semibold;
-  }
-
-  .modalHeaderXl {
-    @apply text-xl portrait:sm:text-2xl landscape:lg:text-2xl landscape:xl:desktop:text-lg font-semibold text-center;
-  }
-
-  .searchModalHeaderContainer {
-    @apply w-full h-[70px] portrait:sm:h-[90px] landscape:lg:h-[90px] flex justify-center items-center;
-  }
-
-  .searchModalHeader {
-    @apply text-2xl font-semibold;
+    @apply text-center text-2xl desktop:!text-xl font-semibold;
   }
 
   .transferSuccessModalHeaderContainer {
-    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 w-full h-[50px] landscape:xl:desktop:h-[60px] relative;
-  }
-
-  .modalContainer {
-    @apply flex flex-col pb-8 sm:pb-4 bg-white w-[95%] sm:w-[560px] md:w-[650px] h-[83%] rounded-3xl border border-slate-500 fixed inset-1/2 -translate-y-[52%] sm:-translate-y-[50%] -translate-x-1/2 z-[90];
-  }
-
-  .modalHeaderContainer {
-    @apply flex justify-between items-center pt-3 pb-2 border-b-2 mx-2 sm:mx-3 md:mx-4 lg:mx-5;
-  }
-
-  .modalHeaderText {
-    @apply text-2xl leading-tight sm:text-2xl sm:ml-2 font-bold w-full text-center;
-  }
-
-  .modalContentContainer {
-    @apply mt-2 sm:mt-4 sm:mx-4 text-lg leading-snug md:text-base md:leading-snug px-2 sm:px-3 md:px-4 lg:px-5;
-  }
-
-  .detailsModalContentContainer {
-    @apply flex-1 w-full px-[24px] portrait:sm:px-10 landscape:lg:px-10 landscape:xl:desktop:px-[32px] space-y-[12px] overflow-y-auto scrollbar;
-  }
-
-  .transferModalContentContainer {
-    @apply flex-1 w-full pt-[12px] portrait:sm:pt-[0px] landscape:lg:pt-[0px] px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[72px] flex flex-col items-center overflow-y-auto;
-  }
-
-  .sidebarModalContentContainer {
-    @apply textLg w-full pt-[16px] px-[16px] portrait:sm:px-[24px] landscape:lg:px-[24px] flex flex-col items-center overflow-y-auto;
+    @apply flex-none mt-4 portrait:sm:mt-8 landscape:lg:mt-8 w-full h-[50px] desktop:!h-[60px] relative;
   }
 
   .modalNumber {
     @apply mr-2 md:mr-3;
   }
 
-  .modalCloseButton {
-    @apply text-red-500 font-bold px-3 py-1.5 text-lg rounded-md transition-all duration-300 hover:bg-slate-300;
-  }
-
   .modalBlackout {
     @apply opacity-[70%] dark:opacity-[88%] fixed inset-0 bg-black backdrop-blur-xl z-[10];
   }
 
-  .modalContent {
-    @apply text-lg leading-normal;
+  .modalButtonWidth {
+    @apply w-[300px];
   }
 
-  .modalContent2 {
-    @apply flex-1 textXl text-center py-16 portrait:sm:py-16 landscape:lg:py-16 landscape:xl:desktop:py-12 space-y-4;
+  /* modal content container and button container */
+
+  .infoModalContentContainer {
+    @apply modalXpadding overflow-y-auto;
   }
 
-  .cashbackModalTextContainer {
-    @apply textLg w-full flex flex-col space-y-[16px];
+  .errorModalContentContainer {
+    @apply w-full flex flex-col items-center modalXpaddingLg overflow-y-auto;
   }
 
-  .modalButtonContainer {
-    @apply pt-[36px] pb-[20px] w-full flex flex-col items-center;
+  .detailsModalContentContainer {
+    @apply flex-1 w-full px-[24px] portrait:sm:px-10 landscape:lg:px-10 desktop:!px-[32px] space-y-[12px] overflow-y-auto scrollbar;
   }
 
-  .xButtonContainer {
-    @apply absolute right-0 top-0 w-[80px] h-[80px] landscape:xl:desktop:w-[52px] landscape:xl:desktop:h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center rounded-bl-[14px] rounded-tr-[14px] cursor-pointer desktop:hover:bg-light3 desktop:hover:dark:bg-dark5 active:bg-light3 active:dark:bg-dark5;
+  .transferModalContentContainer {
+    @apply w-full h-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[72px] flex flex-col items-center overflow-y-auto;
   }
 
-  .xButtonContainerNotHidden {
-    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] landscape:xl:desktop:w-[44px] landscape:xl:desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-slate-500 desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
-  }
-
-  .xButtonContainerSmall {
-    @apply w-[52px] h-[52px] hidden portrait:sm:flex landscape:lg:flex items-center justify-center portrait:sm:border landscape:lg:border border-black rounded-full;
-  }
-
-  .xButton {
-    @apply text-[36px] font-medium landscape:xl:desktop:text-[24px] text-lightText1 dark:text-darkText1;
-  }
-
-  .xButtonBanner {
-    @apply p-[8px] mr-[3%] text-4xl portrait:sm:text-5xl landscape:lg:text-5xl landscape:xl:desktop:text-3xl cursor-pointer desktop:hover:text-slate-500;
-  }
-
-  .mobileBack {
-    @apply absolute left-[12px] top-[18px] leading-none text-[24px] font-medium p-[8px] portrait:sm:hidden landscape:lg:hidden;
-  }
-
-  .detailsLabelText {
-    @apply text-lg leading-snug portrait:sm:text-xl landscape:lg:text-xl landscape:xl:desktop:text-base text-slate-500 font-semibold;
-  }
-
-  .detailsValueText {
-    @apply text-[20px] leading-snug portrait:sm:text-[20px] landscape:lg:text-[20px] landscape:xl:desktop:text-[16px];
+  .sidebarModalContentContainer {
+    @apply w-full pt-[16px] px-[16px] portrait:sm:px-[24px] landscape:lg:px-[24px] flex flex-col items-center overflow-y-auto;
   }
 
   .searchModalCategoryContainer {
     @apply h-[25%] flex items-center justify-between border-b border-slate-300 dark:border-dark6;
   }
 
-  .buttonHeight {
-    @apply h-[60px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px];
+  .modalButtonContainer {
+    @apply w-full flex flex-col items-center pt-[36px] pb-[20px] gap-[24px];
   }
 
-  .buttonHeightSmall {
-    @apply h-[40px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[36px];
+  .xButtonContainer {
+    @apply absolute right-0 top-0 w-[64px] h-[64px] desktop:w-[52px] desktop:h-[52px] hidden portrait:sm:flex landscape:lg:flex desktop:!flex items-center justify-center rounded-bl-[14px] rounded-tr-[14px] cursor-pointer desktop:hover:bg-light3 desktop:hover:dark:bg-dark5 active:bg-light3 active:dark:bg-dark5;
   }
+
+  .xButtonContainerNotHidden {
+    @apply absolute right-3 portrait:sm:right-6 landscape:lg:right-6 top-[-8px] w-[52px] h-[52px] desktop:w-[44px] desktop:h-[44px] flex items-center justify-center rounded-full cursor-pointer portrait:sm:border-[1.5px] landscape:lg:border-[1.5px] border-slate-500 desktop:hover:bg-light3 desktop:hover:dark:bg-dark4;
+  }
+
+  .xButton {
+    @apply text-[32px] font-medium desktop:text-[24px] text-lightText1 dark:text-darkText1;
+  }
+
+  .mobileBack {
+    @apply absolute left-[12px] top-[18px] leading-none text-[42px] font-medium p-[8px] portrait:sm:hidden landscape:lg:hidden desktop:!hidden;
+  }
+
+  .detailsLabelText {
+    @apply text-lg leading-snug portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base text-slate-500 font-semibold;
+  }
+
+  .detailsValueText {
+    @apply text-[20px] leading-snug portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
+  }
+
+  .transferModalInfoText {
+    @apply ml-[12px] flex flex-col leading-tight;
+  }
+
+  /*--- button ---*/
 
   .buttonPrimary {
-    @apply buttonPrimaryColor w-full buttonHeight textLg font-medium border-2 rounded-md;
+    @apply buttonPrimaryColor buttonHeight buttonFont border-2 rounded-[6px];
   }
 
   .buttonPrimaryLight {
-    @apply buttonPrimaryColorLight flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textLg font-semibold border-2 rounded-md;
-  }
-
-  .buttonPrimaryColor {
-    @apply text-white bg-lightButton dark:bg-darkButton border-lightButton dark:border-darkButton desktop:hover:bg-lightButtonHover active:bg-lightButtonHover dark:desktop:hover:bg-darkButtonHover dark:active:bg-darkButtonHover transition-all duration-[300ms];
-  }
-
-  .buttonPrimaryColorLight {
-    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-slate-700 active:bg-slate-700;
+    @apply buttonPrimaryColorLight buttonHeight buttonFont border-2 rounded-[6px];
   }
 
   .buttonSecondary {
-    @apply buttonSecondaryColor textLg flex-none w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] font-semibold border-2 rounded-md;
+    @apply buttonSecondaryColor buttonHeight buttonFont border-2 rounded-[6px];
+  }
+
+  .buttonPending {
+    @apply buttonPendingColor buttonHeight buttonFont border-2 rounded-[6px];
+  }
+
+  .buttonHeight {
+    @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[44px];
+  }
+
+  .buttonHeightSm {
+    @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px];
+  }
+
+  .buttonFont {
+    @apply textBaseApp font-medium;
+  }
+
+  .buttonPrimaryColor {
+    @apply buttonPrimaryColorLight dark:text-white dark:bg-darkButton dark:border-darkButton dark:desktop:hover:bg-darkButtonHover dark:desktop:hover:border-darkButtonHover dark:active:bg-darkButtonHover dark:active:border-darkButtonHover;
+  }
+
+  .buttonPrimaryColorLight {
+    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover;
   }
 
   .buttonSecondaryColor {
-    @apply bg-transparent text-slate-500 border-slate-500 active:text-slate-400 active:border-slate-400 desktop:hover:text-slate-400 desktop:hover:border-slate-400 transition-all duration-[300ms];
+    @apply bg-transparent text-slate-500 border-slate-500 desktop:hover:text-slate-400 desktop:hover:border-slate-400 active:text-slate-400 active:border-slate-400;
   }
 
-  .introLabelFont {
-    @apply font-medium text-lg;
+  .buttonPendingColor {
+    @apply bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
   }
+
+  .refundButtonBase {
+    @apply w-[100px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[100px] buttonHeightSm textSmApp font-semibold border-2 rounded-full;
+  }
+
+  /*--- login ---*/
 
   .loginInputFont {
-    @apply w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[48px] px-[12px] font-normal textBaseApp rounded-md bg-white text-lightText1 outline-none border-2 border-slate-200 focus:border-blue-500 transition-[all] duration-[500ms];
+    @apply w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] px-[12px] font-normal textBaseApp rounded-[6px] bg-white text-lightText1 outline-none border-[1.5px] border-slate-200 focus:border-blue-500 transition-[all] duration-[500ms];
+  }
+
+  /*--- intro ---*/
+
+  .introLabelFont {
+    @apply font-medium text-lg desktop:text-base;
   }
 
   .introInputFont {
-    @apply mt-1 w-full max-w-[480px] h-[52px] landscape:xl:desktop:h-[44px] px-[12px] text-[18px] bg-white border border-slate-400 focus:border-blue-500 outline-none transition-all duration-[500ms] rounded-[4px] placeholder:italic;
+    @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[12px] text-lg desktop:text-base bg-white border border-slate-400 focus:border-blue-500 outline-none transition-all duration-[500ms] rounded-[4px] placeholder:italic;
   }
 
   .introInputFontSmall {
-    @apply mt-1 text-sm w-full max-w-[480px] bg-white border border-slate-400 px-3 py-3 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic;
-  }
-
-  .introPageContainer {
-    @apply w-full h-full flex flex-col items-center;
+    @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[4px] text-[15px] tracking-tighter bg-white border border-slate-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic placeholder:text-lg placeholder:pl-[8px] placeholder:focus:text-transparent;
   }
 
   .introTextContainer1 {
@@ -802,47 +718,47 @@
   }
 
   .introHeaderFont {
-    @apply text-[1.8rem] leading-[2rem] font-bold text-center;
+    @apply pt-[40px] text-[1.8rem] leading-[2rem] font-bold text-center;
   }
 
   .introNumber {
-    @apply flex-none mt-[1px] mr-[12px] w-[24px] h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-sm text-white;
+    @apply flex-none mr-[8px] w-[1.75rem] desktop:w-[1.5rem] h-[1.75rem] desktop:h-[1.5rem] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[0.8rem] text-white;
   }
 
-  .introButtonBlack {
-    @apply w-full h-[48px] border-2 buttonPrimaryColorLight text-base font-medium rounded-full;
+  .introButtonPrimary {
+    @apply w-[120px] buttonHeight border-2 buttonPrimaryColorLight font-medium rounded-full;
   }
 
-  .introButtonWhite {
-    @apply w-full h-[48px] border-2 buttonSecondaryColor text-base font-medium rounded-full;
+  .introButtonSecondary {
+    @apply w-[120px] buttonHeight border-2 buttonSecondaryColor font-medium rounded-full;
+  }
+
+  .introNextNoColor {
+    @apply mr-[4px] w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] buttonHeight font-semibold rounded-[6px];
   }
 
   .introNext {
-    @apply mr-1 w-[104px] h-[52px] portrait:sm:w-[120px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] textLg font-semibold buttonPrimaryColorLight rounded-md;
-  }
-
-  .introBack {
-    @apply ml-2 xs:ml-0 h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] landscape:desktop:xl:h-[48px] textLg font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
-  }
-
-  .cashoutIntroButtonContainer {
-    @apply flex-none px-[12px] w-full pt-[32px] pb-[8px] portrait:sm:h-[100px] landscape:lg:h-[100px] flex justify-between items-end;
+    @apply introNextNoColor buttonPrimaryColorLight;
   }
 
   .cashoutIntroNext {
-    @apply buttonPrimaryColor w-[100px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[90px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-md;
+    @apply introNextNoColor buttonPrimaryColor;
   }
 
-  .cashoutIntroBack {
-    @apply buttonSecondaryColor w-[100px] h-[52px] portrait:sm:w-[110px] portrait:sm:h-[60px] landscape:lg:w-[110px] landscape:lg:h-[60px] landscape:desktop:xl:w-[90px] landscape:desktop:xl:h-[48px] text-lg portrait:sm:text-lg landscape:lg:text-lg landscape:desktop:xl:text-base font-medium rounded-md;
+  .introBack {
+    @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] buttonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
+  }
+
+  .cashoutIntroButtonContainer {
+    @apply flex-none px-[12px] w-full pt-[32px] flex justify-between items-end;
   }
 
   .cashoutCard {
-    @apply w-[88%] portrait:sm:w-[480px] landscape:lg:w-[480px] desktop:!w-[400px] min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+    @apply w-[88%] max-w-[480px] desktop:max-w-[400px] min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {
-    @apply text-2xl portrait:sm:text-[1.75rem] landscape:lg:text-[1.75rem] desktop:!text-xl font-semibold;
+    @apply textXlApp font-semibold;
   }
 
   .cashoutBalance {
@@ -850,31 +766,31 @@
   }
 
   .cashoutBalanceContainer {
-    @apply flex-1 flex flex-col mt-[8px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] landscape:xl:mt-[16px];
+    @apply flex-1 flex flex-col mt-[20px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] desktop:!mt-[16px];
   }
 
   .cashoutMoreOptionsContainer {
-    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-md bg-slate-200 text-black dark:text-darkText1 dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap [transition:opacity_300ms];
+    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-[6px] bg-slate-200 text-black dark:text-white dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap [transition:opacity_500ms];
+  }
+
+  .cashoutEllipsisContainer {
+    @apply w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer;
   }
 
   .cashoutArrowContainer {
-    @apply ml-4 w-[36px] h-[24px] flex items-center justify-center bg-light2 dark:bg-transparent rounded-xl cursor-pointer;
+    @apply ml-4 px-[8px] py-[2px] flex items-center justify-center bg-light2 dark:bg-transparent rounded-xl cursor-pointer;
   }
 
   .cashoutArrow {
-    @apply text-lg text-blue-500 dark:text-darkButton;
+    @apply textLgApp text-blue-500 dark:text-darkButton;
   }
 
   .cashoutDetailsContainer {
-    @apply textLg font-medium overflow-hidden transition-all duration-500 relative;
-  }
-
-  .cashoutDetailsContainer2 {
-    @apply mt-3 mb-4 px-4 py-2 bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[200px,200px];
+    @apply textLgApp mt-[12px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] font-medium relative;
   }
 
   .cashoutStats2 {
-    @apply textSm2 font-medium text-center;
+    @apply textSmApp font-medium text-center;
   }
 
   .cashoutButtonContainer {
@@ -882,39 +798,39 @@
   }
 
   .cashoutButton {
-    @apply buttonPrimaryColor textSmApp font-medium w-[220px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[200px] h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px] translate-x-[4px] rounded-full;
+    @apply ml-auto buttonPrimaryColor textSmApp font-medium w-[220px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[200px] buttonHeightSm translate-x-[4px] rounded-full;
   }
 
   .transferCard {
-    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[24px] flex flex-col items-center bg-light3 dark:bg-dark4 rounded-[24px] relative border-none border-slate-400 dark:border-slate-600;
+    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[24px] flex flex-col items-center bg-light3 dark:bg-dark4 rounded-[8px] relative border-none border-slate-400 dark:border-slate-600;
   }
 
   .transferFromCard {
-    @apply pt-[24px] pb-[48px] desktop:!pb-[36px] transferCard;
+    @apply pt-[24px] pb-[48px] desktop:pb-[36px] transferCard;
   }
 
   .transferToCard {
-    @apply pt-[40px] desktop:!pt-[36px] pb-[24px] transferCard;
+    @apply pt-[40px] desktop:pt-[36px] pb-[24px] transferCard;
   }
 
   .transferIcon {
-    @apply relative w-[52px] h-[52px] rounded-lg overflow-hidden flex-none;
+    @apply relative w-[52px] h-[52px] desktop:w-[44px] desktop:h-[44px] rounded-[6px] overflow-hidden flex-none;
   }
 
   .transferUsdc {
-    @apply pr-[12px] text-[24px] landscape:xl:desktop:text-[20px] font-semibold leading-none;
+    @apply pr-[12px] text-[24px] desktop:text-[20px] font-semibold leading-none;
   }
 
   .transferAmountFromBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-[30px] landscape:xl:desktop:text-[24px] rounded-[6px] pl-[12px] pr-[124px];
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-[124px];
   }
 
   .transferAmountToBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:h-[56px] landscape:xl:desktop:h-[48px] font-semibold text-[30px] landscape:xl:desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
   }
 
   .transferArrowContainer {
-    @apply w-[200px] h-[70px] landscape:xl:desktop:w-[160px] landscape:xl:desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light2 dark:bg-dark3 border border-slate-400 dark:border-dark6 z-[2];
+    @apply w-[200px] h-[70px] desktop:w-[160px] desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light2 dark:bg-dark3 border border-slate-400 dark:border-dark6 z-[2];
   }
 
   .transferArrowFont {
@@ -922,7 +838,7 @@
   }
 
   .transferArrowArrow {
-    @apply text-[34px] landscape:xl:desktop:text-[30px] text-lightText1 dark:text-darkText1;
+    @apply text-[34px] desktop:text-[30px] text-lightText1 dark:text-darkText1;
   }
 
   .sidebarBodyContainer {
@@ -970,6 +886,14 @@
     border: 3px solid black;
     background: white;
     clip-path: polygon(87% 0%, 52% 44%, 100% 44%, 13% 100%, 48% 56%, 0% 56%);
+  }
+
+  .skeleton {
+    @apply text-transparent bg-slate-300 dark:bg-dark5 animate-pulse rounded-md;
+  }
+
+  .textGray {
+    @apply text-slate-500 dark:text-slate-400;
   }
 }
 

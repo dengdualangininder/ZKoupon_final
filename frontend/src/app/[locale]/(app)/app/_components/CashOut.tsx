@@ -1,570 +1,183 @@
 "use client";
 // next
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
-import { useUserInfo } from "../../web3auth-provider";
-import { usePaymentsQuery, useSettingsQuery } from "../../hooks";
+import { useRatesQuery, useCexBalanceQuery, useFlashBalanceQuery } from "../../hooks";
 // wagmi & viem & ethers
-import { useConfig, useAccount } from "wagmi";
-import { readContract, writeContract, signTypedData } from "@wagmi/core";
-import { parseUnits, formatUnits, encodeFunctionData, hexToSignature, isAddress, Abi, Address, TypedData } from "viem";
+import { useAccount, useReadContract } from "wagmi";
+import { formatUnits } from "viem";
 // other
 import { v4 as uuidv4 } from "uuid";
-import { useTheme } from "next-themes";
-import { GelatoRelay, CallWithSyncFeeRequest } from "@gelatonetwork/relay-sdk";
-import { useTranslations, useLocale } from "next-intl";
-// utils
-import ErrorModal from "@/utils/components/ErrorModal";
-import { currency2decimal, currency2rateDecimal, currency2symbol } from "@/utils/constants";
-import { networkToInfo } from "@/utils/web3Constants";
-import erc20Abi from "@/utils/abis/erc20Abi";
-import flashAbi from "@/utils/abis/flashAbi";
+// i18n
+import { useTranslations } from "next-intl";
+// components
+import CashoutIntroModal from "./modals/CashoutIntroModal";
+import TransferModal from "./(cashout)/TransferModal";
+import CashoutBalance from "./(cashout)/CashoutBalance";
+
 // images
-import SpinningCircleGray, { SpinningCircleGrayLarge } from "@/utils/components/SpinningCircleGray";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faArrowDown, faCircleCheck, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { FaEllipsisVertical, FaAngleUp, FaAngleDown, FaCircleInfo, FaArrowDown, FaCircleCheck, FaAngleLeft } from "react-icons/fa6";
-import { IoInformationCircleOutline } from "react-icons/io5";
+import { FaEllipsisVertical } from "react-icons/fa6";
 // types
-import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
-import { FlashInfo, Rates } from "@/utils/types";
+import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
+import { FlashInfo } from "@/utils/types";
 
-export default function CashOut({ flashInfo }: { flashInfo: FlashInfo }) {
-  console.log("CashOut component rendered");
-
-  const [flashBalance, setFlashBalance] = useState<string | null>(null);
-  const [cexBalance, setCexBalance] = useState<string | null>(null);
-  const [isCexAccessible, setIsCexAccessible] = useState(true); // if Coinbase is linked or not
-  const [txnHash, setTxnHash] = useState("");
-  const [usdcTransferToCex, setUsdcTransferToCex] = useState<string | null>(null);
-  const [usdcTransferToBank, setUsdcTransferToBank] = useState<string | null>(null);
-  const [usdcTransferToBankActual, setUsdcTransferToBankActual] = useState<string | null>(null);
-  const [currencyDeposited, setCurrencyDeposited] = useState("");
-  const [cbBankAccountName, setCbBankAccountName] = useState<any>("");
-  const [rates, setRates] = useState<Rates>({ usdcToLocal: 0, usdToLocal: 0 });
-  const [fiatDeposited, setFiatDeposited] = useState("");
-  const [cexMoreOptions, setCexMoreOptions] = useState(false);
-  const [flashMoreOptions, setFlashMoreOptions] = useState(false);
-  const [blockchainFee, setBlockchainFee] = useState(0.05); // in USDC
-  const [transferToAnyAddress, setTransferToAnyAddress] = useState(false);
-  const [anyAddress, setAnyAddress] = useState<string | null>(null);
-  const [txHash, setTxHash] = useState<string | undefined>(); // withdrawal tx hash
-  // accordion states
-  const [flashDetails, setFlashDetails] = useState(false);
-  const [cexDetails, setCexDetails] = useState(false);
-  const [savingsDetails, setSavingsDetails] = useState(false);
-  // modal states
-  const [transferToCexModal, setTransferToCexModal] = useState(false);
-  const [transferToBankModal, setTransferToBankModal] = useState(false);
-  const [transferToCexSuccessModal, setTransferToCexSuccessModal] = useState(false);
-  const [transferToBankSuccessModal, setTransferToBankSuccessModal] = useState(false);
-  const [transferState, setTransferState] = useState("initial"); // "initial" | "sending" | "sent"
-  const [errorModal, setErrorModal] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<any>();
-  const [stats, setStats] = useState<any>({
-    totalTxns: 0,
-    totalCurrencyAmount: 0,
-    totalCurrencyAmountAfterCashback: 0,
-    totalCashbackGiven: 0,
-    totalTokenAmount: 0,
-    paymentRate: 0,
-    currentRate: 0,
-    cashoutRate: 0,
-  });
+export default function CashOut({
+  flashInfo,
+  paymentSettings,
+  cashoutSettings,
+  setErrorModal,
+  setTradeMAXModal,
+}: {
+  flashInfo: FlashInfo;
+  paymentSettings: PaymentSettings;
+  cashoutSettings: CashoutSettings;
+  setErrorModal: any;
+  setTradeMAXModal: any;
+}) {
+  console.log("/app, Cashout.tsx");
 
   // hooks
-  const userInfo = useUserInfo();
-  // const paymentsQuery = usePaymentsQuery(userInfo, flashInfo);
-  const { data: settings } = useSettingsQuery(userInfo, flashInfo);
-  if (settings) {
-    var paymentSettings = settings.paymentSettings;
-    var cashoutSettings = settings.cashoutSettings;
-  }
   const router = useRouter();
   const account = useAccount();
-  const config = useConfig();
-  const { theme } = useTheme();
   const t = useTranslations("App.CashOut");
   const tcommon = useTranslations("Common");
+  const { data: rates } = useRatesQuery(paymentSettings?.merchantCurrency);
+  const { data: flashBalance, refetch: refetchFlashBalance } = useFlashBalanceQuery();
+  const { data: cexBalance } = useCexBalanceQuery();
+  // TODO: somewhow set flashBalance and cexBalance for usability test
 
-  // get Flash and CEX balance
+  // states
+  const [isCbLinked, setIsCbLinked] = useState(true); // if Coinbase is linked or not
+  const [cbEvmAddress, setCbEvmAddress] = useState("");
+  const [cbBankAccountName, setCbBankAccountName] = useState("");
+  const [cexMoreOptions, setCexMoreOptions] = useState(false);
+  const [flashMoreOptions, setFlashMoreOptions] = useState(false);
+  const [flashDetails, setFlashDetails] = useState(false);
+  const [cexDetails, setCexDetails] = useState(false);
+  const [transferModal, setTransferModal] = useState<"toCex" | "toBank" | "toAny" | null>(null);
+  const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
+
   useEffect(() => {
-    console.log("/app, Cashout, get balances useEffect start");
-
-    (async () => {
-      await getRates();
-      // usability test
-      if (flashInfo.isUsabilityTest) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setFlashBalance("325.12");
-        setCexBalance("0.00");
-        setIsCexAccessible(true);
-        return;
-      }
-      getFlashBalance();
-      getCexBalance();
-
-      // // calculate savings
-      // let totalCurrencyAmount = 0;
-      // let totalCurrencyAmountAfterCashback = 0;
-      // let totalTokenAmount = 0;
-      // if (transactions?.length > 0) {
-      //   for (const txn of transactions) {
-      //     totalCurrencyAmount = totalCurrencyAmount + Number(txn.currencyAmount);
-      //     totalCurrencyAmountAfterCashback = totalCurrencyAmountAfterCashback + Number(txn.currencyAmountAfterCashback ?? 0);
-      //     totalTokenAmount = totalTokenAmount + Number(txn.tokenAmount);
-      //   }
-      // }
-      // setStats({
-      //   totalTxns: transactions?.length,
-      //   totalCurrencyAmount: totalCurrencyAmount.toFixed(currency2decimal[paymentSettings?.merchantCurrency!]),
-      //   totalCurrencyAmountAfterCashback: totalCurrencyAmountAfterCashback.toFixed(currency2decimal[paymentSettings?.merchantCurrency!]),
-      //   totalCashbackGiven: (totalCurrencyAmount - totalCurrencyAmountAfterCashback).toFixed(currency2decimal[paymentSettings?.merchantCurrency!]),
-      //   totalTokenAmount: totalTokenAmount.toFixed(2),
-      //   paymentRate: (totalCurrencyAmountAfterCashback / totalTokenAmount).toFixed(currency2rateDecimal[paymentSettings?.merchantCurrency!]),
-      //   currentRate: ratesData.usdcToLocal,
-      //   cashoutRate: 0,
-      // });
-    })();
+    console.log("/app, Cashout.tsx, useEffect");
+    // show cashoutIntroModal or not
+    const isCashoutIntroModal = window.localStorage.getItem("cashoutIntroModal");
+    if (isCashoutIntroModal) setCashoutIntroModal(true);
+    // determine if Coinbase linked
+    window.localStorage.getItem("cbRefreshToken") ? setIsCbLinked(true) : setIsCbLinked(false);
   }, []);
 
-  const getRates = async () => {
-    if (paymentSettings?.merchantCurrency == "USD") {
-      setRates({ usdcToLocal: 1, usdToLocal: 1 });
-    } else {
-      const ratesRes = await fetch("/api/getRates", {
-        method: "POST",
-        body: JSON.stringify({ merchantCurrency: paymentSettings?.merchantCurrency }),
-        headers: { "content-type": "application/json" },
-      });
-      const ratesData = await ratesRes.json();
-      console.log("ratesData", ratesData);
-      if (ratesData.status == "success") {
-        setRates({ usdcToLocal: ratesData.usdcToLocal, usdToLocal: ratesData.usdToLocal });
-      }
-    }
-  };
-
-  const getFlashBalance = async () => {
-    const flashBalanceBigInt = (await readContract(config, {
-      address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      abi: erc20Abi,
-      functionName: "balanceOf",
-      args: [account.address],
-    })) as bigint;
-    const flashBalanceTemp = formatUnits(flashBalanceBigInt, 6);
-    setFlashBalance((Math.floor(Number(flashBalanceTemp) * 100) / 100).toString());
-  };
-
-  const getCexBalance = async () => {
-    if (cashoutSettings?.cex == "Coinbase") {
-      // get access or refresh tokens
-      const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
-      const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
-      // if one exists, call cbGetBalance
-      if (cbAccessToken || cbRefreshToken) {
-        console.log("calling cbGetBalance API...");
-        const res = await fetch("/api/cbGetBalance", {
-          method: "POST",
-          body: JSON.stringify({ cbAccessToken, cbRefreshToken, userInfo }),
-          headers: { "content-type": "application/json" },
-        });
-        const data = await res.json(); // if success, data.status | data.cbAccessToken | data.cbRefreshToken
-        console.log(data);
-        // if successful
-        if (data.status === "success") {
-          // set cexBalance
-          setCexBalance((Math.floor(data.balance * 100) / 100).toString());
-          // save new tokens to browser
-          if (data.newAccessToken && data.newRefreshToken) {
-            console.log("storing new tokens");
-            window.sessionStorage.setItem("cbAccessToken", data.newAccessToken);
-            window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
-          }
-          // update state
-          // setCashoutSettingsState({
-          //   ...cashoutSettingsState,
-          //   cexEvmAddress: data.cexEvmAddress,
-          //   cexAccountName: data.cexAccountName,
-          // });
-        } else if (data.status === "error") {
-          setIsCexAccessible(false);
-        }
-      } else {
-        setIsCexAccessible(false);
-      }
-    }
-  };
-
-  const onClickSIWC = async () => {
+  const linkCb = async () => {
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
-    const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/app/cbAuth`);
-    const scope =
-      paymentSettings?.merchantCurrency == "USD"
-        ? "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:buys:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read"
-        : "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:orders:read,wallet:transactions:read";
+    const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/cbAuth`);
+    const scopeBase =
+      "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:trades:read,wallet:transactions:read";
+    const scope = paymentSettings?.merchantCurrency === "USD" ? scopeBase + ",wallet:buys:create" : scopeBase;
     router.push(
       `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=${scope}`
     );
   };
 
-  const onClickUnlink = () => {
+  const unlinkCb = () => {
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
-    setIsCexAccessible(false);
-    setCexBalance(null);
+    setIsCbLinked(false);
+    setTransferModal(null);
   };
 
   const onClickTransferToCex = async () => {
+    // if coinbase
+    if (cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other") {
+      if (isCbLinked) {
+        setTransferModal("toCex");
+        getCbAccountInfo();
+        return;
+      } else {
+        setErrorModal(t("errors.linkCb"));
+        return;
+      }
+    }
+
+    // if not coinbase
     if (cashoutSettings?.cexEvmAddress) {
-      setTransferToCexModal(true);
+      setTransferModal("toCex");
     } else {
-      if (cashoutSettings?.cex == "Coinbase") {
-        setErrorMsg(t("errors.linkCb"));
-      } else {
-        setErrorMsg(
-          t.rich("errors.platformAddress", {
-            span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
-            span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
-            span3: (chunks) => (
-              <span
-                className="link"
-                onClick={() => {
-                  setTransferToCexModal(true);
-                  setTransferToAnyAddress(true);
-                  setErrorModal(false);
-                  setErrorMsg("");
-                }}
-              >
-                {chunks}
-              </span>
-            ),
-            icon: () => <FaEllipsisVertical className="" />,
-          })
-        );
-      }
-      setErrorModal(true);
+      setErrorModal(
+        t.rich("errors.platformAddress", {
+          span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+          span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+          span3: (chunks) => (
+            <span
+              className="link"
+              onClick={() => {
+                setTransferModal("toAny");
+                setErrorModal(null);
+              }}
+            >
+              {chunks}
+            </span>
+          ),
+          icon: () => <FaEllipsisVertical className="" />,
+        })
+      );
     }
   };
 
-  //   <div className="">
-  //   Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>. Or, click the menu
-  //   icon (<FontAwesomeIcon icon={faEllipsisVertical} className="" />) and choose{" "}
-  //   <span
-  //     className="link"
-  //     onClick={() => {
-  //       setTransferToCexModal(true);
-  //       setTransferToAnyAddress(true);
-  //       setErrorModal(false);
-  //       setErrorMsg("");
-  //     }}
-  //   >
-  //     transfer to any EVM address
-  //   </span>
-  //   .
-  // </div>
-
-  const onClickTransferToCexSubmit = async () => {
-    // for usability test
-    if (flashInfo.isUsabilityTest) {
-      setTransferState("sending");
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setTransferState("sent");
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      setTransferToCexSuccessModal(true);
-      setFlashBalance((Number(flashBalance) - Number(usdcTransferToCex)).toFixed(2));
-      // update coinbase balance
-      const usdcTransferToCexTemp = usdcTransferToCex;
-      await new Promise((resolve) => setTimeout(resolve, 6000));
-      setCexBalance((Number(cexBalance) + Number(usdcTransferToCexTemp)).toFixed(2));
-      return;
-    }
-
-    // check if amount exists
-    if (!usdcTransferToCex) {
-      setErrorModal(true);
-      setErrorMsg(t("errors.enterAmount"));
-      return;
-    }
-    // check if amount >= 1
-    if (Number(usdcTransferToCex) < 1) {
-      setErrorModal(true);
-      setErrorMsg(t("errors.minUSDC"));
-      return;
-    }
-
-    // determine toAddress
-    if (transferToAnyAddress) {
-      if (anyAddress) {
-        var toAddress = anyAddress;
-      } else {
-        setErrorModal(true);
-        setErrorMsg(t("errors.toEvmAddress"));
-        return;
-      }
-    } else {
-      if (cashoutSettings?.cexEvmAddress) {
-        toAddress = cashoutSettings?.cexEvmAddress;
-      } else {
-        // this condition should not be possible but will add anyway
-        setErrorModal(true);
-        <div className="">
-          Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>
-        </div>;
-        return;
-      }
-    }
-
-    // check if toAddress if valid
-    if (!isAddress(toAddress)) {
-      setErrorModal(true);
-      setErrorMsg(t("errors.validEvmAddress"));
-      return;
-    }
-
-    const makeGaslessTransfer = async () => {
-      if (!account.chainId) return;
-      setTransferState("sending");
-      // 1. define variables
-      const chainId = account.chainId;
-      const usdcAddress = networkToInfo[String(chainId)].usdcAddress;
-      const flashAddress = networkToInfo[String(chainId)].flashAddress;
-      const deadline = Math.floor(Date.now() / 1000) + 60 * 3; // 3 minute deadline
-
-      const nonce = (await readContract(config, {
-        address: usdcAddress,
-        abi: erc20Abi,
-        functionName: "nonces",
-        args: [account.address],
-      })) as bigint;
-
-      // 2. sign two EIP712 messages
-      const permitSignatureHex = await signTypedData(config, {
-        types: {
-          Permit: [
-            { name: "owner", type: "address" },
-            { name: "spender", type: "address" },
-            { name: "value", type: "uint256" },
-            { name: "nonce", type: "uint256" },
-            { name: "deadline", type: "uint256" },
-          ],
-        } as const satisfies TypedData, // must const-assert
-        primaryType: "Permit",
-        domain: { name: "USD Coin", version: "2", chainId: chainId, verifyingContract: usdcAddress },
-        message: {
-          owner: paymentSettings?.merchantEvmAddress as Address,
-          spender: flashAddress,
-          value: parseUnits(usdcTransferToCex, 6),
-          nonce: nonce,
-          deadline: BigInt(deadline),
-        },
+  async function getCbAccountInfo() {
+    const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
+    const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
+    try {
+      const res = await fetch("/api/cbGetAccountInfo", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ cbAccessToken, cbRefreshToken }),
       });
-      const paySignatureHex = await signTypedData(config, {
-        types: {
-          Pay: [
-            { name: "toAddress", type: "address" },
-            { name: "nonce", type: "uint256" },
-          ],
-        } as const satisfies TypedData, // must const-assert
-        primaryType: "Pay",
-        domain: { name: "FlashPayments", version: "1", chainId: chainId, verifyingContract: flashAddress },
-        message: { toAddress: toAddress as Address, nonce: nonce },
-      });
-
-      // 3. get v, r, s, from permitSignature and paySignature
-      const permitSignature = hexToSignature(permitSignatureHex);
-      const paySignature = hexToSignature(paySignatureHex);
-
-      // 4. construct payCalldata & encode the function arguments
-      const paymentData = {
-        from: paymentSettings?.merchantEvmAddress,
-        to: toAddress,
-        amount: parseUnits(usdcTransferToCex, 6),
-        permitData: { deadline: deadline, signature: { v: permitSignature.v, r: permitSignature.r, s: permitSignature.s } },
-      };
-      const payCalldata = encodeFunctionData({ abi: flashAbi, functionName: "pay", args: [paymentData, paySignature] }); // GelatoRelay request.data only takes encoded calldata
-
-      // 5. make Gelato Relay API call
-      const relay = new GelatoRelay();
-      const request: CallWithSyncFeeRequest = {
-        chainId: BigInt(chainId),
-        target: flashAddress,
-        data: payCalldata,
-        feeToken: usdcAddress,
-        isRelayContext: true,
-      };
-      try {
-        var { taskId } = await relay.callWithSyncFee(request);
-      } catch (e) {
-        setErrorMsg("Withdrawal failed. Please try again or contact us.");
-        setErrorModal(true);
-        setTransferState("initial");
+      const resJson = await res.json();
+      if (resJson.status === "success") {
+        if (resJson.data.newAccessToken) {
+          window.sessionStorage.setItem("cbAccessToken", resJson.data.newAccessToken);
+          window.localStorage.setItem("cbRefreshToken", resJson.data.newRefreshToken);
+        }
+        console.log("cbEvmAddress:", resJson.data.cbEvmAddress);
+        setCbEvmAddress(resJson.data.cbEvmAddress);
         return;
       }
+    } catch (e) {}
+    unlinkCb();
+  }
 
-      // 6. poll for completion
-      for (let i = 1; i < 50; i++) {
-        try {
-          var taskStatus = await relay.getTaskStatus(taskId);
-        } catch {} // try needed so one failed request won't exit function
-        if (taskStatus?.taskState == "ExecSuccess") {
-          setTxHash(taskStatus!.transactionHash);
-          setTransferState("sent");
-          setTransferToCexSuccessModal(true);
-          getFlashBalance();
-          return;
-        }
-        if (taskStatus?.taskState == "ExecReverted" || taskStatus?.taskState == "Cancelled") {
-          setErrorMsg("Your withdrawal failed. Please try again.");
-          setErrorModal(true);
-          setTransferState("initial");
-          return;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
+  async function onClickTransferToBank() {
+    setTransferModal("toBank");
 
-      // if polling time out
-      setErrorMsg("We were unable to confirm if the withdrawal was successful. Please check your wallet balance to confirm. We apologize for the inconvenience.");
-      setErrorModal(true);
-      setTransferState("initial");
-    };
-    await makeGaslessTransfer();
-
-    // const makeStandardTransfer = async () => {
-    //   try {
-    //     const txHashTemp = await writeContract(config, {
-    //       address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC address on polygon
-    //       abi: erc20Abi,
-    //       functionName: "transfer",
-    //       args: [toAddress, parseUnits(usdcTransferToCex, 6)],
-    //     });
-    //     console.log(txHashTemp);
-    //     setTxHash(txHashTemp);
-    //     setTransferState("sent");
-    //     setTransferToCexSuccessModal(true);
-    //   } catch (err) {
-    //     console.log(err);
-    //     console.log("transfer not sent");
-    //     setErrorModal(true);
-    //     setErrorMsg(t("errors.transferFailed"));
-    //     setTransferState("initial");
-    //   }
-    // };
-    // await makeStandardTransfer();
-  };
-
-  const onClickTransferToBank = async () => {
     // usability test
     if (flashInfo.isUsabilityTest) {
       setCbBankAccountName("Chase Bank, North America\n****9073");
-      setTransferToBankModal(true);
-      return;
-    }
-    // coinbase
-    if (cashoutSettings?.cex == "Coinbase") {
-      // get access or refresh tokens
-      const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
-      const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
-      console.log("cbRefreshToken & cbAccessToken", cbRefreshToken, cbAccessToken);
-      // if one exists, start withdraw
-      if ((cbAccessToken || cbRefreshToken) && cexBalance) {
-        console.log("getting bank info...");
-        setTransferToBankModal(true);
-        const res = await fetch("/api/cbGetBankInfo", {
-          method: "POST",
-          body: JSON.stringify({ cbRefreshToken, cbAccessToken }),
-          headers: { "content-type": "application/json" },
-        });
-        const data = await res.json(); // if success, data.status | data.cbAccessToken | data.cbRefreshToken
-        console.log(data);
-        // if successful
-        if (data.status === "success") {
-          setCbBankAccountName(data.cbBankAccountName);
-          if (data.newAccessToken && data.newRefreshToken) {
-            console.log("storing new tokens");
-            window.sessionStorage.setItem("cbAccessToken", data.newAccessToken);
-            window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
-          }
-        } else if (data.status === "error") {
-          console.log("could not get bank info");
-        }
-      } else {
-        setErrorMsg(t("errors.linkCb"));
-        setErrorModal(true);
-      }
-    }
-  };
-
-  const onClickTransferToBankSubmit = async () => {
-    // for usability test
-    if (flashInfo.isUsabilityTest) {
-      setTransferState("sending");
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setTransferState("sent");
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      setTransferToBankSuccessModal(true);
-      setFiatDeposited((Number(usdcTransferToBank) * rates.usdcToLocal).toFixed(2));
-      setCexBalance((Number(cexBalance) - Number(usdcTransferToBank)).toFixed(2));
       return;
     }
 
-    // check if amount exists
-    if (!usdcTransferToBank) {
-      setErrorModal(true);
-      setErrorMsg(t("enterAmount"));
-      return;
-    }
-    // if amount exceeds Coinbase balance
-    if (Number(usdcTransferToBank) > Number(cexBalance)) {
-      setErrorModal(true);
-      setErrorMsg(t("errors.lowBalance"));
-      return;
-    }
-    // check if amount >= 1
-    if (Number(usdcTransferToBank) < 11) {
-      setErrorModal(true);
-      setErrorMsg(t("errors.minUSDC11"));
-      return;
-    }
-    if (Number(usdcTransferToBank) > 10000.1) {
-      setErrorModal(true);
-      setErrorMsg("errors.maxUSDC");
-      return;
-    }
-
-    setTransferState("sending");
+    const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
+    const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
     try {
-      const res = await fetch("/api/cbWithdraw", {
+      const res = await fetch("/api/cbGetBankInfo", {
         method: "POST",
-        body: JSON.stringify({
-          amount: usdcTransferToBank,
-          merchantCurrency: paymentSettings?.merchantCurrency,
-          cbAccessToken: window.sessionStorage.getItem("cbAccessToken"),
-        }),
+        body: JSON.stringify({ cbRefreshToken, cbAccessToken }),
         headers: { "content-type": "application/json" },
       });
       const data = await res.json();
-      console.log(data);
-      if (data.status == "success") {
-        setFiatDeposited(data.fiatAmountBought);
-        setUsdcTransferToBankActual(data.usdcAmountSold);
-        setCexBalance((Number(cexBalance) - Number(data.usdcAmountSold)).toFixed(2));
-        setTransferToBankSuccessModal(true);
-        setTransferToBankModal(false);
-      } else if (data.status == "error") {
-        setErrorMsg(data.message);
-        setErrorModal(true);
+      if (data.status === "success") {
+        if (data.newAccessToken) {
+          window.sessionStorage.setItem("cbAccessToken", data.newAccessToken);
+          window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
+        }
+        setCbBankAccountName(data.cbBankAccountName);
+        return;
       }
     } catch (e) {
-      setErrorModal(true);
-      setErrorMsg(t("errors.unknownTransferError"));
+      setErrorModal("Error");
+      setTransferModal(null);
     }
-    setTransferState("initial");
-  };
+  }
 
   const hideCexMoreOptions = () => {
     setCexMoreOptions(false);
@@ -576,7 +189,6 @@ export default function CashOut({ flashInfo }: { flashInfo: FlashInfo }) {
     document.removeEventListener("click", hideFlashMoreOptions);
   };
 
-  console.log("before render", "\nflashBalance:", flashBalance, "\nisCexAccessible", isCexAccessible, "\ncexBalance:", cexBalance);
   return (
     // 96px is height of mobile top menu bar + 14px mt
     <section className="appPageContainer bg-light2 dark:bg-dark1 py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px] overflow-y-auto">
@@ -586,569 +198,92 @@ export default function CashOut({ flashInfo }: { flashInfo: FlashInfo }) {
         <div className="w-full h-[36px] flex justify-between items-center relative">
           {/*--- title ---*/}
           <div className="cashoutHeader">Flash {tcommon("account")}</div>
-          {/*--- ellipsis ---*/}
-          <div
-            className={`${
-              flashBalance ? "" : "hidden"
-            } w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer`}
-            onClick={() => {
-              setFlashMoreOptions(!flashMoreOptions);
-              if (!flashMoreOptions) {
-                document.addEventListener("click", hideFlashMoreOptions);
-              }
-            }}
-          >
-            <FaEllipsisVertical className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg" />
-          </div>
+          {/*--- more options ---*/}
+          {flashBalance && rates && (
+            <div
+              className={`${flashMoreOptions ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
+              onClick={() => {
+                setFlashMoreOptions(!flashMoreOptions);
+                if (!flashMoreOptions) document.addEventListener("click", hideFlashMoreOptions);
+              }}
+            >
+              <FaEllipsisVertical className="textLgAppPx" />
+            </div>
+          )}
           {/*--- flashMoreOptionsModal ---*/}
-          <div
-            className={`${flashMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`}
-            onClick={() => {
-              setTransferToCexModal(true);
-              setTransferToAnyAddress(true);
-            }}
-          >
+          <div className={`${flashMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
             {t("transferToAny")}
           </div>
         </div>
-        {/*--- balance + details ---*/}
-        <div className="cashoutBalanceContainer">
-          {/*--- balance ---*/}
-          {flashBalance ? (
-            <div className={`cashoutBalance`}>
-              <div>
-                {currency2symbol[paymentSettings?.merchantCurrency!]}&nbsp;
-                <span>{(Number(flashBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}</span>
-              </div>
-              {/*--- arrow ---*/}
-              <div className="cashoutArrowContainer group" onClick={() => setFlashDetails(!flashDetails)}>
-                {flashDetails ? (
-                  <FaAngleUp className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
-                ) : (
-                  <FaAngleDown className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
-          )}
-          {/*---details---*/}
-          <div className={`${flashDetails ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"} grid transition-all duration-500`}>
-            <div className="overflow-hidden flex">
-              <div className="mt-[8px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] textLgApp font-medium relative">
-                {/*--- usdc label ---*/}
-                <div className="flex items-center">
-                  <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] desktop:!w-[18px] desktop:!h-[18px] mr-[4px]">
-                    <Image src="/usdc.svg" alt="USDC" fill />
-                  </div>
-                  USDC
-                </div>
-                {/*--- usdc balance ---*/}
-                <div className="justify-self-end py-[4px]">{flashBalance}</div>
-                {/*--- rate label ---*/}
-                <div className="flex items-center">
-                  <p>{t("rate")}</p>
-                  <IoInformationCircleOutline className="ml-[4px] text-[20px] desktop:text-[16px] peer text-blue-500 dark:text-darkButton" />
-                  <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettings.merchantCurrency })}</div>
-                </div>
-                {/*--- rate value ---*/}
-                <div className="justify-self-end py-[4px]">{rates.usdcToLocal}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/*--- balance ---*/}
+        <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={flashBalance} details={flashDetails} setDetails={setFlashDetails} />
         {/*--- button ---*/}
-        {flashBalance && (
-          <div className="cashoutButtonContainer">
-            <button className="cashoutButton" onClick={onClickTransferToCex}>
-              {cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer")}
-            </button>
-          </div>
+        {flashBalance && rates && (
+          <button className="cashoutButton" onClick={onClickTransferToCex}>
+            {cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer")}
+          </button>
         )}
       </div>
 
       {/*--- CEX CARD ---*/}
-      <div className={`${paymentSettings?.merchantCountry != "Other" && cashoutSettings?.cex == "Coinbase" ? "" : "hidden"} cashoutCard`}>
-        {/*--- title + cex more options ---*/}
-        <div className="w-full h-[36px] flex justify-between items-center relative">
-          {/*--- title ---*/}
-          <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
-          {/*--- ellipsis ---*/}
-          <div
-            className={`${
-              cexBalance ? "" : "hidden"
-            } w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer`}
-            onClick={() => {
-              setCexMoreOptions(!cexMoreOptions);
-              if (!cexMoreOptions) {
-                document.addEventListener("click", hideCexMoreOptions);
-              }
-            }}
-          >
-            <FaEllipsisVertical className="text-xl portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg" />
-          </div>
-          {/*--- cexMoreOptionsModal ---*/}
-          <div className={`${cexMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={onClickUnlink}>
-            {t("unlink")}
-          </div>
-        </div>
-
-        {/*---balance + details ---*/}
-        {isCexAccessible ? (
-          <div className="cashoutBalanceContainer">
-            {/*--- balance ---*/}
-            {cexBalance ? (
-              <div className="cashoutBalance">
-                <div className="flex items-center">
-                  {currency2symbol[paymentSettings?.merchantCurrency!]}&nbsp;
-                  {(Number(cexBalance) * rates.usdcToLocal).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}
-                </div>
-                <div className="cashoutArrowContainer group" onClick={() => setCexDetails(!cexDetails)}>
-                  {cexDetails ? (
-                    <FaAngleUp className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
-                  ) : (
-                    <FaAngleDown className="cashoutArrow group-hover:desktop:brightness-[1.2]" />
-                  )}
-                </div>
+      {cashoutSettings?.cex === "Coinbase" && paymentSettings?.merchantCountry != "Other" && (
+        <div className="cashoutCard">
+          {/*--- title + more options ---*/}
+          <div className="w-full h-[36px] flex justify-between items-center relative">
+            {/*--- title ---*/}
+            <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
+            {/*--- ellipsis ---*/}
+            {cexBalance && rates && (
+              <div
+                className={`${cexMoreOptions ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
+                onClick={() => {
+                  setCexMoreOptions(!cexMoreOptions);
+                  if (!cexMoreOptions) document.addEventListener("click", hideCexMoreOptions);
+                }}
+              >
+                <FaEllipsisVertical className="textLgAppPx" />
               </div>
-            ) : (
-              <div className="cashoutBalance text-transparent w-[150px] bg-slate-300 dark:bg-dark5 animate-pulse rounded-md">0000</div>
             )}
-            {/*---details---*/}
-            <div className={`${cexDetails ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"} ${isCexAccessible ? "" : "hidden"} grid transition-all duration-500`}>
-              <div className="overflow-hidden flex">
-                <div className="mt-[8px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] textLgApp font-medium relative">
-                  {/*--- usdc label ---*/}
-                  <div className="flex items-center">
-                    <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] desktop:!w-[18px] desktop:!h-[18px] mr-[4px]">
-                      <Image src="/usdc.svg" alt="USDC" fill />
-                    </div>
-                    USDC
-                  </div>
-                  {/*--- usdc balance ---*/}
-                  <div className="justify-self-end py-[4px]">{cexBalance}</div>
-                  {/*--- rate label ---*/}
-                  <div className="flex items-center">
-                    <p>{t("rate")}</p>
-                    <IoInformationCircleOutline className="ml-[4px] text-[20px] desktop:text-[16px] peer text-blue-500 dark:text-darkButton" />
-                    <div className="w-full top-0 left-0 cashoutTooltip">{t("rateTooltip", { merchantCurrency: paymentSettings.merchantCurrency })}</div>
-                  </div>
-                  {/*--- rate value ---*/}
-                  <div className="justify-self-end py-[4px]">{rates.usdcToLocal}</div>
-                </div>
-              </div>
+            {/*--- cexMoreOptionsModal ---*/}
+            <div className={`${cexMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
+              {t("unlink")}
             </div>
           </div>
-        ) : (
-          <div className="flex-1 w-full flex justify-center items-center">
-            <div className="link textBase" onClick={onClickSIWC}>
-              {t("linkCoinbase")}
+          {/*--- balance ---*/}
+          {isCbLinked ? (
+            <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={cexBalance} details={cexDetails} setDetails={setCexDetails} />
+          ) : (
+            <div className="flex-1 w-full flex justify-center items-center">
+              <span className="link" onClick={linkCb}>
+                {t("linkCoinbase")}
+              </span>
             </div>
-          </div>
-        )}
-        {/*--- button ---*/}
-        <div className="cashoutButtonContainer">
-          {cexBalance && (
+          )}
+          {/*--- button ---*/}
+          {cexBalance && rates && (
             <button className="cashoutButton" onClick={onClickTransferToBank}>
               {tcommon("transferToBank")}
             </button>
           )}
         </div>
-      </div>
-
-      {/*--- Your Savings ---*/}
-
-      {/*--- Transfer History ---*/}
-      {/* <div className="cashoutCard min-h-0">
-        <div className="cashoutHeader">Transfer History</div>
-        <div className="mt-2 px-2 flex justify-between"></div>
-      </div> */}
-
-      {/*--- 5 modals---*/}
-      {transferToCexModal && (
-        <div className="">
-          <div className="transferModal">
-            {/*--- desktop/tablet close ---*/}
-            <div
-              className="xButtonContainer"
-              onClick={() => {
-                setTransferToCexModal(false);
-                setUsdcTransferToCex(null);
-                setTransferToAnyAddress(false);
-              }}
-            >
-              <div className="xButton">&#10005;</div>
-            </div>
-            {/*--- mobile back ---*/}
-            <div className="mobileBack">
-              <FontAwesomeIcon
-                icon={faAngleLeft}
-                onClick={() => {
-                  setTransferToCexModal(false);
-                  setUsdcTransferToCex(null);
-                  setTransferToAnyAddress(false);
-                }}
-              />
-            </div>
-
-            {/*--- header ---*/}
-            <div className="transferModalHeader whitespace-nowrap">
-              {transferToAnyAddress ? tcommon("transfer") : tcommon("transferToCEX", { cex: cashoutSettings.cex ? cashoutSettings.cex : tcommon("CEX") })}
-            </div>
-
-            {/*--- CONTENT ---*/}
-            <div className="transferModalContentContainer">
-              {/*--- FROM container ---*/}
-              <div className="transferFromCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon">
-                    <Image src="/icon-svg.svg" alt="Flash logo" fill />
-                  </div>
-                  <div className="ml-[12px] flex flex-col">
-                    <div className="textBase leading-none font-medium">{tcommon("fromFlash")}</div>
-                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{paymentSettings?.merchantName}</div>
-                    <div className="textBasePx leading-tight break-all text-slate-500">
-                      {paymentSettings?.merchantEvmAddress.slice(0, 10)}...
-                      {paymentSettings?.merchantEvmAddress.slice(-8)}
-                    </div>
-                  </div>
-                </div>
-                {/*--- from amount ---*/}
-                <div className="mt-[16px] w-full flex items-center relative">
-                  <input
-                    className="transferAmountFromBox inputColor border-slate-500 placeholderColor placeholder:not-italic dark:bg-dark2"
-                    type="number"
-                    inputMode="decimal"
-                    onChange={(e) => setUsdcTransferToCex(e.currentTarget.value)}
-                    value={usdcTransferToCex || ""}
-                    onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToCex(Number(e.currentTarget.value).toFixed(2)) : null)}
-                    placeholder="0"
-                  />
-                  {/*--- max + USDC ---*/}
-                  <div className="h-full right-0 absolute flex space-x-[12px] items-center">
-                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToCex(flashBalance)}>
-                      {tcommon("max")}
-                    </div>
-                    <div className="transferUsdc">USDC</div>
-                  </div>
-                </div>
-                {/*--- balance ---*/}
-                <div className="textBase w-full pl-[4px] mt-[1px] flex items-center text-slate-500">
-                  {tcommon("balance")}: {flashBalance} USDC
-                </div>
-              </div>
-
-              {/*--- ARROW ---*/}
-              <div className="flex-none w-full h-[24px] landscape:xl:desktop:h-[16px] flex justify-center relative z-[1]">
-                <div className="transferArrowContainer">
-                  <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
-                  <div className="transferArrowFont">
-                    {blockchainFee} USDC <br />
-                    {tcommon("blockchainFee")}
-                  </div>
-                </div>
-              </div>
-
-              {/*--- TO container ---*/}
-              <div className="transferToCard">
-                {/*--- info ---*/}
-                {!transferToAnyAddress && (
-                  <div className="w-full flex items-center">
-                    <div className="transferIcon">
-                      {cashoutSettings?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                      {cashoutSettings?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
-                      {cashoutSettings?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="BitoPro icon" fill />}
-                      {cashoutSettings?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}
-                    </div>
-                    <div className="ml-[12px] flex flex-col">
-                      <div className="textBase leading-none font-medium">
-                        {tcommon("toCEX", {
-                          cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
-                        })}
-                      </div>
-                      <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettings?.cexAccountName}</div>
-                      <div className="textBasePx leading-tight break-all text-slate-500">
-                        {cashoutSettings?.cexEvmAddress.slice(0, 10)}...
-                        {cashoutSettings?.cexEvmAddress.slice(-8)}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {transferToAnyAddress && (
-                  <div className="w-full flex flex-col">
-                    <label className="w-full font-medium">{t("toAddress")}:</label>
-                    <textarea
-                      id="settingsCexDepositAddress"
-                      rows={1}
-                      className="mt-[1px] py-[8px] px-[12px] textLgPx leading-normal inputColor border-slate-500 placeholderColor rounded-[6px] dark:bg-dark2 resize-none"
-                      placeholder={t("enterAnEvmAddress")}
-                      onChange={(e) => {
-                        let element = document.getElementById("settingsCexDepositAddress") as HTMLTextAreaElement;
-                        e.target.value ? (element.rows = 2) : (element.rows = 1);
-                        setAnyAddress(e.target.value);
-                      }}
-                    />
-                  </div>
-                )}
-                {/*--- to amount ---*/}
-                <div className="transferAmountToBox">
-                  <div className="">{Number(usdcTransferToCex) >= 1 ? (Number(usdcTransferToCex) - blockchainFee).toFixed(2) : "0"}</div>
-                  <div className="transferUsdc">USDC</div>
-                </div>
-              </div>
-
-              {/*--- buttons ---*/}
-              <div className="transferModalButtonContainer">
-                {transferState == "initial" ? (
-                  <button onClick={onClickTransferToCexSubmit} className="buttonPrimary">
-                    {transferToAnyAddress
-                      ? tcommon("transfer")
-                      : tcommon("transferToCEX", {
-                          cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex).replace(" Exchange", "") : tcommon("CEX"),
-                        })}
-                  </button>
-                ) : (
-                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
-                    <SpinningCircleGray />
-                    &nbsp; {tcommon("transferring")}...
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="modalBlackout"></div>
-        </div>
       )}
 
-      {transferToBankModal && (
-        <div className="">
-          <div className="transferModal">
-            {/*--- tablet/desktop close ---*/}
-            <div
-              className="xButtonContainer"
-              onClick={() => {
-                setTransferToBankModal(false);
-                setUsdcTransferToBank(null);
-              }}
-            >
-              <div className="xButton">&#10005;</div>
-            </div>
-            {/*--- mobile back ---*/}
-            <div className="mobileBack">
-              <FontAwesomeIcon
-                icon={faAngleLeft}
-                onClick={() => {
-                  setTransferToBankModal(false);
-                  setUsdcTransferToBank(null);
-                }}
-              />
-            </div>
-
-            {/*--- header ---*/}
-            <div className="transferModalHeader whitespace-nowrap">{tcommon("transferToBank")}</div>
-
-            {/*--- CONTENT ---*/}
-            <div className="transferModalContentContainer">
-              {/*--- FROM container ---*/}
-              <div className="transferFromCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon">
-                    {cashoutSettings?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                    {cashoutSettings?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
-                    {cashoutSettings?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                    {cashoutSettings?.cex == "Other" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
-                  </div>
-                  <div className="ml-[12px] flex flex-col">
-                    <div className="textBase leading-none font-medium">{tcommon("fromCoinbase")}</div>
-                    <div className="textBasePx leading-tight text-slate-500 line-clamp-1">{cashoutSettings?.cexAccountName}</div>
-                    <div className="textBasePx leading-tight break-all text-slate-500">
-                      {cashoutSettings?.cexEvmAddress.slice(0, 10)}...
-                      {cashoutSettings?.cexEvmAddress.slice(-8)}
-                    </div>
-                  </div>
-                </div>
-                {/*--- from amount ---*/}
-                <div className="mt-4 w-full flex items-center relative">
-                  <input
-                    className="transferAmountFromBox inputColor border2Color placeholderColor placeholder:not-italic dark:bg-dark2"
-                    type="number"
-                    inputMode="decimal"
-                    onChange={(e) => setUsdcTransferToBank(e.currentTarget.value)}
-                    value={usdcTransferToBank || ""}
-                    onBlur={(e) => (e.currentTarget.value ? setUsdcTransferToBank(Number(e.currentTarget.value).toFixed(2)) : null)}
-                    placeholder="0"
-                  />
-                  {/*--- max + USDC ---*/}
-                  <div className="h-full right-0 absolute flex space-x-4 items-center">
-                    <div className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer" onClick={() => setUsdcTransferToBank(cexBalance)}>
-                      {tcommon("max")}
-                    </div>
-                    <div className="pr-[16px] text-2xl landscape:xl:desktop:text-xl font-semibold leading-none">USDC</div>
-                  </div>
-                </div>
-                {/*--- balance ---*/}
-                <div className="pl-[4px] mt-[2px] w-full textBase text-slate-500">
-                  {tcommon("balance")}: {cexBalance} USDC
-                </div>
-              </div>
-
-              {/*--- ARROW ---*/}
-              <div className="flex-none w-full h-[24px] flex justify-center relative z-[1]">
-                <div className="transferArrowContainer">
-                  <FontAwesomeIcon icon={faArrowDown} className="transferArrowArrow" />
-                  <div className="transferArrowFont">
-                    <div className="">
-                      1 USDC <span>={paymentSettings?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettings?.merchantCurrency!]}
-                      {rates.usdcToLocal}
-                    </div>
-                    {paymentSettings?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
-                  </div>
-                </div>
-              </div>
-
-              {/*--- TO container ---*/}
-              <div className="transferToCard">
-                {/*--- info ---*/}
-                <div className="w-full flex items-center">
-                  <div className="transferIcon bg-light5 dark:bg-slate-700">
-                    <Image src={theme == "dark" ? "/bankWhite.svg" : "/bankWhite.svg"} alt="bank" fill />
-                  </div>
-                  <div className="ml-[12px] flex flex-col">
-                    <div className="textBase leading-none font-medium">{tcommon("toBank")}</div>
-                    <div className="textBasePx leading-tight text-slate-500">{cbBankAccountName}</div>
-                  </div>
-                </div>
-                {/*--- to amount ---*/}
-                <div className="transferAmountToBox">
-                  <div className="">
-                    {currency2symbol[paymentSettings?.merchantCurrency!]}{" "}
-                    {usdcTransferToBank
-                      ? paymentSettings?.merchantCurrency == "USD"
-                        ? ((Number(usdcTransferToBank) - 0.01) * 0.99987).toFixed(2)
-                        : (Number(usdcTransferToBank) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])
-                      : (0).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}
-                  </div>
-                </div>
-              </div>
-
-              {/*--- buttons ---*/}
-              <div className="transferModalButtonContainer">
-                {transferState == "initial" ? (
-                  <button onClick={onClickTransferToBankSubmit} className="buttonPrimary">
-                    {tcommon("transferToBank")}
-                  </button>
-                ) : (
-                  <div className="w-full flex justify-center items-center h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] landscape:xl:desktop:h-[48px] textXl font-medium text-slate-500">
-                    <SpinningCircleGray />
-                    &nbsp; {tcommon("transferring")}...
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="modalBlackout"></div>
-        </div>
+      {transferModal && (
+        <TransferModal
+          transferModal={transferModal}
+          setTransferModal={setTransferModal}
+          paymentSettings={paymentSettings}
+          cashoutSettings={cashoutSettings}
+          rates={rates}
+          setErrorModal={setErrorModal}
+          flashInfo={flashInfo}
+          cbEvmAddress={cbEvmAddress}
+          cbBankAccountName={cbBankAccountName}
+        />
       )}
-
-      {transferToCexSuccessModal && (
-        <div className="transferModal">
-          {/*--- HEADER ---*/}
-          <div className="transferSuccessModalHeaderContainer">
-            <div
-              className="xButtonContainerNotHidden"
-              onClick={() => {
-                setTransferState("initial");
-                setTransferToCexSuccessModal(false);
-                setTransferToCexModal(false);
-                setUsdcTransferToCex(null);
-              }}
-            >
-              <div className="xButton">&#10005;</div>
-            </div>
-          </div>
-          {/*--- CONTENT ---*/}
-          <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
-            <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
-            <div className="text3xl font-medium">{tcommon("transferSuccessful")}!</div>
-            <div className="text2xl font-bold">{usdcTransferToCex} USDC</div>
-            <div className="textLg text-center">
-              {t("transferToCexSuccessModal", {
-                cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
-              })}
-            </div>
-            {/*--- button ---*/}
-            <div className="w-full py-8">
-              <button
-                className="buttonSecondary"
-                onClick={() => {
-                  setTransferState("initial");
-                  setTransferToCexSuccessModal(false);
-                  setTransferToCexModal(false);
-                  setUsdcTransferToCex(null);
-                }}
-              >
-                {tcommon("close")}
-              </button>
-            </div>
-          </div>
-        </div>
+      {cashoutIntroModal && paymentSettings && cashoutSettings && (
+        <CashoutIntroModal paymentSettings={paymentSettings} cashoutSettings={cashoutSettings} setCashoutIntroModal={setCashoutIntroModal} setTradeMAXModal={setTradeMAXModal} />
       )}
-
-      {transferToBankSuccessModal && (
-        <div className="transferModal">
-          {/*--- HEADER ---*/}
-          <div className="transferSuccessModalHeaderContainer">
-            <div
-              className="xButtonContainerNotHidden"
-              onClick={() => {
-                setTransferState("initial");
-                setTransferToBankSuccessModal(false);
-                setTransferToBankModal(false);
-                setUsdcTransferToBank(null);
-              }}
-            >
-              <div className="xButton">&#10005;</div>
-            </div>
-          </div>
-
-          {/*--- CONTENT ---*/}
-          <div className="px-8 portrait:sm:px-16 landscape:lg:px-16 landscape:xl:desktop:px-12 flex flex-col items-center space-y-8">
-            <FontAwesomeIcon icon={faCircleCheck} className="text-6xl text-green-500" />
-            <div className="text3xl font-medium">{tcommon("transferSuccessful")}</div>
-            <div className="textLg space-y-3">
-              <div>
-                <span className="font-bold">{Number(usdcTransferToBank).toFixed(2)} USDC</span> {t("transferToBankSuccessModal.text-1")}
-              </div>
-              <div>
-                <span className="font-bold">
-                  {currency2symbol[paymentSettings?.merchantCurrency!]}
-                  {fiatDeposited}
-                </span>{" "}
-                {t("transferToBankSuccessModal.text-2")}
-              </div>
-              <div>{t("transferToBankSuccessModal.text-3")}</div>
-            </div>
-            {/*--- button ---*/}
-            <div className="w-full py-8">
-              <button
-                className="buttonSecondary"
-                onClick={() => {
-                  setTransferState("initial");
-                  setTransferToBankSuccessModal(false);
-                  setTransferToBankModal(false);
-                  setUsdcTransferToBank(null);
-                }}
-              >
-                {tcommon("close")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {errorModal && <ErrorModal errorMsg={errorMsg} setErrorModal={setErrorModal} />}
     </section>
   );
 }

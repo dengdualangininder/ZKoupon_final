@@ -6,12 +6,12 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
   // time
   const date = new Date();
   const time = date.toLocaleTimeString("en-US", { hour12: false }) + `.${date.getMilliseconds()}`;
-
   console.log("/app page.tsx", time);
+
   const userType = cookies().get("userType")!.value; // middleware ensures userType exists
-  const flashToken = cookies().get("flashToken")!.value; // middleware ensures flashToken exists
+  const userJwt = cookies().get("userJwt")!.value; // middleware ensures userJwt exists
   const isUsabilityTest = (await searchParams).test ? true : false;
-  const flashInfo: FlashInfo = { userType, flashToken, isUsabilityTest };
+  const flashInfo: FlashInfo = { userType, userJwt, isUsabilityTest };
   return (
     <>
       <App flashInfo={flashInfo} />

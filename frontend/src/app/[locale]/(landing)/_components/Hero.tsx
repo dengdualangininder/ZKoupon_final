@@ -18,16 +18,18 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string | 
             {t("title2")}
           </h1>
           {/*--- body ---*/}
-          <div className="pb-2 relative w-[97%] lg:w-[780px] lg:desktop:w-[728px] homeTextLg">
+          <div className="pb-[8px] relative w-[97%] max-w-[640px]">
             {t("subtitle1")}
             <span className="group">
               <span className="linkLight font-semibold">{t("trueP2P")}</span>
-              <div className="w-full left-0 bottom-[calc(100%+4px)] heroTooltip">{merchantCurrency == "USD" ? t("tooltip1") : t("tooltip2")}</div>
+              <div className="w-full left-0 bottom-[calc(100%+4px)] heroTooltip">
+                {merchantCurrency == "USD" ? t("tooltip1") : t.rich("tooltip2", { merchantCurrency: merchantCurrency })}
+              </div>
             </span>
             {t("subtitle2")}
           </div>
           {/*--- button ---*/}
-          <Link className={`hidden heroButton lg:flex items-center justify-center`} href={"/app"}>
+          <Link className={`hidden lg:flex heroButton`} href={"/app"}>
             {t("enterApp")}
           </Link>
         </div>

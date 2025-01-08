@@ -8,8 +8,9 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 // types
 import { Rates } from "@/utils/types";
 import { currency2decimal, currency2symbol, currency2bank } from "@/utils/constants";
+import { FaCircleInfo } from "react-icons/fa6";
 
-const Inperson = ({
+export default function Inperson({
   urlParams,
   currencyAmount,
   setCurrencyAmount,
@@ -30,14 +31,14 @@ const Inperson = ({
   selectedToken: string;
   rates: Rates;
   send: any;
-  fxSavings: string;
+  fxSavings: string | undefined;
   tokenAmount: string;
   setTokenAmount: any;
-}) => {
+}) {
   const [digits, setDigits] = useState(4);
 
   return (
-    <div className="w-[356px] h-full max-h-[540px] flex flex-col items-center justify-between">
+    <div className="w-[356px] h-full min-h-[480px] max-h-[540px] flex flex-col items-center justify-between">
       {/*---blank---*/}
       <div></div>
       {/*---Pay To---*/}
@@ -47,71 +48,48 @@ const Inperson = ({
       </div>
 
       {/*--- AMOUNT BOX ---*/}
-      <div className="mb-4 flex justify-center items-center relative">
-        <div className="w-full h-[2px] bg-slate-300 absolute top-[calc(100%)]"></div>
-        <div className={`${urlParams.merchantCurrency == "TWD" ? "text-3xl bottom-2 font-semibold" : "text-5xl"} absolute right-[calc(100%+12px)]`}>
-          {currency2symbol[urlParams.merchantCurrency]}
-        </div>
-        <input
-          id="payCurrencyAmount"
-          className={`text-5xl font-medium p-0 text-center focus:placeholder:text-transparent bg-white outline-none focus:outline-none focus:ring-0 border-none focus:border-none placeholder:text-slate-400`}
-          onChange={(e) => {
-            setCurrencyAmount(e.currentTarget.value);
-            const currencyAmountAfterCashbackTemp = (Number(e.currentTarget.value) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]);
-            setCurrencyAmountAfterCashback(currencyAmountAfterCashbackTemp);
-            setTokenAmount((Number(currencyAmountAfterCashbackTemp) / rates.usdcToLocal).toFixed(2));
-            setDigits(e.currentTarget.value.toString().length > 4 ? e.currentTarget.value.toString().length : 4);
-            // setShowNetwork(true);
-          }}
-          type="number"
-          inputMode="decimal"
-          value={currencyAmount}
-          placeholder={urlParams.merchantCurrency == "TWD" ? "0" : "0.00"}
-          style={{ width: `${digits * (urlParams.merchantCurrency == "TWD" ? 32 : 28)}px` }}
-          // step="0.01" // TODO: step is not working
-        ></input>
-      </div>
-
-      {/*---select network---*/}
-      {/* <div className={`${showNetwork ? "" : "invisible"} w-[340px] flex flex-col items-center`}>
-        <div className="text-xl font-bold">Select a network:</div>
-        <div className="w-full ">Polygon</div>
-        {merchantNetworks.map((i: any) => (
-          <div key={i.name} className={` flex flex-col items-center`}>
-            <div
-              id={i.name}
-              data-category="network"
-              onClick={onClickNetwork}
-              className={`${
-                selectedNetwork == i.name ? "bg-gray-100 border-gray-100" : `${selectedNetwork ? "bg-white border-gray-100 opacity-50" : "bg-white border-gray-100"}`
-              } h-[58px] w-[58px] flex flex-col justify-center items-center pt-1 pb-0.5 text-[10px] text-center active:bg-gray-200 border rounded-full drop-shadow-md cursor-pointer`}
-            >
-              <div className="relative w-[22px] h-[22px]">
-                <Image src={i.img} alt={i.name} fill />
-              </div>
-              <div className="leading-tight pointer-events-none">{i.name}</div>
-              <div className="leading-tight pointer-events-none">${i.gas}</div>
-            </div>
+      <div className="flex flex-col items-center">
+        <div className="mb-4 flex justify-center items-center relative">
+          <div className="w-full h-[2px] bg-slate-300 absolute top-[calc(100%)]"></div>
+          <div className={`${urlParams.merchantCurrency == "TWD" ? "text-3xl bottom-2 font-semibold" : "text-5xl"} absolute right-[calc(100%+12px)]`}>
+            {currency2symbol[urlParams.merchantCurrency]}
           </div>
-        ))}
-      </div> */}
-      {/*---AMOUNT SENT + SAVINGS---*/}
-      <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
+          <input
+            id="payCurrencyAmount"
+            className={`text-5xl font-medium p-0 text-center focus:placeholder:text-transparent bg-white outline-none focus:outline-none focus:ring-0 border-none focus:border-none placeholder:text-slate-400`}
+            onChange={(e) => {
+              setCurrencyAmount(e.currentTarget.value);
+              const currencyAmountAfterCashbackTemp = (Number(e.currentTarget.value) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]);
+              setCurrencyAmountAfterCashback(currencyAmountAfterCashbackTemp);
+              setTokenAmount((Number(currencyAmountAfterCashbackTemp) / rates.usdcToLocal).toFixed(2));
+              setDigits(e.currentTarget.value.toString().length > 4 ? e.currentTarget.value.toString().length : 4);
+              // setShowNetwork(true);
+            }}
+            type="number"
+            inputMode="decimal"
+            value={currencyAmount}
+            placeholder={urlParams.merchantCurrency == "TWD" ? "0" : "0.00"}
+            style={{ width: `${digits * (urlParams.merchantCurrency == "TWD" ? 32 : 28)}px` }}
+            // step="0.01" // TODO: step is not working
+          ></input>
+        </div>
         {/*--- AMOUNT SENT ---*/}
-        <div className="flex text-center text-2xl font-semibold">
+        <div className={`${currencyAmount ? "" : "invisible"} mt-[8px] w-full flex text-center text-2xl font-medium`}>
           {tokenAmount} {selectedToken} will be sent
         </div>
+      </div>
 
+      {/*--- SAVINGS + send button ---*/}
+      <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
         {/*--- SAVINGS ---*/}
-        <div className="mt-4 w-full flex justify-between text-base text-slate-500 font-medium relative">
+        <div className="w-[80%] flex flex-col text-base text-slate-500 font-medium relative">
           {/*--- fx savings ---*/}
           {urlParams.merchantCurrency != "USD" && (
-            <div className="flex items-center group">
-              <div className="flex flex-col items-center">
-                <div>FX Savings</div>
-                <div className=" text-green-500 text-lg">{fxSavings}%</div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center group">
+                FX Savings <FaCircleInfo className="ml-[6px] text-[16px] text-slate-400" />
                 {/*--- tooltip ---*/}
-                <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip text-start dark:bg:slate-700 dark:text-white">
+                <div className="w-full bottom-[calc(100%+2px)] left-0 tooltip">
                   <p>
                     Your rate: 1 {selectedToken} &rarr; {rates.usdcToLocal} {urlParams.merchantCurrency}
                   </p>
@@ -120,36 +98,29 @@ const Inperson = ({
                   </p>
                 </div>
               </div>
-              <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-slate-400" />
+              <div className="text-green-500 text-[18px]">{fxSavings}%</div>
             </div>
           )}
           {/*--- instant cashback ---*/}
-          <div className="flex items-center group">
-            <div className="flex flex-col items-center text-center">
-              <p>Instant Cashback</p>
-              <p className=" text-green-500 text-lg">2%</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center group">
+              Instant Cashback <FaCircleInfo className="ml-[6px] text-[16px] text-slate-400" />
               {/*--- tooltip ---*/}
-              <div className="w-full left-0 bottom-[calc(100%+2px)] tooltip text-start dark:bg:slate-700 dark:text-white">
-                The value of USDC that will be sent is 2% less than the value of the {urlParams.merchantCurrency} entered
+              <div className="w-full left-0 bottom-[calc(100%+2px)] tooltip">
+                The amount of USDC sent will be 2% less than the value of the {urlParams.merchantCurrency} entered above
               </div>
             </div>
-            <FontAwesomeIcon icon={faCircleInfo} className="ml-1 text-sm text-slate-400" />
+            <p className=" text-green-500 text-[18px]">2%</p>
           </div>
           {/*--- total savings ---*/}
-          {urlParams.merchantCurrency != "USD" ? (
-            <div className="flex flex-col items-center text-center">
-              <p>You Save</p>
-              <div>
-                <div className=" text-green-500 text-lg">{2 + Number(fxSavings)}%</div>
-              </div>
-            </div>
-          ) : (
-            <div></div>
-          )}
+          <div className="flex items-center justify-between">
+            <p>You Save</p>
+            <div className="text-green-500 text-[18px]">{2 + Number(fxSavings)}%</div>
+          </div>
         </div>
 
         {/*---SEND BUTTON---*/}
-        <div className={`${currencyAmount ? "" : "invisible"} px-3 my-6 flex justify-center w-full`}>
+        <div className={`${currencyAmount ? "" : "invisible"} px-[12px] my-[24px] flex justify-center w-full`}>
           <button onClick={send} className="w-full h-[56px] font-semibold text-white bg-[#0376C9] active:brightness-[1.1] rounded-full text-xl">
             PAY
           </button>
@@ -157,6 +128,4 @@ const Inperson = ({
       </div>
     </div>
   );
-};
-
-export default Inperson;
+}

@@ -6,10 +6,10 @@ const CashbackModal = ({ setCashbackModal }: { setCashbackModal: any }) => {
 
   return (
     <div>
-      <div className="cashbackModal">
-        <div className="modalXpadding overflow-y-auto ">
+      <div className="infoModal">
+        <div className="infoModalContentContainer">
           {/*--- text ---*/}
-          <div className="cashbackModalTextContainer leading-snug landscape:xl:desktop:leading-normal">
+          <div className="space-y-[16px]">
             <p>{t("text-1")}</p>
             <p>{t("text-2")}</p>
             <p>{t("text-3")}</p>
@@ -19,13 +19,19 @@ const CashbackModal = ({ setCashbackModal }: { setCashbackModal: any }) => {
           </div>
           {/*--- buttons ---*/}
           <div className="modalButtonContainer">
-            <button onClick={() => setCashbackModal(false)} className="buttonPrimary max-w-[400px]">
+            <button
+              onClick={() => {
+                setCashbackModal(false);
+                window.localStorage.removeItem("cashbackModal");
+              }}
+              className="buttonPrimary modalButtonWidth"
+            >
               {tcommon("close")}
             </button>
           </div>
         </div>
       </div>
-      <div className="modalBlackout" onClick={() => setCashbackModal(false)}></div>
+      <div className="modalBlackout"></div>
     </div>
   );
 };

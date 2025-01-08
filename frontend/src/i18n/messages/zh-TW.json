@@ -9,7 +9,7 @@
       "subtitle2": "設計，Flash Payments 能夠為您的企業實現簡單、低成本的加密貨幣支付。建立帳戶只需 1 分鐘。",
       "enterApp": "進入 App",
       "tooltip1": "真正點對點意思是客戶直接付款給企業，沒有中間人。因此，Flash 不收取任何費用。",
-      "tooltip2": "因為 Flash 也不會從匯率中獲利，您和您的客戶將永遠獲得最佳的加密貨幣\u2B80{merchantCurrency}匯率。"
+      "tooltip2": "因為 Flash 不會從匯率中獲利，您和您的客戶將永遠獲得最佳的加密貨幣\u2B80{merchantCurrency}匯率。"
     },
     "How": {
       "header": "使用方法",
@@ -19,9 +19,9 @@
       "step-3": "您的確認付款",
       "step-4": "您出金至銀行",
       "step-1-1": "建立 Flash 帳戶後，您會在電子信箱裡收到 QR Code",
-      "step-2-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App<sup>?</sup></span2><div>{tooltip}</div></span1> 會開啟",
+      "step-2-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App</span2><div>{tooltip}</div></span1> 會開啟",
       "step-2-2": "客戶輸入的金額為 {merchantCurrency}",
-      "step-2-3": "客戶提交付款時，<span1><span2>USDC幣<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask app 送到您的 Flash app",
+      "step-2-3": "客戶提交付款時，<span1><span2>USDC幣</span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask app 送到您的 Flash app",
       "step-3-1": "付款~5秒後，付款會顯示在 Flash App。您的員工也可以登入您的 Flash App 以便確認付款成功",
       "step-4-1cb": "要出金，您先必須有個 Coinbase 帳戶",
       "step-4-2cb": "在 Flash App，點 \u0022Link Coinbase Account\u0022",
@@ -107,9 +107,9 @@
       "settings": "設定"
     },
     "Login": {
-      "subheader": "0%手續費加密貨幣支付",
-      "owners": "業主",
-      "employees": "員工",
+      "subheader": "全球支付，0% 手續費",
+      "owner": "業主",
+      "employee": "員工",
       "signInWith": "使用 {socialMedia} 登入",
       "email": "電子信箱",
       "password": "密碼",
@@ -118,63 +118,55 @@
       "forgotModalText": "請聯絡您的雇主。建立 Flash 帳戶的人應該知道員工密碼或可以設定新密碼。"
     },
     "Intro": {
-      "welcome": { "text-1": "啟用0%手續費", "text-2": "加密貨幣支付", "start": "開始" },
+      "welcome": { "text-1": "建立全球支付", "text-2": "0%手續費", "start": "開始" },
       "info": {
-        "text-1": "填寫以下資訊以建立您的 QR Code (可隨時更改)",
-        "label-1": "您的企業名稱",
+        "text-1": "請填寫以下資訊",
+        "label-1": "您的店名",
         "label-2": "您的國家 / 幣別",
         "label-3": "您的電子信箱",
         "note": "QR Code 會發送到此電子信箱"
       },
-      "emailSent": { "text-1": "您的 QR Code 已建立!", "text-2": "我們把 QR Code 和列印說明送到您的電子郵件了。" },
+      "emailSent": { "text-1": "您的QR碼建立成功!", "text-2": "我們把QR碼和列印說明送到您的電子郵件了。" },
       "how": {
         "title": "客戶如何付款？",
-        "text-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App<sup>?</sup></span2><div>{tooltip}</div></span1> 會開啟",
+        "text-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App</span2><div>{tooltip}</div></span1> 會開啟",
         "text-2": "客戶<span>輸入的金額為 {merchantCurrency}</span>",
-        "text-3": "客戶提交付款時，<span1><span2>USDC幣<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask App 送到您的 Flash App"
+        "text-3": "客戶提交付款時，<span1><span2>USDC幣</span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask App 送到您的 Flash App"
       },
       "cashoutCb-1": {
         "title": "我如何出金？",
-        "text-1": "註冊一個 <span1><span2>Coinbase<sup>?</sup></span2><div>{tooltip}</div></span1> 帳戶",
-        "text-2": "在 Flash App 裡，點 \u0022連結您的 Coinbase 帳戶\u0022",
-        "text-3": "點 \u0022出金\u0022",
-        "text-4": "您出金時，Flash App 裡的 USDC 幣會在 Coinbase 上兌換成 {merchantCurrency}，然後出金至您銀行。<span4>您不會因為匯率波動而損失金錢<span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3></span4>。",
-        "button-1": "連結 Coinbase 帳戶",
-        "button-2": "我沒有 Coinbase 帳戶"
+        "text-1": "首先，您需要有一個 <span1><span2>Coinbase</span2><div>{tooltip}</div></span1> 帳戶 (<a>在此註冊</a>)。",
+        "text-2": "然後，在 Flash App 裡點\u0022連結您的 Coinbase 帳戶\u0022點，再點 \u0022出金\u0022。",
+        "text-3": "您點\u0022出金\u0022後，Flash App 裡的 USDC 會匯到 Coinbase，兌換成 {merchantCurrency}，然後將錢匯到您的銀行。",
+        "text-4": "您不會因為匯率波動而損失金錢<span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>。"
       },
-      "cashoutCb-2": {
-        "title": "沒有 Coinbase 帳戶?",
-        "text-1": "您可以在 <a1>Coinbase App</a1> <span>(推薦) 或 <a2>Coinbase 官網</a2></span>上註冊。",
-        "text-2": "您的 Flash App 沒有連結 Coinbase 還是可以運作。您有 Coinbase 帳戶之後，請進入 Flash App 連結您的帳戶。",
-        "question": "我可以使用其他加密貨幣交易所嗎？",
-        "answer": "如果您使用 Coinbase，您可以直接從 Flash App 出金至您的銀行。如果您使用其他交易所，您不會有這個功能。您必須先從 Flash App 轉 USDC幣 到您的交易所，再登入您的交易所，從那裡出金，這是一個耗時的過程。"
-      },
-      "cashoutNoCb-1": {
+      "notCoinbase-1": {
         "title": "我如何出金？",
-        "text-1": "首先，您必須有一個{cex}帳戶。",
-        "text-1MAX": "下載 MaiCoin 集團的 <span1><span2>MAX App<sup>?</sup></span2><div>{tooltip}</div></span1> 並註冊一個帳戶",
-        "text-2": "在 Flash App，點 \u0022出金至MAX\u0022。",
-        "text-3": "*您不會因匯率波動而損失金錢<span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>。",
-        "text-3MAX": "在 MAX App ，賣出 USDC / 買入 TWD 並出金至您的銀行。",
+        "text-1": "<a1>下載 {cex} 交易所 App</a1> 並註冊一個帳戶 (什麼是 <span1><span2>{cex} 交易所</span2><div>{tooltip}</div></span1>?)",
+        "text-1NoCex": "在任何加密貨幣交易所註冊一個帳戶",
+        "text-2": "從 Flash 轉 USDC 到您的 {cex} 帳戶",
+        "text-2NoCex": "從 Flash 轉 USDC 到您加密貨幣交易所帳戶",
+        "text-3": "在 {cex} App 上，賣出 USDC / 買入 {merchantCurrency} 並出金至您的銀行",
+        "text-3NoCex": "在您加密貨幣交易所上，賣出 USDC / 買入 {merchantCurrency} 並出金至您的銀行",
         "text-4": "使用 Flash，您不會因為匯率波動而受損 <span3>(<span1><span2>如何?</span2><div>{tooltip}</div></span1>)</span3>。",
-        "button-1": "我有{cex}帳戶",
-        "button-2": "我沒有{cex}帳戶",
-        "tooltipMAX": "MAX 是一個交易所平台，您在 MAX 上面可以把 USDC 換成台幣，並把台幣轉到您銀行。"
+        "text-5": "您已經有 {cex} 交易所帳戶嗎?",
+        "text-5-default": "您已經有一個加密貨幣交易所帳戶嗎?",
+        "tooltipCex": "{cex} 交易所上，您可以將 USDC 兌換成 {merchantCurrency}. 然後出金至您的銀行。"
       },
-      "cashoutNoCb-2": {
-        "text": "輸入您{cex}的 USDC 存款地址 (在 Polygon 鏈上)。輸入後，您可以更方便地從 Flash App 轉 USDC 幣到{cex}。",
+      "notCoinbase-2": {
+        "text": "請輸入您 {cex} 的 USDC 存款地址 (在 Polygon 鏈上)。這是可選的，但會使出金過程更方便。",
         "label": "USDC 存款地址 (Polygon鏈)",
         "placeholder": "在此貼上地址"
       },
-      "cashoutNoCb-3": {
-        "title": "沒有{cex}帳戶?",
-        "text-1": "建立一個{cex}帳戶只需要幾分鐘。我們建議您透過{cex} App 註冊帳戶。您也可以去官網註冊。",
-        "text-1-noCex": "建立一個加密貨交易所帳戶只需要幾分鐘。重要的一點是您必須先確認加密貨交易所允許您把 USDC 兌換為當地貨幣並讓您出金至銀行。",
-        "text-2": "註冊完後，Flash App 裡會有說明如何出金至銀行。"
+      "notCoinbase-3": {
+        "text-1": "建立一個 {cex} 帳戶不難.",
+        "text-2": "您可以在 <a1> {cex} Exchange App</a1>上<span1>(推薦)或官網上</span1>註冊.",
+        "text-2-default": "選擇一個在您的國家很受歡迎的交易所。該交易所必須接受 Polygon 網絡上的本地 USDC 存款（大多數接受）。",
+        "text-3": "取得帳戶後，Flash App 裡會有出金指示。"
       },
       "final": {
-        "text-1": "註冊完成，您的 Flash App 可以開始接受付款!",
-        "text-2": "有問題時，請參考 Flash App 裡的詳細 \u0022<span>說明書</span>\u0022 (在設定下)，或發送電子郵件至 support@flashpayments.xyz",
+        "text-1": "您的 Flash App 可以開始接受付款!",
+        "text-2": "有問題時，請參考 Flash App 裡的詳細 \u0022<span>說明書</span>\u0022 (在\u0022設定\u0022下)，或聯絡我們 support@flashpayments.xyz",
         "finish": "完成"
       },
       "errors": { "enterName": "請輸入您的企業名稱", "enterEmail": "請輸入您的電子信箱", "validEmail": "請輸入有效的電子郵件" }
@@ -200,8 +192,10 @@
         "customerAddress": "客戶地址",
         "toRefund": "標為\u0022要退款\u0022？",
         "refundNow": "現在退款？",
-        "refundButton": "退款",
-        "paymentRefunded": ""
+        "confirmRefund": "確認退款？",
+        "refunding": "處理中，請稍候 ~20s",
+        "refund": "退款",
+        "refunded": "已退款"
       },
       "searchModal": {
         "title": "搜尋收款",
@@ -256,7 +250,7 @@
       },
       "toAddress": "接收 EVM 地址",
       "enterAnEvmAddress": "輸入地址",
-      "successModal": "已出金到您的{cex}帳戶。請等 1-5 分鐘以便您的{cex}餘額更新。",
+      "transferToCexSuccessModal": "<span1>{amount} USDC</span1> 已出金到您的 {cex} 帳戶。請等 5-10 分鐘以便您的 {cex} 餘額更新。",
       "transferToBankSuccessModal": {
         "text-1": "已從您的 Coinbase 帳戶中扣除。",
         "text-2": "已存入您的銀行。",
@@ -268,8 +262,8 @@
       "display": "顯示設定",
       "support": "顧客服務",
       "account": "帳戶地址",
-      "email": "電子信箱",
-      "name": "企業名稱",
+      "email": "電子郵件",
+      "name": "店名",
       "country": "國家 / 幣別",
       "platform": "出金平台",
       "platformAddress": "出金平台地址",
@@ -281,12 +275,18 @@
       "instructions": "說明書",
       "contact": "聯絡我們",
       "signOut": "登出",
+      "zodErrors": {
+        "merchantEmail": "無效電子郵件",
+        "merchantName": "輸入店名",
+        "employeePass": "密碼必須 \u2265 8 字母，並包含一個大寫字母、一個小寫字母和一個數字。",
+        "cexEvmAddress": "地址必須以 0x 開頭，長度為 42 字母"
+      },
       "info": {
         "employeePass": {
           "title": "員工密碼是什麼？",
-          "text-1": "員工可以使用您的電子郵件 ({email}) 和員工密碼登入 Flash App。登入後，他們可以看到\u0022收款\u0022選項。但是，他們無法存取其他功能。",
+          "text-1": "如果您設定了密碼，員工可以用您 Flash 帳戶裡的電子郵件和員工密碼登入 Flash App。登入後，他們可以看到\u0022收款\u0022選項。但是，他們無法用其他功能。",
           "text-2": "員工可以退錢嗎？",
-          "text-3": "因為員工無法存取 Flash 中的資金，他們無法退款。但是，員工可以把付款標示為 \u0022要退款\u0022。之後，您（Flash App 擁有者）可以點\u0022退還所有\u0022來退還標示為\u0022待退款\u0022的每筆付款。"
+          "text-3": "因為員工不能動 Flash 中的資金，他們無法退款。但是，員工可以把付款標示為 \u0022要退款\u0022。之後，您（Flash App 擁有者）可以點\u0022退還所有\u0022來退還標示為\u0022待退款\u0022的每筆付款。"
         },
         "cashback": {
           "title": "2%回饋是什麼？",
@@ -295,11 +295,11 @@
           "text-3": "當加密貨幣支付變得更流行時，我們會把 2% 回饋成為可選項目。"
         },
         "google": {
-          "title": "What is the Google ID?",
+          "title": "Google ID 是什麼?",
           "text-1": "搜索 \u0022Google Place ID Finder\u0022 並進入 Google Place ID Finder 網站。找到您的 Google Place ID 並將其粘貼到此處。當您這樣做時，您的企業將被添加到 https://www.stablecoinmap.com，這是一個接受加密貨幣支付的地方的資料庫，從而使加密貨幣用戶更容易找到您的企業。"
         },
         "platformAddress": {
-          "title": "如何找我的出金平台地址?",
+          "title": "出金平台地址是什麼?",
           "text-1": "在您的加密貨幣交易帳，點 \u0022入金\u0022 或類似的按鈕。選擇 \u0022USDC\u0022 為入金的幣，並選擇 \u0022Polygon\u0022 鏈。複製顯示的地址（以 \u00220x\u0022 開始）。"
         }
       },
@@ -395,6 +395,8 @@
     "CbAuth": { "connecting": "連接 Coinbase 中" }
   },
   "Common": {
+    "yes": "有",
+    "no": "沒有",
     "close": "關閉",
     "comfirm": "確定",
     "cancel": "取消",
@@ -427,6 +429,7 @@
     "toBank": "到銀行",
     "enterAnEvmAddress": "輸入 EVM 地址",
     "transferring": "出金中",
-    "transferSuccessful": "出金成功"
+    "transferSuccessful": "出金成功",
+    "contact": "如需任何協助，請隨時透過 support@flashpayments.xyz 與我們聯絡。"
   }
 }

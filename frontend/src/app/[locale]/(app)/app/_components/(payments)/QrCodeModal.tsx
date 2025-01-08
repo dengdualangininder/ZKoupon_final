@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 // context
-// import { useUserInfo } from "../../../web3auth-provider";
+// import { useW3Info } from "../../../web3auth-provider";
 // other
 import { QRCodeSVG } from "qrcode.react";
 // import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
@@ -16,12 +16,13 @@ import Placard from "../placard/Placard";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { FaAngleLeft, FaCircleCheck } from "react-icons/fa6";
 // types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
 // import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
 export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { paymentSettings: PaymentSettings; setQrCodeModal: any }) {
-  // const userInfo = useUserInfo();
+  // const w3Info = useW3Info();
 
   const [email, setEmail] = useState(paymentSettings.merchantEmail);
   const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
@@ -135,7 +136,7 @@ export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { payme
       </div>
       {/*--- export options ---*/}
       {qrCodeModalExportOptions && (
-        <div className="textXl absolute left-[24px] bottom-[76px] portrait:sm:left-[32px] portrait:sm:bottom-[110px] landscape:lg:left-[32px] landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 text-black rounded-xl z-[13]">
+        <div className="textLgApp absolute left-[24px] bottom-[76px] portrait:sm:left-[32px] portrait:sm:bottom-[110px] landscape:lg:left-[32px] landscape:lg:bottom-[110px] cursor-pointer bg-slate-200 text-black rounded-xl z-[13]">
           <div className="px-[24px] py-[16px] landscape:xl:desktop:hover:opacity-50 border-b border-gray-300" onClick={() => setEmailModal(true)}>
             {t("emailPdf")}
           </div>
@@ -189,24 +190,22 @@ export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { payme
                   <div className="xButton">&#10005;</div>
                 </div>
                 {/*--- mobile back ---*/}
-                <div className="mobileBack">
-                  <FontAwesomeIcon
-                    icon={faAngleLeft}
-                    onClick={() => {
-                      setEmailModal(false);
-                      setEmail(paymentSettings.merchantEmail);
-                      setIsSendingEmail("initial");
-                    }}
-                  />
-                </div>
+                <FaAngleLeft
+                  className="mobileBack"
+                  onClick={() => {
+                    setEmailModal(false);
+                    setEmail(paymentSettings.merchantEmail);
+                    setIsSendingEmail("initial");
+                  }}
+                />
                 {/*--- header ---*/}
-                <div className="detailsModalHeader">{t("emailModal.title")}</div>
+                <div className="fullModalHeader">{t("emailModal.title")}</div>
 
                 {/*---content---*/}
                 <div className="w-full flex-1 px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[32px] space-y-[24px] overflow-y-auto scrollbar">
-                  <div className="textXl mt-[12px]">{t("emailModal.text")}</div>
+                  <div className="textLgApp mt-[12px]">{t("emailModal.text")}</div>
                   <div className="w-full">
-                    <label className="textLg font-semibold">{t("emailModal.label")}</label>
+                    <label className="textBaseApp font-semibold">{t("emailModal.label")}</label>
                     <div className="mt-[4px] flex items-center relative">
                       <input
                         className="text-[18px] portrait:sm:text-[24px] landscape:lg:text-[24px] landscape:xl:desktop:text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[44px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
@@ -231,13 +230,13 @@ export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { payme
                     {isSendingEmail == "sending" && (
                       <div onClick={emailQrCode} className="w-full flex items-center justify-center">
                         {/* <SpinningCircleGray /> */}
-                        <div className="ml-3 textLg">{t("emailModal.sending")}...</div>
+                        <div className="ml-3 textBaseApp">{t("emailModal.sending")}...</div>
                       </div>
                     )}
                     {isSendingEmail == "sent" && (
                       <div onClick={emailQrCode} className="w-full flex items-center justify-center">
                         <FontAwesomeIcon icon={faCircleCheck} className="text-green-500 text-2xl" />
-                        <div className="ml-3 textLg">{t("emailModal.sent")}</div>
+                        <div className="ml-3 textBaseApp">{t("emailModal.sent")}</div>
                       </div>
                     )}
                   </div>
@@ -248,7 +247,7 @@ export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { payme
             {error && (
               <div className="w-full flex-1 flex flex-col px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] landscape:xl:desktop:px-[32px] space-y-[24px] overflow-y-auto scrollbar">
                 {/*--- text ---*/}
-                <div className="flex-1 w-full textXl text-center flex items-center justify-center">{errorMsg}</div>
+                <div className="flex-1 w-full textLgApp text-center flex items-center justify-center">{errorMsg}</div>
                 {/*--- button ---*/}
                 <div className="w-full py-[60px]">
                   <button onClick={() => setError(false)} className="buttonPrimary">

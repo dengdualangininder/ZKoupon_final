@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const usdToLocal = USDres.data.values[0][sheetIndex * 2];
     if (usdcToLocal && usdToLocal) {
       console.log("usdcToLocal:", usdcToLocal, "usdToLocal:", usdToLocal);
-      return Response.json({ status: "success", usdcToLocal: usdcToLocal, usdToLocal: usdToLocal });
+      return Response.json({ status: "success", data: { usdcToLocal: usdcToLocal, usdToLocal: usdToLocal } });
     } else {
       return Response.json({ status: "error", message: "rate values are empty" });
     }

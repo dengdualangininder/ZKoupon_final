@@ -1,6 +1,6 @@
 import { Svg, Rect, Path, G, Defs, ClipPath } from "@react-pdf/renderer";
 
-const Placard = () => {
+export default function Placard() {
   return (
     // @ts-ignore
     <Svg style={{ position: "absolute", top: 0 }} width="424" height="600" viewBox="0 0 424 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -174,6 +174,4 @@ const Placard = () => {
       </Defs>
     </Svg>
   );
-};
-
-export default Placard;
+}

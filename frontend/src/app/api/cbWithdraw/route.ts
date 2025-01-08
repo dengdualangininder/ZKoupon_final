@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 
 export const POST = async (request: Request) => {
   const { amount, merchantCurrency, cbAccessToken } = await request.json();
-  console.log("entered cbWithdraw api,", "amount:", amount, "| merchantCurrency:", merchantCurrency);
+  console.log("entered /api/cbWithdraw", "amount:", amount, "| merchantCurrency:", merchantCurrency);
 
-  // frontend should already have these checks
+  // frontend have these checks, but repeat for added security
   if (!["USD", "EUR"].includes(merchantCurrency)) {
     return Response.json({ status: "error", messsage: "Currency not supported" });
   } else if (Number(amount) < 11) {
@@ -25,6 +25,7 @@ export const POST = async (request: Request) => {
   if (merchantCurrency == "USD") {
     // get accountId
     const { usdAccountId, usdtAccountId } = await getAccountIdsForUsd();
+    console.log("usdAccountId:", usdAccountId, "usdtAccountId:", usdtAccountId);
     if (usdAccountId === null) {
       return Response.json({
         status: "error",
@@ -41,6 +42,7 @@ export const POST = async (request: Request) => {
 
     // get paymentMethodId
     const achPaymentMethodId = await getPaymentMethodId("USD");
+    console.log("achPaymentMethodId:", achPaymentMethodId);
     if (achPaymentMethodId === null) {
       return Response.json({
         status: "error",
@@ -52,6 +54,7 @@ export const POST = async (request: Request) => {
 
     // 1. convert usdc to usdt
     const { usdcAmountSold, usdtAmountBought } = await makeUsdcToUsdtLimitOrder(usdtAccountId);
+    console.log("usdcAmountSold:", usdcAmountSold, "usdtAmountBought:", usdtAmountBought);
     if (usdtAmountBought === undefined) {
       return Response.json({ status: "error", message: error1 });
     }
@@ -70,8 +73,8 @@ export const POST = async (request: Request) => {
     const usdAmountBought = (Math.floor(usdtAmountBought * fillPrice * 0.99999 * 100) / 100).toString();
 
     // 3. withdraw usd to bank
-    const withdrawStatus = await withdrawUsd(usdAmountBought, usdAccountId, achPaymentMethodId);
-    if (withdrawStatus == "created") {
+    const withdrawId = await withdrawUsd(usdAmountBought, usdAccountId, achPaymentMethodId);
+    if (withdrawId) {
       return Response.json({ status: "success", usdcAmountSold: usdcAmountSold, fiatAmountBought: usdAmountBought });
     } else {
       return Response.json({ status: "error", message: error3 });
@@ -113,8 +116,8 @@ export const POST = async (request: Request) => {
     const eurAmountBought = (Math.floor(amount * fillPrice * 0.99999 * 100) / 100).toString();
 
     // 2. withdraw eur to bank
-    const withdrawStatus = await withdrawEur(eurAmountBought, eurAccountId, sepaPaymentMethodId);
-    if (withdrawStatus == "created") {
+    const withdrawId = await withdrawEur(eurAmountBought, eurAccountId, sepaPaymentMethodId);
+    if (withdrawId) {
       return Response.json({ status: "success", usdcAmountSold: amount, fiatAmountBought: eurAmountBought });
     } else {
       return Response.json({ status: "error", message: error3 });
@@ -127,9 +130,9 @@ export const POST = async (request: Request) => {
       const accounts = res.data.data; // array of accounts
       const usdAccountId = accounts.find((i: any) => i.name === "Cash (USD)")?.id ?? null;
       const usdtAccountId = accounts.find((i: any) => i.name === "USDT Wallet")?.id ?? null;
-      return { usdAccountId, usdtAccountId };
-    } catch (e: any) {
-      console.log("error in getAccountIdsForUsd:", e.message);
+      return { usdAccountId: usdAccountId, usdtAccountId: usdtAccountId };
+    } catch (e) {
+      console.log("error in getAccountIdsForUsd");
     }
   }
 
@@ -139,8 +142,8 @@ export const POST = async (request: Request) => {
       const accounts = res.data.data; // array of accounts
       const eurAccountId = accounts.find((i: any) => i.name === "Cash (EUR)")?.id ?? null; // need to double check this
       return eurAccountId;
-    } catch (e: any) {
-      console.log("error in getEurAccountId:", e.message);
+    } catch (e) {
+      console.log("error in getEurAccountId");
     }
   }
 
@@ -152,10 +155,9 @@ export const POST = async (request: Request) => {
       });
       const paymentMethods = res.data.payment_methods; // array of payment methods
       const paymentMethodId = paymentMethods.find((i: any) => i.type == paymentMethodType[merchantCurrency] && i.allow_withdraw === true)?.id ?? null;
-      console.log("paymentMethodId:", paymentMethodId);
       return paymentMethodId;
-    } catch (err) {
-      console.log("error in getPaymentMethodId", err);
+    } catch (e) {
+      console.log("error in getPaymentMethodId");
     }
   }
 
@@ -183,7 +185,25 @@ export const POST = async (request: Request) => {
       { headers: headers }
     );
     console.log("limitOrder:", res.data);
-    return res.data.order_id;
+    // {
+    //   success: true,
+    //   success_response: {
+    //     order_id: '691f7c07-42a4-4e20-9788-aed5464efecd',
+    //     product_id: 'USDT-USDC',
+    //     side: 'BUY',
+    //     client_order_id: 'a2353be6-6bf0-4da8-bc9d-e3522f37fd71',
+    //     attached_order_id: ''
+    //   },
+    //   order_configuration: {
+    //     limit_limit_fok: {
+    //       base_size: '11.01',
+    //       limit_price: '0.9984',
+    //       rfq_enabled: false,
+    //       rfq_disabled: false
+    //     }
+    //   }
+    // }
+    return res.data.success_response.order_id;
   }
 
   async function makeUsdcToUsdtLimitOrder(usdtAccountId: string): Promise<any> {
@@ -322,11 +342,11 @@ export const POST = async (request: Request) => {
       const res = await axios.post(
         `https://api.coinbase.com/v2/accounts/${usdAccountId}/withdrawals`,
         { amount: usdAmountBought, currency: "USD", payment_method: achPaymentMethodId },
-        { headers: { Authorization: `Bearer ${cbAccessToken}` } }
+        { headers: headers }
       );
-      const withdrawStatus = res.data.data.status;
-      console.log("withdrawStatus", withdrawStatus);
-      return withdrawStatus;
+      const withdrawId = res.data.data.id;
+      console.log("withdrawId", withdrawId);
+      return withdrawId;
     } catch (e: any) {
       console.log(e.message);
     }
@@ -337,11 +357,11 @@ export const POST = async (request: Request) => {
       const res = await axios.post(
         `https://api.coinbase.com/v2/accounts/${eurAccountId}/withdrawals`,
         { amount: eurAmountBought, currency: "EUR", payment_method: sepaPaymentMethodId },
-        { headers: { Authorization: `Bearer ${cbAccessToken}` } }
+        { headers: headers }
       );
-      const withdrawStatus = res.data.data.status;
-      console.log("withdrawStatus", withdrawStatus);
-      return withdrawStatus;
+      const withdrawId = res.data.data.id;
+      console.log("withdrawId", withdrawId);
+      return withdrawId;
     } catch (e: any) {
       console.log(e.message);
     }

@@ -27,7 +27,7 @@ module.exports = {
         light4: "#CBD5E1", // slate-300
         light5: "#B0BDCD", // slate-350
         lightButton: "#000000",
-        lightButtonHover: "#1E293B",
+        lightButtonHover: "#334155", // slate-700
         lightText0: "#F9F9F9", // off-white
         lightText1: "#212427", // very dark gray-blue text
         lightText2: "#94A3B8",
@@ -61,11 +61,14 @@ module.exports = {
         grad1: "#F46F69",
         grad2: "#D675B0",
         grad3: "#9396DA",
+        "slate-250": "#D5DDE7",
       },
       fontFamily: {
         nunito: ["Nunito Sans", "sans-serif"],
       },
       animation: {
+        slideIn: "slideIn 0.3s ease-out forwards",
+        slideOut: "slideOut 0.3s ease-out forwards",
         fadeInAnimation: "fadeInAnimation ease 3s 1",
         flashText: "flashText 6s infinite",
         cexText: "cexText 6s infinite",
@@ -81,6 +84,14 @@ module.exports = {
         fiat: "fiat 6s linear infinite",
       },
       keyframes: {
+        slideIn: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        slideOut: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
         flashSolid: {
           "0%, 80%, 100%": {
             opacity: "0",
@@ -252,7 +263,7 @@ module.exports = {
       md: "750px",
       lg: "940px",
       lgg: "1100px",
-      xl: "1280px",
+      xl: "1250px",
       xxl: "1440px",
     },
   },

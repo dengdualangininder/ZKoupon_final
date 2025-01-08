@@ -21,6 +21,27 @@ export const cexToName: CexToName = {
 
 export const fieldsList = ["email", "item", "date", "daterange", "count", "sku", "shipping", "time"]; // delete??
 
+export const cexLinks: any = {
+  Coinbase: {
+    desktop: "https://www.coinbase.com/signup",
+    apple: "https://apps.apple.com/us/app/coinbase-buy-bitcoin-ether/id886427730",
+    google: "https://play.google.com/store/apps/details?id=com.coinbase.android",
+    huawei: "",
+  },
+  MAX: {
+    desktop: "https://max.maicoin.com/signup",
+    apple: "https://apps.apple.com/tw/app/max-%E8%99%9B%E6%93%AC%E8%B2%A8%E5%B9%A3%E4%BA%A4%E6%98%93%E6%89%80/id1370837255",
+    google: "https://play.google.com/store/apps/details?id=com.maicoin.max",
+    huawei: "",
+  },
+  "Coins.ph": {
+    desktop: "",
+    apple: "https://apps.apple.com/ph/app/coins-buy-bitcoin-crypto/id972324049",
+    google: "https://play.google.com/store/apps/details?id=asia.coins.mobile",
+    huawei: "https://appgallery.huawei.com/app/C100996255",
+  },
+};
+
 // United States, Euro countries,
 export const countryData: { [key: string]: { the?: boolean; currency: string; CEXes: string[]; networks?: string[]; tokens?: string[]; bank?: string } } = {
   Taiwan: {

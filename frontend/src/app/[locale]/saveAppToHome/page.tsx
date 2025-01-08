@@ -53,9 +53,9 @@ export default function SaveToHome() {
         {/*---text---*/}
         <div className={`${browser && os ? "" : "invisible"} mt-[48px] flex flex-col items-center`}>
           {/*--- header ---*/}
-          <div className="text3xl font-bold">{t("title")}</div>
+          <div className="textXlApp font-bold">{t("title")}</div>
           {/*--- body ---*/}
-          <div className="mt-[12px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] textLg2 w-[320px] portrait:sm:w-[440px] landscape:lg:w-[440px] space-y-2 portrait:sm:space-y-4 landscape:lg:space-y-4">
+          <div className="mt-[12px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] textBaseApp w-[320px] portrait:sm:w-[440px] landscape:lg:w-[440px] space-y-2 portrait:sm:space-y-4 landscape:lg:space-y-4">
             <div>{t("text-1")}</div>
             <div>
               {t.rich("text-2", {

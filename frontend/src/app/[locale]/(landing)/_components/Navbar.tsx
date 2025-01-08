@@ -2,15 +2,18 @@
 // nextjs
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 // i18n
 import { useRouter } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
+// components
+import SelectLang from "@/utils/components/SelectLang";
 // constants
 import { langObjectArray } from "@/utils/constants";
 // images
-import { FaBars, FaCaretDown, FaX } from "react-icons/fa6";
+import { FaCaretDown, FaX } from "react-icons/fa6";
 import { SlGlobe, SlMenu } from "react-icons/sl";
-import { CgClose, CgMenu } from "react-icons/cg";
+import { CgClose } from "react-icons/cg";
 
 export default function Navbar() {
   const [isScrollTop, setIsScrollTop] = useState(true);
@@ -57,7 +60,7 @@ export default function Navbar() {
   return (
     <div
       className={`${
-        isScrollTop ? "h-[84px]" : "h-[52px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] border-b border-slate-300"
+        isScrollTop ? "h-[84px]" : "navbarHeight border-b border-slate-300"
       } w-full fixed flex justify-center transition-all duration-[1000ms] bg-light2 text-lightText1 bg-opacity-70 backdrop-blur-md z-50`}
     >
       <div className="mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[1440px] h-full flex justify-center items-center relative">
@@ -99,39 +102,11 @@ export default function Navbar() {
         </div>
 
         {/*--- BUTTON + LANG ---*/}
-        <div className={`absolute right-0 hidden h-full lg:flex items-center space-x-[24px] z-[100]`}>
-          {/*--- button ---*/}
-          <button className="heroButtonSmall" onClick={() => router.push("/app")}>
+        <div className={`hidden lg:flex navbarHeight absolute right-0 items-center gap-[18px] z-[100]`}>
+          <Link className="heroButtonSmall" href={"/app"}>
             {t("enterApp")}
-          </button>
-          {/*--- lang ---*/}
-          <div className="relative flex items-center h-full">
-            <div
-              className="flex space-x-1 cursor-pointer desktop:hover:text-slate-600"
-              onClick={() => {
-                setLangModal(!langModal);
-                const el = document.getElementById("homeLangModal");
-                console.log(el?.scrollHeight);
-              }}
-            >
-              <SlGlobe className="w-[22px] h-[22px]" />
-              <FaCaretDown className="w-[18px] h-[18px]" />
-            </div>
-          </div>
-          {/*--- lang modal ---*/}
-          <div id="homeLangModal" className={`${langModal ? "max-h-[260px]" : "max-h-0"}  [transition:max-height_300ms] absolute top-[100%] right-0 overflow-hidden`}>
-            <div className="py-[20px] px-[16px] space-y-[24px] text-[18px] desktop:text-[16px] font-medium bg-light2 bg-opacity-80 backdrop-blur-md border border-slate-500 rounded-lg">
-              {langObjectArray.map((langObject) => (
-                <div
-                  key={langObject.id}
-                  className={`${langObject.id == locale ? "underline underline-offset-[6px]" : ""} desktop:hover:underline desktop:hover:underline-offset-[6px] cursor-pointer`}
-                  onClick={() => router.replace("/", { locale: langObject.id })}
-                >
-                  {langObject.text}
-                </div>
-              ))}
-            </div>
-          </div>
+          </Link>
+          <SelectLang langModal={langModal} setLangModal={setLangModal} />
         </div>
 
         {/*---showLang mask---*/}
@@ -186,7 +161,7 @@ export default function Navbar() {
           >
             {t("support")}
           </div>
-          <div className="flex items-center cursor-pointer" onClick={() => (langModal ? setLangModal(false) : setLangModal(true))}>
+          <div className="flex items-center cursor-pointer" onClick={() => setLangModal(!langModal)}>
             <SlGlobe size={40} className="mr-1 w-[24px] h-[24px]" />
             <FaCaretDown size={40} className="w-[20px] h-[20px]" />
           </div>

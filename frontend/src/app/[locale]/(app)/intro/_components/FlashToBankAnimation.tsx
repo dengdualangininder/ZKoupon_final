@@ -1,9 +1,7 @@
 // nextjs
 import Image from "next/image";
-// types
-import { PaymentSettings } from "@/db/UserModel";
 
-const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: PaymentSettings }) => {
+export default function FlashToBankAnimation({ settings }: { settings: any }) {
   return (
     <div className="pb-[8px] w-[330px] h-[128px] flex justify-between items-end text-center font-medium flex-none relative">
       {/*--- flash ---*/}
@@ -26,7 +24,7 @@ const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: 
         <div className="mt-[48px] w-full flex items-center z-[1] relative">
           <div className="w-full h-[2px] bg-black animate-arrow"></div>
           <div className="absolute pb-[24px] animate-usdc">USDC</div>
-          <div className="absolute pb-[24px] animate-fiat">{paymentSettingsState.merchantCurrency}</div>
+          <div className="absolute pb-[24px] animate-fiat">{settings.merchantCurrency}</div>
         </div>
       </div>
 
@@ -61,6 +59,4 @@ const FlashToBankAnimation = ({ paymentSettingsState }: { paymentSettingsState: 
       </div>
     </div>
   );
-};
-
-export default FlashToBankAnimation;
+}

@@ -6,10 +6,10 @@
       "title2": "WITH 0% FEES",
       "subtitle1": "With a",
       "trueP2P": " true peer-2-peer",
-      "subtitle2": " payments design, Flash Payments is a simple and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
+      "subtitle2": " design, Flash is a simple and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
       "enterApp": "Enter App",
-      "tooltip1": "True P2P payments mean that there is no middlemen, meaning Flash can not charge any processing fees, forever.",
-      "tooltip2": "True P2P payments mean that there is no middlemen. Therefore, Flash cannot charge fees or make profit by giving you or your customers bad token-fiat exchange rates."
+      "tooltip1": "True P2P means there is no middlemen, so Flash cannot charge any fees, forever.",
+      "tooltip2": "True P2P means there is no middlemen. Therefore, Flash cannot charge fees or make profit by giving you or your customers bad token-fiat exchange rates."
     },
     "How": {
       "header": "How It Works",
@@ -19,9 +19,9 @@
       "step-3": "You confirm payment",
       "step-4": "You cash out",
       "step-1-1": "You receive the QR code after setting up",
-      "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app<sup>?</sup></span2><div>{tooltip}</div></span1> will open",
+      "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app</span2><div>{tooltip}</div></span1> will open",
       "step-2-2": "The customer enters the amount of {merchantCurrency} for payment",
-      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app",
+      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens</span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app",
       "step-3-1": "~5 seconds after payment, you'll receive a notification in the Flash app. Employees can also access your Flash app to confirm successful payments.",
       "step-4-1cb": "Register an account on Coinbase",
       "step-4-2cb": "In the Flash app, click \u0022Link Coinbase Account\u0022",
@@ -107,9 +107,9 @@
       "settings": "SETTINGS"
     },
     "Login": {
-      "subheader": "Crypto payments with 0% fees",
-      "owners": "Owners",
-      "employees": "Employees",
+      "subheader": "Global payments with 0% fees",
+      "owner": "Owners",
+      "employee": "Employees",
       "signInWith": "Sign in with {socialMedia}",
       "email": "Email",
       "password": "Password",
@@ -118,63 +118,57 @@
       "forgotModalText": "Please contact your employer. The person who created this Flash account should know the Employee Password or can set a new one."
     },
     "Intro": {
-      "welcome": { "text-1": "Set up crypto payments", "text-2": "with 0% fees", "start": "START" },
+      "welcome": { "text-1": "Set up global payments", "text-2": "with 0% fees", "start": "START" },
       "info": {
-        "text-1": "To create your QR code, fill out the information below",
-        "label-1": "Your business's name",
-        "label-2": "Your country / currency",
-        "label-3": "Your email address",
+        "text-1": "Please fill out the information below",
+        "label-1": "Store Name",
+        "label-2": "Country / Currency",
+        "label-3": "Email",
         "note": "Your QR code will be sent to this email"
       },
       "emailSent": { "text-1": "Your QR code was created!", "text-2": "We emailed you the QR code, along with instructions on how to print and display it." },
       "how": {
         "title": "How do customers pay?",
-        "text-1": "Customer scans your QR code, which will open their <span1><span2>MetaMask app<sup>?</sup><div>{tooltip}</div></span2></span1>",
-        "text-2": "Customer <span>enters the amount of {merchantCurrency} for payment</span>",
-        "text-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup><div>{tooltip}</div></span2></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app"
+        "text-1": "When a customer scans your QR code, their <span1><span2>MetaMask App<div>{tooltip}</div></span2></span1> will open",
+        "text-2": "The customer then <span>enters the amount of {merchantCurrency} for payment</span>",
+        "text-3": "When the customer submits payment, <span1><span2>USDC tokens<div>{tooltip}</div></span2></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask App to your Flash App"
       },
       "cashoutCb-1": {
         "title": "How do I cash out?",
-        "text-1": "Register a <span1><span2>Coinbase<sup>?</sup></span2><div>{tooltip}</div></span1> account",
-        "text-2": "In the Flash app, click \u0022Link your Coinbase account\u0022",
-        "text-3": "Click \u0022Cash Out\u0022",
-        "text-4": "When you cash out, the USDC in your Flash app will be converted to {merchantCurrency} on Coinbase, and the money deposited to your bank.<span4> Flash minimizes potential losses from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3></span4>.",
-        "button-1": "Link Coinbase account",
-        "button-2": "Skip, I don't have one"
+        "text-1": "To cash out, you first need a <span1><span2>Coinbase</span2><div>{tooltip}</div></span1> account (<a>register here\u2197</a>).",
+        "text-2": "Then, in the Flash app, click \u0022Link your Coinbase account\u0022. Then click \u0022Cash Out\u0022.",
+        "text-3": "When you click \u0022Cash Out\u0022, USDC will be sent to your Coinbase account and converted to {merchantCurrency}. The funds will then be deposited to your bank.",
+        "text-4": "Flash minimizes potential losses from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>."
       },
-      "cashoutCb-2": {
-        "title": "Don't have a Coinbase account?",
-        "text-1": "Creating a Coinbase account only takes several minutes. Sign up using the <a1>Coinbase App</a1><span> (recommended) or the <a2>Coinbase website</a2></span>.",
-        "text-2": "Without a linked Coinbase account, your Flash app is still functional. After you get a Coinbase account, go into the Flash app to link it.",
-        "question": "Can I use a different cryptocurrency exchange?",
-        "answer": "When using Coinbase, you will able to use the Flash app to transfer funds to your bank, which is a very convenient feature. You can use other exchanges, but you will have to perform an extra step of logging into that exchange and cashing out from there."
-      },
-      "cashoutNoCb-1": {
+      "notCoinbase-1": {
         "title": "How do I cash out?",
-        "text-1": "Register an account on {cex}",
-        "text-1MAX": "Download MaiCoin's <span1><span2>MAX Exchange<sup>?</sup></span2><div>{tooltip}</div></span1> App and register an account on it",
-        "text-2": "In the Flash app, transfer USDC to {cex}",
-        "text-3": "In your {cex}, sell USDC for {merchantCurrency} and withdraw the money to your bank",
-        "text-3MAX": "In your MAX Exchange App, sell USDC for TWD and withdraw the money to your bank",
-        "text-4": "With Flash, you should not lose money from changing rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>.",
+        "text-1": "<a1>Download the {cex} Exchange App</a1> and register an account (what is <span1><span2>{cex} Exchange</span2><div>{tooltip}</div></span1>?)",
+        "text-1NoCex": "Register an account on a cryptocurrency exchange",
+        "text-2": "Transfer USDC from Flash to your {cex} account",
+        "text-2NoCex": "Transfer USDC from Flash to your cryptocurrency exchange account",
+        "text-3": "On the {cex} App, convert USDC to {merchantCurrency} and withdraw the money to your bank",
+        "text-3NoCex": "In your cryptocurrency exchange, convert USDC to {merchantCurrency} and withdraw the money to your bank",
+        "text-4": "With Flash, you should not lose money from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>.",
+        "text-5": "Do you have a {cex} Exchange account?",
+        "text-5-default": "Do you have a cryptocurrency exchange account?",
         "button-1": "I have a {cex} account",
         "button-2": "I don't have a {cex} account",
-        "tooltipMAX": "MAX is a platform where USDC can be exchanged for TWD, which you can then withdraw to your bank"
+        "tooltipCex": "{cex} Exchange is a platform where USDC can be exchanged for {merchantCurrency}. The funds can then be deposited into your bank."
       },
-      "cashoutNoCb-2": {
-        "text": "Enter your {cex}'s USDC deposit address (on Polygon). This will allow you to more conveniently transfer USDC from the Flash app to your {cex}.",
-        "label": "USDC Deposit Address (Polygon)",
+      "notCoinbase-2": {
+        "text": "Enter the native USDC deposit address (on Polygon) in your {cex} account. This is optional, but it will make the cash out process more convenient.",
+        "label": "Native USDC Deposit Address (Polygon)",
         "placeholder": "Paste the address here"
       },
-      "cashoutNoCb-3": {
-        "title": "Don't have a {cex} account?",
-        "text-1": "Creating an account only takes several minutes. To sign up, download the {cex} App<span> (recommended) or visit the exchange's official website</span>.",
-        "text-1-noCex": "Signing up for a cryptocurrency exchange only takes several minutes. Pick an exchange that allows you to easily convert USDC to your local currency.",
-        "text-2": "After you get your account, there will be instructions in the Flash app on how to cash out funds to your bank."
+      "notCoinbase-3": {
+        "text-1": "Creating a {cex} account is easy and only takes several minutes.",
+        "text-2": "Simply <a1>download the {cex} Exchange App</a1><span1> (recommended) or visit the exchange's official website</span1> and create an account.",
+        "text-2-default": "Pick an exchange that is popular in your country. The exchange must accept native USDC deposits on the Polygon network (most do).",
+        "text-3": "After you get your account, there will be instructions in the Flash app on how to cash out."
       },
       "final": {
         "text-1": "Your Flash account is ready and can start accepting payments!",
-        "text-2": "If you have any questions, refer to the <span>Instructions</span> (under Settings) or email support@flashpayments.xyz",
+        "text-2": "For questions, refer to the <span>Instructions</span> (under Settings) or email support@flashpayments.xyz",
         "finish": "FINISH"
       },
       "errors": { "enterName": "Please enter the name of your business", "enterEmail": "Please enter your email address", "validEmail": "Please enter a valid email" }
@@ -200,8 +194,10 @@
         "customerAddress": "Customer's Address",
         "toRefund": "Label as \u0022To Refund\u0022?",
         "refundNow": "Refund now?",
-        "refundButton": "Refund",
-        "paymentRefunded": ""
+        "confirmRefund": "Confirm refund?",
+        "refunding": "Processing, please wait ~20s",
+        "refund": "Refund",
+        "refunded": "This payment has been refunded"
       },
       "searchModal": {
         "title": "Search Payments",
@@ -220,8 +216,8 @@
       },
       "downloadModal": {
         "title": "Download Payments",
-        "start": "Starting Month/Year",
-        "end": "Ending Month/Year",
+        "start": "Select start date:",
+        "end": "Select end date:",
         "download": "Download",
         "errors": { "noPayments": "No payments to download" }
       },
@@ -262,7 +258,7 @@
       },
       "toAddress": "EVM address",
       "enterAnEvmAddress": "Enter an EVM address",
-      "transferToCexSuccessModal": "was sent to your {cex} account. Please wait 1-5 minutes for your {cex} balance to update.",
+      "transferToCexSuccessModal": "<span1>{amount} USDC</span1> was sent to your {cex} account. Please wait 5-10 minutes for your {cex} balance to update.",
       "transferToBankSuccessModal": {
         "text-1": "was deducted from your Coinbase account.",
         "text-2": "was deposited to your bank.",
@@ -278,7 +274,7 @@
       "name": "Business Name",
       "country": "Country / Currency",
       "platform": "Cash Out Platform",
-      "platformAddress": "Cash Out Platform Address",
+      "platformAddress": "Cash Out Address",
       "employeePass": "Employee Password",
       "cashback": "Give 2% Cashback?",
       "google": "Google Place ID",
@@ -287,10 +283,16 @@
       "instructions": "Instructions",
       "contact": "Contact Us",
       "signOut": "Sign Out",
+      "zodErrors": {
+        "merchantEmail": "Invalid email",
+        "merchantName": "Enter a business name",
+        "employeePass": "Password must be \u2265 8 characters and contain an uppercase letter, a lowercase letter, and a number.",
+        "cexEvmAddress": "Address must start with 0x and be 42 characters long"
+      },
       "info": {
         "employeePass": {
           "title": "What is the Employee Password?",
-          "text-1": "When an employee signs into the Flash app using your email ({email}) and the <span1>Employee Password</span1>, they will have access to the <span2>Payments</span2> menu in your Flash app. This allows employees to confirm payments when a customer pays.",
+          "text-1": "If you set an <span1>Employee Password</span1>, employees can sign into the Flash app using your account's email address and the employee password. Employees will be able to see all customer payments, so they can confirm payments when customers pay.",
           "text-2": "Can employees make refunds?",
           "text-3": "Because employees do not have access to the funds in Flash, they cannot make refunds. However, employees can label/unlabel payments with the \u0022To Refund\u0022 tag. You (the owner) can then later refund all payments with this label in a single click."
         },
@@ -305,8 +307,8 @@
           "text-1": "Search \u0022Google Place ID Finder\u0022 and go to the Google Place ID Finder website. Find your Google Place ID and paste it here. When you do, your business will be added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments, thus allowing crypto users to more easily find your business."
         },
         "platformAddress": {
-          "title": "How to find my cryptocurrency exchange's address?",
-          "text-1": "In your cryptocurrency exchange account, click the \u0022Deposit\u0022, \u0022Receive\u0022, or similar button. Select \u0022USDC\u0022 as the token you want to deposit and select \u0022Polygon\u0022 as the network. Copy the shown address (starts with \u00220x\u0022)."
+          "title": "What is the Cash Out Address?",
+          "text-1": "The Cash Out Address is your Cash Out Platform's USDC deposit address on the Polygon chain. To find this address, in your cryptocurrency exchange, click the \u0022Deposit\u0022, \u0022Receive\u0022, or similar button. Select \u0022USDC\u0022 as the token you want to deposit and select \u0022Polygon\u0022 as the network. Copy the shown address (starts with \u00220x\u0022)."
         }
       },
       "employeePassModal": { "text": "Do you want to change the Employee Password?", "change": "Change Password", "cancel": "Cancel" },
@@ -317,7 +319,7 @@
     "CashoutIntroModal": {
       "title": "How To Cash Out",
       "step-1-1": "Step 1 of 2",
-      "step-1-2": "Under <span1>Flash Account</span1>, click <span2>{transferToCEX}</span2> to transfer USDC from Flash to your {cex}.",
+      "step-1-2": "Click <span1>{transferToCEX}</span1> to transfer USDC from your Flash account to your {cex} account.",
       "step-2-1": "Step 2 of 2",
       "step-2-2": "Log into your {cex} and convert USDC to {merchantCurrency}. Then, withdraw the money to your bank.",
       "step-2-2cb": "Under <span1>Coinbase Account</span1>, click <span2>{transferToBank}</span2> to transfer funds from your Coinbase account to your bank.",
@@ -331,10 +333,10 @@
     },
     "CashbackModal": {
       "text-1": "Welcome to Flash!",
-      "text-2": "Our mission is to create a global payments platform with near-zero fees using blockchain technology.",
-      "text-3": "However, changing people's payment habits is challenging. For one, credit cards take 3-5% from businesses and give ~1% back to customers, locking customers into only using credit cards.",
+      "text-2": "Our mission is to create a global payments platform with near-zero fees.",
+      "text-3": "However, a major challenge is that credit cards give ~1% back to customers (while taking 3-5% from businesses), locking customers into only using credit cards.",
       "text-4": "To be able to compete, we are temporarily requiring businesses give a 2% discount to customers who pay through Flash. The discount will be applied at the time of payment.",
-      "text-5": "Flash (~0% fees) will still help you save money over credit cards (>3% fees). This discount may also attract new customers to your business!",
+      "text-5": "You will still save money using Flash (0% fees) over credit cards. This discount may also attract new customers to your business!",
       "text-6": "When crypto payments become more popular, we will make this 2% discount optional."
     },
     "ErrorModal": {},
@@ -350,7 +352,7 @@
         "cashout": "How do I cash out?",
         "cashback": "Why must I give 2% cashback?",
         "fees": "What are the fees?",
-        "lose": "Will I lose from changing rates?",
+        "lose": "Will I lose from fluctuating rates?",
         "rate": "What conversion rate is used?"
       },
       "setup-1": "To start accepting crypto payments, print out and display your QR code so that customers can see it.",
@@ -400,6 +402,8 @@
     "CbAuth": { "connecting": "Connecting to Coinbase" }
   },
   "Common": {
+    "yes": "Yes",
+    "no": "No",
     "close": "CLOSE",
     "comfirm": "Confirm",
     "cancel": "Cancel",
@@ -432,6 +436,7 @@
     "toBank": "To: Bank",
     "enterAnEvmAddress": "Enter an EVM address",
     "transferring": "Transferring",
-    "transferSuccessful": "Transfer successful"
+    "transferSuccessful": "Transfer successful",
+    "contact": "For any assistance, feel free to contact us at support@flashpayments.xyz"
   }
 }

@@ -15,7 +15,7 @@ export default function Simple() {
           {t("header-2")}
         </div>
         {/*--- body ---*/}
-        <div className="homeTextLg mt-8 w-full space-y-6">
+        <div className="mt-8 w-full space-y-6">
           <p>{t("body-1")}</p>
           <p>{t.rich("body-2", { span: (chunks) => <span className="text-blue-400">{chunks}</span> })}</p>
         </div>

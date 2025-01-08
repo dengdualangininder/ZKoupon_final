@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FaAngleLeft } from "react-icons/fa6";
 
 const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {
   // hooks
@@ -14,17 +15,15 @@ const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {
   return (
     <div className="instructionsModal z-[92]">
       {/*--- header ---*/}
-      <div className="detailsModalHeader">{t("cashout-tradeMAX")}</div>
+      <div className="modalHeader">{t("cashout-tradeMAX")}</div>
       {/*--- mobile back ---*/}
-      <div className="mobileBack">
-        <FontAwesomeIcon icon={faAngleLeft} onClick={() => setTradeMAXModal(false)} />
-      </div>
+      <FaAngleLeft className="mobileBack" onClick={() => setTradeMAXModal(false)} />
       {/*--- tablet/desktop close ---*/}
       <div className="xButtonContainer" onClick={() => setTradeMAXModal(false)}>
         <div className="xButton">&#10005;</div>
       </div>
       {/*--- content ---*/}
-      <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-8 flex flex-col overflow-y-auto scrollbar textLg font-medium">
+      <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-8 flex flex-col overflow-y-auto scrollbar textBaseApp font-medium">
         <div className="py-2 flex">
           <div className="modalNumber">1.</div>
           <div className="w-full">

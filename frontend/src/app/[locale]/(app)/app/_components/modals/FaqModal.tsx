@@ -11,8 +11,10 @@ import TradeMAXModal from "./exchanges/TradeMAXModal";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FaAngleLeft } from "react-icons/fa6";
+import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 
-const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal }: { paymentSettingsState: any; cashoutSettingsState: any; setFaqModal: any }) => {
+const Instructions = ({ paymentSettings, cashoutSettings, setFaqModal }: { paymentSettings: PaymentSettings; cashoutSettings: CashoutSettings; setFaqModal: any }) => {
   const [expand, setExpand] = useState("");
   const [tradeMAXModal, setTradeMAXModal] = useState(false);
 
@@ -21,7 +23,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
   const locale = useLocale();
 
   const titles =
-    paymentSettingsState.merchantCurrency == "USD"
+    paymentSettings.merchantCurrency == "USD"
       ? [
           { title: t("title.setup"), id: "setup" },
           { title: t("title.pay"), id: "pay" },
@@ -51,17 +53,15 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
       {/*--- QUESITONS MODAL ---*/}
       <div className="instructionsModal">
         {/*--- header ---*/}
-        <div className="detailsModalHeader">{t("instructions")}</div>
+        <div className="fullModalHeader">{t("instructions")}</div>
         {/*--- mobile back ---*/}
-        <div className="mobileBack">
-          <FontAwesomeIcon icon={faAngleLeft} onClick={() => setFaqModal(false)} />
-        </div>
+        <FaAngleLeft className="mobileBack" onClick={() => setFaqModal(false)} />
         {/*--- tablet/desktop close ---*/}
         <div className="xButtonContainer" onClick={() => setFaqModal(false)}>
           <div className="xButton">&#10005;</div>
         </div>
         {/*--- content ---*/}
-        <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col overflow-y-auto scrollbar textLg font-medium">
+        <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col overflow-y-auto scrollbar textBaseApp font-medium">
           {/*--- questions ---*/}
           {titles.map((i, index) => (
             <div
@@ -81,7 +81,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
       {expand && (
         <div className="instructionsModal z-[91]">
           {/*--- header ---*/}
-          <div className="detailsModalHeader">
+          <div className="fullModalHeader">
             {expand == "setup" && <div>{t("title.setup")}</div>}
             {expand == "pay" && <div>{t("title.pay")}</div>}
             {expand == "confirm" && <div>{t("title.confirm")}</div>}
@@ -94,23 +94,21 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
             {expand == "rate" && <div>{t("title.rate")}</div>}
           </div>
           {/*--- mobile back ---*/}
-          <div className="mobileBack">
-            <FontAwesomeIcon icon={faAngleLeft} onClick={() => setExpand("")} />
-          </div>
+          <FaAngleLeft className="mobileBack" onClick={() => setExpand("")} />
           {/*--- tablet/desktop close ---*/}
           <div className="xButtonContainer" onClick={() => setExpand("")}>
             <div className="xButton">&#10005;</div>
           </div>
           {/*--- content ---*/}
-          <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-8 flex flex-col overflow-y-auto scrollbar textLg leading-normal">
-            {expand == "setup" && paymentSettingsState.merchantPaymentType == "inperson" && (
+          <div className="w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-8 flex flex-col overflow-y-auto scrollbar textBaseApp leading-normal">
+            {expand == "setup" && paymentSettings.merchantPaymentType == "inperson" && (
               <div className="space-y-3">
                 <p>{t("setup-1")}</p>
                 <p>{t.rich("setup-2", { span: (chunks) => <span className="font-bold">{chunks}</span> })}</p>
                 <p>{t("setup-3")}</p>
               </div>
             )}
-            {/* {expand == "setup" && paymentSettingsState.merchantPaymentType == "online" && (
+            {/* {expand == "setup" && paymentSettings.merchantPaymentType == "online" && (
               <div className="flex flex-col space-y-3">
                 <div>
                   Copy your Payment Link in the <span className="font-semibold">Cash Out</span> menu and use it in an &lt;a&gt; tag in your HTML code to create a "Pay With
@@ -159,13 +157,13 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                 <p>
                   {t.rich("pay-2", {
                     span: (chunks) => <span className="font-bold">{chunks}</span>,
-                    merchantCurrency: paymentSettingsState.merchantCurrency,
+                    merchantCurrency: paymentSettings.merchantCurrency,
                   })}
                 </p>
                 <p>
                   {t.rich("pay-3", {
-                    span: (chunks) => <span className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
-                    merchantCurrency: paymentSettingsState.merchantCurrency,
+                    span: (chunks) => <span className={`${paymentSettings.merchantCurrency == "USD" ? "hidden" : ""}`}>{chunks}</span>,
+                    merchantCurrency: paymentSettings.merchantCurrency,
                   })}
                 </p>
               </div>
@@ -194,7 +192,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
             )}
             {expand == "cashout" && (
               <div>
-                {paymentSettingsState.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" ? (
+                {paymentSettings.merchantCountry != "Other" && cashoutSettings.cex == "Coinbase" ? (
                   <div className="space-y-3">
                     <div className="font-bold">{t("cashout-settingUp")}</div>
                     <div className="flex">
@@ -213,9 +211,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                     <div className="flex">
                       <div className="mr-1.5">2.</div>
                       <div>
-                        <div>
-                          {t.rich("cashout-4cb", { span: (chunks) => <span className="font-bold">{chunks}</span>, merchantCurrency: paymentSettingsState.merchantCurrency })}
-                        </div>
+                        <div>{t.rich("cashout-4cb", { span: (chunks) => <span className="font-bold">{chunks}</span>, merchantCurrency: paymentSettings.merchantCurrency })}</div>
                       </div>
                     </div>
                   </div>
@@ -227,9 +223,9 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                         <div className="modalNumber">1.</div>
                         <div>
                           {t.rich("cashout-1", {
-                            span1: (chunks) => <span className={`${cashoutSettingsState.cex ? "" : "hidden"}`}>{chunks}</span>,
-                            span2: (chunks) => <span className={`${cashoutSettingsState.cex ? "hidden" : ""}`}>{chunks}</span>,
-                            cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                            span1: (chunks) => <span className={`${cashoutSettings.cex ? "" : "hidden"}`}>{chunks}</span>,
+                            span2: (chunks) => <span className={`${cashoutSettings.cex ? "hidden" : ""}`}>{chunks}</span>,
+                            cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
                           })}
                         </div>
                       </div>
@@ -238,7 +234,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                         <div>
                           {t.rich("cashout-2", {
                             span: (chunks) => <span className="font-bold">{chunks}</span>,
-                            cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                            cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
                           })}
                         </div>
                       </div>
@@ -248,7 +244,7 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                         <div>
                           {t.rich("cashout-3", {
                             span: (chunks) => <span className="font-bold">{chunks}</span>,
-                            cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
+                            cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
                           })}
                         </div>
                       </div>
@@ -257,11 +253,11 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
                         <div>
                           <div>
                             {t("cashout-4", {
-                              cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEX"),
-                              merchantCurrency: cashoutSettingsState.cex ? paymentSettingsState.merchantCurrency : "your local currency",
+                              cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
+                              merchantCurrency: cashoutSettings.cex ? paymentSettings.merchantCurrency : "your local currency",
                             })}
                           </div>
-                          {cashoutSettingsState.cex == "MAX" && (
+                          {cashoutSettings.cex == "MAX" && (
                             <div className="mt-2 link" onClick={() => setTradeMAXModal(true)}>
                               {t("cashout-tradeMAX")}
                             </div>
@@ -283,57 +279,53 @@ const Instructions = ({ paymentSettingsState, cashoutSettingsState, setFaqModal 
             {expand == "fees" && (
               <div className="space-y-3">
                 <p>{t("fees-1")}</p>
-                <p>{t("fees-2", { cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("aCEX") })}</p>
+                <p>{t("fees-2", { cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("aCEX") })}</p>
                 <p>
-                  {paymentSettingsState.merchantCountry != "Other" && cashoutSettingsState.cex == "Coinbase" && (
-                    <span>{t("fees-3cb", { merchantCurrency: paymentSettingsState.merchantCurrency })}</span>
+                  {paymentSettings.merchantCountry != "Other" && cashoutSettings.cex == "Coinbase" && (
+                    <span>{t("fees-3cb", { merchantCurrency: paymentSettings.merchantCurrency })}</span>
                   )}
-                  {cashoutSettingsState.cex == "MAX" && <span>{t("fees-3max")}</span>}
-                  {((cashoutSettingsState.cex != "Coinbase" && cashoutSettingsState.cex != "MAX") || paymentSettingsState.merchantCountry == "Other") && (
-                    <span>{t("fees-3none")}</span>
-                  )}{" "}
-                  <span className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""}`}>{t("fees-nonUSD-1")}</span>
+                  {cashoutSettings.cex == "MAX" && <span>{t("fees-3max")}</span>}
+                  {((cashoutSettings.cex != "Coinbase" && cashoutSettings.cex != "MAX") || paymentSettings.merchantCountry == "Other") && <span>{t("fees-3none")}</span>}{" "}
+                  <span className={`${paymentSettings.merchantCurrency == "USD" ? "hidden" : ""}`}>{t("fees-nonUSD-1")}</span>
                 </p>
-                <p className={`${paymentSettingsState.merchantCurrency == "USD" ? "hidden" : ""}`}>
-                  {t("fees-nonUSD-2", { merchantCurrency: paymentSettingsState.merchantCurrency })}
-                </p>
+                <p className={`${paymentSettings.merchantCurrency == "USD" ? "hidden" : ""}`}>{t("fees-nonUSD-2", { merchantCurrency: paymentSettings.merchantCurrency })}</p>
               </div>
             )}
             {expand == "lose" && (
               <div className="space-y-3">
-                <p>{t("lose-1", { merchantCurrency: paymentSettingsState.merchantCurrency })}</p>
-                <p>{t("lose-2", { merchantCurrency: paymentSettingsState.merchantCurrency })}</p>
+                <p>{t("lose-1", { merchantCurrency: paymentSettings.merchantCurrency })}</p>
+                <p>{t("lose-2", { merchantCurrency: paymentSettings.merchantCurrency })}</p>
                 <p className="font-semibold">{t("lose-3")}:</p>
                 <p>
                   {t("lose-4", {
-                    merchantCurrency: paymentSettingsState.merchantCurrency,
-                    rate: currencyToExample[paymentSettingsState.merchantCurrency].rate,
-                    localSent: currencyToExample[paymentSettingsState.merchantCurrency].localSent,
+                    merchantCurrency: paymentSettings.merchantCurrency,
+                    rate: currencyToExample[paymentSettings.merchantCurrency].rate,
+                    localSent: currencyToExample[paymentSettings.merchantCurrency].localSent,
                   })}
                 </p>
-                {paymentSettingsState.merchantCurrency == "USD" && <p className="text-center">(10.00 * 0.98) / (0.90 * 0.997) = 10.9217 USDC </p>}
-                {paymentSettingsState.merchantCurrency == "EUR" && <p className="text-center">(10.00 * 0.98) / (0.90 * 0.997) = 10.9217 USDC </p>}
-                {paymentSettingsState.merchantCurrency == "TWD" && <p className="text-center">(1000 * 0.98) / (32 * 0.997) = 30.7172 USDC </p>}
+                {paymentSettings.merchantCurrency == "USD" && <p className="text-center">(10.00 * 0.98) / (0.90 * 0.997) = 10.9217 USDC </p>}
+                {paymentSettings.merchantCurrency == "EUR" && <p className="text-center">(10.00 * 0.98) / (0.90 * 0.997) = 10.9217 USDC </p>}
+                {paymentSettings.merchantCurrency == "TWD" && <p className="text-center">(1000 * 0.98) / (32 * 0.997) = 30.7172 USDC </p>}
                 <p>
                   {t("lose-5", {
-                    merchantCurrency: paymentSettingsState.merchantCurrency,
-                    rate: currencyToExample[paymentSettingsState.merchantCurrency].rate,
-                    usdcReceived: currencyToExample[paymentSettingsState.merchantCurrency].usdcReceived,
-                    localReceived: currencyToExample[paymentSettingsState.merchantCurrency].localReceived,
-                    localReceivedIntended: currencyToExample[paymentSettingsState.merchantCurrency].localReceivedIntended,
+                    merchantCurrency: paymentSettings.merchantCurrency,
+                    rate: currencyToExample[paymentSettings.merchantCurrency].rate,
+                    usdcReceived: currencyToExample[paymentSettings.merchantCurrency].usdcReceived,
+                    localReceived: currencyToExample[paymentSettings.merchantCurrency].localReceived,
+                    localReceivedIntended: currencyToExample[paymentSettings.merchantCurrency].localReceivedIntended,
                   })}
                 </p>
-                <p>{t("lose-6", { merchantCurrency: paymentSettingsState.merchantCurrency })}</p>
+                <p>{t("lose-6", { merchantCurrency: paymentSettings.merchantCurrency })}</p>
               </div>
             )}
             {expand == "rate" && (
               <div>
-                {paymentSettingsState.merchantCurrency == "USD" && <div>{t("rate-1USD")}</div>}
-                {paymentSettingsState.merchantCurrency != "USD" && (
+                {paymentSettings.merchantCurrency == "USD" && <div>{t("rate-1USD")}</div>}
+                {paymentSettings.merchantCurrency != "USD" && (
                   <div>
                     {t("rate-1", {
-                      merchantCurrency: paymentSettingsState.merchantCurrency,
-                      cex: cashoutSettingsState.cex ? tcommon(cashoutSettingsState.cex) : tcommon("CEXes"),
+                      merchantCurrency: paymentSettings.merchantCurrency,
+                      cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEXes"),
                     })}
                   </div>
                 )}

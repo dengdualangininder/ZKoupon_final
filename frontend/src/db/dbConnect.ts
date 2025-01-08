@@ -1,3 +1,5 @@
+// TODO: consider adding "server-only"; directive?
+
 import mongoose from "mongoose";
 
 declare global {

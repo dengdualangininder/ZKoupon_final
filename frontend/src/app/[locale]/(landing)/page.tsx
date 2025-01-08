@@ -12,7 +12,7 @@ import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 // utils
 import { abb2full, countryData } from "@/utils/constants";
-import { getUsdcToLocal, getUsdToLocal } from "./_utils/constants";
+import { getUsdcToLocal, getUsdToLocal } from "@/utils/serverFns";
 
 //// this is a dynamic route, as we use unchaced fetch() and cookies() api ////
 
@@ -48,7 +48,7 @@ export default async function Home() {
 
   console.log(merchantCurrency, rates);
   return (
-    <div className="homeTextBase overflow-x-hidden">
+    <div className="text-lg overflow-x-hidden">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">

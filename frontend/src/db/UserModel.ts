@@ -17,17 +17,15 @@ export type PaymentSettings = {
 export type CashoutSettings = {
   cex: string;
   cexEvmAddress: string;
-  cexAccountName: string;
   isEmployeePass: boolean;
-  cashoutIntro: boolean;
 };
 
 export type Transaction = {
   date: any;
   customerAddress: string;
-  merchantAddress: string;
+  merchantEvmAddress: string;
   currencyAmount: number;
-  currencyAmountAfterCashback: number;
+  currencyAmountAfterCashback?: number;
   merchantCurrency: string;
   tokenAmount: number;
   token: string;
@@ -37,19 +35,19 @@ export type Transaction = {
   fxSavings: string;
   cashback: string;
   totalSavings: string;
-  refund: boolean;
+  refund: string; // empty if not refunded, txnHash if refunded
   toRefund: boolean;
   note: string;
   // online params
-  customerEmail: string;
-  item: string;
-  startDate: string;
-  endDate: string;
-  singleDate: string;
-  time: string;
-  countString: string;
-  shipping: any;
-  sku: string;
+  customerEmail?: string;
+  item?: string;
+  startDate?: string;
+  endDate?: string;
+  singleDate?: string;
+  time?: string;
+  countString?: string;
+  shipping?: any;
+  sku?: string;
   // txnHash
   txnHash: string;
 };
@@ -79,9 +77,7 @@ const UserSchema: Schema = new Schema<IUser>({
   cashoutSettings: {
     cex: String,
     cexEvmAddress: String,
-    cexAccountName: String,
     isEmployeePass: Boolean, // needed because hashedEmployeePass is not passed to frontend and we need to know whether there is a password or not
-    cashoutIntro: Boolean,
   },
   transactions: [
     {
@@ -99,7 +95,7 @@ const UserSchema: Schema = new Schema<IUser>({
       cashback: String,
       totalSavings: String,
       merchantEvmAddress: String,
-      refund: Boolean,
+      refund: String,
       toRefund: Boolean,
       note: String,
       // online params

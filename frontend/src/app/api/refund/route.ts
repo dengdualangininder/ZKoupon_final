@@ -4,53 +4,28 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { keccak256, getAddress } from "viem";
 
 export const POST = async (request: Request) => {
-  console.log("refund api");
+  console.log("entered /api/refund");
 
-  const { userInfo, txnHash, refundHash } = await request.json();
+  const { w3Info, refundTxnHash, txnHash } = await request.json();
 
   // verify
-  const prefix = ["0", "2", "4", "6", "8", "a", "c", "e"].includes(userInfo.publicKey.slice(-1)) ? "02" : "03"; // if y is even, then prefix is 02
-  const publicKeyCompressed = prefix + userInfo.publicKey.substring(2).slice(0, -64); // substring(2) removes first 2 chars, slice(0, -64) removes last 64 chars
+  const prefix = ["0", "2", "4", "6", "8", "a", "c", "e"].includes(w3Info.publicKey.slice(-1)) ? "02" : "03"; // if y is even, then prefix is 02
+  const publicKeyCompressed = prefix + w3Info.publicKey.substring(2).slice(0, -64); // substring(2) removes first 2 chars, slice(0, -64) removes last 64 chars
+  const merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(w3Info.publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
   const jwks = createRemoteJWKSet(new URL("https://api-auth.web3auth.io/jwks")); // for social logins
-  const jwtDecoded = await jwtVerify(userInfo.idToken, jwks, { algorithms: ["ES256"] });
+  const jwtDecoded = await jwtVerify(w3Info.idToken, jwks, { algorithms: ["ES256"] });
   const verified = (jwtDecoded.payload as any).wallets[0].public_key.toLowerCase() === publicKeyCompressed.toLowerCase();
+  if (!verified) return Response.json("not verified");
 
-  if (verified) {
-    const merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(userInfo.publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
-
+  try {
     await dbConnect();
-
-    try {
-      var doc = await UserModel.findOne({ "paymentSettings.merchantEvmAddress": merchantEvmAddress });
-    } catch (e: any) {
-      return Response.json({ status: "error", message: "failed to fetch doc" });
+    const result = await UserModel.updateOne(
+      { "paymentSettings.merchantEvmAddress": merchantEvmAddress, "transactions.txnHash": txnHash },
+      { $set: { "transactions.$.refund": refundTxnHash, "transactions.$.toRefund": false } }
+    );
+    if (result.modifiedCount > 0) {
+      return Response.json("saved");
     }
-
-    // if can't find tx
-    const txIndex = doc.transactions.findIndex((i: any) => i.txnHash === txnHash);
-    console.log("txIndex", txIndex);
-    if (!txIndex) {
-      return Response.json("cannot find tx");
-    }
-
-    // if refund already true
-    if (doc.transactions[txIndex].refund == true) {
-      return Response.json("already refunded");
-    }
-
-    // if all conditions are met
-    if (txIndex && doc.transactions[txIndex].refund == false) {
-      try {
-        await UserModel.findOneAndUpdate(
-          { "paymentSettings.merchantEvmAddress": merchantEvmAddress, "transactions.txnHash": txnHash },
-          { $set: { "transactions.$.refund": true } }
-        );
-        return Response.json("saved");
-      } catch (e) {
-        return Response.json("failed to save to db");
-      }
-    }
-  } else {
-    return Response.json("failed to verify");
-  }
+  } catch (e) {}
+  return Response.json("failed");
 };
