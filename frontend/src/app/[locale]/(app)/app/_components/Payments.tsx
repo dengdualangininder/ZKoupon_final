@@ -138,7 +138,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
                 {page &&
                   page.map((txn: Transaction) => (
                     <div
-                      className={`${txn.refund ? "opacity-50" : ""} ${
+                      className={`${txn.refund ? "text-slate-300 dark:text-slate-700" : ""} ${
                         w3Info
                           ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
                           : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
@@ -151,18 +151,18 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
                     >
                       <div className="w-full paymentsGrid items-end paymentsText">
                         {/*--- "to refund" tag ---*/}
-                        {txn.toRefund && (
-                          <div
-                            // @ts-ignore
-                            style={{ writingMode: "vertical-rl" }}
-                            className="absolute left-[calc(-5%-3px)] portrait:sm:left-[-28px] landscape:lg:left-[-28px] desktop:!left-[-20px] leading-tight bottom-0 h-full text-center text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium text-white rotate-[180deg] bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton"
-                          >
-                            To Refund
+                        {txn.toRefund && !txn.refund && (
+                          <div className="px-[16px] py-[2px] rounded-b-[8px] absolute top-0 right-0 text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-sm font-medium text-white bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton">
+                            {t("toRefund")}
                           </div>
                         )}
                         {/*---Time---*/}
                         <div className="relative">
-                          <div className="absolute bottom-[calc(100%-2px)] portrait:sm:bottom-[calc(100%+2px)] landscape:lg:bottom-[calc(100%+2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium textGray">
+                          <div
+                            className={`absolute bottom-[calc(100%-2px)] portrait:sm:bottom-[calc(100%+2px)] landscape:lg:bottom-[calc(100%+2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium ${
+                              txn.refund ? "text-slate-300 dark:text-slate-700" : "textGray"
+                            }`}
+                          >
                             {getLocalDateWords(txn.date)?.toUpperCase()}
                           </div>
                           {getLocalTime(txn.date)?.time}

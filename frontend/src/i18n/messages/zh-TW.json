@@ -183,6 +183,7 @@
       "customer": "客戶地址",
       "clearSearch": "清除搜尋結果",
       "noPayments": "還沒有收款",
+      "toRefund": "要退款",
       "detailsModal": {
         "title": "收款資料",
         "time": "時間",

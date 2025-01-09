@@ -185,6 +185,7 @@
       "customer": "Customer",
       "clearSearch": "Clear search",
       "noPayments": "No payments",
+      "toRefund": "To Refund",
       "detailsModal": {
         "title": "Payment Details",
         "time": "Time",

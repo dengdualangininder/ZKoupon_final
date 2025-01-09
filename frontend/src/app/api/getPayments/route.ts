@@ -34,7 +34,7 @@ export const POST = async (request: NextRequest) => {
       let matchFilter: any = {};
       if (filter.last4Chars) matchFilter["transactions.customerAddress"] = { $regex: `(?i)${filter.last4Chars}$` };
       if (filter.toRefund) matchFilter["transactions.toRefund"] = true;
-      if (filter.refunded) matchFilter["transactions.refunded"] = true;
+      if (filter.refunded) matchFilter["transactions.refund"] = { $ne: "" };
       if (filter.searchDate.to) matchFilter["transactions.date"] = { $gte: new Date(filter.searchDate.from), $lte: new Date(filter.searchDate.to) };
       // query txn with filter
       var txns = await UserModel.aggregate()
