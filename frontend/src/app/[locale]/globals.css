@@ -489,10 +489,6 @@
     @apply w-full portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:!max-w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
-  .emailModalSize {
-    @apply w-full portrait:sm:w-[520px] landscape:lg:w-[520px] desktop:!w-[400px] h-screen portrait:sm:h-[500px] landscape:lg:h-[500px] desktop:!h-[420px] portrait:sm:max-h-[95%] landscape:lg:max-h-[95%];
-  }
-
   .sidebarModalSize {
     @apply w-full max-w-[450px] portrait:sm:w-[400px] landscape:lg:w-[400px] desktop:!w-[360px] h-screen;
   }
@@ -525,10 +521,6 @@
 
   .transferModal {
     @apply modalFullBase modalFullColor dark:bg-dark2 transferModalSize desktop:pb-[12px];
-  }
-
-  .emailModal {
-    @apply modalFullBase modalFullColor emailModalSize pb-[24px];
   }
 
   .sidebarModal {
@@ -588,7 +580,7 @@
   }
 
   .detailsModalContentContainer {
-    @apply flex-1 w-full px-[24px] portrait:sm:px-10 landscape:lg:px-10 desktop:!px-[32px] space-y-[12px] overflow-y-auto scrollbar;
+    @apply flex-1 w-full px-[24px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px] space-y-[12px] overflow-y-auto scrollbar;
   }
 
   .transferModalContentContainer {

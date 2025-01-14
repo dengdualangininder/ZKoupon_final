@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer"); // nodemailer does not suppot es6
 import { google } from "googleapis";
 
 export const POST = async (request: Request) => {
-  console.log("entered emailQrCode api");
+  console.log("entered /api/emailQrCode");
 
   const { merchantEmail, dataString } = await request.json();
 
