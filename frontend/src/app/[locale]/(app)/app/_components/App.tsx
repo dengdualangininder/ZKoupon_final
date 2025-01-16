@@ -65,22 +65,27 @@ export default function App({ flashInfo }: { flashInfo: FlashInfo }) {
   }, []);
 
   useEffect(() => {
+    console.log("app.tsx useEffect");
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER! });
 
     if (address) {
-      pusher.connection.bind("error", (e: any) => {
-        console.error("Pusher connection error:", e);
-      }); // bind to "error" event
-      var channel = pusher.subscribe(address); // subscribes to channel with name equal to merchantEvmAddress
-      channel.bind("payment", async ({ txn }: { txn: Transaction }) => {
-        console.log("payment event detected, txn:", txn);
-        queryClient.invalidateQueries({ queryKey: ["txns"] });
-        setNewTxn(txn);
-        setTimeout(() => {
-          setNewTxn(null);
-        }, 8000);
-      });
-      console.log("subscribed to channel:", address, "and listening to payment events");
+      if (!pusher.channel(address)) {
+        pusher.connection.bind("error", (e: any) => {
+          console.error("Pusher connection error:", e);
+        }); // bind to "error" event
+        var channel = pusher.subscribe(address); // 1. subscribes to channel with name equal to merchantEvmAddress
+        channel.bind("payment", async ({ txn }: { txn: Transaction }) => {
+          console.log("payment event detected, txn:", txn);
+          queryClient.invalidateQueries({ queryKey: ["txns"] });
+          setNewTxn(txn);
+          setTimeout(() => {
+            setNewTxn(null);
+          }, 8000);
+        });
+        console.log("subscribed to channel:", address, "and listening to payment events");
+      } else {
+        console.log("Pusher: already subscribed to channel", address);
+      }
     } else {
       console.log("address not detected, Pusher not subscribed");
     }

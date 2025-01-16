@@ -5,7 +5,7 @@ import { useRouter } from "@/i18n/routing";
 // hooks
 import { useTheme } from "next-themes";
 import { useW3Info } from "../../web3auth-provider";
-import { useLogout, useSettingsMutation } from "../../hooks";
+import { useLogout, useSettingsMutation, logoutNoDisconnect } from "../../hooks";
 // i18n
 import { useLocale, useTranslations } from "next-intl";
 // react query
@@ -64,7 +64,6 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   const merchantNameRef = useRef<HTMLInputElement | null>(null);
   const merchantEmailRef = useRef<HTMLInputElement | null>(null);
   const [isSwitchingLang, startSwitchingLang] = useTransition();
-  const [isLoggingOut, startLoggingOut] = useTransition();
   const logout = useLogout();
 
   // react-hook-form & zod
@@ -119,6 +118,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   const [popup, setPopup] = useState("");
   const [employeePassMask, setEmployeePassMask] = useState(true);
   const [isClicked, setIsClicked] = useState<string | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
   // modal states
   const [faqModal, setFaqModal] = useState(false);
   const [employeePassModal, setEmployeePassModal] = useState(false);
@@ -467,10 +467,13 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
         {/*---Sign Out---*/}
         <div className="mb-[20px] portrait:sm:mb-[40px] landscape:lg:mb-[40px] h-[120px] portrait:sm:h-[130px] landscape:lg:h-[130px] landscape:xl:desktop:h-[120px] flex flex-col justify-center items-center">
           <button
-            onClick={() => startLoggingOut(async () => await logout())}
+            onClick={async () => {
+              setLoggingOut(true);
+              logout();
+            }}
             className="h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] w-[120px] portrait:sm:w-[150px] landscape:lg:w-[150px] desktop:!w-[120px] rounded-full font-medium buttonPrimaryColor flex items-center justify-center"
           >
-            {isLoggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
+            {loggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
           </button>
         </div>
       </div>

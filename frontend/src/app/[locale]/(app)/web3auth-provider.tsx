@@ -121,18 +121,11 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     }
 
     // get sessionId, which will be used to determine whether we should setFlashInfoCookie or not
+    let sessionId;
     const auth_store = window.localStorage.getItem("auth_store");
-    if (auth_store) {
-      const sessionId = JSON.parse(auth_store).sessionId;
-      if (!sessionId) {
-        console.log("no sessionId");
-        deleteUserJwtCookie();
-        listenToOnConnect();
-        router.push("/login");
-        return;
-      }
-    } else {
-      console.log("no auth_store");
+    if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
+    if (!sessionId) {
+      console.log("no sessionId");
       deleteUserJwtCookie();
       listenToOnConnect();
       router.push("/login");
@@ -157,7 +150,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
   async function listenToOnConnect() {
     console.log("listening to on connect...");
     web3AuthInstance?.on(ADAPTER_EVENTS.CONNECTED, async (data: CONNECTED_EVENT_DATA) => {
-      console.log("web3Auth-provider.tsx useEffect, CONNECTED to web3Auth", web3AuthInstance.connected);
+      console.log("web3Auth-provider.tsx, CONNECTED to web3Auth", web3AuthInstance.connected);
       setW3InfoAndFlashInfo();
     });
   }

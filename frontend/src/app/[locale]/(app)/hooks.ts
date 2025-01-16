@@ -183,8 +183,11 @@ export const useLogout = () => {
 
   const logout = useCallback(async () => {
     console.log("logout()");
+    window.sessionStorage.removeItem("cbAccessToken");
+    window.localStorage.removeItem("cbRefreshToken");
+    await deleteUserJwtCookie();
     await disconnectAsync();
-    await logoutNoDisconnect();
+    window.location.href = "/login"; // hard refresh so provider useEffect is re-run (router.push not effective); locale is facotred in
   }, []);
 
   return logout;
