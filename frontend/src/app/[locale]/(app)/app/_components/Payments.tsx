@@ -32,6 +32,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const loadRef = useRef(null);
   const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery, while setTempFilter will not
   const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(w3Info, flashInfo, filter);
+  console.log("txns.pages.length", txns ? txns.pages[0]?.length : null);
 
   // states
   const [tempFilter, setTempFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } });
@@ -124,69 +125,74 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
 
       {/*--- LIST OF PAYMENTS ---*/}
       <div
-        id="table"
         className={`${
           w3Info ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
         } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         style={{ scrollbarGutter: "stable" }}
       >
-        <>
-          {/*--- list ---*/}
-          {txns &&
-            txns.pages.map((page: Transaction[] | null, index: number) => (
-              <div key={index} className="w-full flex flex-col items-center">
-                {page &&
-                  page.map((txn: Transaction) => (
-                    <div
-                      className={`${txn.refund ? "text-slate-300 dark:text-slate-700" : ""} ${
-                        w3Info
-                          ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
-                          : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
-                      } relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
-                      key={txn.txnHash}
-                      onClick={() => {
-                        setClickedTxn(txn);
-                        setDetailsModal(true);
-                      }}
-                    >
-                      <div className="w-full paymentsGrid items-end paymentsText">
-                        {/*--- "to refund" tag ---*/}
-                        {txn.toRefund && !txn.refund && (
-                          <div className="px-[16px] py-[2px] rounded-b-[8px] absolute top-0 right-0 text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-sm font-medium text-white bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton">
-                            {t("toRefund")}
+        {txns && (
+          <>
+            {txns.pages[0]?.length === 0 ? (
+              <div className="flex-1 flex justify-center items-center text-slate-400 dark:text-slate-600">{t("noPayments")}</div>
+            ) : (
+              <>
+                {txns.pages.map((page: Transaction[] | null, index: number) => (
+                  <div key={index} className="w-full flex flex-col items-center">
+                    {page &&
+                      page.map((txn: Transaction) => (
+                        <div
+                          className={`${txn.refund ? "text-slate-300 dark:text-slate-700" : ""} ${
+                            w3Info
+                              ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
+                              : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
+                          } relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] desktop:!min-h-[74px] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
+                          key={txn.txnHash}
+                          onClick={() => {
+                            setClickedTxn(txn);
+                            setDetailsModal(true);
+                          }}
+                        >
+                          <div className="w-full paymentsGrid items-end paymentsText">
+                            {/*--- "to refund" tag ---*/}
+                            {txn.toRefund && !txn.refund && (
+                              <div className="px-[16px] py-[2px] rounded-b-[8px] absolute top-0 right-0 text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-sm font-medium text-white bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton">
+                                {t("toRefund")}
+                              </div>
+                            )}
+                            {/*---Time---*/}
+                            <div className="relative">
+                              <div
+                                className={`absolute bottom-[calc(100%-2px)] portrait:sm:bottom-[calc(100%+2px)] landscape:lg:bottom-[calc(100%+2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium ${
+                                  txn.refund ? "text-slate-300 dark:text-slate-700" : "textGray"
+                                }`}
+                              >
+                                {getLocalDateWords(txn.date)?.toUpperCase()}
+                              </div>
+                              {getLocalTime(txn.date)?.time}
+                              <span className="leading-none ml-[6px] text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px] font-medium">
+                                {getLocalTime(txn.date)?.ampm}
+                              </span>
+                            </div>
+                            {/*--- Amount ---*/}
+                            <div>{txn.currencyAmount.toFixed(currency2decimal[paymentSettings.merchantCurrency])}</div>
+                            {/*--- Customer ---*/}
+                            <div className="justify-self-end">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</div>
                           </div>
-                        )}
-                        {/*---Time---*/}
-                        <div className="relative">
-                          <div
-                            className={`absolute bottom-[calc(100%-2px)] portrait:sm:bottom-[calc(100%+2px)] landscape:lg:bottom-[calc(100%+2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium ${
-                              txn.refund ? "text-slate-300 dark:text-slate-700" : "textGray"
-                            }`}
-                          >
-                            {getLocalDateWords(txn.date)?.toUpperCase()}
-                          </div>
-                          {getLocalTime(txn.date)?.time}
-                          <span className="leading-none ml-[6px] text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px] font-medium">
-                            {getLocalTime(txn.date)?.ampm}
-                          </span>
                         </div>
-                        {/*--- Amount ---*/}
-                        <div>{txn.currencyAmount.toFixed(currency2decimal[paymentSettings.merchantCurrency])}</div>
-                        {/*--- Customer ---*/}
-                        <div className="justify-self-end">..{txn.customerAddress.substring(txn.customerAddress.length - 4)}</div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            ))}
-          <div ref={loadRef} className="w-full flex justify-center">
-            {isFetchingNextPage && isFetching && (
-              <div className="pb-[32px]">
-                <SpinningCircleGray />
-              </div>
+                      ))}
+                  </div>
+                ))}
+              </>
             )}
-          </div>
-        </>
+          </>
+        )}
+        <div ref={loadRef} className="w-full flex justify-center">
+          {isFetchingNextPage && isFetching && (
+            <div className="pb-[32px]">
+              <SpinningCircleGray />
+            </div>
+          )}
+        </div>
       </div>
 
       {searchModal.render && (

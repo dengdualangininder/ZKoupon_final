@@ -118,7 +118,8 @@ export default function CashOut({
               {chunks}
             </span>
           ),
-          icon: () => <FaEllipsisVertical className="" />,
+          icon: () => <FaEllipsisVertical className="inline-block" />,
+          span4: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
         })
       );
     }

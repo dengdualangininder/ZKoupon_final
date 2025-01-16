@@ -184,7 +184,7 @@
       "time": "Time",
       "customer": "Customer",
       "clearSearch": "Clear search",
-      "noPayments": "No payments",
+      "noPayments": "No payments yet",
       "toRefund": "To Refund",
       "detailsModal": {
         "title": "Payment Details",
@@ -245,7 +245,7 @@
       "rateTooltip": "The USDC to {merchantCurrency} rate if you cash out now",
       "linkCoinbase": "Link Your Coinbase Account",
       "errors": {
-        "platformAddress": "Please first enter your <span1>Cash Out Platform's Address</span1> under <span2>Settings</span2>. Or, click the menu icon (<icon></icon>) and choose <span3>transfer to any EVM address</span3>.",
+        "platformAddress": "Please first enter your <span1>Cash Out Platform's Address</span1> under <span2>Settings</span2>. Or, click the menu icon <span4>(<icon></icon>)</span4> and choose <span3>transfer to any EVM address</span3>.",
         "linkCb": "Please first link your Coinbase account",
         "enterAmount": "Please enter an amount",
         "minUSDC": "1 USDC minimum transfer",

@@ -103,8 +103,6 @@ export default function Intro() {
   };
 
   const saveSettingsAndSendEmail = async () => {
-    // show next step
-    setStep("emailSent");
     if (isUsabilityTest) {
       setStep("emailSent");
       return;
@@ -125,6 +123,9 @@ export default function Intro() {
       return;
     }
 
+    // show next step
+    setStep("emailSent");
+
     // save settings & send email
     await saveSettings(
       {
@@ -141,10 +142,10 @@ export default function Intro() {
       {
         onSuccess: async () => {
           console.log("settings saved");
-          // await sendEmail();
+          await sendEmail();
         },
         onError: () => {
-          setErrorModal("Error: Your information was not saved. You can proceed and edit your information later.");
+          setErrorModal("Error: Your information may not have been saved. But, don't worry. You can change your information in the app at any time.");
         },
       }
     );
@@ -204,7 +205,7 @@ export default function Intro() {
                 {t("welcome.text-2")}
               </div>
               <button
-                className="w-[220px] desktop:w-[200px] buttonHeight font-semibold tracking-wide rounded-full buttonPrimaryColorLight animate-fadeInAnimation"
+                className="w-[220px] desktop:w-[190px] buttonHeight font-semibold tracking-wide rounded-full buttonPrimaryColorLight animate-fadeInAnimation"
                 onClick={() => setStep("info")}
               >
                 {t("welcome.start")}
@@ -479,7 +480,7 @@ export default function Intro() {
           </div>
         )}
 
-        {/*--- notCoinbase-2 ---*/}
+        {/*--- notCoinbase-2 (answer "yes") ---*/}
         {step == "notCoinbase-2" && (
           <div className="pt-[32px] w-full h-full flex flex-col items-center">
             {/*--- content ---*/}
@@ -506,7 +507,7 @@ export default function Intro() {
           </div>
         )}
 
-        {/*--- notCoinbase-3 ---*/}
+        {/*--- notCoinbase-3 (answer "no") ---*/}
         {step == "notCoinbase-3" && (
           <div className="w-full h-full flex flex-col">
             {/*--- content ---*/}
@@ -519,7 +520,7 @@ export default function Intro() {
                         <a
                           href={isMobile ? (isApple ? cexLinks[settings.cex].apple : cexLinks[settings.cex].google) : cexLinks[settings.cex].desktop}
                           target="_blank"
-                          className={`${isMobile ? "linkLight" : "cursor-default pointer-events-none"}`}
+                          className="linkLight"
                         >
                           {chunks}
                         </a>
