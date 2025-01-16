@@ -97,6 +97,14 @@
     transform: scale(1);
   }
 
+  .textBaseHome {
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-base;
+  }
+
+  .textLgHome {
+    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-lg;
+  }
+
   .textXsApp {
     @apply text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-xs;
   }
@@ -709,12 +717,16 @@
     @apply w-full px-2 desktop:px-0 pt-[32px] pb-[44px] flex justify-between flex-none;
   }
 
+  .introBulletContainer {
+    @apply flex flex-col gap-[12px] desktop:gap-[20px];
+  }
+
   .introHeaderFont {
     @apply pt-[40px] text-[1.8rem] leading-[2rem] font-bold text-center;
   }
 
   .introNumber {
-    @apply flex-none mr-[8px] w-[1.75rem] desktop:w-[1.5rem] h-[1.75rem] desktop:h-[1.5rem] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[0.8rem] text-white;
+    @apply flex-none mr-[12px] w-[28px] h-[28px] desktop:w-[24px] desktop:h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[13px] text-white;
   }
 
   .introButtonPrimary {

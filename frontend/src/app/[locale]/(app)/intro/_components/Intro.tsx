@@ -188,7 +188,7 @@ export default function Intro() {
 
   return (
     <div className="w-full h-screen flex justify-center bg-light2 text-black overflow-y-auto textBaseApp">
-      {step == "loading" && <div className="w-full h-full flex flex-col items-center justify-center">Loading...</div>}
+      {step == "loading" && <div className="w-full h-full flex flex-col items-center justify-center"></div>}
       <div className="w-[94%] min-w-[354px] max-w-[480px] desktop:!max-w-[450px] h-full min-h-[600px] max-h-[900px] my-auto">
         <div className="hidden">
           <QRCodeSVG id="introQrCode" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={settings.qrCodeUrl} />
@@ -298,13 +298,13 @@ export default function Intro() {
         {step == "how" && (
           <div className="w-full h-full flex flex-col">
             {/*--- content ---*/}
-            <div className="flex-1 w-full flex flex-col gap-[28px]">
+            <div className="flex-1 w-full flex flex-col items-center gap-[28px]">
               <div className="introHeaderFont">{t("how.title")}</div>
               <div className="relative w-full desktop:w-[85%] aspect-[16/9]">
                 <Image src="/intro-scan.png" alt="customer scanning QR code" fill className="object-cover rounded-3xl" />
               </div>
               {/*--- text ---*/}
-              <div className="flex flex-col gap-[12px] desktop:gap-[20px]">
+              <div className="introBulletContainer">
                 <div className="relative flex">
                   <div className="introNumber">1</div>
                   <div>
@@ -368,7 +368,7 @@ export default function Intro() {
                     tooltip: tcommon("cbTooltip", { merchantCurrency: settings.merchantCurrency }),
                     a: (chunks) => (
                       <a
-                        href={isMobile ? (isApple ? cexLinks["Coinbase"].apple : cexLinks["Coinbase"].google) : cexLinks["Coinbase"].desktop}
+                        href={isMobile ? (isApple ? cexLinks[settings.cex].apple : cexLinks[settings.cex].google) : cexLinks[settings.cex].apple}
                         target="_blank"
                         className="linkLight"
                       >
@@ -411,7 +411,7 @@ export default function Intro() {
               {/*--- title ---*/}
               <div className="introHeaderFont">{t("notCoinbase-1.title")}</div>
               {/*--- text ---*/}
-              <div className="flex flex-col gap-[16px]">
+              <div className="introBulletContainer">
                 <div className="w-full flex relative">
                   <div className="introNumber">1</div>
                   <div className="w-full">
@@ -419,7 +419,7 @@ export default function Intro() {
                       ? t.rich("notCoinbase-1.text-1", {
                           a1: (chunks) => (
                             <a
-                              href={isMobile ? (isApple ? cexLinks[settings.cex].apple : cexLinks[settings.cex].google) : cexLinks[settings.cex].desktop}
+                              href={isMobile ? (isApple ? cexLinks[settings.cex].apple : cexLinks[settings.cex].google) : cexLinks[settings.cex].apple}
                               target="_blank"
                               className="linkLight"
                             >
@@ -439,24 +439,23 @@ export default function Intro() {
                   <div className="introNumber">2</div>
                   <div>{settings.cex ? t("notCoinbase-1.text-2", { cex: settings.cex }) : t("notCoinbase-1.text-2NoCex")}</div>
                 </div>
-                <div className="w-full flex">
+                <div className="w-full flex relative">
                   <div className="introNumber">3</div>
                   <div>
                     {settings.cex
                       ? t("notCoinbase-1.text-3", { cex: settings.cex, merchantCurrency: settings.merchantCurrency })
-                      : t("notCoinbase-1.text-3NoCex", { merchantCurrency: settings.merchantCurrency })}
+                      : t("notCoinbase-1.text-3NoCex", { merchantCurrency: settings.merchantCurrency })}{" "}
+                    {settings.merchantCurrency == "USD"
+                      ? null
+                      : t.rich("notCoinbase-1.text-4", {
+                          span1: (chunks: any) => <span className="group">{chunks}</span>,
+                          span2: (chunks: any) => <span className="dotted">{chunks}</span>,
+                          span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
+                          div: (chunks: any) => <div className="w-full bottom-[32px] whitespace-normal tooltip text-base">{chunks}</div>,
+                          tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: settings.merchantCurrency }),
+                        })}
                   </div>
                 </div>
-              </div>
-              {/*--- flash minimizes loss ---*/}
-              <div className={`${settings.merchantCurrency == "USD" ? "hidden" : ""} relative`}>
-                {t.rich("notCoinbase-1.text-4", {
-                  span1: (chunks: any) => <span className="group">{chunks}</span>,
-                  span2: (chunks: any) => <span className="dotted">{chunks}</span>,
-                  span3: (chunks: any) => <span className="whitespace-nowrap">{chunks}</span>,
-                  div: (chunks: any) => <div className="w-full bottom-[32px] whitespace-normal tooltip text-base">{chunks}</div>,
-                  tooltip: tcommon("reduceFxLossTooltip", { merchantCurrency: settings.merchantCurrency }),
-                })}
               </div>
               {/*--- do you have an account? ---*/}
               <div className="flex flex-col">
@@ -518,14 +517,13 @@ export default function Intro() {
                   ? t.rich("notCoinbase-3.text-2", {
                       a1: (chunks) => (
                         <a
-                          href={isMobile ? (isApple ? cexLinks[settings.cex].apple : cexLinks[settings.cex].google) : cexLinks[settings.cex].desktop}
+                          href={isMobile ? (isApple ? cexLinks[settings.cex].apple : cexLinks[settings.cex].google) : cexLinks[settings.cex].apple}
                           target="_blank"
                           className="linkLight"
                         >
                           {chunks}
                         </a>
                       ),
-                      span1: (chunks) => <span className={`${cexLinks[settings.cex].desktop ? "" : "hidden"}`}>{chunks}</span>,
                       cex: settings.cex,
                     })
                   : t("notCoinbase-3.text-2-default")}

@@ -11,7 +11,7 @@ export default function Benefits({ merchantCurrency, rates }: { merchantCurrency
       {/*--- CONTENT ---*/}
       <div
         className={`${
-          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[310px]"
+          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[320px]"
         } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full flex flex-col items-center lg:flex-row lg:justify-between lg:space-x-[12px] space-y-6 lg:space-y-0`}
       >
         {/*--- card1 ---*/}

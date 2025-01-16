@@ -48,7 +48,7 @@ export default async function Home() {
 
   console.log(merchantCurrency, rates);
   return (
-    <div className="text-lg overflow-x-hidden">
+    <div className="overflow-x-hidden">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">

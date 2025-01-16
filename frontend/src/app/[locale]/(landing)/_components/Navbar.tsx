@@ -75,7 +75,7 @@ export default function Navbar() {
           } absolute left-0 h-full transition-all duration-[1000ms]`}
         />
         {/*---DESKTOP MENU LINKS---*/}
-        <div className="hidden lg:flex space-x-[36px] xl:space-x-[60px] justify-between">
+        <div className="hidden lg:flex gap-x-[44px] desktop:space-x-[24px] textBaseHome">
           {navLinks.map((navLink, index) => (
             <div
               className={`font-semibold cursor-pointer active:underline desktop:active:no-underline underline-offset-4 desktop:underlineAni relative`}

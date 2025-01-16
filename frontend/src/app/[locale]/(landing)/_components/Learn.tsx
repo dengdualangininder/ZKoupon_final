@@ -108,7 +108,7 @@ export default function Learn({ merchantCurrency }: { merchantCurrency: string |
   return (
     <div className="pt-[80px] pb-[96px] homeSectionSize max-w-[800px] flex flex-col items-center">
       <div className="homeHeaderFont">{t("header")}</div>
-      <div className="mt-2 mb-8 md:mb-12 text-lg font-medium">{t("subheader")}</div>
+      <div className="mt-[8px] mb-[48px] desktop:mb-[32px] text-lg font-medium">{t("subheader")}</div>
       <div className="w-full flex flex-col">
         {titles.map((i, index) => (
           <div key={i.id} className={`${index == 0 ? "border-t-2" : ""} border-b-2 border-slate-300`}>

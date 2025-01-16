@@ -18,7 +18,7 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string | 
             {t("title2")}
           </h1>
           {/*--- subheader ---*/}
-          <div className="pb-[8px] relative w-[97%] max-w-[760px] desktop:max-w-[690px] text-xl desktop:text-lg">
+          <div className="pb-[8px] relative w-[97%] max-w-[760px] desktop:max-w-[690px] textLgHome">
             {t("subtitle1")}
             <span className="group">
               <span className="linkLight font-semibold">{t("trueP2P")}</span>

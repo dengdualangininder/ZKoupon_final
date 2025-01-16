@@ -15,13 +15,13 @@ export default function Simple() {
           {t("header-2")}
         </div>
         {/*--- body ---*/}
-        <div className="mt-8 w-full space-y-6">
+        <div className="text-lg mt-[32px] w-full space-y-[24px]">
           <p>{t("body-1")}</p>
           <p>{t.rich("body-2", { span: (chunks) => <span className="text-blue-400">{chunks}</span> })}</p>
         </div>
       </div>
       {/*--- RIGHT ---*/}
-      <div className="mt-10 lg:mt-0 w-full lg:w-[42%] flex items-center justify-center lg:justify-end">
+      <div className="mt-[40px] lg:mt-0 w-full lg:w-[42%] flex items-center justify-center lg:justify-end">
         <div className="w-full aspect-[3/2] rounded-3xl overflow-hidden relative">
           <Image src="/pos.jpg" alt="Point-of-sale device" sizes={"480px"} fill />
         </div>

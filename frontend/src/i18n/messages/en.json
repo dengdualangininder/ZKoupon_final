@@ -18,7 +18,7 @@
       "step-2": "Customer scans and pays",
       "step-3": "You confirm payment",
       "step-4": "You cash out",
-      "step-1-1": "<a1>Enter App</a1> and receive a QR code (set up in 1 minute). Display this QR code at the cash register.",
+      "step-1-1": "<a1>Enter App</a1> and receive a QR code (set up in 1 minute). Display it at the cash register.",
       "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app</span2><div>{tooltip}</div></span1> will open",
       "step-2-2": "The customer enters the amount of {merchantCurrency} for payment",
       "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens</span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app",
@@ -93,7 +93,7 @@
     },
     "Support": {
       "header": "Support",
-      "body": "For helpful information, read the “Instructions” in the Flash app’s “Settings” menu or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@flashpayments.xyz"
+      "body": "For helpful information, read the “Instructions” under the “Settings” menu in the Flash App or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@flashpayments.xyz"
     },
     "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center" }
   },
@@ -146,8 +146,8 @@
         "text-1NoCex": "Register an account on a cryptocurrency exchange",
         "text-2": "Transfer USDC from Flash to your {cex} account",
         "text-2NoCex": "Transfer USDC from Flash to your cryptocurrency exchange account",
-        "text-3": "On the {cex} App, convert USDC to {merchantCurrency} and withdraw the money to your bank",
-        "text-3NoCex": "In your cryptocurrency exchange, convert USDC to {merchantCurrency} and withdraw the money to your bank",
+        "text-3": "On the {cex} App, convert USDC to {merchantCurrency} and withdraw the money to your bank.",
+        "text-3NoCex": "In your cryptocurrency exchange, convert USDC to {merchantCurrency} and withdraw the money to your bank.",
         "text-4": "With Flash, you should not lose money from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>.",
         "text-5": "Do you have a {cex} Exchange account?",
         "text-5-default": "Do you have a cryptocurrency exchange account?",
@@ -162,7 +162,7 @@
       },
       "notCoinbase-3": {
         "text-1": "Creating a {cex} account is easy and only takes several minutes.",
-        "text-2": "Simply <a1>download the {cex} Exchange App</a1><span1> (recommended) or visit the exchange's official website</span1> and create an account.",
+        "text-2": "Just <a1>download the {cex} Exchange App</a1> and create an account.",
         "text-2-default": "Pick an exchange that is popular in your country. The exchange must accept native USDC deposits on the Polygon network (most do).",
         "text-3": "After you get your account, there will be instructions in the Flash app on how to cash out."
       },
@@ -408,7 +408,7 @@
     "close": "CLOSE",
     "comfirm": "Confirm",
     "cancel": "Cancel",
-    "reduceFxLossTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these extra earnings should offset any losses due to fluctuating rates, if you cash out frequently (~2x per month). Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
+    "reduceFxLossTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these earnings should offset losses due to fluctuating rates. Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
     "mmTooltip": "MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide",
     "usdcTooltip": "1 USDC token = 1 USD, as gauranteed by Circle. USDC is a popular token that almost all crypto users have.",
     "cbTooltip": "Coinbase is a platform where USDC can be exchanged for {merchantCurrency} and where you can link a bank account",

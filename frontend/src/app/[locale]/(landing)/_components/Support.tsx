@@ -9,7 +9,7 @@ export default function Support() {
       {/*---Header---*/}
       <div className="homeHeaderFont">{t("header")}</div>
       {/*---Content---*/}
-      <div className="text-xl desktop:text-lg mt-10 w-full xl:max-w-[810px]">{t("body")}</div>
+      <div className="text-lg mt-[40px] w-full max-w-[720px]">{t("body")}</div>
     </div>
   );
 }
