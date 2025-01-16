@@ -7,6 +7,8 @@ import { useRouter } from "@/i18n/routing";
 import { useConnect, useDisconnect } from "wagmi";
 // i18n
 import { useLocale, useTranslations } from "next-intl";
+// others
+import axios from "axios";
 // components
 import MoreOptionsModal from "./MoreOptionsModal";
 import SelectLang from "@/utils/components/SelectLang";
@@ -23,6 +25,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
 
   // hooks
   let { connectAsync, connectors } = useConnect();
+  console.log("connectors", connectors);
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("App.Login");
@@ -40,6 +43,10 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const [langModal, setLangModal] = useState(false);
   const [isApple, setIsApple] = useState(false);
   const [selectedSocial, setSelectedSocial] = useState("");
+  const [myConnectors, setMyConnectors] = useState<MyConnector[]>([
+    { name: "Google", img: "/google.svg", connectorIndex: 0 },
+    { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
+  ]);
 
   // redirect to "saveToHome" page if mobile & not standalone
   useEffect(() => {
@@ -51,9 +58,19 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
       return;
     }
 
-    // create list of connectors (index is important)
-    const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
-    setIsApple(isApple);
+    // if Apple, add Apple social login
+    const isAppleTemp = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
+    setIsApple(isAppleTemp);
+    if (isAppleTemp) {
+      setMyConnectors([...myConnectors, { name: "Apple", img: "/apple.svg", connectorIndex: 2 }]);
+    }
+
+    // if Taiwan, add LINE social login
+    getCountry();
+
+    // { name: "Telegram", img: "/telegram.svg", connectorIndex: 3 },
+    // { name: "Line", img: "/line.svg", connectorIndex: 4 },
+    // { name: "Discord", img: "/discord.svg", connectorIndex: 5 },
 
     return () => {
       console.log("/login useEffect cleanup, isLoggingIn set to false");
@@ -61,27 +78,15 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
     };
   }, []);
 
-  if (isApple) {
-    var myConnectors: MyConnector[] = [
-      { name: "Google", img: "/google.svg", connectorIndex: 0 },
-      { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
-      { name: "Apple", img: "/apple.svg", connectorIndex: 2 },
-    ];
-    var myConnectorsMore: MyConnector[] = [
-      { name: "Telegram", img: "/telegram.svg", connectorIndex: 3 },
-      { name: "Line", img: "/line.svg", connectorIndex: 4 },
-      { name: "Discord", img: "/discord.svg", connectorIndex: 5 },
-    ];
-  } else {
-    var myConnectors: MyConnector[] = [
-      { name: "Google", img: "/google.svg", connectorIndex: 0 },
-      { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
-    ];
-    var myConnectorsMore: MyConnector[] = [
-      { name: "Telegram", img: "/telegram.svg", connectorIndex: 2 },
-      { name: "Line", img: "/line.svg", connectorIndex: 3 },
-      { name: "Discord", img: "/discord.svg", connectorIndex: 4 },
-    ];
+  async function getCountry() {
+    try {
+      const res = await axios.get("https://api.country.is");
+      if (res.data.country === "TW") {
+        setMyConnectors((prevData) => [...prevData, { name: "Line", img: "/line.svg", connectorIndex: 3 }]);
+      }
+    } catch (e) {
+      console.log("api.country.is down");
+    }
   }
 
   const ownerLogin = async (connectorIndex: number) => {
@@ -247,7 +252,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
 
       {/*---MODALS---*/}
       {errorModal && <ErrorModal errorModal={errorModal} setErrorModal={setErrorModal} />}
-      {moreOptionsModal && <MoreOptionsModal setMoreOptionsModal={setMoreOptionsModal} myConnectorsMore={myConnectorsMore} />}
+      {/* {moreOptionsModal && <MoreOptionsModal setMoreOptionsModal={setMoreOptionsModal} myConnectorsMore={myConnectorsMore} />} */}
     </div>
   );
 }
