@@ -10,15 +10,15 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string | 
       <div className="h-[84px]"></div>
       {/*--- container ---*/}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="landscape:pb-[180px] portrait:pb-[calc((100vh-84px)*3/10+30px)] landscape:lg:pb-[11%] flex flex-col items-center portrait:space-y-8 landscape:space-y-3 portrait:sm:space-y-14 landscape:lg:space-y-14">
+        <div className="landscape:pb-[180px] portrait:pb-[calc((100vh-84px)*3/10+30px)] landscape:lg:pb-[11%] flex flex-col items-center portrait:space-y-[32px] landscape:space-y-[12px] portrait:sm:space-y-[64px] landscape:lg:space-y-[64px] desktop:!space-y-[50px]">
           {/*--- header ---*/}
           <h1 className="text-[2.875rem] leading-[3.375rem] sm:leading-[4rem] lg:text-[3.75rem] lg:leading-[4.625rem] font-extrabold text-center">
             {t("title1")}
             <br />
             {t("title2")}
           </h1>
-          {/*--- body ---*/}
-          <div className="pb-[8px] relative w-[97%] max-w-[640px]">
+          {/*--- subheader ---*/}
+          <div className="pb-[8px] relative w-[97%] max-w-[760px] desktop:max-w-[690px] text-xl desktop:text-lg">
             {t("subtitle1")}
             <span className="group">
               <span className="linkLight font-semibold">{t("trueP2P")}</span>

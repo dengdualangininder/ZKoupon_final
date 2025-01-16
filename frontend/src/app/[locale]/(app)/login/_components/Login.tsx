@@ -93,7 +93,12 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
       return;
     }
 
-    await connectAsync({ connector: connectors[connectorIndex] }); // wait for web3Auth.on CONNECT to initiate and redirect to /app
+    try {
+      await connectAsync({ connector: connectors[connectorIndex] }); // wait for web3Auth.on CONNECT to initiate and redirect to /app
+    } catch (e) {
+      console.log(e);
+      setSelectedSocial("");
+    }
   };
 
   const employeeLogin = async () => {

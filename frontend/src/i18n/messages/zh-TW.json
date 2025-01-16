@@ -14,11 +14,11 @@
     "How": {
       "header": "使用方法",
       "selectCurrency": "選幣別",
-      "step-1": "您展示 QR Code",
+      "step-1": "您展示 QR 碼",
       "step-2": "客戶掃描付款",
       "step-3": "您的確認付款",
       "step-4": "您出金至銀行",
-      "step-1-1": "建立 Flash 帳戶後，您會在電子信箱裡收到 QR Code",
+      "step-1-1": "<a1>進入 App</a1> 並建立一個 QR 碼 (只需 1 分鐘)。列印出 QR 碼。",
       "step-2-1": "客戶掃描 QR Code 後，他們的<span1><span2>MetaMask App</span2><div>{tooltip}</div></span1> 會開啟",
       "step-2-2": "客戶輸入的金額為 {merchantCurrency}",
       "step-2-3": "客戶提交付款時，<span1><span2>USDC幣</span2><div>{tooltip}</div></span1> <span3>(價值相等於輸入的{merchantCurrency}金額)</span3> 會從客戶的 MetaMask app 送到您的 Flash app",

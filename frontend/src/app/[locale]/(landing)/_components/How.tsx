@@ -44,11 +44,13 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
           </div>
           {/*---bullet points---*/}
           <div className="howBulletFont">
-            {t("step-1-1")} (
-            <Link className="linkDark" href={"/app"}>
-              {t("setup")}
-            </Link>
-            )
+            {t.rich("step-1-1", {
+              a1: (chunks) => (
+                <Link className="linkDark" href={"/app"}>
+                  {chunks}
+                </Link>
+              ),
+            })}
           </div>
         </div>
 
@@ -60,7 +62,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
             <div className="howStepTitle">{t("step-2")}</div>
           </div>
           {/*--- image ---*/}
-          <div className="relative h-[500px] xl:h-[400px] aspect-[1/2]">
+          <div className="relative h-[500px] desktop:h-[400px] aspect-[1/2]">
             <Image src={"/phonePay.png"} alt="Step 2 Payment" sizes={"260px"} fill className="object-contain" />
           </div>
           {/*---bullet points---*/}
