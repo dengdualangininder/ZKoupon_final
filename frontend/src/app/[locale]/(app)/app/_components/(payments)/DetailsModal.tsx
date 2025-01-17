@@ -204,6 +204,7 @@ const DetailsModal = ({
         });
         const resJson = await res.json();
         if (resJson === "saved") {
+          setRefundState("refunded");
           queryClient.invalidateQueries({ queryKey: ["txns"] });
           return;
         }
@@ -263,7 +264,7 @@ const DetailsModal = ({
 
           {/*--- REFUND STATUS ---*/}
           <div className="modalHeaderFont pt-[28px] pb-[16px]">Refund Status</div>
-          {clickedTxn?.refund ? (
+          {refundState === "refunded" ? (
             <div className="w-full text-center font-semibold text-slate-500 dark:text-slate-400">{t("refunded")}</div>
           ) : (
             <div className="space-y-[56px] desktop:space-y-[40px]">
