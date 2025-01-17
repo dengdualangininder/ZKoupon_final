@@ -19,6 +19,7 @@ import { PiEyeLight, PiEyeSlashLight, PiGlobeLight, PiCaretDownBold } from "reac
 import { ImSpinner2 } from "react-icons/im";
 // types
 import { MyConnector } from "@/utils/types";
+import SpinningCircleGray, { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
 
 export default function Login({ userTypeFromCookies }: { userTypeFromCookies: string | undefined }) {
   console.log("/login, Login.tsx");
@@ -189,7 +190,20 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                   <div className="relative ml-[20px] mr-[16px] w-[40px] h-[32px]">
                     <Image src={i.img} alt={i.name} fill />
                   </div>
-                  <div>{isLoggingIn ? (i.name === selectedSocial ? "Signing in..." : t("signInWith", { socialMedia: i.name })) : t("signInWith", { socialMedia: i.name })}</div>
+                  <div>
+                    {isLoggingIn ? (
+                      i.name === selectedSocial ? (
+                        <div className="flex items-center">
+                          <SpinningCircleGraySm />
+                          <p>&nbsp;&nbsp;Signing in...</p>
+                        </div>
+                      ) : (
+                        t("signInWith", { socialMedia: i.name })
+                      )
+                    ) : (
+                      t("signInWith", { socialMedia: i.name })
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

@@ -130,7 +130,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
         } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         style={{ scrollbarGutter: "stable" }}
       >
-        {txns && (
+        {txns ? (
           <>
             {txns.pages[0]?.length === 0 ? (
               <div className="flex-1 flex justify-center items-center text-slate-400 dark:text-slate-600">{t("noPayments")}</div>
@@ -185,6 +185,10 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
               </>
             )}
           </>
+        ) : (
+          <div className="flex-1 flex justify-center items-center">
+            <SpinningCircleGray />
+          </div>
         )}
         <div ref={loadRef} className="w-full flex justify-center">
           {isFetchingNextPage && isFetching && (
