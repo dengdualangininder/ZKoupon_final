@@ -66,7 +66,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
     }
 
     // if Taiwan, add LINE social login
-    getCountry();
+    // getCountry();
 
     // { name: "Telegram", img: "/telegram.svg", connectorIndex: 3 },
     // { name: "Line", img: "/line.svg", connectorIndex: 4 },

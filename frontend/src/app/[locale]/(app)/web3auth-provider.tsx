@@ -53,9 +53,6 @@ const web3AuthInstance: Web3AuthNoModal = new Web3AuthNoModal({
 
 // configure adapter, as 2FA prompt appears every now and then, which is undesired
 const authAdapter = new AuthAdapter({
-  adapterSettings: {
-    uxMode: "redirect",
-  },
   loginSettings: {
     mfaLevel: "none",
   },
