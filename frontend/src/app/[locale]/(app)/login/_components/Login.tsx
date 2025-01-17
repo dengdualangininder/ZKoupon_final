@@ -6,9 +6,7 @@ import { useRouter } from "@/i18n/routing";
 // wagmi
 import { useConnect, useDisconnect } from "wagmi";
 // i18n
-import { useLocale, useTranslations } from "next-intl";
-// others
-import axios from "axios";
+import { useTranslations } from "next-intl";
 // components
 import MoreOptionsModal from "./MoreOptionsModal";
 import SelectLang from "@/utils/components/SelectLang";
@@ -19,16 +17,14 @@ import { PiEyeLight, PiEyeSlashLight, PiGlobeLight, PiCaretDownBold } from "reac
 import { ImSpinner2 } from "react-icons/im";
 // types
 import { MyConnector } from "@/utils/types";
-import SpinningCircleGray, { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
+import { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
 
 export default function Login({ userTypeFromCookies }: { userTypeFromCookies: string | undefined }) {
   console.log("/login, Login.tsx");
 
   // hooks
   let { connectAsync, connectors } = useConnect();
-  console.log("connectors", connectors);
   const router = useRouter();
-  const locale = useLocale();
   const t = useTranslations("App.Login");
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,21 +33,19 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState<React.ReactNode | null>(null);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false); // eye - show/hide password
   const [userType, setUserType] = useState(userTypeFromCookies ?? "owner");
-  const [moreOptionsModal, setMoreOptionsModal] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [langModal, setLangModal] = useState(false);
-  const [isApple, setIsApple] = useState(false);
   const [selectedSocial, setSelectedSocial] = useState("");
   const [myConnectors, setMyConnectors] = useState<MyConnector[]>([
     { name: "Google", img: "/google.svg", connectorIndex: 0 },
     { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
   ]);
 
-  // redirect to "saveToHome" page if mobile & not standalone
   useEffect(() => {
     console.log("/login useEffect");
+    // redirect to "saveToHome" page if mobile & not standalone
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
@@ -60,39 +54,13 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
     }
 
     // if Apple, add Apple social login
-    const isAppleTemp = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
-    setIsApple(isAppleTemp);
-    if (isAppleTemp) {
-      setMyConnectors([...myConnectors, { name: "Apple", img: "/apple.svg", connectorIndex: 2 }]);
-    }
-
-    // if Taiwan, add LINE social login
-    // getCountry();
-
-    // { name: "Telegram", img: "/telegram.svg", connectorIndex: 3 },
-    // { name: "Line", img: "/line.svg", connectorIndex: 4 },
-    // { name: "Discord", img: "/discord.svg", connectorIndex: 5 },
-
-    return () => {
-      console.log("/login useEffect cleanup, isLoggingIn set to false");
-      setIsLoggingIn(false);
-    };
+    const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
+    if (isApple) setMyConnectors([...myConnectors, { name: "Apple", img: "/apple.svg", connectorIndex: 2 }]);
   }, []);
-
-  async function getCountry() {
-    try {
-      const res = await axios.get("https://api.country.is");
-      if (res.data.country === "TW") {
-        setMyConnectors((prevData) => [...prevData, { name: "Line", img: "/line.svg", connectorIndex: 3 }]);
-      }
-    } catch (e) {
-      console.log("api.country.is down");
-    }
-  }
 
   const ownerLogin = async (connectorIndex: number) => {
     console.log("/login, clicked ownerLogin");
-    setIsLoggingIn(true); // TODO consider deleting
+    setIsLoggingIn(true);
 
     if (isUsabilityTest) {
       router.push("/intro");
@@ -264,9 +232,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
         </div>
       </div>
 
-      {/*---MODALS---*/}
       {errorModal && <ErrorModal errorModal={errorModal} setErrorModal={setErrorModal} />}
-      {/* {moreOptionsModal && <MoreOptionsModal setMoreOptionsModal={setMoreOptionsModal} myConnectorsMore={myConnectorsMore} />} */}
     </div>
   );
 }

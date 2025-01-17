@@ -79,10 +79,6 @@ const config: Config = createConfig({
       web3AuthInstance: web3AuthInstance,
       loginParams: { loginProvider: "apple" },
     }),
-    Web3AuthConnector({
-      web3AuthInstance: web3AuthInstance,
-      loginParams: { loginProvider: "line" },
-    }),
   ],
 });
 console.log("created new web3AuthInstance and config");
@@ -136,15 +132,23 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       console.log("web3AuthInstance already connected");
       setW3InfoAndFlashInfo();
     } else {
-      console.log("web3AuthInstance not connected");
+      console.log("sessionId exists, web3AuthInstance not connected");
       listenToOnConnect();
-
-      return () => {
-        web3AuthInstance.off(ADAPTER_EVENTS.CONNECTED, () => {
-          console.log("web3AuthInstance onConnect listener off");
-        });
-      };
+      setTimeout(() => {
+        if (!web3AuthInstance.connected) {
+          console.log("web3AuthInstance not connected after 10s, delete userJwt and auth_store");
+          deleteUserJwtCookie();
+          window.localStorage.removeItem("auth_store");
+          window.location.reload();
+        }
+      }, 10000);
     }
+
+    return () => {
+      web3AuthInstance.off(ADAPTER_EVENTS.CONNECTED, () => {
+        console.log("web3AuthInstance onConnect listener off");
+      });
+    };
   }, []);
 
   async function listenToOnConnect() {
