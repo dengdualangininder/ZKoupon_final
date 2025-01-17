@@ -15,7 +15,7 @@ import { GelatoRelay, CallWithSyncFeeRequest } from "@gelatonetwork/relay-sdk";
 // constants
 import { getLocalTime, getLocalDate } from "@/utils/functions";
 // images
-import { FaAngleLeft } from "react-icons/fa6";
+import { FaAngleLeft, FaArrowUpRightFromSquare } from "react-icons/fa6";
 import Toggle from "@/utils/components/Toggle";
 import { SpinningCircleWhiteSm } from "@/utils/components/SpinningCircleWhite";
 // types
@@ -54,6 +54,7 @@ const DetailsModal = ({
   // states
   // const [showNote, setShowNote] = useState(false);
   const [refundState, setRefundState] = useState(clickedTxn?.refund ? "refunded" : "notRefunded"); // notRefunded | refunding | refunded
+  const [refundTxnHash, setRefundTxnHash] = useState(clickedTxn?.refund ?? "");
 
   const onClickToRefund = async () => {
     if (!clickedTxn) return;
@@ -165,16 +166,16 @@ const DetailsModal = ({
     }
 
     // 6. polling for refundTxnHash
-    let refundTxnHash: string | undefined = "";
+    let refundTxnHashTemp: string | undefined = "";
     for (let i = 1; i < 50; i++) {
       try {
         var taskStatus = await relay.getTaskStatus(taskId);
       } catch {}
       if (taskStatus && taskStatus.taskState == "ExecSuccess") {
-        refundTxnHash = taskStatus.transactionHash;
+        refundTxnHashTemp = taskStatus.transactionHash;
         queryClient.invalidateQueries({ queryKey: [flashBalanceQueryKey] });
         console.log("txn executed, try:", i);
-        console.log("refundTxnHash:", refundTxnHash);
+        console.log("refundTxnHash:", refundTxnHashTemp);
         break;
       }
       if (taskStatus?.taskState == "ExecReverted" || taskStatus?.taskState == "Cancelled") {
@@ -185,25 +186,26 @@ const DetailsModal = ({
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
-    if (!refundTxnHash) {
+    if (!refundTxnHashTemp) {
       setErrorModal("We were unable to confirm if the refund was successful. Please check your wallet balance to confirm. We apologize for the inconvenience.");
       setRefundState("notRefunded");
     }
 
     //save to db
-    if (refundTxnHash) {
+    if (refundTxnHashTemp) {
       try {
         const res = await fetch("/api/refund", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             w3Info: w3Info,
-            refundTxnHash: refundTxnHash,
+            refundTxnHash: refundTxnHashTemp,
             txnHash: clickedTxn?.txnHash,
           }),
         });
         const resJson = await res.json();
         if (resJson === "saved") {
+          setRefundTxnHash(refundTxnHashTemp);
           setRefundState("refunded");
           queryClient.invalidateQueries({ queryKey: ["txns"] });
           return;
@@ -265,7 +267,12 @@ const DetailsModal = ({
           {/*--- REFUND STATUS ---*/}
           <div className="modalHeaderFont pt-[28px] pb-[16px]">Refund Status</div>
           {refundState === "refunded" ? (
-            <div className="w-full text-center font-semibold text-slate-500 dark:text-slate-400">{t("refunded")}</div>
+            <div className="w-full flex flex-col items-center gap-[8px]">
+              <div className="">{t("refunded")}</div>
+              <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${refundTxnHash}`} target={"_blank"}>
+                See transaction <FaArrowUpRightFromSquare className="inline-block text-[16px]" />
+              </a>
+            </div>
           ) : (
             <div className="space-y-[56px] desktop:space-y-[40px]">
               {/*--- "To Refund" toggle ---*/}
