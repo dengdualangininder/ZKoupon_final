@@ -213,8 +213,8 @@ export default function TransferModal({
         if (taskStatus && taskStatus.taskState == "ExecSuccess") {
           setTxHash(taskStatus.transactionHash);
           setTransferState("sent");
-          setTimeout(() => refetchFlashBalance(), 8000);
-          refetchCexTxns();
+          refetchFlashBalance();
+          setTimeout(() => refetchCexTxns(), 10000);
           return;
         }
         if (taskStatus?.taskState == "ExecReverted" || taskStatus?.taskState == "Cancelled") {
