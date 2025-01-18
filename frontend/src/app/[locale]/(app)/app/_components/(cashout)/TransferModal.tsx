@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 // custom hooks
-import { useFlashBalanceQuery, useCexBalanceQuery } from "../../../hooks";
+import { useFlashBalanceQuery, useCexBalanceQuery, useCexTxnsQuery } from "../../../hooks";
 // wagmi & viem
 import { useConfig, useAccount } from "wagmi";
 import { readContract, signTypedData } from "@wagmi/core";
@@ -15,9 +15,8 @@ import { useTranslations } from "next-intl";
 // images
 import { CiBank } from "react-icons/ci";
 import { FaArrowDown, FaCircleCheck, FaAngleLeft } from "react-icons/fa6";
-
 // utils
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
+import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 import { currency2decimal, currency2symbol } from "@/utils/constants";
 import { networkToInfo } from "@/utils/web3Constants";
@@ -53,6 +52,7 @@ export default function TransferModal({
   const config = useConfig();
   const { data: flashBalance, refetch: refetchFlashBalance } = useFlashBalanceQuery();
   const { data: cexBalance } = useCexBalanceQuery();
+  const { refetch: refetchCexTxns } = useCexTxnsQuery();
 
   // states
   const [blockchainFee, setBlockchainFee] = useState(0.01); // in USDC
@@ -213,7 +213,8 @@ export default function TransferModal({
         if (taskStatus && taskStatus.taskState == "ExecSuccess") {
           setTxHash(taskStatus.transactionHash);
           setTransferState("sent");
-          refetchFlashBalance();
+          setTimeout(() => refetchFlashBalance(), 8000);
+          refetchCexTxns();
           return;
         }
         if (taskStatus?.taskState == "ExecReverted" || taskStatus?.taskState == "Cancelled") {
@@ -560,7 +561,7 @@ export default function TransferModal({
             )}
             {transferState === "sending" && (
               <button className="flex items-center justify-center w-full buttonPending">
-                <SpinningCircleGray />
+                <SpinningCircleWhite />
                 &nbsp; {tcommon("transferring")}...
               </button>
             )}

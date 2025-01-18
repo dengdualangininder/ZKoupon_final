@@ -160,7 +160,37 @@ export const useCexBalanceQuery = () => {
       throw new Error();
     },
     enabled: window && window.localStorage.getItem("cbRefreshToken") ? true : false,
-    staleTime: 5 * 60 * 1000, // 5min
+  });
+};
+
+type CexTxns = { pendingUsdcDeposits: any[]; pendingUsdcWithdrawals: any[]; pendingUsdWithdrawals: any[] };
+export const useCexTxnsQuery = () => {
+  return useQuery({
+    queryKey: ["cexTxns"],
+    queryFn: async (): Promise<CexTxns> => {
+      console.log("useCexTxns queryFn ran");
+      const cbAccessToken = window.sessionStorage.getItem("cbAccessToken");
+      const cbRefreshToken = window.localStorage.getItem("cbRefreshToken");
+      if (cbRefreshToken) {
+        const res = await fetch("/api/cbGetTxns", {
+          method: "POST",
+          body: JSON.stringify({ cbAccessToken, cbRefreshToken }),
+          headers: { "content-type": "application/json" },
+        });
+        const resJson = await res.json();
+        if (resJson.status === "success") {
+          console.log("fetched cexTxns", resJson.data);
+          if (resJson.data.newCbAccessToken && resJson.data.newCbRefreshToken) {
+            console.log("stored new tokens");
+            window.sessionStorage.setItem("cbAccessToken", resJson.data.newCbAccessToken);
+            window.localStorage.setItem("cbRefreshToken", resJson.data.newCbRefreshToken);
+          }
+          return resJson.data.txns;
+        }
+      }
+      throw new Error();
+    },
+    enabled: window && window.localStorage.getItem("cbRefreshToken") ? true : false,
   });
 };
 

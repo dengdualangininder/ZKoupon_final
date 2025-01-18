@@ -757,8 +757,16 @@
     @apply flex-none px-[12px] w-full pt-[32px] flex justify-between items-end;
   }
 
+  .cashoutCardWidth {
+    @apply w-[88%] max-w-[480px] desktop:max-w-[400px];
+  }
+
   .cashoutCard {
-    @apply w-[88%] max-w-[480px] desktop:max-w-[400px] min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+    @apply cashoutCardWidth min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+  }
+
+  .pendingCard {
+    @apply cashoutCardWidth px-[16px] portrait:sm:px-[16px] landscape:lg:px-[16px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark3 border border-slate-300 dark:border-slate-700 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {

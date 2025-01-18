@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
-import { useRatesQuery, useCexBalanceQuery, useFlashBalanceQuery } from "../../hooks";
+import { useRatesQuery, useCexBalanceQuery, useFlashBalanceQuery, useCexTxnsQuery } from "../../hooks";
 // wagmi & viem & ethers
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
@@ -45,6 +45,8 @@ export default function CashOut({
   const { data: rates } = useRatesQuery(paymentSettings?.merchantCurrency);
   const { data: flashBalance, refetch: refetchFlashBalance } = useFlashBalanceQuery();
   const { data: cexBalance } = useCexBalanceQuery();
+  const { data: cexTxns } = useCexTxnsQuery();
+  console.log(cexTxns);
   // TODO: somewhow set flashBalance and cexBalance for usability test
 
   // states
@@ -192,7 +194,7 @@ export default function CashOut({
 
   return (
     // 96px is height of mobile top menu bar + 14px mt
-    <section className="appPageContainer bg-light2 dark:bg-dark1 py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] space-y-[24px] portrait:sm:space-y-[32px] landscape:lg:space-y-[32px] overflow-y-auto">
+    <section className="appPageContainer bg-light2 dark:bg-dark1 py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] overflow-y-auto">
       {/*---FLASH CARD ---*/}
       <div className="cashoutCard">
         {/*--- title + more options ---*/}
@@ -228,43 +230,68 @@ export default function CashOut({
 
       {/*--- CEX CARD ---*/}
       {cashoutSettings?.cex === "Coinbase" && paymentSettings?.merchantCountry != "Other" && (
-        <div className="cashoutCard">
-          {/*--- title + more options ---*/}
-          <div className="w-full h-[36px] flex justify-between items-center relative">
-            {/*--- title ---*/}
-            <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
-            {/*--- ellipsis ---*/}
-            {cexBalance && rates && (
-              <div
-                className={`${cexMoreOptions ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
-                onClick={() => {
-                  setCexMoreOptions(!cexMoreOptions);
-                  if (!cexMoreOptions) document.addEventListener("click", hideCexMoreOptions);
-                }}
-              >
-                <FaEllipsisVertical className="textLgAppPx" />
+        <div className="w-full flex flex-col items-center mt-[24px] portrait:sm:mt-[32px] landscape:lg:mt-[32px]">
+          <div className="cashoutCard">
+            {/*--- title + more options ---*/}
+            <div className="w-full h-[36px] flex justify-between items-center relative">
+              {/*--- title ---*/}
+              <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
+              {/*--- ellipsis ---*/}
+              {isCbLinked && cexBalance && rates && (
+                <div
+                  className={`${cexMoreOptions ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
+                  onClick={() => {
+                    setCexMoreOptions(!cexMoreOptions);
+                    if (!cexMoreOptions) document.addEventListener("click", hideCexMoreOptions);
+                  }}
+                >
+                  <FaEllipsisVertical className="textLgAppPx" />
+                </div>
+              )}
+              {/*--- cexMoreOptionsModal ---*/}
+              <div className={`${cexMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
+                {t("unlink")}
+              </div>
+            </div>
+            {/*--- balance ---*/}
+            {isCbLinked ? (
+              <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={cexBalance} details={cexDetails} setDetails={setCexDetails} />
+            ) : (
+              <div className="flex-1 w-full flex justify-center items-center">
+                <span className="link" onClick={linkCb}>
+                  {t("linkCoinbase")}
+                </span>
               </div>
             )}
-            {/*--- cexMoreOptionsModal ---*/}
-            <div className={`${cexMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
-              {t("unlink")}
-            </div>
+            {/*--- button ---*/}
+            {isCbLinked && cexBalance && rates && (
+              <button className="cashoutButton" onClick={onClickTransferToBank}>
+                {tcommon("transferToBank")}
+              </button>
+            )}
           </div>
-          {/*--- balance ---*/}
-          {isCbLinked ? (
-            <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={cexBalance} details={cexDetails} setDetails={setCexDetails} />
-          ) : (
-            <div className="flex-1 w-full flex justify-center items-center">
-              <span className="link" onClick={linkCb}>
-                {t("linkCoinbase")}
-              </span>
+          {/*--- pending transactions ---*/}
+          {isCbLinked && cexTxns && (cexTxns.pendingUsdWithdrawals.length > 0 || cexTxns.pendingUsdcDeposits.length > 0 || cexTxns.pendingUsdcWithdrawals.length > 0) && (
+            <div className="text-base pendingCard">
+              {cexTxns.pendingUsdcDeposits.map((txn) => (
+                <div className="w-full flex justify-between">
+                  <p>Pending USDC deposit</p>
+                  <p>{txn.amount.amount}</p>
+                </div>
+              ))}
+              {/* {cexTxns.pendingUsdcWithdrawals.map((txn) => (
+                <div className="w-full flex justify-between">
+                  <p>Pending USDC withdrawal</p>
+                  <p>{txn.amount.amount}</p>
+                </div>
+              ))} */}
+              {cexTxns.pendingUsdWithdrawals.map((txn) => (
+                <div className="w-full flex justify-between">
+                  <p>Pending USD withdrawal</p>
+                  <p>{txn.amount.amount}</p>
+                </div>
+              ))}
             </div>
-          )}
-          {/*--- button ---*/}
-          {cexBalance && rates && (
-            <button className="cashoutButton" onClick={onClickTransferToBank}>
-              {tcommon("transferToBank")}
-            </button>
           )}
         </div>
       )}

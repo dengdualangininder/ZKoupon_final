@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const POST = async (request: Request) => {
-  console.log("/api/getCbBalance");
+  console.log("/api/cbGetBalance");
   const { cbAccessToken, cbRefreshToken } = await request.json();
 
   // if cbAccessToken exists, get balance
