@@ -766,7 +766,7 @@
   }
 
   .pendingCard {
-    @apply cashoutCardWidth px-[16px] portrait:sm:px-[16px] landscape:lg:px-[16px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark3 border border-slate-300 dark:border-slate-700 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+    @apply mt-[2px] text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm cashoutCardWidth p-[16px] portrait:sm:p-[24px] landscape:lg:p-[24px] desktop:!p-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark3 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {

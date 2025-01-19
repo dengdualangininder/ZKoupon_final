@@ -272,9 +272,9 @@ export default function CashOut({
           </div>
           {/*--- pending transactions ---*/}
           {isCbLinked && cexTxns && (cexTxns.pendingUsdWithdrawals.length > 0 || cexTxns.pendingUsdcDeposits.length > 0 || cexTxns.pendingUsdcWithdrawals.length > 0) && (
-            <div className="text-base pendingCard">
-              {cexTxns.pendingUsdcDeposits.map((txn) => (
-                <div className="w-full flex justify-between">
+            <div className="pendingCard">
+              {cexTxns.pendingUsdcDeposits.map((txn, index) => (
+                <div key={index} className="w-full flex justify-between">
                   <p>Pending USDC deposit</p>
                   <p>{txn.amount.amount}</p>
                 </div>
@@ -285,8 +285,8 @@ export default function CashOut({
                   <p>{txn.amount.amount}</p>
                 </div>
               ))} */}
-              {cexTxns.pendingUsdWithdrawals.map((txn) => (
-                <div className="w-full flex justify-between">
+              {cexTxns.pendingUsdWithdrawals.map((txn, index) => (
+                <div key={index} className="w-full flex justify-between">
                   <p>Pending USD withdrawal</p>
                   <p>{txn.amount.amount}</p>
                 </div>
