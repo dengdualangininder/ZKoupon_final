@@ -29,9 +29,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
           await createDates({ firstTxn: resJson.data.firstTxn, lastTxn: resJson.data.lastTxn });
           return;
         }
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
       setErrorModal("Error: Could not access payments range");
     };
     getPaymentsRange();
@@ -63,7 +61,6 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
         }
       }
     }
-    console.log("created dates:", yearmonthArray);
     setDownloadDates(yearmonthArray);
     setStartMonthYear(yearmonthArray.slice(-1)[0]);
     setEndMonthYear(yearmonthArray.slice(-1)[0]);
@@ -147,7 +144,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.start")}</div>
             <select
-              className="textBaseAppPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]"
+              className={`${downloadDates.length === 0 ? "italic textSmAppPx text-slate-500" : "textBaseAppPx"} w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]`}
               value={startMonthYear}
               onChange={(e) => {
                 setStartMonthYear(e.target.value);
@@ -156,6 +153,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
                 if (endMonthYear && new Date(Number(startYear), Number(startMonth) - 1) > new Date(Number(endYear), Number(endMonth) - 1)) setEndMonthYear(e.target.value);
               }}
             >
+              {downloadDates.length === 0 && <option>Loading...</option>}
               {downloadDates.map((i) => (
                 <option>{i}</option>
               ))}
@@ -165,7 +163,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.end")}</div>
             <select
-              className="textBaseAppPx w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]"
+              className={`${downloadDates.length === 0 ? "italic textSmAppPx text-slate-500" : "textBaseAppPx"} w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]`}
               value={endMonthYear}
               onChange={(e) => {
                 setEndMonthYear(e.target.value);
@@ -174,8 +172,9 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
                 if (startMonth && new Date(Number(startYear), Number(startMonth) - 1) > new Date(Number(endYear), Number(endMonth) - 1)) setStartMonthYear(e.target.value);
               }}
             >
+              {downloadDates.length === 0 && <option>Loading...</option>}
               {downloadDates.map((i) => (
-                <option className="">{i}</option>
+                <option>{i}</option>
               ))}
             </select>
           </div>

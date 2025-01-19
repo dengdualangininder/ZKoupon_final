@@ -214,7 +214,7 @@ export default function CashOut({
             </div>
           )}
           {/*--- flashMoreOptionsModal ---*/}
-          <div className={`${flashMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
+          <div className={`${flashMoreOptions ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
             {t("transferToAny")}
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function CashOut({
                 </div>
               )}
               {/*--- cexMoreOptionsModal ---*/}
-              <div className={`${cexMoreOptions ? "visible opacity-100" : "invisible opacity-0"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
+              <div className={`${cexMoreOptions ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
                 {t("unlink")}
               </div>
             </div>

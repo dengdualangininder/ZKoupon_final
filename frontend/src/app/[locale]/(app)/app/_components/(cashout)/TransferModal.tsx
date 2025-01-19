@@ -550,7 +550,11 @@ export default function TransferModal({
           {/*--- BUTTON ---*/}
           <div className="flex-1 min-h-[120px] desktop:min-h-[90px] w-full flex flex-col items-center justify-center">
             {transferState == "initial" && (
-              <button onClick={transferModal === "toCex" || transferModal === "toAny" ? onClickTransferToCexSubmit : onClickTransferToBankSubmit} className="buttonPrimary w-full">
+              <button
+                onClick={transferModal === "toCex" || transferModal === "toAny" ? onClickTransferToCexSubmit : onClickTransferToBankSubmit}
+                className="buttonPrimary w-full"
+                disabled={transferModal === "toCex" && !cbEvmAddress ? true : false}
+              >
                 {transferModal === "toCex" &&
                   tcommon("transferToCEX", {
                     cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex).replace(" Exchange", "") : tcommon("CEX"),

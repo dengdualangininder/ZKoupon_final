@@ -782,7 +782,7 @@
   }
 
   .cashoutMoreOptionsContainer {
-    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-[6px] bg-slate-200 text-black dark:text-white dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap [transition:opacity_500ms];
+    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-[6px] bg-slate-200 text-black dark:text-white dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap;
   }
 
   .cashoutEllipsisContainer {
