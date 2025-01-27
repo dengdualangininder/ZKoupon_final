@@ -10,3 +10,5 @@ interface ScreenOrientation extends EventTarget {
 }
 export type Filter = { last4Chars?: string; toRefund?: boolean; refunded?: boolean; searchDate?: DateRange };
 export type ModalState = { render: boolean; show: boolean };
+export type RateKey = "usdToEur" | "usdcToEur" | "usdToGbp" | "usdcToGbp" | "usdToTwd" | "usdcToTwd";
+export type AllRates = Record<string, { usdToLocal: number; usdcToLocal: number }>;

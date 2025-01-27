@@ -1,6 +1,20 @@
 import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDollar, faUserTag, faCartArrowDown, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { RateKey, AllRates } from "@/utils/types";
+
+export const currencyToKeys: Record<string, { usdToLocal: RateKey; usdcToLocal: RateKey }> = {
+  EUR: { usdToLocal: "usdToEur", usdcToLocal: "usdcToEur" },
+  GBP: { usdToLocal: "usdToGbp", usdcToLocal: "usdcToGbp" },
+  TWD: { usdToLocal: "usdToTwd", usdcToLocal: "usdcToTwd" },
+};
+
+export const defaultRates: AllRates = {
+  EUR: { usdToLocal: 0.9469, usdcToLocal: 0.9534 },
+  GBP: { usdToLocal: 0.7961, usdcToLocal: 0.8002 },
+  TWD: { usdToLocal: 32.28, usdcToLocal: 33.15 },
+  USD: { usdToLocal: 1, usdcToLocal: 1 },
+};
 
 // langs
 type LangObject = { id: "en" | "fr" | "it" | "zh-TW"; text: string };

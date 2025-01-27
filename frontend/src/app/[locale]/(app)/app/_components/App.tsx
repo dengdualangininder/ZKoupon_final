@@ -22,11 +22,11 @@ import QrCodeModal from "./(payments)/QrCodeModal";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types
-import { FlashInfo, Filter } from "@/utils/types";
+import { FlashInfo, Filter, AllRates } from "@/utils/types";
 import { Transaction } from "@/db/UserModel";
 // import PullToRefresh from "pulltorefreshjs";
 
-export default function App({ flashInfo }: { flashInfo: FlashInfo }) {
+export default function App({ flashInfo, allRates }: { flashInfo: FlashInfo; allRates: AllRates }) {
   console.log("/app, page.tsx");
 
   // hooks
@@ -124,6 +124,7 @@ export default function App({ flashInfo }: { flashInfo: FlashInfo }) {
               cashoutSettings={settings.cashoutSettings}
               setErrorModal={setErrorModal}
               setTradeMAXModal={setTradeMAXModal}
+              allRates={allRates}
             />
           )}
           {menu === "settings" && w3Info && <Settings paymentSettings={settings.paymentSettings} cashoutSettings={settings.cashoutSettings} setErrorModal={setErrorModal} />}

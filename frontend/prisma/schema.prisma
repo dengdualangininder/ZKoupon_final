@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Rate {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  usdToEur Float?
+  usdcToEur Float?
+  eurToUsd Float?
+  eurToUsdc Float?
+  usdToGbp Float?
+  usdcToGbp Float?
+  gbpToUsd Float?
+  gbpToUsdc Float?
+  usdToTwd Float?
+  usdcToTwd Float?
+  twdToUsd Float?
+  twdToUsdc Float?
+}
+
+model TokenRate {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  usdcToEur Float?
+  eurToUsdc Float?
+  usdcToGbp Float?
+  gbpToUsdc Float?
+  usdcToTwd Float?
+  twdToUsdc Float?
+}

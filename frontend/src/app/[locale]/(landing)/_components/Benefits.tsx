@@ -23,26 +23,22 @@ export default function Benefits({ merchantCurrency, rates }: { merchantCurrency
         {merchantCurrency && merchantCurrency != "USD" && (
           <div className="whyCard">
             <div className="lowCostCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
-            <div className="whyCardBody space-y-4">
+            <div className="whyCardBody space-y-[16px]">
               <div>
                 {t.rich("card-2-body", {
                   span: (chunks: any) => <span className={`${merchantCurrency == "EUR" ? "" : "hidden"}`}>{chunks}</span>,
                   merchantCurrency: merchantCurrency,
                 })}
               </div>
-              <div className="text-[16px] leading-snug xl:desktop:text-[14px]">
-                <div className="w-full flex justify-between">
-                  <div>
-                    USDC➜{merchantCurrency} ({currency2cex[merchantCurrency]}):
-                  </div>
-                  <div>{rates.usdcToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
+              <div className="text-[16px] leading-snug desktop:text-[14px] grid grid-cols-[1fr,auto]">
+                <div>
+                  USDC➜{merchantCurrency} ({currency2cex[merchantCurrency]}):
                 </div>
-                <div className="w-full flex justify-between">
-                  <div>
-                    USD➜{merchantCurrency} ({currency2bank[merchantCurrency]}):
-                  </div>
-                  <div>{rates.usdToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
+                <div>{rates.usdcToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
+                <div>
+                  USD➜{merchantCurrency} ({currency2bank[merchantCurrency]}):
                 </div>
+                <div>{rates.usdToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
               </div>
             </div>
           </div>

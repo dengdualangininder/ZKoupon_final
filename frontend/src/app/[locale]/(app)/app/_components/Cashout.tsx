@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
-import { useRatesQuery, useCexBalanceQuery, useFlashBalanceQuery, useCexTxnsQuery } from "../../hooks";
+import { useCexBalanceQuery, useFlashBalanceQuery, useCexTxnsQuery } from "../../hooks";
 // wagmi & viem & ethers
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
@@ -20,7 +20,7 @@ import CashoutBalance from "./(cashout)/CashoutBalance";
 import { FaEllipsisVertical } from "react-icons/fa6";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
-import { FlashInfo } from "@/utils/types";
+import { FlashInfo, AllRates } from "@/utils/types";
 
 export default function CashOut({
   flashInfo,
@@ -28,21 +28,24 @@ export default function CashOut({
   cashoutSettings,
   setErrorModal,
   setTradeMAXModal,
+  allRates,
 }: {
   flashInfo: FlashInfo;
   paymentSettings: PaymentSettings;
   cashoutSettings: CashoutSettings;
   setErrorModal: any;
   setTradeMAXModal: any;
+  allRates: AllRates;
 }) {
   console.log("/app, Cashout.tsx");
+
+  const rates = allRates[paymentSettings.merchantCurrency];
 
   // hooks
   const router = useRouter();
   const account = useAccount();
   const t = useTranslations("App.CashOut");
   const tcommon = useTranslations("Common");
-  const { data: rates } = useRatesQuery(paymentSettings?.merchantCurrency);
   const { data: flashBalance, refetch: refetchFlashBalance } = useFlashBalanceQuery();
   const { data: cexBalance } = useCexBalanceQuery();
   const { data: cexTxns } = useCexTxnsQuery();

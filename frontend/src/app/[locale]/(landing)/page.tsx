@@ -1,5 +1,7 @@
 // next
 import { cookies } from "next/headers";
+// prisma
+import { PrismaClient } from "@prisma/client";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
@@ -11,11 +13,11 @@ import Learn from "./_components/Learn";
 import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 // utils
-import { abb2full, countryData } from "@/utils/constants";
-import { getUsdcToLocal, getUsdToLocal } from "@/utils/serverFns";
+import { abb2full, countryData, currencyToKeys, defaultRates } from "@/utils/constants";
+
+const prisma = new PrismaClient();
 
 //// this is a dynamic route, as we use unchaced fetch() and cookies() api ////
-
 export default async function Home() {
   // get merchantCurrency from cookies or api
   let merchantCurrency: string | undefined;
@@ -33,18 +35,20 @@ export default async function Home() {
     }
   }
 
-  // get rates in parallel
-  try {
-    var [usdcToLocal, usdToLocal] = await Promise.all([getUsdcToLocal(merchantCurrency), getUsdToLocal(merchantCurrency)]);
-    if (usdcToLocal && usdcToLocal) {
-      var rates = { usdcToLocal: usdcToLocal, usdToLocal: usdToLocal };
-    } else {
-      throw new Error();
+  // get rates from Supabase
+  let rates = defaultRates[merchantCurrency];
+  if (merchantCurrency !== "USD") {
+    try {
+      const data = await prisma.rate.findMany({ orderBy: { id: "desc" }, take: 1 });
+      const keys = currencyToKeys[merchantCurrency];
+      const usdToLocal = data[0][keys.usdToLocal];
+      const usdcToLocal = data[0][keys.usdcToLocal];
+      if (usdToLocal && usdcToLocal) rates = { usdToLocal, usdcToLocal };
+    } catch (e) {
+      console.log("error in getting rates from Supabase");
     }
-  } catch (e) {
-    console.log(e);
-    var rates = { usdcToLocal: 0, usdToLocal: 0 };
   }
+  console.log("rates", rates);
 
   console.log(merchantCurrency, rates);
   return (

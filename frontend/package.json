@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -17,6 +18,7 @@
     "@hookform/resolvers": "^3.9.1",
     "@metamask/detect-provider": "^2.0.0",
     "@next/bundle-analyzer": "^15.0.3",
+    "@prisma/client": "^6.2.1",
     "@react-pdf/renderer": "^4.1.2",
     "@tanstack/react-query": "^5.24.2",
     "@toruslabs/eccrypto": "^4.0.0",
@@ -43,6 +45,7 @@
     "next-intl": "^3.25.1",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.13",
+    "prisma": "^6.2.1",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0-rc2",
     "qrcode.react": "^3.1.0",

@@ -106,33 +106,6 @@ export const useTxnsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo, filter
   });
 };
 
-export const useRatesQuery = (currency: string) => {
-  return useQuery({
-    queryKey: ["rates"],
-    queryFn: async (): Promise<Rates> => {
-      console.log("useRatesQuery queryFn ran");
-      if (currency === "USD") {
-        console.log("fetched rates:", { usdcToLocal: 1, usdToLocal: 1 });
-        return { usdcToLocal: 1, usdToLocal: 1 };
-      } else {
-        const res = await fetch("/api/getRates", {
-          method: "POST",
-          body: JSON.stringify({ merchantCurrency: currency }),
-          headers: { "content-type": "application/json" },
-        });
-        const resJson = await res.json();
-        if (resJson.status == "success") {
-          console.log("fetched rates:", resJson.data);
-          return resJson.data;
-        }
-        throw new Error();
-      }
-    },
-    enabled: currency ? true : false,
-    staleTime: 120000, // 2min
-  });
-};
-
 export const useCexBalanceQuery = () => {
   return useQuery({
     queryKey: ["cexBalance"],

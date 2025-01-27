@@ -1,10 +1,5 @@
 //next
-import Image from "next/image";
 import { useState } from "react";
-// images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 // types
 import { Rates } from "@/utils/types";
 import { currency2decimal, currency2symbol, currency2bank } from "@/utils/constants";
@@ -73,16 +68,16 @@ export default function Inperson({
             // step="0.01" // TODO: step is not working
           ></input>
         </div>
-        {/*--- AMOUNT SENT ---*/}
-        <div className={`${currencyAmount ? "" : "invisible"} mt-[8px] w-full flex text-center text-2xl font-medium`}>
-          {tokenAmount} {selectedToken} will be sent
-        </div>
       </div>
 
-      {/*--- SAVINGS + send button ---*/}
-      <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center`}>
-        {/*--- SAVINGS ---*/}
-        <div className="w-[80%] flex flex-col text-base text-slate-500 font-medium relative">
+      {/*--- USDC SENT + SAVINGS ---*/}
+      <div className={`${currencyAmount ? "" : "invisible"} w-full flex flex-col items-center relative`}>
+        {/*--- usdc sent ---*/}
+        <div className={`${currencyAmount ? "" : "invisible"} text-2xl font-medium`}>
+          {tokenAmount} {selectedToken} will be sent
+        </div>
+        {/*--- savings ---*/}
+        <div className="mt-[8px] w-[80%] flex flex-col text-base text-slate-500 font-medium">
           {/*--- fx savings ---*/}
           {urlParams.merchantCurrency != "USD" && (
             <div className="flex items-center justify-between">
@@ -118,13 +113,13 @@ export default function Inperson({
             <div className="text-green-500 text-[18px]">{2 + Number(fxSavings)}%</div>
           </div>
         </div>
+      </div>
 
-        {/*---SEND BUTTON---*/}
-        <div className={`${currencyAmount ? "" : "invisible"} px-[12px] my-[24px] flex justify-center w-full`}>
-          <button onClick={send} className="w-full h-[56px] font-semibold text-white bg-[#0376C9] active:brightness-[1.1] rounded-full text-xl">
-            PAY
-          </button>
-        </div>
+      {/*---SEND BUTTON---*/}
+      <div className={`${currencyAmount ? "" : "invisible"} px-[12px] my-[24px] flex justify-center w-full`}>
+        <button onClick={send} className="w-full h-[56px] font-semibold text-white bg-[#0376C9] active:brightness-[1.1] rounded-full text-xl">
+          PAY
+        </button>
       </div>
     </div>
   );
