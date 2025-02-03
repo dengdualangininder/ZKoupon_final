@@ -4,7 +4,7 @@ import { SignJWT } from "jose";
 import { createSecretKey } from "crypto";
 import { keccak256, getAddress } from "viem";
 
-export async function setCookieCurrency(currency: string) {
+export async function setCurrencyCookieAction(currency: string) {
   cookies().set("currency", currency);
 }
 

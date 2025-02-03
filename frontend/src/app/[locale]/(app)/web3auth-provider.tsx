@@ -169,7 +169,10 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
         console.log("web3Auth-provider.tsx, setUserAndFlashInfo successful");
         await setFlashInfoCookies("owner", merchantEvmAddress);
         setW3Info({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
-        if (pathname != "/app") router.push("/app");
+        if (pathname != "/app") {
+          console.log("pathname not /app, pathname:", pathname, "pushed to /app");
+          router.push("/app");
+        }
       } else {
         console.log("web3Auth-provider.tsx, setUserAndFlashInfo(), logged out: idToken or publicKey returned undefined");
         logoutNoDisconnect();

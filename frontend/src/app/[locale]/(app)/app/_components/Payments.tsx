@@ -1,16 +1,17 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 // custom hooks
 import { useW3Info } from "../../web3auth-provider";
 import { useTxnsQuery } from "../../hooks";
 // i18n
 import { useTranslations } from "next-intl";
 // components
-import QrCodeModal from "./(payments)/QrCodeModal";
-import DetailsModal from "./(payments)/DetailsModal";
-import SearchModal from "./(payments)/SearchModal";
-import CalendarModal from "./(payments)/CalendarModal";
-import ExportModal from "./(payments)/ExportModal";
+const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal"));
+const DetailsModal = dynamic(() => import("./(payments)/DetailsModal"));
+const SearchModal = dynamic(() => import("./(payments)/SearchModal"));
+const CalendarModal = dynamic(() => import("./(payments)/CalendarModal"));
+const ExportModal = dynamic(() => import("./(payments)/ExportModal"));
 // constants
 import { currency2decimal } from "@/utils/constants";
 // images
@@ -62,6 +63,20 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
     return () => {
       observer.unobserve(loadEl);
     };
+  }, []);
+
+  useEffect(() => {
+    const preload = () => {
+      import("./(payments)/QrCodeModal").then(() => {
+        console.log("payments modals preloaded");
+      });
+      import("./(payments)/DetailsModal");
+      import("./(payments)/SearchModal");
+      import("./(payments)/CalendarModal");
+      import("./(payments)/ExportModal");
+    };
+    setTimeout(preload, 5000);
+    console.log("end of Payments.tsx preload useEffect");
   }, []);
 
   const clearFilter = () => {

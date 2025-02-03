@@ -1,7 +1,8 @@
 import { currency2rateDecimal, currency2bank, currency2cex } from "@/utils/constants";
+import { AllRates } from "@/utils/types";
 import { useTranslations } from "next-intl";
 
-export default function Benefits({ merchantCurrency, rates }: { merchantCurrency: string | undefined; rates: { usdcToLocal: number; usdToLocal: number } }) {
+export default function Benefits({ merchantCurrency, allRates }: { merchantCurrency: string | undefined; allRates: AllRates }) {
   const t = useTranslations("HomePage.Why");
 
   return (
@@ -34,11 +35,11 @@ export default function Benefits({ merchantCurrency, rates }: { merchantCurrency
                 <div>
                   USDC➜{merchantCurrency} ({currency2cex[merchantCurrency]}):
                 </div>
-                <div>{rates.usdcToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
+                <div>{allRates[merchantCurrency].usdcToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
                 <div>
                   USD➜{merchantCurrency} ({currency2bank[merchantCurrency]}):
                 </div>
-                <div>{rates.usdToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
+                <div>{allRates[merchantCurrency].usdToLocal.toFixed(currency2rateDecimal[merchantCurrency])}</div>
               </div>
             </div>
           </div>

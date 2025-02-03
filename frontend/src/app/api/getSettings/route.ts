@@ -5,10 +5,9 @@ import { keccak256, getAddress } from "viem";
 import { NextResponse, NextRequest } from "next/server";
 
 export const POST = async (request: NextRequest) => {
-  // time
   const date = new Date();
   const time = date.toLocaleTimeString("en-US", { hour12: false }) + `.${date.getMilliseconds()}`;
-  console.log("/api/getSettings", time);
+  console.log(time, "entered /api/getSettings");
 
   const { w3Info } = await request.json();
 
@@ -26,7 +25,9 @@ export const POST = async (request: NextRequest) => {
     await dbConnect();
     const doc = await UserModel.findOne({ "paymentSettings.merchantEvmAddress": merchantEvmAddress }, { paymentSettings: 1, cashoutSettings: 1 });
     if (doc) {
-      console.log("/api/getSettings doc fetched");
+      const date2 = new Date();
+      const time2 = date2.toLocaleTimeString("en-US", { hour12: false }) + `.${date2.getMilliseconds()}`;
+      console.log(time2, "/api/getSettings, doc fetched");
       return NextResponse.json({ status: "success", data: { paymentSettings: doc.paymentSettings, cashoutSettings: doc.cashoutSettings } });
     } else {
       console.log("/api/getSettings create new user");

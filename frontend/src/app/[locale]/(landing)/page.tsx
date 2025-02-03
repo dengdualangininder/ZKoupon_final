@@ -1,7 +1,8 @@
 // next
 import { cookies } from "next/headers";
+import { unstable_cache } from "next/cache";
 // prisma
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Rate } from "@prisma/client";
 // components
 import Navbar from "./_components/Navbar";
 import Hero from "./_components/Hero";
@@ -14,43 +15,53 @@ import Support from "./_components/Support";
 import Footer from "./_components/Footer";
 // utils
 import { abb2full, countryData, currencyToKeys, defaultRates } from "@/utils/constants";
+import { AllRates } from "@/utils/types";
 
 const prisma = new PrismaClient();
 
 //// this is a dynamic route, as we use unchaced fetch() and cookies() api ////
 export default async function Home() {
+  console.log("(landing)/page.tsx");
+
   // get merchantCurrency from cookies or api
   let merchantCurrency: string | undefined;
   merchantCurrency = cookies().get("currency")?.value;
   if (!merchantCurrency) {
     try {
-      const res = await fetch("https://api.country.is");
+      const res = await fetch("https://api.country.is", { cache: "no-store" });
       const data = await res.json();
       const country = abb2full[data.country] ?? "Other";
       merchantCurrency = countryData[country]?.currency ?? "USD";
-      console.log("page.tsx merchantCurrency:", merchantCurrency);
+      console.log("page.tsx country:", country, "merchantCurrency", merchantCurrency);
     } catch (e) {
       console.log("get country api failed, default to USD");
       merchantCurrency = "USD";
     }
   }
 
-  // get rates from Supabase
-  let rates = defaultRates[merchantCurrency];
-  if (merchantCurrency !== "USD") {
-    try {
+  // get rates from Supabase, cache to Data Cache
+  const getAllRates = unstable_cache(
+    async () => {
       const data = await prisma.rate.findMany({ orderBy: { id: "desc" }, take: 1 });
-      const keys = currencyToKeys[merchantCurrency];
-      const usdToLocal = data[0][keys.usdToLocal];
-      const usdcToLocal = data[0][keys.usdcToLocal];
-      if (usdToLocal && usdcToLocal) rates = { usdToLocal, usdcToLocal };
-    } catch (e) {
-      console.log("error in getting rates from Supabase");
-    }
-  }
-  console.log("rates", rates);
+      var allRates: AllRates = {
+        EUR: { usdToLocal: data[0].usdToEur ?? defaultRates.EUR.usdToLocal, usdcToLocal: data[0].usdcToEur ?? defaultRates.EUR.usdcToLocal },
+        GBP: { usdToLocal: data[0].usdToGbp ?? defaultRates.GBP.usdToLocal, usdcToLocal: data[0].usdcToGbp ?? defaultRates.GBP.usdcToLocal },
+        TWD: { usdToLocal: data[0].usdToTwd ?? defaultRates.TWD.usdToLocal, usdcToLocal: data[0].usdcToTwd ?? defaultRates.TWD.usdcToLocal },
+        USD: { usdToLocal: 1, usdcToLocal: 1 },
+      };
+      return allRates;
+    },
+    ["rates"],
+    { revalidate: 600 }
+  );
 
-  console.log(merchantCurrency, rates);
+  try {
+    var allRates = await getAllRates();
+  } catch (e) {
+    var allRates = defaultRates;
+  }
+  console.log("allRates", allRates);
+
   return (
     <div className="overflow-x-hidden">
       <Navbar />
@@ -76,7 +87,7 @@ export default async function Home() {
       </div>
 
       <div id="Benefits" data-show="yes" className="w-full flex justify-center opacity-0 bg-light2 text-lightText1 transition-all duration-1500">
-        <Benefits merchantCurrency={merchantCurrency} rates={rates} />
+        <Benefits merchantCurrency={merchantCurrency} allRates={allRates} />
       </div>
 
       <div id="Learn" data-show="yes" className="w-full flex justify-center bg-[#0A2540] text-white opacity-0 transition-all duration-1000">

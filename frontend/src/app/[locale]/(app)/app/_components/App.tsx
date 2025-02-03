@@ -1,6 +1,7 @@
 "use client";
 // nextjs
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 // custom hooks
 import { useQueryClient } from "@tanstack/react-query";
 import { useW3Info } from "../../web3auth-provider";
@@ -10,15 +11,15 @@ import Pusher from "pusher-js"; // pusher
 import { useTheme } from "next-themes";
 // components
 import Navbar from "./Navbar";
-import Payments from "./Payments";
-import CashOut from "./Cashout";
-import Settings from "./Settings";
 import Loading from "./Loading";
 import Notification from "./Notification";
-import CbIntroModal from "./modals/CbIntroModal";
-import CashbackModal from "./modals/CashbackModal";
-import TradeMAXModal from "./modals/exchanges/TradeMAXModal";
-import QrCodeModal from "./(payments)/QrCodeModal";
+import Payments from "./Payments";
+const CashOut = dynamic(() => import("./Cashout")); // preloaded
+const Settings = dynamic(() => import("./Settings")); // preloaded
+const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal")); // preloaded
+const CbIntroModal = dynamic(() => import("./modals/CbIntroModal"));
+const CashbackModal = dynamic(() => import("./modals/CashbackModal"));
+const TradeMAXModal = dynamic(() => import("./modals/exchanges/TradeMAXModal"));
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types
@@ -27,7 +28,7 @@ import { Transaction } from "@/db/UserModel";
 // import PullToRefresh from "pulltorefreshjs";
 
 export default function App({ flashInfo, allRates }: { flashInfo: FlashInfo; allRates: AllRates }) {
-  console.log("/app, page.tsx");
+  console.log("(app)/app/_components/App.tsx, page.tsx");
 
   // hooks
   const w3Info = useW3Info();
@@ -54,6 +55,21 @@ export default function App({ flashInfo, allRates }: { flashInfo: FlashInfo; all
   //     if (txns) setIsLoading(false);
   //   }
   // }, [txns, settings]);
+
+  // preload components on mount
+  useEffect(() => {
+    const preload = () => {
+      import("./Cashout").then(() => {
+        console.log("cashout.tsx is loaded");
+      });
+      import("./Settings");
+      import("./(payments)/QrCodeModal");
+    };
+
+    setTimeout(preload, 3000);
+
+    console.log("end of preloading useEffect");
+  }, []);
 
   useEffect(() => {
     if (window.localStorage.getItem("cashbackModal")) setCashbackModal(true);
