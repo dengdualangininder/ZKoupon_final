@@ -22,8 +22,6 @@ export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) =>
     queryKey: ["settings"],
     queryFn: async (): Promise<{ paymentSettings: PaymentSettings; cashoutSettings: CashoutSettings } | null> => {
       console.log("useSettingsQuery queryFn ran");
-      // if usabilitty test
-      if (flashInfo.isUsabilityTest) return { paymentSettings: fakePaymentSettings, cashoutSettings: fakeCashoutSettings };
 
       const res = await fetch("/api/getSettings", {
         method: "POST",
@@ -80,8 +78,6 @@ export const useTxnsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo, filter
     queryKey: ["txns", filter],
     queryFn: async ({ pageParam }): Promise<Transaction[] | null> => {
       console.log("useTxnsQuery queryFn ran, pageParam:", pageParam);
-      // if usabilitty test
-      // if (flashInfo.isUsabilityTest) return fakeTxns;
 
       const res = await fetch("/api/getPayments", {
         method: "POST",

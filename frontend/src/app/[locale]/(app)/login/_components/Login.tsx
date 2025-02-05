@@ -20,7 +20,7 @@ import { MyConnector } from "@/utils/types";
 import { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
 
 export default function Login({ userTypeFromCookies }: { userTypeFromCookies: string | undefined }) {
-  console.log("/login, Login.tsx");
+  console.log("(app)/login/_components/Login.tsx");
 
   // hooks
   let { connectAsync, connectors } = useConnect();
@@ -29,7 +29,6 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   // states
-  const isUsabilityTest = false; // temp
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
   const [errorModal, setErrorModal] = useState<React.ReactNode | null>(null);
@@ -61,11 +60,6 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const ownerLogin = async (connectorIndex: number) => {
     console.log("/login, clicked ownerLogin");
     setIsLoggingIn(true);
-
-    if (isUsabilityTest) {
-      router.push("/intro");
-      return;
-    }
 
     try {
       await connectAsync({ connector: connectors[connectorIndex] }); // wait for web3Auth.on CONNECT to initiate and redirect to /app

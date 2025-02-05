@@ -41,8 +41,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
 
   const userType = cookies().get("userType")!.value; // middleware ensures userType exists
   const userJwt = cookies().get("userJwt")!.value; // middleware ensures userJwt exists
-  const isUsabilityTest = (await searchParams).test ? true : false;
-  const flashInfo: FlashInfo = { userType, userJwt, isUsabilityTest };
+  const flashInfo: FlashInfo = { userType, userJwt };
 
   return (
     <>

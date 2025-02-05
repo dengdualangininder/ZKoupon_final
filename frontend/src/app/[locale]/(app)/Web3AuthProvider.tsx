@@ -88,15 +88,13 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
 
   // hooks
   const router = useRouter();
-  const searchParams = useSearchParams();
   const pathname = usePathname();
-  const isUsabilityTest = searchParams.get("test") ? true : false;
+
   // states
   const [w3Info, setW3Info] = useState<W3Info | null>(null);
 
   useEffect(() => {
     console.log("web3Auth-provider.tsx useEffect");
-    if (isUsabilityTest) return;
 
     // redirect to "saveToHome" if needed
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
@@ -106,8 +104,9 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       return;
     }
 
-    // get user type from cookies
-    const userType = getCookie("userType"); // should use getCookie inside useEffect
+    // get user type from cookies (must use getCookie inside useEffect)
+    const userType = getCookie("userType");
+    const userJwt = getCookie("userJwt");
 
     // if employee, then directly go to /app
     if (userType && userType === "employee") {
@@ -122,9 +121,9 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
     if (!sessionId) {
       console.log("no sessionId");
-      deleteUserJwtCookie();
+      if (userJwt) deleteUserJwtCookie();
       listenToOnConnect();
-      router.push("/login");
+      if (pathname != "/login") router.push("/login");
       return;
     }
 
@@ -134,9 +133,10 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     } else {
       console.log("sessionId exists, web3AuthInstance not connected");
       listenToOnConnect();
+      console.log("set timeout function");
       setTimeout(() => {
         if (!web3AuthInstance.connected) {
-          console.log("web3AuthInstance not connected after 10s, delete userJwt and auth_store");
+          console.log("web3AuthInstance not connected after 10s, deleted userJwt and auth_store");
           deleteUserJwtCookie();
           window.localStorage.removeItem("auth_store");
           window.location.reload();
@@ -167,7 +167,8 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       const merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
       if (userInfo.idToken && publicKey) {
         console.log("web3Auth-provider.tsx, setUserAndFlashInfo successful");
-        await setFlashInfoCookies("owner", merchantEvmAddress);
+        const userJwt = getCookie("userJwt");
+        if (!userJwt) await setFlashInfoCookies("owner", merchantEvmAddress);
         setW3Info({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
         if (pathname != "/app") {
           console.log("pathname not /app, pathname:", pathname, "pushed to /app");

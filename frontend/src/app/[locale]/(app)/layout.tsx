@@ -1,4 +1,4 @@
-import Web3AuthProvider from "./web3auth-provider";
+import Web3AuthProvider from "./Web3AuthProvider";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const date = new Date();

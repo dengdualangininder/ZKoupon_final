@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaAngleLeft } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
 import { Transaction } from "@/db/UserModel";
-import { useW3Info } from "../../../web3auth-provider";
+import { useW3Info } from "../../../Web3AuthProvider";
 import { ModalState } from "@/utils/types";
 
 export default function ExportModal({ exportModal, setExportModal, setErrorModal }: { exportModal: ModalState; setExportModal: any; setErrorModal: any }) {

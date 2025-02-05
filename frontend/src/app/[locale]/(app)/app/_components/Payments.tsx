@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 // custom hooks
-import { useW3Info } from "../../web3auth-provider";
+import { useW3Info } from "../../Web3AuthProvider";
 import { useTxnsQuery } from "../../hooks";
 // i18n
 import { useTranslations } from "next-intl";
@@ -25,7 +25,7 @@ import { FlashInfo, Filter, ModalState } from "@/utils/types";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
 export default function Payments({ flashInfo, setErrorModal, paymentSettings }: { flashInfo: FlashInfo; setErrorModal: any; paymentSettings: PaymentSettings }) {
-  console.log("/app Payments.tsx");
+  console.log("(app)/_components/Payments.tsx");
 
   // hooks
   const t = useTranslations("App.Payments");

@@ -50,7 +50,6 @@ export default function CashOut({
   const { data: cexBalance } = useCexBalanceQuery();
   const { data: cexTxns } = useCexTxnsQuery();
   console.log(cexTxns);
-  // TODO: somewhow set flashBalance and cexBalance for usability test
 
   // states
   const [isCbLinked, setIsCbLinked] = useState(true); // if Coinbase is linked or not
@@ -155,12 +154,6 @@ export default function CashOut({
 
   async function onClickTransferToBank() {
     setTransferModal("toBank");
-
-    // usability test
-    if (flashInfo.isUsabilityTest) {
-      setCbBankAccountName("Chase Bank, North America\n****9073");
-      return;
-    }
 
     const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
     const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";

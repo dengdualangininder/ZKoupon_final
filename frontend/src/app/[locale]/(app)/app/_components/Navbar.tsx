@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { CashoutSettings } from "@/db/UserModel";
-import { useW3Info } from "../../web3auth-provider";
+import { useW3Info } from "../../Web3AuthProvider";
 import { useTranslations } from "next-intl";
 import { FlashInfo } from "@/utils/types";
 

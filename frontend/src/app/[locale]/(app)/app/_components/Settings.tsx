@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef, useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
 import { useTheme } from "next-themes";
-import { useW3Info } from "../../web3auth-provider";
+import { useW3Info } from "../../Web3AuthProvider";
 import { useLogout, useSettingsMutation, logoutNoDisconnect } from "../../hooks";
 // i18n
 import { useLocale, useTranslations } from "next-intl";

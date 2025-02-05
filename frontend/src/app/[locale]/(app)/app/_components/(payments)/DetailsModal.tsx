@@ -1,6 +1,6 @@
 import { useState } from "react";
 // context
-import { useW3Info } from "../../../web3auth-provider";
+import { useW3Info } from "../../../Web3AuthProvider";
 // hooks
 import { useFlashBalanceQuery } from "../../../hooks";
 import { useQueryClient } from "@tanstack/react-query";

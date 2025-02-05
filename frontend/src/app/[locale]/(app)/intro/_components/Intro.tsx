@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 // custom hooks
 import { useSettingsMutation } from "../../hooks";
-import { useW3Info } from "../../web3auth-provider";
+import { useW3Info } from "../../Web3AuthProvider";
 // pdf
 import { QRCodeSVG } from "qrcode.react";
 import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
@@ -21,8 +21,6 @@ import Placard from "../../app/_components/placard/Placard";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 import { countryData, countryCurrencyList, abb2full, cexLinks } from "@/utils/constants";
-
-const isUsabilityTest = false; // TODO: integrate usability test
 
 export default function Intro() {
   console.log("/intro.tsx");
@@ -103,11 +101,6 @@ export default function Intro() {
   };
 
   const saveSettingsAndSendEmail = async () => {
-    if (isUsabilityTest) {
-      setStep("emailSent");
-      return;
-    }
-
     // form validation
     if (!settings.merchantName) {
       setErrorModal(t("errors.enterName"));

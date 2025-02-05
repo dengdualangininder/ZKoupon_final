@@ -44,9 +44,6 @@ export default async function RootLayout({ children, params }: { children: React
 
   return (
     <html suppressHydrationWarning lang={locale} className={inter.className} style={{ fontSize: locale == "zh-TW" ? "18px" : "16px" }}>
-      <head>
-        <script src="/maze.js"></script>
-      </head>
       <body>
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>

@@ -64,20 +64,6 @@ export default function TransferModal({
   const [fiatDeposited, setFiatDeposited] = useState<string | null>(null);
 
   const onClickTransferToCexSubmit = async () => {
-    // for usability test
-    if (flashInfo.isUsabilityTest) {
-      setTransferState("sending");
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setTransferState("sent");
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      // setFlashBalance((Number(flashBalance) - Number(usdcTransferAmount)).toFixed(2));
-      // update coinbase balance
-      const usdcTransferToCexTemp = usdcTransferAmount;
-      await new Promise((resolve) => setTimeout(resolve, 6000));
-      // setCexBalance((Number(cexBalance) + Number(usdcTransferToCexTemp)).toFixed(2));
-      return;
-    }
-
     // check if amount exists
     if (!usdcTransferAmount) {
       setErrorModal(t("errors.enterAmount"));
@@ -233,18 +219,6 @@ export default function TransferModal({
   };
 
   const onClickTransferToBankSubmit = async () => {
-    // TODO: if usability test
-    // if (flashInfo.isUsabilityTest) {
-    //   setTransferState("sending");
-    //   await new Promise((resolve) => setTimeout(resolve, 3000));
-    //   setTransferState("sent");
-    //   await new Promise((resolve) => setTimeout(resolve, 300));
-    //   setTransferToBankSuccessModal(true);
-    //   setFiatDeposited((Number(usdcTransferAmount) * rates.usdcToLocal).toFixed(2));
-    //   setCexBalance((Number(cexBalance) - Number(usdcTransferAmount)).toFixed(2));
-    //   return;
-    // }
-
     // check if amount exists
     if (!usdcTransferAmount) {
       setErrorModal(t("errors.enterAmount"));
