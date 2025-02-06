@@ -405,6 +405,8 @@
   "Common": {
     "yes": "Yes",
     "no": "No",
+    "yes2": "Yes",
+    "no2": "No",
     "close": "CLOSE",
     "comfirm": "Confirm",
     "cancel": "Cancel",

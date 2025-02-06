@@ -19,6 +19,7 @@ const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal")); // preloa
 const CbIntroModal = dynamic(() => import("./modals/CbIntroModal"));
 const CashbackModal = dynamic(() => import("./modals/CashbackModal"));
 const TradeMAXModal = dynamic(() => import("./modals/exchanges/TradeMAXModal"));
+import SignOutModal from "./modals/SignOutModal";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types
@@ -45,6 +46,7 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
   const [cashbackModal, setCashbackModal] = useState(false);
   const [errorModal, setErrorModal] = useState<React.ReactNode>(null); // React.ReactNode includes string and null
   const [tradeMAXModal, setTradeMAXModal] = useState(false);
+  const [signOutModal, setSignOutModal] = useState(false);
 
   // preload components on mount
   useEffect(() => {
@@ -115,7 +117,7 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
   return (
     <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
       {/*--- Navbar width=120/lg:160/desktop:200 or height=80/sm:140 ---*/}
-      <Navbar flashInfo={flashInfo} menu={menu} setMenu={setMenu} cashoutSettings={settings.cashoutSettings} />
+      <Navbar flashInfo={flashInfo} menu={menu} setMenu={setMenu} cashoutSettings={settings.cashoutSettings} setSignOutModal={setSignOutModal} />
       {/*---menu tabs---*/}
       {menu === "payments" && <Payments flashInfo={flashInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
       {menu === "cashout" && w3Info && (
@@ -136,6 +138,7 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
       {cbIntroModal && <CbIntroModal setCbIntroModal={setCbIntroModal} setCashbackModal={setCashbackModal} />}
       {cashbackModal && <CashbackModal setCashbackModal={setCashbackModal} />}
       {tradeMAXModal && <TradeMAXModal setTradeMAXModal={setTradeMAXModal} />}
+      {signOutModal && <SignOutModal setSignOutModal={setSignOutModal} />}
     </div>
   );
 }

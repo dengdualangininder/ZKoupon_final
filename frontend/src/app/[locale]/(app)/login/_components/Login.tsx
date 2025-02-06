@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
+import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
 import { useConnect, useDisconnect } from "wagmi";
 // i18n
@@ -15,6 +16,8 @@ import ErrorModal from "@/utils/components/ErrorModal";
 // images
 import { PiEyeLight, PiEyeSlashLight, PiGlobeLight, PiCaretDownBold } from "react-icons/pi";
 import { ImSpinner2 } from "react-icons/im";
+// actions
+import { setFlashCookies } from "@/actions";
 // types
 import { MyConnector } from "@/utils/types";
 import { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
@@ -79,11 +82,9 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
         headers: { "content-type": "application/json" },
       });
       const resJson = await res.json();
-      // if success
       if (resJson.status == "success") {
-        console.log("employee login authenticated");
+        console.log("employee login authenticated, pushed to /app");
         router.push("/app");
-        // window.location.reload(); // trigger useEffect in page.tsx
       } else if (resJson.status == "error") {
         console.log("Incorrect email or password");
         setErrorModal(resJson.message);

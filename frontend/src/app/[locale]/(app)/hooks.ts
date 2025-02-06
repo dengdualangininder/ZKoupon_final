@@ -25,7 +25,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) =>
       const res = await fetch("/api/getSettings", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ w3Info: w3Info }),
+        body: JSON.stringify({ w3Info, flashInfo }),
       });
       const resJson = await res.json();
       if (resJson.status === "success") {
@@ -42,7 +42,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) =>
       }
       throw new Error();
     },
-    enabled: w3Info && flashInfo ? true : false,
+    enabled: (flashInfo && flashInfo.userType === "owner" && w3Info) || (flashInfo && flashInfo.userType === "employee") ? true : false,
     staleTime: Infinity,
     gcTime: Infinity,
   });

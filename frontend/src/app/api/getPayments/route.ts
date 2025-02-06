@@ -20,10 +20,12 @@ export const POST = async (request: NextRequest) => {
   } else if (flashInfo.userType === "employee") {
     const employeeJwt = request.cookies.get("userJwt")?.value ?? "";
     const secret = new TextEncoder().encode(process.env.JWT_KEY!); // format secret
-    var { payload: merchantEvmAddress }: { payload: `0x${string}` } = await jwtVerify(employeeJwt, secret, {}); // verify token
+    var {
+      payload: { merchantEvmAddress },
+    }: { payload: { merchantEvmAddress: `0x${string}` } } = await jwtVerify(employeeJwt, secret, {}); // verify token
     verified = merchantEvmAddress ? true : false;
   } else {
-    return;
+    return Response.json("not verified");
   }
   if (!verified) return Response.json("not verified");
 
@@ -47,7 +49,7 @@ export const POST = async (request: NextRequest) => {
         .project({ _id: 0, transactions: 1 })
         .replaceRoot("transactions");
     } else {
-      // if no filter, query all txns
+      // if no filter
       var txns = await UserModel.aggregate()
         .match({ "paymentSettings.merchantEvmAddress": merchantEvmAddress })
         .unwind("$transactions")

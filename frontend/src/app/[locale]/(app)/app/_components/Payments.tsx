@@ -45,7 +45,6 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const [detailsModal, setDetailsModal] = useState(false);
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [clearSearchModal, setClearSearchModal] = useState(false);
-  const [signOutModal, setSignOutModal] = useState(false);
 
   // set up intersection observer payments inifinite load
   useEffect(() => {
@@ -94,7 +93,11 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
         style={{ scrollbarGutter: "stable" }}
       >
         {/*--- BUTTONS ---*/}
-        <div className="pt-[20px] portrait:sm:pt-[32px] landscape:lg:pt-[32px] desktop:!pt-[24px] paymentsWidth grid grid-cols-[25%_25%_50%] items-center">
+        <div
+          className={`pt-[20px] portrait:sm:pt-[32px] landscape:lg:pt-[32px] desktop:!pt-[24px] paymentsWidth grid ${
+            w3Info ? "grid-cols-[25%_25%_50%]" : "grid-cols-[50%_50%]"
+          } items-center`}
+        >
           <div className="paymentsIconContainer" onClick={() => setSearchModal({ render: true, show: true })}>
             <FiSearch className="paymentsIcon" />
           </div>
@@ -110,11 +113,6 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
               }}
             >
               <FiDownload className="paymentsIcon" />
-            </div>
-          )}
-          {!w3Info && (
-            <div className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
-              <HiMiniArrowRightStartOnRectangle className="paymentsIcon" />
             </div>
           )}
           <div className="paymentsIconContainer justify-self-end" onClick={() => setQrCodeModal(true)}>
@@ -141,9 +139,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
 
       {/*--- LIST OF PAYMENTS ---*/}
       <div
-        className={`${
-          w3Info ? "portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)]" : "portrait:h-[calc(100vh-0px-140px)] portrait:sm:h-[calc(100vh-0px-180px)]"
-        } w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
+        className={`portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)] w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         style={{ scrollbarGutter: "stable" }}
       >
         {txns ? (
@@ -157,11 +153,9 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
                     {page &&
                       page.map((txn: Transaction) => (
                         <div
-                          className={`${txn.refund ? "text-slate-300 dark:text-slate-700" : ""} ${
-                            w3Info
-                              ? "portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)]"
-                              : "portrait:h-[calc((100vh-0px-140px)/5)] portrait:sm:h-[calc((100vh-0px-180px)/5)]"
-                          } relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] desktop:!min-h-[74px] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
+                          className={`${
+                            txn.refund ? "text-slate-300 dark:text-slate-700" : ""
+                          } portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)] relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] desktop:!min-h-[74px] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
                           key={txn.txnHash}
                           onClick={() => {
                             setClickedTxn(txn);

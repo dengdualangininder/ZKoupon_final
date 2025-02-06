@@ -114,11 +114,16 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
 
     // if employee, then directly go to /app
-    // if (userType && userType === "employee") {
-    //   console.log("web3Auth-provider.tsx useEffect, userType = employee, pushed to /app");
-    //   if (pathname != "/app") router.push("/app");
-    //   return;
-    // }
+    if (userType === "employee") {
+      if (userJwt) {
+        console.log("web3Auth-provider.tsx useEffect, userType = employee & userJwt exists, pushed to /app");
+        if (pathname != "/app") router.push("/app");
+        return;
+      } else {
+        console.log("web3Auth-provider.tsx useEffect, userType = employee but no userJwt");
+        return;
+      }
+    }
 
     // Condition 1
     if (!sessionId) {

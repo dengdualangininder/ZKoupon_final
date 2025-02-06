@@ -398,6 +398,8 @@
   "Common": {
     "yes": "有",
     "no": "沒有",
+    "yes2": "要",
+    "no2": "不要",
     "close": "關閉",
     "comfirm": "確定",
     "cancel": "取消",
