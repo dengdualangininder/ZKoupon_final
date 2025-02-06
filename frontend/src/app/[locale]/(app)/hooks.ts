@@ -4,7 +4,6 @@ import { useDisconnect } from "wagmi";
 import { useRouter } from "@/i18n/routing";
 // utils
 import { FlashInfo, W3Info } from "@/utils/types";
-import { fakePaymentSettings, fakeCashoutSettings, fakeTxns } from "@/utils/txns";
 import erc20Abi from "@/utils/abis/erc20Abi";
 // actions
 import { deleteUserJwtCookie } from "@/actions";
@@ -184,6 +183,7 @@ export const useLogout = () => {
     console.log("logout()");
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
+    window.localStorage.removeItem("auth_store");
     await deleteUserJwtCookie();
     await disconnectAsync();
     window.location.href = "/login"; // hard refresh so provider useEffect is re-run (router.push not effective); locale is facotred in

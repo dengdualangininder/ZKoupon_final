@@ -1,4 +1,5 @@
 "use client";
+// next
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 // custom hooks
@@ -19,10 +20,10 @@ import { HiQrCode, HiMiniArrowRightStartOnRectangle } from "react-icons/hi2";
 import { FiDownload, FiSearch } from "react-icons/fi";
 // utils
 import { getLocalTime, getLocalDateWords, getLocalDate } from "@/utils/functions";
+import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 // types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
 import { FlashInfo, Filter, ModalState } from "@/utils/types";
-import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
 export default function Payments({ flashInfo, setErrorModal, paymentSettings }: { flashInfo: FlashInfo; setErrorModal: any; paymentSettings: PaymentSettings }) {
   console.log("(app)/_components/Payments.tsx");
@@ -33,7 +34,6 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const loadRef = useRef(null);
   const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery, while setTempFilter will not
   const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(w3Info, flashInfo, filter);
-  console.log("txns.pages.length", txns ? txns.pages[0]?.length : null);
 
   // states
   const [tempFilter, setTempFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } });
@@ -47,6 +47,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const [clearSearchModal, setClearSearchModal] = useState(false);
   const [signOutModal, setSignOutModal] = useState(false);
 
+  // set up intersection observer payments inifinite load
   useEffect(() => {
     const loadEl = loadRef.current;
     if (!loadEl) return;
@@ -65,18 +66,18 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
     };
   }, []);
 
+  // preload modals
   useEffect(() => {
     const preload = () => {
-      import("./(payments)/QrCodeModal").then(() => {
-        console.log("payments modals preloaded");
-      });
+      console.log("Payments modal preload initiated");
+      import("./(payments)/QrCodeModal");
       import("./(payments)/DetailsModal");
       import("./(payments)/SearchModal");
       import("./(payments)/CalendarModal");
       import("./(payments)/ExportModal");
     };
     setTimeout(preload, 5000);
-    console.log("end of Payments.tsx preload useEffect");
+    console.log("(app)/_components/Payments.tsx, end preload useEffect");
   }, []);
 
   const clearFilter = () => {

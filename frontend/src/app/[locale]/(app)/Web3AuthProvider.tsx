@@ -21,7 +21,7 @@ import { keccak256, getAddress } from "viem";
 // others
 import { getPublic } from "@toruslabs/eccrypto";
 // actions
-import { deleteUserJwtCookie, setFlashInfoCookies } from "@/actions";
+import { deleteUserJwtCookie, setFlashCookies } from "@/actions";
 // types
 import { W3Info } from "@/utils/types";
 
@@ -84,15 +84,17 @@ const config: Config = createConfig({
 console.log("created new web3AuthInstance and config");
 
 export default function Web3AuthProvider({ children }: { children: React.ReactNode }) {
-  console.log("web3auth-provider.tsx");
-
+  console.log("(app)/web3auth-provider.tsx");
   // hooks
   const router = useRouter();
   const pathname = usePathname();
-
   // states
   const [w3Info, setW3Info] = useState<W3Info | null>(null);
 
+  // Need to satisfy 3 conditions:
+  // 1. user logins (no sessionId)
+  // 2. user refreshes (sessionId is valid)
+  // 3. user refreshes or returns to app, but sessionId is expired. TODO: find more efficient way to test if sessionId expired or not
   useEffect(() => {
     console.log("web3Auth-provider.tsx useEffect");
 
@@ -104,36 +106,38 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       return;
     }
 
-    // get user type from cookies (must use getCookie inside useEffect)
+    // get user type from cookies (must use getCookie inside useEffect) & session Id
     const userType = getCookie("userType");
     const userJwt = getCookie("userJwt");
-
-    // if employee, then directly go to /app
-    if (userType && userType === "employee") {
-      console.log("web3Auth-provider.tsx useEffect, userType = employee, push to /app");
-      if (pathname != "/app") router.push("/app");
-      return;
-    }
-
-    // get sessionId, which will be used to determine whether we should setFlashInfoCookie or not
     let sessionId;
     const auth_store = window.localStorage.getItem("auth_store");
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
+
+    // if employee, then directly go to /app
+    // if (userType && userType === "employee") {
+    //   console.log("web3Auth-provider.tsx useEffect, userType = employee, pushed to /app");
+    //   if (pathname != "/app") router.push("/app");
+    //   return;
+    // }
+
+    // Condition 1
     if (!sessionId) {
       console.log("no sessionId");
-      if (userJwt) deleteUserJwtCookie();
+      if (userJwt) deleteUserJwtCookie(); // just in case
       listenToOnConnect();
-      if (pathname != "/login") router.push("/login");
+      if (pathname != "/login") router.push("/login"); // just in case
       return;
     }
 
     if (web3AuthInstance.connected) {
       console.log("web3AuthInstance already connected");
-      setW3InfoAndFlashInfo();
+      setW3InfoAndFlashCookies(); // this sets W3Info and pushes to /app
     } else {
-      console.log("sessionId exists, web3AuthInstance not connected");
+      // Condition 2
+      console.log("sessionId exists but web3AuthInstance not connected");
       listenToOnConnect();
-      console.log("set timeout function");
+      // Condition 3
+      console.log("set 6s countdown");
       setTimeout(() => {
         if (!web3AuthInstance.connected) {
           console.log("web3AuthInstance not connected after 10s, deleted userJwt and auth_store");
@@ -141,7 +145,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
           window.localStorage.removeItem("auth_store");
           window.location.reload();
         }
-      }, 10000);
+      }, 6000);
     }
 
     return () => {
@@ -155,23 +159,25 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     console.log("listening to on connect...");
     web3AuthInstance?.on(ADAPTER_EVENTS.CONNECTED, async (data: CONNECTED_EVENT_DATA) => {
       console.log("web3Auth-provider.tsx, CONNECTED to web3Auth", web3AuthInstance.connected);
-      setW3InfoAndFlashInfo();
+      setW3InfoAndFlashCookies();
     });
   }
 
-  async function setW3InfoAndFlashInfo() {
+  // merchantEvmAddress needed to set Flash cookies, so combine with set W3Info
+  async function setW3InfoAndFlashCookies() {
     try {
       const userInfo = await web3AuthInstance?.getUserInfo();
       const privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
       const publicKey = getPublic(Buffer.from(privateKey.padStart(64, "0"), "hex")).toString("hex");
       const merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
       if (userInfo.idToken && publicKey) {
-        console.log("web3Auth-provider.tsx, setUserAndFlashInfo successful");
+        const userType = getCookie("userType");
         const userJwt = getCookie("userJwt");
-        if (!userJwt) await setFlashInfoCookies("owner", merchantEvmAddress);
+        if (!userType || userType === "employee" || !userJwt) await setFlashCookies("owner", merchantEvmAddress); // setFlashCookies will re-render entire route
         setW3Info({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
+        console.log("web3Auth-provider.tsx, setW3Info successful");
         if (pathname != "/app") {
-          console.log("pathname not /app, pathname:", pathname, "pushed to /app");
+          console.log("pathname is", pathname, ", so pushed to /app");
           router.push("/app");
         }
       } else {

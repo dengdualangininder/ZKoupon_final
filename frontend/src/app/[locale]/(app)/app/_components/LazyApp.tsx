@@ -46,30 +46,19 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
   const [errorModal, setErrorModal] = useState<React.ReactNode>(null); // React.ReactNode includes string and null
   const [tradeMAXModal, setTradeMAXModal] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("/app, useEffect");
-  //   if (flashInfo?.userType === "owner") {
-  //     if (paymentSettings && txns) setIsLoading(false);
-  //   } else if (flashInfo?.userType === "employee") {
-  //     if (txns) setIsLoading(false);
-  //   }
-  // }, [txns, settings]);
-
   // preload components on mount
   useEffect(() => {
     const preload = () => {
-      import("./Cashout").then(() => {
-        console.log("cashout.tsx is loaded");
-      });
+      console.log("Cashout, Settings, QrCodeModal preload initiated");
+      import("./Cashout");
       import("./Settings");
       import("./(payments)/QrCodeModal");
     };
-
     setTimeout(preload, 3000);
-
-    console.log("end of preloading useEffect");
+    console.log("(app)/app/_components/LazyApp.tsx, end of preload useEffect");
   }, []);
 
+  // misc effects
   useEffect(() => {
     if (window.localStorage.getItem("cashbackModal")) setCashbackModal(true);
     if (window.localStorage.getItem("cbNewlyLinked")) {
@@ -79,10 +68,9 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
     if (!window.localStorage.getItem("theme")) setTheme("dark");
   }, []);
 
+  // subscribe to pusher
   useEffect(() => {
-    console.log("app.tsx useEffect");
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER! });
-
     if (address) {
       if (!pusher.channel(address)) {
         pusher.connection.bind("error", (e: any) => {
