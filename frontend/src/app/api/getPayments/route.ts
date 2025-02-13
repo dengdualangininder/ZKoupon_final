@@ -37,7 +37,11 @@ export const POST = async (request: NextRequest) => {
       if (filter.last4Chars) matchFilter["transactions.customerAddress"] = { $regex: `(?i)${filter.last4Chars}$` };
       if (filter.toRefund) matchFilter["transactions.toRefund"] = true;
       if (filter.refunded) matchFilter["transactions.refund"] = { $ne: "" };
-      if (filter.searchDate.to) matchFilter["transactions.date"] = { $gte: new Date(filter.searchDate.from), $lte: new Date(filter.searchDate.to) };
+      if (filter.searchDate.to) {
+        let toDate = new Date(filter.searchDate.to);
+        toDate.setDate(toDate.getDate() + 1); // add 24h to toDate
+        matchFilter["transactions.date"] = { $gte: new Date(filter.searchDate.from), $lt: toDate };
+      }
       // query txn with filter
       var txns = await UserModel.aggregate()
         .match({ "paymentSettings.merchantEvmAddress": merchantEvmAddress })
