@@ -134,7 +134,7 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
       {/*--- modals ---*/}
       {newTxn && <Notification paymentSettings={settings.paymentSettings} newTxn={newTxn} setNewTxn={setNewTxn} />}
       {errorModal && <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />}
-      {qrCodeModal && settings.paymentSettings && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={settings.paymentSettings} setErrorModal={setErrorModal} />}
+      {qrCodeModal && settings.paymentSettings && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={settings.paymentSettings} />}
       {cbIntroModal && <CbIntroModal setCbIntroModal={setCbIntroModal} setCashbackModal={setCashbackModal} />}
       {cashbackModal && <CashbackModal setCashbackModal={setCashbackModal} />}
       {tradeMAXModal && <TradeMAXModal setTradeMAXModal={setTradeMAXModal} />}
