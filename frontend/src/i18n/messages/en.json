@@ -224,16 +224,7 @@
       },
       "qrCodeModal": {
         "emailPdf": "Email PDF file",
-        "downloadPdf": "Download PDF file",
-        "emailModal": {
-          "title": "Email QR Code",
-          "text": "Email the QR code to yourself or to a print shop.",
-          "label": "Receiving Email",
-          "button": "Send Email",
-          "sending": "Sending",
-          "sent": "Email sent!",
-          "errors": { "validEmail": "Please enter a valid email", "notSent": "Email was not sent. Please try again." }
-        }
+        "downloadPdf": "Download PDF file"
       },
       "signOutModal": "Do you want to sign out?",
       "refundAllModal": {}
@@ -267,10 +258,12 @@
       }
     },
     "Settings": {
+      "account": "Account Info",
       "settings": "Settings",
       "display": "Display",
       "support": "Support",
-      "account": "Account Address",
+      "qrCode": "Your QR Code",
+      "accountAddress": "Account Address",
       "email": "Email",
       "name": "Business Name",
       "country": "Country / Currency",
@@ -315,7 +308,16 @@
       "employeePassModal": { "text": "Do you want to change the Employee Password?", "change": "Change Password", "cancel": "Cancel" },
       "yes": "Yes",
       "empty": "empty",
-      "copied": "copied"
+      "copied": "copied",
+      "emailModal": {
+        "title": "Email QR Code",
+        "text": "Email the QR code to yourself or to a print shop.",
+        "label": "Receiving Email",
+        "button": "Send Email",
+        "sending": "Sending",
+        "sent": "Email sent!",
+        "errors": { "validEmail": "Please enter a valid email", "notSent": "Email was not sent. Please try again." }
+      }
     },
     "CashoutIntroModal": {
       "title": "How To Cash Out",
@@ -440,6 +442,8 @@
     "enterAnEvmAddress": "Enter an EVM address",
     "transferring": "Transferring",
     "transferSuccessful": "Transfer successful",
-    "contact": "For any assistance, feel free to contact us at support@flashpayments.xyz"
+    "contact": "For any assistance, feel free to contact us at support@flashpayments.xyz",
+    "email": "Email",
+    "download": "Download"
   }
 }

@@ -14,18 +14,25 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+// other
+import { QRCodeSVG } from "qrcode.react";
+import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer/lib/react-pdf.browser";
+import { saveAs } from "file-saver";
 // components
 import FaqModal from "./modals/FaqModal";
 import EmployeePassModal from "./modals/EmployeePassModal";
 import InstructionsModal from "./modals/InfoModal";
 import SwitchLangModal from "./modals/SwitchLangModal";
+import Placard from "./placard/Placard";
 // utils
+import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import Toggle from "@/utils/components/Toggle";
 import { countryData, countryCurrencyList, langObjectArray } from "@/utils/constants";
 // images
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { LuCopy } from "react-icons/lu";
 import { ImSpinner2 } from "react-icons/im";
+import { FaAngleLeft, FaCircleCheck } from "react-icons/fa6";
 // types
 import { W3Info } from "@/utils/types";
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
@@ -125,6 +132,10 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
   const [hiddenLabel, setHiddenLabel] = useState(""); // googleId | cexEvmAddress
   const [hideCexEvmAddress, setHideCexEvmAddress] = useState<boolean>(cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other"); // needed for optimistic update
+  // email
+  const [email, setEmail] = useState(paymentSettings.merchantEmail);
+  const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
+  const [emailModal, setEmailModal] = useState(false);
 
   const onClickChangeEmployeePass = useCallback(async () => {
     setEmployeePassMask(false);
@@ -161,16 +172,104 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
     }
   }
 
+  const emailQrCode = async () => {
+    // check if valid email
+    if (!email.split("@")[1]?.includes(".")) {
+      setErrorModal(t("emailModal.errors.validEmail"));
+      return;
+    }
+
+    setIsSendingEmail("sending");
+
+    // create PDF file blob
+    const el = document.getElementById("qrCodeForDownload");
+    const dataString = await pdf(
+      <Document>
+        <Page size="A5" style={{ position: "relative" }}>
+          <View>
+            <Placard />
+          </View>
+          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
+            {/* @ts-ignore */}
+            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* @ts-ignore */}
+              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+              {/* @ts-ignore */}
+              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
+            </Svg>
+          </View>
+        </Page>
+      </Document>
+    ).toString();
+
+    // make api call
+    try {
+      const res = await fetch("/api/emailQrCode", {
+        method: "POST",
+        body: JSON.stringify({ merchantEmail: email, dataString }),
+      });
+      const resJson = await res.json();
+      if (resJson === "email sent") {
+        setIsSendingEmail("sent");
+        return;
+      }
+    } catch (e) {}
+    setErrorModal(t("emailModal.errors.notSend"));
+    setIsSendingEmail("initial");
+  };
+
+  const downloadQrCode = async () => {
+    const el = document.getElementById("qrCodeForDownload");
+    const blob = await pdf(
+      <Document>
+        <Page size="A5" style={{ position: "relative" }}>
+          <View>
+            <Placard />
+          </View>
+          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
+            {/* @ts-ignore */}
+            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* @ts-ignore */}
+              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
+              {/* @ts-ignore */}
+              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
+            </Svg>
+          </View>
+        </Page>
+      </Document>
+    ).toBlob();
+    saveAs(blob, "Flash_QRCode");
+  };
+
   // render notes: onBlur => 1. trigger() causes settings.tsx/hooks to re-render, 2. print isValid and field value 3. useMutateAsync runs => causes settings.tsx/hooks to re-render 4. settingsQuery invalidated & queryFn run at same time 5. settings.tsx is re-rendered
   return (
     <section className="appPageContainer overflow-y-auto">
+      {/*--- qr code for download purposes ---*/}
+      <div className="hidden">
+        <QRCodeSVG id="qrCodeForDownload" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={paymentSettings.qrCodeUrl} />
+      </div>
+
       <div className="settingsFont settingsWidth">
         {/*---form ---*/}
         <form className="w-full max-w-[640px]">
-          <div className="settingsTitle">{t("settings")}</div>
+          <div className="settingsTitle">{t("account")}</div>
+
+          {/*---QR Code---*/}
+          <div className="settingsField">
+            <label className="settingsLabel">{t("qrCode")}</label>
+            <div className="relative h-full flex gap-[28px] py-[6px] desktop:py-[2px]">
+              <button className="h-full px-[16px] buttonPrimaryColor rounded-full settingsFontButton" type="button" onClick={downloadQrCode}>
+                {tcommon("download")}
+              </button>
+              <button className="h-full px-[16px] buttonPrimaryColor rounded-full settingsFontButton" type="button" onClick={() => setEmailModal(true)}>
+                {tcommon("email")}
+              </button>
+            </div>
+          </div>
+
           {/*---EVM Address---*/}
           <div className="settingsField">
-            <label className="settingsLabel">{t("account")}</label>
+            <label className="settingsLabel">{t("accountAddress")}</label>
             <div
               className="relative h-full"
               onClick={() => {
@@ -190,6 +289,8 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               )}
             </div>
           </div>
+
+          <div className="settingsTitle">{t("settings")}</div>
 
           {/*--- merchantEmail ---*/}
           <div className="settingsField">
@@ -427,7 +528,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             <label className="settingsLabelNoColor">{t("language")}</label>
             <div className="settingsInputContainer group">
               <select
-                className="settingsSelect settingsFont peer"
+                className="settingsSelect peer"
                 onChange={(e) => {
                   startSwitchingLang(() => router.replace(`/app`, { locale: e.currentTarget.value }));
                 }}
@@ -482,6 +583,80 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
       {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} onClickChangeEmployeePass={onClickChangeEmployeePass} />}
       {faqModal && <FaqModal paymentSettings={paymentSettings} cashoutSettings={cashoutSettings} setFaqModal={setFaqModal} />}
       {isSwitchingLang && <SwitchLangModal />}
+      {emailModal && (
+        <div className="z-[20]">
+          <div className="transferModal z-[22]">
+            <div className="w-full flex flex-col items-center">
+              {isSendingEmail != "sending" && (
+                <>
+                  {/*--- tablet/desktop close ---*/}
+                  <div
+                    className="xButtonContainer"
+                    onClick={() => {
+                      setEmailModal(false);
+                      setEmail(paymentSettings.merchantEmail);
+                      setIsSendingEmail("initial");
+                    }}
+                  >
+                    <div className="xButton">&#10005;</div>
+                  </div>
+                  {/*--- mobile back ---*/}
+                  <FaAngleLeft
+                    className="mobileBack"
+                    onClick={() => {
+                      setEmailModal(false);
+                      setEmail(paymentSettings.merchantEmail);
+                      setIsSendingEmail("initial");
+                    }}
+                  />
+                </>
+              )}
+              {/*--- header ---*/}
+              <div className="fullModalHeader">{t("emailModal.title")}</div>
+
+              {/*---content---*/}
+              <div className="transferModalContentContainer items-start">
+                <div className="mt-[32px]">{t("emailModal.text")}</div>
+                <label className="mt-[32px] w-full font-semibold">{t("emailModal.label")}</label>
+                <div className="mt-[4px] w-full flex items-center relative">
+                  <input
+                    className="text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[44px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
+                    onChange={(e) => setEmail(e.currentTarget.value)}
+                    value={email}
+                    placeholder="Enter an email address"
+                  />
+                  {email && (
+                    <div className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden" onClick={() => setEmail("")}>
+                      &#10005;
+                    </div>
+                  )}
+                </div>
+                {/*---button---*/}
+                <div className="w-full pt-[50px] pb-[16px] flex justify-center items-center">
+                  {isSendingEmail == "initial" && (
+                    <button onClick={emailQrCode} className="buttonPrimary w-full">
+                      {t("emailModal.button")}
+                    </button>
+                  )}
+                  {isSendingEmail == "sending" && (
+                    <div onClick={emailQrCode} className="buttonPrimary bg-lightButtonHover dark:bg-darkButtonHover w-full flex justify-center items-center">
+                      <SpinningCircleWhite />
+                      <div className="ml-[12px] textBaseApp">{t("emailModal.sending")}...</div>
+                    </div>
+                  )}
+                  {isSendingEmail == "sent" && (
+                    <div onClick={emailQrCode} className="buttonPrimary !bg-transparent border-none flex items-center justify-center">
+                      <FaCircleCheck className="text-green-500 text-[24px]" />
+                      <div className="ml-[12px]">{t("emailModal.sent")}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="modalBlackout z-[21]"></div>
+        </div>
+      )}
       {/*--- insert merchantTypeModal here (see unused) ---*/}
     </section>
   );

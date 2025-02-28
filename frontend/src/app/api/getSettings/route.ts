@@ -47,6 +47,11 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json({ status: "success", data: { paymentSettings: doc.paymentSettings, cashoutSettings: doc.cashoutSettings ?? "" } });
     }
 
+    // 5. if no records, create new user
+    if (doc === null) {
+      return NextResponse.json("create new user");
+    }
+
     console.log("/api/getSettings error");
     return NextResponse.json("error");
   } catch (e) {

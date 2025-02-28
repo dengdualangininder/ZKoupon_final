@@ -35,6 +35,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
   } catch (e) {
     var allRates = defaultRates;
   }
+  console.log(allRates);
   const date2 = new Date();
   const time2 = date2.toLocaleTimeString("en-US", { hour12: false }) + `.${date2.getMilliseconds()}`;
   console.log(time2, "allRates", allRates);

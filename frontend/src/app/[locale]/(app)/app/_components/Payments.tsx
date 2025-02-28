@@ -226,7 +226,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
       {calendarModal.render && (
         <CalendarModal tempFilter={tempFilter} setTempFilter={setTempFilter} calendarModal={calendarModal} setCalendarModal={setCalendarModal} setErrorModal={setErrorModal} />
       )}
-      {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={paymentSettings} setErrorModal={setErrorModal} />}
+      {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={paymentSettings} />}
       {detailsModal && (
         <DetailsModal
           paymentSettings={paymentSettings}

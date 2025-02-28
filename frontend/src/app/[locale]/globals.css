@@ -385,6 +385,10 @@
     @apply portrait:text-[13px] landscape:text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
   }
 
+  .settingsFontButton {
+    @apply font-medium text-sm portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
+  }
+
   .settingsWidth {
     @apply px-[12px] w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[480px];
   }
