@@ -286,7 +286,7 @@ const DetailsModal = ({
                   {refundState === "notRefunded" && (
                     <>
                       <div className="font-medium">{t("refundNow")}</div>
-                      <button className="buttonPrimaryColor refundButtonBase" onClick={() => setRefundState("confirmRefund")}>
+                      <button className="button1Color refundButtonBase" onClick={() => setRefundState("confirmRefund")}>
                         {t("refund")}
                       </button>
                     </>
@@ -295,10 +295,10 @@ const DetailsModal = ({
                     <>
                       <div className="font-medium">Confirm refund?</div>
                       <div className="flex gap-[24px]">
-                        <button className="buttonPrimaryColor refundButtonBase" onClick={onClickRefund}>
+                        <button className="button1Color refundButtonBase" onClick={onClickRefund}>
                           {t("refund")}
                         </button>
-                        <button className="buttonSecondaryColor refundButtonBase" onClick={() => setRefundState("notRefunded")}>
+                        <button className="button2Color refundButtonBase" onClick={() => setRefundState("notRefunded")}>
                           {tcommon("cancel")}
                         </button>
                       </div>

@@ -60,8 +60,8 @@ export default function Navbar() {
   return (
     <div
       className={`${
-        isScrollTop ? "h-[84px]" : "navbarHeight border-b border-slate-300"
-      } w-full fixed flex justify-center transition-all duration-[1000ms] bg-light2 text-lightText1 bg-opacity-70 backdrop-blur-md z-50`}
+        isScrollTop ? "h-[84px]" : "h-[52px] desktop:h-[44px] border-b border-slate-300"
+      } fixed w-full flex justify-center transition-all duration-[1000ms] bg-light2 text-lightText1 bg-opacity-70 backdrop-blur-md z-50`}
     >
       <div className="mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[1440px] h-full flex justify-center items-center relative">
         {/*---logo ---*/}
@@ -74,11 +74,12 @@ export default function Navbar() {
             isScrollTop ? "w-[150px] desktop:w-[150px]" : "w-[100px] portrait:sm:w-[110px] landscape:lg:w-[110px] desktop:!w-[90px]"
           } absolute left-0 h-full transition-all duration-[1000ms]`}
         />
+
         {/*---DESKTOP MENU LINKS---*/}
-        <div className="hidden lg:flex gap-x-[44px] desktop:space-x-[24px] textBaseHome">
+        <div className="hidden lg:flex gap-x-[44px] text-base font-semibold desktop:space-x-[24px]">
           {navLinks.map((navLink, index) => (
             <div
-              className={`font-semibold cursor-pointer active:underline desktop:active:no-underline underline-offset-4 desktop:underlineAni relative`}
+              className="cursor-pointer desktop:underlineAni underline-offset-4 active:underline desktop:active:no-underline relative"
               id={navLink.id}
               key={index}
               onClick={onClickLink}
@@ -87,23 +88,22 @@ export default function Navbar() {
             </div>
           ))}
         </div>
+
         {/*--- ANIMATED ENTER BUTTON  ---*/}
         <div
-          id="heroButtonContainer"
+          id="animated-button"
           className={`${
-            isScrollTop
-              ? "landscape:translate-y-[400px] landscape:lg:translate-y-[calc(74px+100vh*5.5/10)] portrait:translate-y-[calc(74px+100vh*5.5/10)]"
-              : "translate-x-[24px] xs:translate-x-0"
+            isScrollTop ? "translate-y-[max(410px,calc(250px+100vh*0.4))]" : "translate-x-[24px] xs:translate-x-0"
           } lg:hidden w-full flex justify-center absolute left-0 transition-transform duration-[1200ms]`}
         >
-          <button className={`${isScrollTop ? "heroButton" : "heroButtonSmall"} [transition:height_1.2s,width_1.2s,font-size_1.2s]`} onClick={() => router.push("/app")}>
+          <button className={`${isScrollTop ? "homeButton" : "homeButtonSm"} [transition:height_1.2s,padding_1.2s,font-size_1.2s]`} onClick={() => router.push("/app")}>
             {t("enterApp")}
           </button>
         </div>
 
-        {/*--- BUTTON + LANG ---*/}
-        <div className={`hidden lg:flex navbarHeight absolute right-0 items-center gap-[18px] z-[100]`}>
-          <Link className="heroButtonSmall" href={"/app"}>
+        {/*--- (desktop) BUTTON + LANG ---*/}
+        <div className={`hidden lg:flex h-[52px] desktop:h-[44px] absolute right-0 items-center gap-[18px] z-[100]`}>
+          <Link className="homeButtonSm" href={"/app"}>
             {t("enterApp")}
           </Link>
           <SelectLang langModal={langModal} setLangModal={setLangModal} />

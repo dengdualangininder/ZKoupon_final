@@ -12,7 +12,7 @@ export default function Loading() {
           <div className="w-[340px] h-[60px] portrait:sm:h-[100px] landscape:lg:h-[100px] landscape:xl:desktop:h-[60px] animate-spin relative">
             <Image src="/loadingCircleBlack.svg" alt="loading icon" fill />
           </div>
-          <div className="mt-4 font-medium text-gray-500">{t("loading")}...</div>
+          <div className="mt-4 font-medium text-slate-500">{t("loading")}...</div>
         </div>
         {/*--- welcome ---*/}
         <div className="w-full h-full flex flex-col items-center justify-center">

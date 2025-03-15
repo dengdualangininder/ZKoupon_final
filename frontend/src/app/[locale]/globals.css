@@ -17,6 +17,11 @@
     margin: 0;
   }
 
+  .rdp-root {
+    --rdp-day-height: 30px;
+    --rdp-day-width: 30px;
+  }
+
   /* select:-webkit-autofill,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active,
@@ -97,12 +102,24 @@
     transform: scale(1);
   }
 
-  .textBaseHome {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-base;
+  .textSmLoose {
+    @apply text-sm leading-[1.65];
   }
 
-  .textLgHome {
-    @apply text-lg portrait:sm:text-xl landscape:lg:text-xl desktop:!text-lg;
+  .textBaseLoose {
+    @apply text-base leading-[1.65];
+  }
+
+  .textLgLoose {
+    @apply text-lg leading-[1.65];
+  }
+
+  .textHeaderHome {
+    @apply text-[2.75rem] leading-[3.5rem] xs:text-[3rem] xs:leading-[3.5rem] min-[1150px]:text-[3.5rem] min-[1150px]:leading-[4.25rem] font-semibold;
+  }
+
+  .textBaseHome {
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-base;
   }
 
   .textXsApp {
@@ -141,6 +158,10 @@
     @apply text-3xl portrait:sm:text-3xl landscape:lg:text-3xl desktop:!text-2xl;
   }
 
+  .textInputAppLg {
+    @apply text-[20px] portrait:sm:text-[24px] landscape:lg:text-[24px] desktop:!text-[16px];
+  }
+
   .filterGray {
     filter: invert(40%) sepia(40%) saturate(235%) hue-rotate(175deg) brightness(102%) contrast(94%);
   }
@@ -155,98 +176,170 @@
 }
 
 @layer components {
-  .checkbox {
-    @apply w-[30px] h-[30px] rounded-[6px] checkboxColor cursor-pointer;
+  /*--- BUTTONS ---*/
+
+  /*--- homepage buttons ---*/
+
+  .homeButtonBase {
+    @apply flex items-center justify-center button1ColorLight font-medium rounded-full;
   }
 
-  .checkboxColor {
-    @apply border border-slate-400 dark:border-slate-600 bg-light1 dark:bg-dark3 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
+  .homeButton {
+    @apply homeButtonBase px-[28px] desktop:px-[24px] h-[56px] desktop:h-[48px] text-lg desktop:text-base;
   }
 
-  .placeholderColor {
-    @apply placeholder:italic placeholder:text-slate-400 dark:placeholder:text-slate-500;
+  .homeButtonSm {
+    @apply homeButtonBase px-[20px] desktop:px-[18px] h-[44px] desktop:h-[38px] text-base desktop:text-sm;
+  }
+
+  /*--- login button ---*/
+
+  .loginButton {
+    @apply button1ColorLight h-[56px] desktop:!h-[44px] text-lg desktop:text-sm font-semibold rounded-[8px] flex items-center justify-center;
+  }
+
+  /*--- button colors ---*/
+
+  .button1ColorLight {
+    @apply border-[2px] text-white bg-lightButton border-lightButton outline-none focus:bg-lightButtonHover focus:border-lightButtonHover desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover;
+  }
+
+  .button1Color {
+    @apply button1ColorLight dark:text-white dark:bg-darkButton dark:border-darkButton dark:desktop:hover:bg-darkButtonHover dark:desktop:hover:border-darkButtonHover dark:active:bg-darkButtonHover dark:active:border-darkButtonHover;
+  }
+
+  .button2Color {
+    @apply border-[2px] bg-transparent text-slate-500 border-slate-500 desktop:hover:text-slate-400 desktop:hover:border-slate-400 active:text-slate-400 active:border-slate-400; /*--- same for dark and light ---*/
+  }
+
+  .buttonPendingColor {
+    @apply border-[2px] bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
+  }
+
+  /*--- button font & height ---*/
+
+  .appButtonHeight {
+    @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px];
+  }
+
+  .buttonHeightSm {
+    @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px];
+  }
+
+  /*--- app buttons ---*/
+
+  .appButtonBase {
+    @apply flex items-center justify-center font-medium rounded-[10px];
+  }
+
+  .appButton1 {
+    @apply appButtonBase button1Color appButtonHeight textBaseApp;
+  }
+
+  .appButton2 {
+    @apply appButtonBase button2Color appButtonHeight textBaseApp;
+  }
+
+  .appButton1Light {
+    @apply button1ColorLight appButtonHeight textBaseApp;
+  }
+
+  .appButtonPending {
+    @apply appButtonBase buttonPendingColor appButtonHeight textBaseApp;
+  }
+
+  .cashoutButton {
+    @apply ml-auto button1Color textSmApp font-medium w-[220px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[200px] buttonHeightSm translate-x-[4px] rounded-full;
+  }
+
+  .refundButtonBase {
+    @apply w-[100px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[100px] buttonHeightSm textSmApp font-semibold border-2 rounded-full;
+  }
+
+  /* --- input --- */
+
+  .inputHeightApp {
+    @apply h-[54px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px];
   }
 
   .inputColor {
-    @apply border border-slate-400 dark:border-slate-600 bg-light1 dark:bg-dark3 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-0 outline-none transition-all duration-[500ms];
+    @apply dark:text-gray-400 bg-light1 dark:bg-dark4 border-[1.5px] rounded-[8px] border-slate-300 dark:border-dark5 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none transition-all duration-[500ms];
   }
 
-  .gasFees {
-    @apply w-16 mx-0.5 text-xs text-center;
+  .loginLabel {
+    @apply pb-[2px] font-semibold text-lg desktop:text-sm;
   }
 
-  .sectionMargin {
-    @apply px-2.5 xs:px-4 lg:px-32 py-12 md:py-16;
+  .loginInput {
+    @apply w-full h-[52px] desktop:h-[40px] px-[10px] desktop:px-[8px] text-lg desktop:text-sm rounded-[8px] bg-white text-lightText1 outline-none border-[1.5px] border-slate-300 focus:border-blue-500 transition-[all] duration-[500ms];
   }
 
-  .heading {
-    @apply font-extrabold text-4xl sm:text-5xl;
+  .introLabelFont {
+    @apply font-medium text-lg desktop:text-base;
   }
 
-  .body1 {
-    @apply mt-4 mb-4 md:mb-8 text-xl text-center;
+  .introInputFont {
+    @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[12px] text-lg desktop:text-base bg-white border border-slate-400 focus:border-blue-500 outline-none transition-all duration-[500ms] rounded-[4px] placeholder:italic;
   }
 
-  .dotted {
-    @apply underline underline-offset-[3px] decoration-dotted decoration-blue-600 text-blue-600 cursor-pointer;
+  .introInputFontSmall {
+    @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[4px] text-[15px] tracking-tighter bg-white border border-slate-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic placeholder:text-lg placeholder:pl-[8px] placeholder:focus:text-transparent;
   }
 
-  .link {
-    @apply cursor-pointer text-blue-600 dark:text-blue-400 xs:hover:underline active:underline;
+  /* --- input elements --- */
+
+  .checkbox {
+    @apply w-[36px] h-[36px] desktop:w-[30px] desktop:h-[30px] rounded-[8px] checkboxColor cursor-pointer;
   }
 
-  .linkLight {
-    @apply cursor-pointer text-blue-600 xs:hover:underline active:underline;
+  .checkboxColor {
+    @apply border-[1.5px] border-slate-400 dark:border-dark5 bg-light1 dark:bg-dark4 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
   }
 
-  .linkDark {
-    @apply cursor-pointer text-blue-400 xs:hover:underline active:underline;
+  .placeholderColor {
+    @apply italic text-slate-400 dark:text-zinc-700;
   }
 
-  .homeHeaderFont {
-    @apply text-[2.75rem] leading-[3rem] xs:text-[3rem] xs:leading-[3.5rem] min-[1150px]:text-[3.5rem] min-[1150px]:leading-[4.25rem] font-semibold xs:font-medium;
-  }
-
-  .homeBody2Font {
-    @apply text-base leading-snug desktop:text-sm;
-  }
+  /* --- home --- */
 
   .homeSectionSize {
-    @apply mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[calc(600px-24px*2)] lg:max-w-[1100px];
+    @apply mx-[16px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[550px] lg:max-w-[1100px] min-h-[700px];
   }
 
-  /* --- app --- */
+  .howNumber {
+    @apply flex-none w-[44px] h-[44px] desktop:w-[40px] desktop:h-[40px] flex justify-center items-center rounded-full bg-darkButton text-[24px] desktop:text-[20px] font-bold;
+  }
 
-  .appPageContainer {
-    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center; /* navbar is fixed, so need margins to center */
+  .howHeader1Font {
+    @apply text-xl sm:text-lg md:text-2xl desktop:!text-lg font-medium;
+  }
+
+  .howStepTitle {
+    @apply desktop:h-[56px] flex items-center text-2xl sm:text-lg md:text-2xl desktop:!text-xl desktop:!leading-tight font-semibold;
+  }
+
+  .howBulletFont {
+    @apply text-base desktop:text-sm; /* non-loose looks better than loose for mobile/tablet and desktop */
   }
 
   .whiteCard {
-    @apply bg-opacity-60 px-[16px] py-[20px] sm:p-[20px] bg-white rounded-[20px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+    @apply bg-opacity-60 px-[16px] py-[20px] sm:p-[20px] bg-white rounded-[24px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
   }
 
-  .navbarButtonHeight {
-    @apply h-[40px] lg:h-[56px] xl:desktop:h-[32px];
+  .whiteCardHeader {
+    @apply text-2xl font-semibold;
   }
 
-  .navbarButtonHeightScrollTop {
-    @apply h-[44px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px];
+  .whiteCardBody {
+    @apply text-base desktop:textSmLoose space-y-[12px]; /* for mobile/tablet, text-base looks better than textBaseLoose */
   }
 
-  .heroButtonBase {
-    @apply flex items-center justify-center buttonPrimaryColorLight font-medium rounded-full;
+  .lowCostCard {
+    @apply w-full lg:w-[420px] whiteCard space-y-[8px] xs:space-y-[12px];
   }
 
-  .heroButton {
-    @apply heroButtonBase w-[160px] desktop:w-[140px] h-[56px] desktop:h-[44px] text-lg desktop:text-base;
-  }
-
-  .heroButtonSmall {
-    @apply heroButtonBase w-[128px] desktop:w-[110px] h-[44px] desktop:h-[36px] text-base desktop:text-sm;
-  }
-
-  .navbarHeight {
-    @apply h-[52px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[44px];
+  .whyCard {
+    @apply whiteCard space-y-[8px] xs:space-y-[12px];
   }
 
   .learnAnswerContainer {
@@ -257,48 +350,76 @@
     @apply font-semibold text-blue-400;
   }
 
-  .chainLogo {
-    @apply h-[38px] pointer-events-none;
+  .footerHeader {
+    @apply underline underline-offset-2;
   }
 
-  .copiedText {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
+  .footerLink {
+    @apply desktop:hover:text-blue-400 active:text-blue-400 cursor-pointer;
   }
 
-  .tooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg desktop:px-[12px] desktop:py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
+  /*--- intro ---*/
+
+  .introTextContainer1 {
+    @apply flex-1 introWidth py-4 flex flex-col items-center;
   }
 
-  .heroTooltip {
-    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg text-base bg-slate-800 text-darkText1 border border-slate-500 z-[1];
+  .introTextContainer2 {
+    @apply my-auto;
   }
 
-  .cashoutTooltip {
-    @apply invisible peer-hover:visible absolute px-[12px] py-[8px] rounded-lg textXsApp font-normal desktop:text-sm leading-snug bg-slate-800 text-white z-[1];
+  .introButtonContainer {
+    @apply w-full px-2 desktop:px-0 pt-[32px] pb-[44px] flex justify-between flex-none;
   }
 
-  .whyCard {
-    @apply w-full lg:max-w-[330px] h-full whiteCard;
+  .introBulletContainer {
+    @apply flex flex-col gap-[12px] desktop:gap-[20px];
   }
 
-  .whyCardHeader {
-    @apply text-[1.5rem] leading-[1.875rem] font-semibold;
+  .introHeaderFont {
+    @apply pt-[40px] text-[1.8rem] leading-[2rem] font-bold text-center;
   }
 
-  .whyCardBody {
-    @apply mt-4 text-base desktop:text-sm;
+  .introNumber {
+    @apply flex-none mr-[12px] w-[28px] h-[28px] desktop:w-[24px] desktop:h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[13px] text-white;
   }
 
-  .customerChip {
-    @apply w-full text-lg leading-snug;
+  .introButtonPrimary {
+    @apply w-[120px] appButtonHeight border-2 button1ColorLight font-medium rounded-full;
+  }
+
+  .introButtonSecondary {
+    @apply w-[120px] appButtonHeight border-2 button2Color font-medium rounded-full;
+  }
+
+  .introNextNoColor {
+    @apply mr-[4px] w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold rounded-[6px];
+  }
+
+  .introNext {
+    @apply introNextNoColor button1ColorLight;
+  }
+
+  .cashoutIntroNext {
+    @apply introNextNoColor button1Color;
+  }
+
+  .introBack {
+    @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
+  }
+
+  /* --- app --- */
+
+  .menuText {
+    @apply mt-[3px] text-[0.8125rem] portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-semibold select-none;
+  }
+
+  .appPageContainer {
+    @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center; /* navbar is fixed, so need margins to center */
   }
 
   .paymentsText {
     @apply text-[24px] portrait:sm:text-[32px] landscape:lg:text-[32px] desktop:!text-[24px];
-  }
-
-  .notificationText {
-    @apply text-[22px] portrait:sm:text-[28px] landscape:lg:text-[28px] desktop:!text-[22px];
   }
 
   .paymentsWidth {
@@ -321,56 +442,116 @@
     @apply font-semibold text-lg portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg textGray;
   }
 
-  .savingsCountry {
-    @apply mt-3 text-slate-600 font-bold text-base leading-none;
+  .detailsLabelText {
+    @apply text-lg leading-snug portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base text-slate-500 font-semibold;
   }
 
-  .savingsSavings {
-    @apply mt-3 text-green-600 font-bold text-base leading-none;
+  .detailsValueText {
+    @apply text-[20px] leading-snug portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
   }
 
-  .savingsConversion {
-    @apply leading-tight text-[10px] text-slate-950;
+  .notificationText {
+    @apply text-[22px] portrait:sm:text-[28px] landscape:lg:text-[28px] desktop:!text-[22px];
   }
 
-  .howNumber {
-    @apply w-[44px] h-[44px] flex justify-center items-center rounded-full bg-darkButton text-[24px] font-bold;
+  .cashoutIntroButtonContainer {
+    @apply flex-none px-[12px] w-full pt-[32px] flex justify-between items-end;
   }
 
-  .howHeader1Font {
-    @apply text-xl sm:text-lg md:text-2xl desktop:!text-lg font-medium;
+  .cashoutCardWidth {
+    @apply w-[88%] max-w-[480px] desktop:max-w-[400px];
   }
 
-  .howHeader2Font {
-    @apply text-2xl sm:text-lg md:text-2xl desktop:!text-xl font-semibold;
+  .cashoutCard {
+    @apply cashoutCardWidth min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
-  .howStepTitle {
-    @apply flex-1 howHeader2Font;
+  .pendingCard {
+    @apply mt-[2px] text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm cashoutCardWidth p-[16px] portrait:sm:p-[24px] landscape:lg:p-[24px] desktop:!p-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark3 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
-  .howBulletFont {
-    @apply text-base md:text-lg desktop:!text-sm;
+  .cashoutHeader {
+    @apply textXlApp font-semibold;
   }
 
-  .lowCostCard {
-    @apply w-full lg:w-[420px] whiteCard;
+  .cashoutBalance {
+    @apply text-[28px] portrait:sm:text-[32px] landscape:lg:text-[32px] desktop:!text-[24px] font-normal flex items-center;
   }
 
-  .lowCostCardHeader {
-    @apply text-2xl font-semibold;
+  .cashoutBalanceContainer {
+    @apply flex-1 flex flex-col mt-[20px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] desktop:!mt-[16px];
   }
 
-  .lowCostCardBody {
-    @apply text-base desktop:text-sm mt-2 xs:mt-3 space-y-3;
+  .cashoutMoreOptionsContainer {
+    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-[6px] bg-slate-200 text-black dark:text-white dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap;
   }
 
-  .footerHeader {
-    @apply underline underline-offset-2;
+  .cashoutEllipsisContainer {
+    @apply w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer;
   }
 
-  .footerLink {
-    @apply desktop:hover:text-blue-400 active:text-blue-400 cursor-pointer;
+  .cashoutArrowContainer {
+    @apply ml-4 px-[8px] py-[2px] flex items-center justify-center bg-light2 dark:bg-transparent rounded-xl cursor-pointer;
+  }
+
+  .cashoutArrow {
+    @apply textLgApp text-blue-500 dark:text-darkButton;
+  }
+
+  .cashoutDetailsContainer {
+    @apply textLgApp mt-[12px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] font-medium relative;
+  }
+
+  .cashoutStats2 {
+    @apply textSmApp font-medium text-center;
+  }
+
+  .cashoutButtonContainer {
+    @apply w-full flex justify-end;
+  }
+
+  .transferCard {
+    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[24px] flex flex-col items-center rounded-[12px] relative border-none border-slate-400 dark:border-dark4;
+  }
+
+  .transferFromCard {
+    @apply pt-[24px] pb-[48px] desktop:pb-[36px] transferCard;
+  }
+
+  .transferToCard {
+    @apply pt-[40px] desktop:pt-[36px] pb-[24px] transferCard;
+  }
+
+  .transferInfoText {
+    @apply ml-[12px] flex flex-col;
+  }
+
+  .transferIcon {
+    @apply relative w-[52px] h-[52px] desktop:w-[44px] desktop:h-[44px] rounded-[6px] overflow-hidden flex-none;
+  }
+
+  .transferUsdc {
+    @apply pr-[12px] text-[24px] desktop:text-[20px] font-semibold leading-none;
+  }
+
+  .transferAmountFromBox {
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-[124px];
+  }
+
+  .transferAmountToBox {
+    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
+  }
+
+  .transferArrowContainer {
+    @apply w-[200px] h-[70px] desktop:w-[160px] desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full z-[2];
+  }
+
+  .transferArrowFont {
+    @apply text-[16px] desktop:text-[14px] ml-[8px] leading-tight desktop:leading-tight;
+  }
+
+  .transferArrowArrow {
+    @apply text-[34px] desktop:text-[30px] text-lightText1 dark:text-darkText1;
   }
 
   .settingsFont {
@@ -386,7 +567,7 @@
   }
 
   .settingsFontButton {
-    @apply font-medium text-sm portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
+    @apply font-medium text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-sm;
   }
 
   .settingsWidth {
@@ -418,7 +599,7 @@
   }
 
   .settingsInput {
-    @apply w-full h-full px-[12px] py-[4px] text-end cursor-pointer focus:cursor-text settingsInputColor transition-all duration-[300ms] placeholderColor placeholder:font-normal placeholder:pr-[2px] focus:placeholder:text-transparent rounded-[6px];
+    @apply w-full h-full px-[12px] py-[4px] text-end cursor-pointer focus:cursor-text settingsInputColor transition-all duration-[300ms] placeholder:font-normal placeholder:pr-[2px] focus:placeholder:text-transparent rounded-[6px];
   }
 
   .settingsSelect {
@@ -433,16 +614,22 @@
     @apply flex-none inline ml-[6px] w-[20px] h-[20px] text-blue-500 dark:text-darkButton cursor-pointer desktop:hover:brightness-[1.5] active:brightness-[1.5];
   }
 
-  .info {
-    @apply text-slate-400 dark:text-darkButton text-xs portrait:sm:text-sm landscape:lg:text-sm desktop:!text-xs;
+  /* --- tooltips --- */
+
+  .copiedText {
+    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
   }
 
-  .inputOutline {
-    @apply border border-slate-500 rounded-[4px] outline-slate-300 focus:outline-blue-500 transition-[outline-color] duration-[400ms];
+  .tooltip {
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg desktop:px-[12px] desktop:py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
   }
 
-  .menuText {
-    @apply mt-[3px] text-[0.8125rem] portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-semibold select-none;
+  .heroTooltip {
+    @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg textBaseLoose bg-slate-800 text-darkText1 border border-slate-500 z-[1];
+  }
+
+  .cashoutTooltip {
+    @apply invisible peer-hover:visible absolute px-[12px] py-[8px] rounded-lg textXsApp font-normal desktop:text-sm leading-snug bg-slate-800 text-white z-[1];
   }
 
   /* modal base & color */
@@ -468,7 +655,7 @@
   }
 
   .sidebarModalColor {
-    @apply bg-gradient-to-br from-light1 to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-slate-600;
+    @apply bg-gradient-to-br from-light1 to-light3 dark:from-dark1 dark:to-dark3 portrait:sm:border-r-2 landscape:border-r border-light4 dark:border-dark4;
   }
 
   /* modal sizes (smallest to largest) */
@@ -502,7 +689,7 @@
   }
 
   .sidebarModalSize {
-    @apply w-full max-w-[450px] portrait:sm:w-[400px] landscape:lg:w-[400px] desktop:!w-[360px] h-screen;
+    @apply w-full portrait:sm:w-[490px] landscape:lg:w-[490px] desktop:!w-[400px] h-screen;
   }
 
   /* specific modals */
@@ -583,6 +770,10 @@
 
   /* modal content container and button container */
 
+  .qrCodeModalIconContainer {
+    @apply absolute w-[60px] h-[60px] rounded-full portrait:sm:border-2 landscape:lg:border-2 border-white flex items-center justify-center cursor-pointer desktop:hover:opacity-80 active:opacity-80;
+  }
+
   .infoModalContentContainer {
     @apply modalXpadding overflow-y-auto;
   }
@@ -600,11 +791,11 @@
   }
 
   .sidebarModalContentContainer {
-    @apply w-full pt-[16px] px-[16px] portrait:sm:px-[24px] landscape:lg:px-[24px] flex flex-col items-center overflow-y-auto;
+    @apply w-full pt-[16px] px-[24px] portrait:sm:px-[40px] landscape:lg:px-[40px] flex flex-col items-center overflow-y-auto;
   }
 
   .searchModalCategoryContainer {
-    @apply h-[25%] flex items-center justify-between border-b border-slate-300 dark:border-dark6;
+    @apply flex-none w-full h-[100px] desktop:h-[80px] flex items-center justify-between border-b border-slate-300 dark:border-dark3;
   }
 
   .modalButtonContainer {
@@ -625,244 +816,6 @@
 
   .mobileBack {
     @apply absolute left-[12px] top-[18px] leading-none text-[42px] font-medium p-[8px] portrait:sm:hidden landscape:lg:hidden desktop:!hidden;
-  }
-
-  .detailsLabelText {
-    @apply text-lg leading-snug portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base text-slate-500 font-semibold;
-  }
-
-  .detailsValueText {
-    @apply text-[20px] leading-snug portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
-  }
-
-  .transferModalInfoText {
-    @apply ml-[12px] flex flex-col leading-tight;
-  }
-
-  /*--- button ---*/
-
-  .buttonPrimary {
-    @apply buttonPrimaryColor buttonHeight buttonFont border-2 rounded-[6px];
-  }
-
-  .buttonPrimaryLight {
-    @apply buttonPrimaryColorLight buttonHeight buttonFont border-2 rounded-[6px];
-  }
-
-  .buttonSecondary {
-    @apply buttonSecondaryColor buttonHeight buttonFont border-2 rounded-[6px];
-  }
-
-  .buttonPending {
-    @apply buttonPendingColor buttonHeight buttonFont border-2 rounded-[6px];
-  }
-
-  .buttonHeight {
-    @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[44px];
-  }
-
-  .buttonHeightSm {
-    @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px];
-  }
-
-  .buttonFont {
-    @apply textBaseApp font-medium;
-  }
-
-  .buttonPrimaryColor {
-    @apply buttonPrimaryColorLight dark:text-white dark:bg-darkButton dark:border-darkButton dark:desktop:hover:bg-darkButtonHover dark:desktop:hover:border-darkButtonHover dark:active:bg-darkButtonHover dark:active:border-darkButtonHover;
-  }
-
-  .buttonPrimaryColorLight {
-    @apply text-white bg-lightButton border-lightButton desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover;
-  }
-
-  .buttonSecondaryColor {
-    @apply bg-transparent text-slate-500 border-slate-500 desktop:hover:text-slate-400 desktop:hover:border-slate-400 active:text-slate-400 active:border-slate-400;
-  }
-
-  .buttonPendingColor {
-    @apply bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
-  }
-
-  .refundButtonBase {
-    @apply w-[100px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[100px] buttonHeightSm textSmApp font-semibold border-2 rounded-full;
-  }
-
-  /*--- login ---*/
-
-  .loginInputFont {
-    @apply w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] px-[12px] font-normal textBaseApp rounded-[6px] bg-white text-lightText1 outline-none border-[1.5px] border-slate-200 focus:border-blue-500 transition-[all] duration-[500ms];
-  }
-
-  /*--- intro ---*/
-
-  .introLabelFont {
-    @apply font-medium text-lg desktop:text-base;
-  }
-
-  .introInputFont {
-    @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[12px] text-lg desktop:text-base bg-white border border-slate-400 focus:border-blue-500 outline-none transition-all duration-[500ms] rounded-[4px] placeholder:italic;
-  }
-
-  .introInputFontSmall {
-    @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[4px] text-[15px] tracking-tighter bg-white border border-slate-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic placeholder:text-lg placeholder:pl-[8px] placeholder:focus:text-transparent;
-  }
-
-  .introTextContainer1 {
-    @apply flex-1 introWidth py-4 flex flex-col items-center;
-  }
-
-  .introTextContainer2 {
-    @apply my-auto;
-  }
-
-  .introButtonContainer {
-    @apply w-full px-2 desktop:px-0 pt-[32px] pb-[44px] flex justify-between flex-none;
-  }
-
-  .introBulletContainer {
-    @apply flex flex-col gap-[12px] desktop:gap-[20px];
-  }
-
-  .introHeaderFont {
-    @apply pt-[40px] text-[1.8rem] leading-[2rem] font-bold text-center;
-  }
-
-  .introNumber {
-    @apply flex-none mr-[12px] w-[28px] h-[28px] desktop:w-[24px] desktop:h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[13px] text-white;
-  }
-
-  .introButtonPrimary {
-    @apply w-[120px] buttonHeight border-2 buttonPrimaryColorLight font-medium rounded-full;
-  }
-
-  .introButtonSecondary {
-    @apply w-[120px] buttonHeight border-2 buttonSecondaryColor font-medium rounded-full;
-  }
-
-  .introNextNoColor {
-    @apply mr-[4px] w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] buttonHeight font-semibold rounded-[6px];
-  }
-
-  .introNext {
-    @apply introNextNoColor buttonPrimaryColorLight;
-  }
-
-  .cashoutIntroNext {
-    @apply introNextNoColor buttonPrimaryColor;
-  }
-
-  .introBack {
-    @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] buttonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
-  }
-
-  .cashoutIntroButtonContainer {
-    @apply flex-none px-[12px] w-full pt-[32px] flex justify-between items-end;
-  }
-
-  .cashoutCardWidth {
-    @apply w-[88%] max-w-[480px] desktop:max-w-[400px];
-  }
-
-  .cashoutCard {
-    @apply cashoutCardWidth min-h-[230px] portrait:sm:min-h-[260px] landscape:lg:min-h-[260px] desktop:!min-h-[210px] px-[28px] portrait:sm:px-[28px] landscape:lg:px-[28px] py-[20px] portrait:sm:py-[32px] landscape:lg:py-[32px] desktop:!py-[20px] flex flex-col rounded-[16px] bg-gradient-to-br from-[15%] to-[85%] from-light1 to-light1 dark:from-dark2 dark:to-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
-  }
-
-  .pendingCard {
-    @apply mt-[2px] text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm cashoutCardWidth p-[16px] portrait:sm:p-[24px] landscape:lg:p-[24px] desktop:!p-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark3 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
-  }
-
-  .cashoutHeader {
-    @apply textXlApp font-semibold;
-  }
-
-  .cashoutBalance {
-    @apply text-[28px] portrait:sm:text-[32px] landscape:lg:text-[32px] desktop:!text-[24px] font-normal flex items-center;
-  }
-
-  .cashoutBalanceContainer {
-    @apply flex-1 flex flex-col mt-[20px] portrait:sm:mt-[24px] landscape:lg:mt-[24px] desktop:!mt-[16px];
-  }
-
-  .cashoutMoreOptionsContainer {
-    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-[6px] bg-slate-200 text-black dark:text-white dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap;
-  }
-
-  .cashoutEllipsisContainer {
-    @apply w-[36px] h-full flex items-center justify-center rounded-full desktop:hover:bg-slate-200 dark:desktop:hover:bg-dark5 cursor-pointer;
-  }
-
-  .cashoutArrowContainer {
-    @apply ml-4 px-[8px] py-[2px] flex items-center justify-center bg-light2 dark:bg-transparent rounded-xl cursor-pointer;
-  }
-
-  .cashoutArrow {
-    @apply textLgApp text-blue-500 dark:text-darkButton;
-  }
-
-  .cashoutDetailsContainer {
-    @apply textLgApp mt-[12px] mb-[16px] px-[16px] py-[12px] bg-light2 dark:bg-transparent border border-transparent dark:border-dark6 rounded-lg grid grid-cols-[104px_auto] font-medium relative;
-  }
-
-  .cashoutStats2 {
-    @apply textSmApp font-medium text-center;
-  }
-
-  .cashoutButtonContainer {
-    @apply w-full flex justify-end;
-  }
-
-  .cashoutButton {
-    @apply ml-auto buttonPrimaryColor textSmApp font-medium w-[220px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[200px] buttonHeightSm translate-x-[4px] rounded-full;
-  }
-
-  .transferCard {
-    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[24px] flex flex-col items-center bg-light3 dark:bg-dark4 rounded-[8px] relative border-none border-slate-400 dark:border-slate-600;
-  }
-
-  .transferFromCard {
-    @apply pt-[24px] pb-[48px] desktop:pb-[36px] transferCard;
-  }
-
-  .transferToCard {
-    @apply pt-[40px] desktop:pt-[36px] pb-[24px] transferCard;
-  }
-
-  .transferIcon {
-    @apply relative w-[52px] h-[52px] desktop:w-[44px] desktop:h-[44px] rounded-[6px] overflow-hidden flex-none;
-  }
-
-  .transferUsdc {
-    @apply pr-[12px] text-[24px] desktop:text-[20px] font-semibold leading-none;
-  }
-
-  .transferAmountFromBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-[124px];
-  }
-
-  .transferAmountToBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
-  }
-
-  .transferArrowContainer {
-    @apply w-[200px] h-[70px] desktop:w-[160px] desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full bg-light2 dark:bg-dark3 border border-slate-400 dark:border-dark6 z-[2];
-  }
-
-  .transferArrowFont {
-    @apply text-[16px] desktop:text-[14px] ml-[8px] leading-tight desktop:leading-tight;
-  }
-
-  .transferArrowArrow {
-    @apply text-[34px] desktop:text-[30px] text-lightText1 dark:text-darkText1;
-  }
-
-  .sidebarBodyContainer {
-    @apply w-[85%] flex flex-col items-center;
-  }
-
-  .qrCodeModalIconContainer {
-    @apply absolute w-[60px] h-[60px] rounded-full portrait:sm:border-2 landscape:lg:border-2 border-white flex items-center justify-center cursor-pointer desktop:hover:opacity-80 active:opacity-80;
   }
 }
 
@@ -911,18 +864,20 @@
   .textGray {
     @apply text-slate-500 dark:text-slate-400;
   }
+
+  .dotted {
+    @apply underline underline-offset-[3px] decoration-dotted decoration-blue-600 text-blue-600 cursor-pointer;
+  }
+
+  .link {
+    @apply cursor-pointer text-blue-600 dark:text-blue-400 xs:hover:underline active:underline;
+  }
+
+  .linkLight {
+    @apply cursor-pointer text-blue-600 xs:hover:underline active:underline;
+  }
+
+  .linkDark {
+    @apply cursor-pointer text-blue-400 xs:hover:underline active:underline;
+  }
 }
-
-/* If the user prefers dark mode, apply color-scheme: dark, as usual */
-/* @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-} */
-
-/* If the user prefers light mode, we enforce color-scheme: dark */
-/* @media (prefers-color-scheme: light) {
-  html {
-    color-scheme: dark;
-  }
-} */

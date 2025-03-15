@@ -38,7 +38,7 @@ export default function InstructionsModal({ infoModal, setInfoModal }: { infoMod
           {infoModal == "cexDepositAddress" && <div>{t("info.platformAddress.text-1")}</div>}
           {/*---button---*/}
           <div className="modalButtonContainer">
-            <button onClick={() => setInfoModal(null)} className="buttonPrimary modalButtonWidth">
+            <button onClick={() => setInfoModal(null)} className="appButton1 modalButtonWidth">
               {tcommon("close")}
             </button>
           </div>

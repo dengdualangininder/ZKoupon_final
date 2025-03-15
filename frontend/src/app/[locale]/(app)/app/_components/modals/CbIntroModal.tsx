@@ -20,7 +20,7 @@ const cbIntroModal = ({ setCbIntroModal, setCashbackModal }: { setCbIntroModal: 
                 setCbIntroModal(false);
                 setCashbackModal(true);
               }}
-              className="buttonPrimary"
+              className="appButton1"
             >
               {t("enterApp")}
             </button>

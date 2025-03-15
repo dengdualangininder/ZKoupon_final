@@ -11,7 +11,7 @@ const ErrorModal = ({ errorModal, setErrorModal }: { errorModal: React.ReactNode
           <div className="py-[40px]">{errorModal}</div>
           {/*--- button ---*/}
           <div className="modalButtonContainer">
-            <button onClick={() => setErrorModal(null)} className="buttonPrimary modalButtonWidth">
+            <button onClick={() => setErrorModal(null)} className="appButton1 modalButtonWidth">
               {tcommon("close")}
             </button>
           </div>

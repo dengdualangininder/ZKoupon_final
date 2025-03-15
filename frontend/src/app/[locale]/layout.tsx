@@ -44,7 +44,7 @@ export default async function RootLayout({ children, params }: { children: React
 
   return (
     <html suppressHydrationWarning lang={locale} className={inter.className} style={{ fontSize: locale == "zh-TW" ? "18px" : "16px" }}>
-      <body>
+      <body className="antialiased">
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>

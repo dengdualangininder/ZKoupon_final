@@ -198,7 +198,7 @@ export default function Intro() {
                 {t("welcome.text-2")}
               </div>
               <button
-                className="w-[220px] desktop:w-[190px] buttonHeight font-semibold tracking-wide rounded-full buttonPrimaryColorLight animate-fadeInAnimation"
+                className="w-[220px] desktop:w-[190px] appButtonHeight font-semibold tracking-wide rounded-full button1ColorLight animate-fadeInAnimation"
                 onClick={() => setStep("info")}
               >
                 {t("welcome.start")}

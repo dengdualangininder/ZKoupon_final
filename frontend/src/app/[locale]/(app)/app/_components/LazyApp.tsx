@@ -40,7 +40,6 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
   // states
   const [menu, setMenu] = useState("payments"); // "payments" | "cashout" | "settings"
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
-  // modal states
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [cbIntroModal, setCbIntroModal] = useState(false);
   const [cashbackModal, setCashbackModal] = useState(false);
@@ -48,16 +47,15 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
   const [tradeMAXModal, setTradeMAXModal] = useState(false);
   const [signOutModal, setSignOutModal] = useState(false);
 
-  // preload components on mount
+  // preload components 3s after first render
   useEffect(() => {
-    const preload = () => {
+    function preload() {
       console.log("Cashout, Settings, QrCodeModal preload initiated");
       import("./Cashout");
       import("./Settings");
       import("./(payments)/QrCodeModal");
-    };
+    }
     setTimeout(preload, 3000);
-    console.log("(app)/app/_components/LazyApp.tsx, end of preload useEffect");
   }, []);
 
   // misc effects
@@ -116,8 +114,8 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
 
   return (
     <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
-      {/*--- Navbar width=120/lg:160/desktop:200 or height=80/sm:140 ---*/}
-      <Navbar flashInfo={flashInfo} menu={menu} setMenu={setMenu} cashoutSettings={settings.cashoutSettings} setSignOutModal={setSignOutModal} />
+      <Navbar menu={menu} setMenu={setMenu} setSignOutModal={setSignOutModal} />
+
       {/*---menu tabs---*/}
       {menu === "payments" && <Payments flashInfo={flashInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
       {menu === "cashout" && w3Info && (
@@ -131,6 +129,7 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
         />
       )}
       {menu === "settings" && w3Info && <Settings paymentSettings={settings.paymentSettings} cashoutSettings={settings.cashoutSettings} setErrorModal={setErrorModal} />}
+
       {/*--- modals ---*/}
       {newTxn && <Notification paymentSettings={settings.paymentSettings} newTxn={newTxn} setNewTxn={setNewTxn} />}
       {errorModal && <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />}

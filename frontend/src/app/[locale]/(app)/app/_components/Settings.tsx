@@ -258,10 +258,10 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className="settingsLabel">{t("qrCode")}</label>
             <div className="relative h-full flex gap-[28px] py-[6px] desktop:py-[2px]">
-              <button className="h-full px-[16px] buttonPrimaryColor rounded-full settingsFontButton" type="button" onClick={downloadQrCode}>
+              <button className="h-full px-[20px] button1Color rounded-full settingsFontButton" type="button" onClick={downloadQrCode}>
                 {tcommon("download")}
               </button>
-              <button className="h-full px-[16px] buttonPrimaryColor rounded-full settingsFontButton" type="button" onClick={() => setEmailModal(true)}>
+              <button className="h-full px-[20px] button1Color rounded-full settingsFontButton" type="button" onClick={() => setEmailModal(true)}>
                 {tcommon("email")}
               </button>
             </div>
@@ -572,7 +572,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               setLoggingOut(true);
               logout();
             }}
-            className="h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] w-[120px] portrait:sm:w-[150px] landscape:lg:w-[150px] desktop:!w-[120px] rounded-full font-medium buttonPrimaryColor flex items-center justify-center"
+            className="h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] w-[120px] portrait:sm:w-[150px] landscape:lg:w-[150px] desktop:!w-[120px] rounded-full font-medium button1Color flex items-center justify-center"
           >
             {loggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
           </button>
@@ -620,7 +620,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
                 <label className="mt-[32px] w-full font-semibold">{t("emailModal.label")}</label>
                 <div className="mt-[4px] w-full flex items-center relative">
                   <input
-                    className="text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[44px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-gray-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
+                    className="text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[44px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-slate-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
                     onChange={(e) => setEmail(e.currentTarget.value)}
                     value={email}
                     placeholder="Enter an email address"
@@ -634,18 +634,18 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
                 {/*---button---*/}
                 <div className="w-full pt-[50px] pb-[16px] flex justify-center items-center">
                   {isSendingEmail == "initial" && (
-                    <button onClick={emailQrCode} className="buttonPrimary w-full">
+                    <button onClick={emailQrCode} className="appButton1 w-full">
                       {t("emailModal.button")}
                     </button>
                   )}
                   {isSendingEmail == "sending" && (
-                    <div onClick={emailQrCode} className="buttonPrimary bg-lightButtonHover dark:bg-darkButtonHover w-full flex justify-center items-center">
+                    <div onClick={emailQrCode} className="appButton1 bg-lightButtonHover dark:bg-darkButtonHover w-full flex justify-center items-center">
                       <SpinningCircleWhite />
                       <div className="ml-[12px] textBaseApp">{t("emailModal.sending")}...</div>
                     </div>
                   )}
                   {isSendingEmail == "sent" && (
-                    <div onClick={emailQrCode} className="buttonPrimary !bg-transparent border-none flex items-center justify-center">
+                    <div onClick={emailQrCode} className="appButton1 !bg-transparent border-none flex items-center justify-center">
                       <FaCircleCheck className="text-green-500 text-[24px]" />
                       <div className="ml-[12px]">{t("emailModal.sent")}</div>
                     </div>

@@ -4,8 +4,6 @@ import dynamic from "next/dynamic";
 // custom hooks
 import { useW3Info } from "../../Web3AuthProvider";
 import { useSettingsQuery } from "../../hooks";
-import { useAccount } from "wagmi";
-
 // components
 const LazyApp = dynamic(() => import("./LazyApp"));
 import Loading from "./Loading";
@@ -14,7 +12,6 @@ import { FlashInfo, AllRates } from "@/utils/types";
 
 export default function App({ flashInfo, allRates }: { flashInfo: FlashInfo; allRates: AllRates }) {
   console.log("(app)/app/_components/App.tsx");
-  const account = useAccount();
 
   // get user settings
   const w3Info = useW3Info();

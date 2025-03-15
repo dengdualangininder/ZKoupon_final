@@ -24,7 +24,7 @@ const CashbackModal = ({ setCashbackModal }: { setCashbackModal: any }) => {
                 setCashbackModal(false);
                 window.localStorage.removeItem("cashbackModal");
               }}
-              className="buttonPrimary modalButtonWidth"
+              className="appButton1 modalButtonWidth"
             >
               {tcommon("close")}
             </button>

@@ -22,6 +22,17 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["new-types.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/maze.js"],
+  "include": [
+    "new-types.d.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "public/maze.js",
+    "../_unused/settings-mechant-fields.tsx",
+    "../_unused/transferSuccessModalOLD.tsx",
+    "../_unused/transferToBankModal.tsx",
+    "../_unused/savings/savings.tsx"
+  ],
   "exclude": ["node_modules"]
 }

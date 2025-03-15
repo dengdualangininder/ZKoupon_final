@@ -12,10 +12,10 @@ export default function EmployeePassModal({ setEmployeePassModal, onClickChangeE
           <div className="py-[40px]">{t("employeePassModal.text")}</div>
           {/*---buttons---*/}
           <div className="modalButtonContainer">
-            <button onClick={onClickChangeEmployeePass} className="buttonPrimary modalButtonWidth">
+            <button onClick={onClickChangeEmployeePass} className="appButton1 modalButtonWidth">
               {t("employeePassModal.change")}
             </button>
-            <button onClick={() => setEmployeePassModal(false)} className="buttonSecondary modalButtonWidth">
+            <button onClick={() => setEmployeePassModal(false)} className="appButton2 modalButtonWidth">
               {t("employeePassModal.cancel")}
             </button>
           </div>

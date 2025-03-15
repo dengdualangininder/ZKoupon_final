@@ -8,29 +8,27 @@ export default function LowCost({ merchantCurrency }: { merchantCurrency: string
     <div className="pt-[80px] pb-[96px] homeSectionSize min-h-[700px] flex flex-col items-center lg:flex-row lg:items-start">
       {/*--- LEFT ---*/}
       <div className="w-full lg:w-[50%] lg:pr-[16px]">
-        {/*--- header ---*/}
-        <div className="homeHeaderFont">
+        <div className="textHeaderHome">
           {t("header-1")}
           <br />
           {t("header-2")}
         </div>
-        {/*--- body ---*/}
-        <div className="mt-[24px] w-full text-lg">{t("body")}</div>
+        <div className="mt-[24px] w-full max-w-[450px]">{t("body")}</div>
       </div>
       {/*--- RIGHT ---*/}
       {merchantCurrency && (
-        <div className="w-full lg:w-[50%] mt-[32px] lg:mt-0 flex flex-col items-center space-y-[24px]">
+        <div className="w-full lg:w-[50%] mt-[32px] lg:mt-0 flex flex-col items-center gap-y-[24px]">
           {/*--- card 1 ---*/}
           <div className="lowCostCard">
-            <div className="lowCostCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-600">{chunks}</span> })}</div>
-            <div className="lowCostCardBody">{t("card-1-body")}</div>
+            <div className="whiteCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-600">{chunks}</span> })}</div>
+            <div className="whiteCardBody">{t("card-1-body")}</div>
           </div>
           {/*--- card 2 ---*/}
           <div className="lowCostCard">
-            <div className="lowCostCardHeader">
+            <div className="whiteCardHeader">
               {t.rich("card-2-header", { withdrawalFee: currencyToData[merchantCurrency].offrampFee, span: (chunks) => <span className="text-blue-600">{chunks}</span> })}
             </div>
-            <div className="lowCostCardBody">
+            <div className="whiteCardBody">
               <div>{t("card-2-body-1")}:</div>
               {/*--- transfer fees ---*/}
               <div>
@@ -48,12 +46,12 @@ export default function LowCost({ merchantCurrency }: { merchantCurrency: string
           {/*--- card 3 ---*/}
           {merchantCurrency != "USD" && (
             <div className="lowCostCard">
-              <div className="lowCostCardHeader">
+              <div className="whiteCardHeader">
                 {t.rich("card-3-header-1", { merchantCurrency: merchantCurrency, span: (chunks) => <span className="text-blue-600">{chunks}</span> })}
                 <br />
                 {t.rich("card-3-header-2", { conversionFee: currencyToData[merchantCurrency].conversionFee, span: (chunks) => <span className="text-blue-600">{chunks}</span> })}
               </div>
-              <div className="lowCostCardBody">
+              <div className="whiteCardBody">
                 <p>{t("card-3-body-1", { merchantCurrency: merchantCurrency, cex: currencyToData[merchantCurrency].cex })}</p>
                 <p>{t("card-3-body-2", { cex: currencyToData[merchantCurrency].cex, conversionFee: currencyToData[merchantCurrency].conversionFee })}</p>
               </div>

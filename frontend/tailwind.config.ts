@@ -282,6 +282,5 @@ module.exports = {
     plugin(function ({ addVariant }) {
       addVariant("desktop", ["@media (hover: hover)", "@media (pointer: fine)"]);
     }),
-    require("@tailwindcss/forms"),
   ],
 };

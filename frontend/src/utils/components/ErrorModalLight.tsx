@@ -12,7 +12,7 @@
 //           <div className="errorModalFont py-[16px]">{errorModal}</div>
 //           {/*--- button ---*/}
 //           <div className="modalButtonContainer">
-//             <button onClick={() => setErrorModal(null)} className="buttonPrimaryLight sm:max-w-[300px]">
+//             <button onClick={() => setErrorModal(null)} className="appButton1Light sm:max-w-[300px]">
 //               {tcommon("close")}
 //             </button>
 //           </div>

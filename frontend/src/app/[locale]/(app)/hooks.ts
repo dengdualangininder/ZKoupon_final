@@ -96,8 +96,8 @@ export const useTxnsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo, filter
       throw new Error();
     },
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => (lastPage?.length ? allPages.length : undefined),
-    enabled: w3Info && flashInfo ? true : false,
+    getNextPageParam: (lastPage, allPages) => (lastPage?.length ? allPages.length : undefined), // lastPage = [10 items], allPages = [[10 items]]; should return "undefined" if no next page
+    enabled: (flashInfo && flashInfo.userType === "owner" && w3Info) || (flashInfo && flashInfo.userType === "employee") ? true : false,
   });
 };
 

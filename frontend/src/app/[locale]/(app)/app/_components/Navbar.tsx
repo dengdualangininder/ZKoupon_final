@@ -1,27 +1,9 @@
-import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "@/i18n/routing";
-import { CashoutSettings } from "@/db/UserModel";
 import { useW3Info } from "../../Web3AuthProvider";
 import { useTranslations } from "next-intl";
-import { FlashInfo } from "@/utils/types";
-import { HiMiniArrowRightStartOnRectangle } from "react-icons/hi2";
 
-export default function Navbar({
-  menu,
-  setMenu,
-  flashInfo,
-  cashoutSettings,
-  setSignOutModal,
-}: {
-  menu: string;
-  setMenu: any;
-  flashInfo: FlashInfo;
-  cashoutSettings: CashoutSettings;
-  setSignOutModal: any;
-}) {
+export default function Navbar({ menu, setMenu, setSignOutModal }: { menu: string; setMenu: any; setSignOutModal: any }) {
   const w3Info = useW3Info();
-  const router = useRouter();
   const t = useTranslations("App.Page");
 
   return (

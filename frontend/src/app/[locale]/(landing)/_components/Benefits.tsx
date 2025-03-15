@@ -6,25 +6,21 @@ export default function Benefits({ merchantCurrency, allRates }: { merchantCurre
   const t = useTranslations("HomePage.Why");
 
   return (
-    <div className="pt-[80px] pb-[96px] homeSectionSize min-h-[650px] flex flex-col items-center">
+    <div className="pt-[80px] pb-[96px] homeSectionSize flex flex-col items-center">
       {/*--- HEADER ---*/}
-      <div className="w-full homeHeaderFont">{t("header")}</div>
-      {/*--- CONTENT ---*/}
-      <div
-        className={`${
-          merchantCurrency == "USD" ? "lg:h-[250px]" : "lg:h-[320px]"
-        } mt-[40px] portrait:sm:mt-[60px] landscape:lg:mt-[60px] w-full flex flex-col items-center lg:flex-row lg:justify-between lg:space-x-[12px] space-y-6 lg:space-y-0`}
-      >
+      <div className="w-full textHeaderHome max-w-[770px] xl:max-w-none">{t("header")}</div>
+      {/*--- CARD CONTAINER ---*/}
+      <div className="mt-[40px] lg:mt-[60px] max-w-[550px] xl:max-w-none xl:min-h-[250px] grid grid-cols-1 xl:grid-cols-3 gap-[24px]">
         {/*--- card1 ---*/}
         <div className="whyCard">
-          <div className="lowCostCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
-          <div className="whyCardBody">{t("card-1-body")}</div>
+          <div className="whiteCardHeader">{t.rich("card-1-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+          <div className="whiteCardBody">{t("card-1-body")}</div>
         </div>
         {/*--- card2 ---*/}
         {merchantCurrency && merchantCurrency != "USD" && (
           <div className="whyCard">
-            <div className="lowCostCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
-            <div className="whyCardBody space-y-[16px]">
+            <div className="whiteCardHeader">{t.rich("card-2-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+            <div className="whiteCardBody space-y-[16px]">
               <div>
                 {t.rich("card-2-body", {
                   span: (chunks: any) => <span className={`${merchantCurrency == "EUR" ? "" : "hidden"}`}>{chunks}</span>,
@@ -47,14 +43,14 @@ export default function Benefits({ merchantCurrency, allRates }: { merchantCurre
         {/*--- card2 (USD only) ---*/}
         {merchantCurrency == "USD" && (
           <div className="whyCard">
-            <div className="lowCostCardHeader">{t.rich("card-2-usd-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
-            <div className="whyCardBody">{t("card-2-usd-body")}</div>
+            <div className="whiteCardHeader">{t.rich("card-2-usd-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+            <div className="whiteCardBody">{t("card-2-usd-body")}</div>
           </div>
         )}
         {/*--- card3 ---*/}
         <div className="whyCard">
-          <div className="lowCostCardHeader">{t.rich("card-3-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
-          <div className="whyCardBody">{t("card-3-body")}</div>
+          <div className="whiteCardHeader">{t.rich("card-3-header", { span: (chunks) => <span className="text-blue-700">{chunks}</span> })}</div>
+          <div className="whiteCardBody">{t("card-3-body")}</div>
         </div>
       </div>
     </div>

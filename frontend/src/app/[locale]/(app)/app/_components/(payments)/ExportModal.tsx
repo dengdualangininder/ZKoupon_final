@@ -139,12 +139,14 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
           <div className="xButton">&#10005;</div>
         </div>
         {/*--- content ---*/}
-        <div className="sidebarModalContentContainer space-y-[32px]">
+        <div className="sidebarModalContentContainer">
           {/*---start month---*/}
           <div className="w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.start")}</div>
             <select
-              className={`${downloadDates.length === 0 ? "italic textSmAppPx text-slate-500" : "textBaseAppPx"} w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]`}
+              className={`${
+                downloadDates.length === 0 ? "italic text-slate-400 dark:text-zinc-700" : ""
+              } textBaseAppPx w-[140px] desktop:w-[120px] inputColor px-[12px] inputHeightApp`}
               value={startMonthYear}
               onChange={(e) => {
                 setStartMonthYear(e.target.value);
@@ -160,10 +162,12 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
             </select>
           </div>
           {/*---end month---*/}
-          <div className="w-full flex items-center justify-between">
+          <div className="mt-[32px] w-full flex items-center justify-between">
             <div className="font-medium">{t("downloadModal.end")}</div>
             <select
-              className={`${downloadDates.length === 0 ? "italic textSmAppPx text-slate-500" : "textBaseAppPx"} w-[130px] inputColor px-[12px] py-[8px] rounded-[6px]`}
+              className={`${
+                downloadDates.length === 0 ? "italic text-slate-400 dark:text-zinc-700" : ""
+              } textBaseAppPx w-[140px] desktop:w-[120px] inputColor px-[12px] inputHeightApp`}
               value={endMonthYear}
               onChange={(e) => {
                 setEndMonthYear(e.target.value);
@@ -179,11 +183,9 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
             </select>
           </div>
           {/*--- button ---*/}
-          <div className="pt-[24px] w-full flex justify-center">
-            <button className="buttonPrimary modalButtonWidth" onClick={exportTxns}>
-              {t("downloadModal.download")}
-            </button>
-          </div>
+          <button className="mt-[50px] appButton1 w-full" onClick={exportTxns}>
+            {t("downloadModal.download")}
+          </button>
         </div>
       </div>
     </>

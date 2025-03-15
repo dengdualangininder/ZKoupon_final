@@ -35,8 +35,8 @@
     },
     "LowCost": {
       "header-1": "Global payments",
-      "header-2": "with near-zero fees",
-      "body": "Sending money on the blockchain costs near zero, but most blockchain payment platforms still charge 1-2% in fees. Flash charges 0%, as Flash integrates existing low-cost blockchain infrastructure (the Polygon blockchain, Web3Auth, cryptocurrency exchanges, and others) to create possibly the lowest-cost payments platform today.",
+      "header-2": "with zero fees",
+      "body": "Blockchains enable instant global money transfers with near zero fees. Flash integrates already existing blockchain infrastructure (Polygon network, Web3Auth, cryptocurrency exchanges, and others) to create a cost-efficient system.",
       "card-1-header": "<span>0%</span> Transaction Fees",
       "card-2-header": "<span>{withdrawalFee}</span> Withdrawal Fee",
       "card-3-header-1": "<span>Best</span> USDC-{merchantCurrency} Rates +",
@@ -45,25 +45,25 @@
       "card-2-body-1": "Transferring funds to the bank costs near zero",
       "card-2-body-2": "Flash\u279E{cex} Exchange",
       "card-2-body-3": "{cex} Exchange\u279EYour bank",
-      "card-3-body-1": "Flash does not skim profits by giving you or your customers bad USDC-{merchantCurrency} conversion rates. We use the conversion rate from {cex} Exchange, which are true market rates.",
+      "card-3-body-1": "Flash does not skim profits by giving you bad USDC-{merchantCurrency} conversion rates. We use the rates from {cex} Exchange, which are true market rates.",
       "card-3-body-2": "{cex} Exchange's conversion fee is {conversionFee}."
     },
     "Simple": {
       "header-1": "Simplicity means",
       "header-2": "low overhead",
-      "body-1": "The Flash app has a minimalistic interface that is easy to learn.",
-      "body-2": "<span>If you have a PoS system,</span> using Flash should not increase your overhead. When a customer pays through Flash, first confirm the payment on the Flash app. Then, enter the transaction in your PoS system as a cash payment. This way, all transactions are kept in a single system."
+      "body-1": "Our app is minimalistic and easy to learn.",
+      "body-2": "<span>If you have a PoS system,</span> just glance at the Flash app to confirm payment. Then, enter the transaction in your PoS system as a cash payment. This way, all transactions are kept in a single system and your overhead remains low while using Flash."
     },
     "Why": {
       "header": "Attract new customers & enable frictionless spending",
       "card-1-header": "Attract <span>a young and growing demographic</span>",
-      "card-2-header": "Attract <span>international tourists</span>",
+      "card-2-header": "Attract <span>international travelers</span>",
       "card-2-usd-header": "Become <span>free and independent</span>",
       "card-3-header": "Attract <span>big spenders</span>",
-      "card-1-body": "Hundreds of millions of users, particularly the younger generation, enjoy using crypto. The MetaMask app has 50+ million users.",
-      "card-2-body": "Surveys show >80% of tourists who own USDC prefer paying with USDC instead of cash/card. This is because the USDC\u279C{merchantCurrency} rate is usually 1-5% better than the USD\u279C{merchantCurrency} rate at any bank<span>, including Wise</span>.",
+      "card-1-body": "There are now 50+ million users with MetaMask. These numbers are growing fast, particularly among young people.",
+      "card-2-body": "Surveys show >80% of travelers prefer paying with USDC instead of cash/card because the USDC\u279C{merchantCurrency} rate is usually 1-5% better than the USD\u279C{merchantCurrency} rate at any bank<span>, including Wise</span>.",
       "card-2-usd-body": "You control the entire payments process when you use Flash. No one can withhold payment or block you from using the system.",
-      "card-3-body": "Many users keep their entire savings on the blockchain. These people may be willing to spend more when using USDC than when using card or cash."
+      "card-3-body": "People who keep their savings on the blockchain may be willing to spend more when using USDC than when using card or cash."
     },
     "Learn": {
       "header": "Learning Center",
@@ -75,8 +75,8 @@
       "title4": "How do I use the blockchain?",
       "title5": "How does Flash help?",
       "lesson-1-1": "A <span>blockchain</span> is like a banking system.",
-      "lesson-1-2": "The banking system is composed of bank accounts, where accounts can transfer currencies (USD, EUR, YEN) to other accounts. A record of account balances and transactions are stored in bank servers and secured by bank employees.",
-      "lesson-1-3": "Similarly, a blockchain is composed of <span1>blockchain accounts</span1>, where accounts can transfer <span2>tokens</span2> (USDC, USDT, BTC) to other accounts. Records of account balances and transactions are stored in thousands of servers globally and secured by tens of thousands of individuals who are incentivized to maintain accurate records. Over 10+ years with $30+ trillion transacted, blockchains have proven to be very secure financial networks.",
+      "lesson-1-2": "The banking system is composed of accounts, where accounts can transfer currencies (USD, EUR, YEN) to other accounts. Account balances and transactions are stored in servers secured by bank employees.",
+      "lesson-1-3": "Similarly, a blockchain is composed of <span1>blockchain accounts</span1>, where accounts can transfer <span2>tokens</span2> (USDC, USDT, BTC) to other accounts. Account balances and transactions are stored in thousands of servers globally and secured by tens of thousands of individuals who are incentivized to maintain accurate records. Over 10+ years with $30+ trillion transacted, blockchains have proven to be very secure financial networks.",
       "lesson-1-4": "Every blockchain account is assigned a unique <span>address</span>, which is like a bank account number. When you send tokens, you will need to enter the recipient’s blockchain address. To receive tokens, you will need to share your blockchain address with the sender. As you see, sending and receiving tokens on the blockchain is very similar to sending and recieving money in the banking system.",
       "lesson-2": "Today, there are 100’s of blockchains. What helps simplify matters is that most blockchains, including 7 of the top 10 blockchains (Ethereum, BSC, Arbitrum, Optimism, Base, Polygon, Avalanche, Blast), are built using the same technology called the <span1>Ethereum Virtual Machine (EVM)</span1>. An advantage of EVM is that a single EVM blockchain account can be used for all EVM blockchains. For example, if you have an EVM blockchain account and your EVM address is <span2>0x709D8145D21681f8287a556C67cD58Cb8A7FB3Aa</span2>, you can use this same address to receive tokens on the Ethereum chain, Polygon chain, or any other EVM chain. Payments on Flash use an EVM chain (Polygon), so for now we'll only focus on EVM blockchains.",
       "lesson-3-1": "Some tokens do not have value, while others do. USDC is a token issued by Circle (a highly regulated U.S.-based company) and is backed one-to-one by USD. The USD reserves are held in major U.S. banks with quarterly attestations. Therefore, 1 USDC has a value equal to 1 USD.",
@@ -102,9 +102,9 @@
       "loading": "Loading",
       "error": { "failedNewAccount": "Failed to create new account" },
       "bannerModal": { "new": "NEW PAYMENT", "from": "from" },
-      "payments": "PAYMENTS",
-      "cashout": "CASH OUT",
-      "settings": "SETTINGS"
+      "payments": "Payments",
+      "cashout": "Cash Out",
+      "settings": "Settings"
     },
     "Login": {
       "subheader": "Global payments with 0% fees",
@@ -248,7 +248,7 @@
         "lowBalance": "Amount exceeds balance",
         "unknownTransferError": "Something happened and the transfer was not made. Please try again or contact us. We apologize for the inconvenience."
       },
-      "toAddress": "EVM address",
+      "toAddress": "Any EVM address",
       "enterAnEvmAddress": "Enter an EVM address",
       "transferToCexSuccessModal": "<span1>{amount} USDC</span1> was sent to your {cex} account. Please wait 5-10 minutes for your {cex} balance to update.",
       "transferToBankSuccessModal": {

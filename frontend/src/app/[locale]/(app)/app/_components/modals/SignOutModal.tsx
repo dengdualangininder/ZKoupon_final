@@ -24,11 +24,11 @@ export default function EmployeePassModal({ setSignOutModal }: { setSignOutModal
                   await deleteUserJwtCookie();
                   window.location.href = "/login"; // hard refresh on route
                 }}
-                className="buttonPrimary modalButtonWidth"
+                className="appButton1 modalButtonWidth"
               >
                 {tcommon("yes2")}
               </button>
-              <button onClick={() => setSignOutModal(false)} className="buttonSecondary modalButtonWidth">
+              <button onClick={() => setSignOutModal(false)} className="appButton2 modalButtonWidth">
                 {tcommon("no2")}
               </button>
             </div>

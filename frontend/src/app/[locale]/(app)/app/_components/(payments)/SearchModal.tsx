@@ -64,66 +64,61 @@ export default function SearchModal({
         <div className="fullModalHeader">{t("searchModal.title")}</div>
 
         {/*--- contents ---*/}
-        <div className="sidebarModalContentContainer">
-          {/*--- filters ---*/}
-          <div className="flex-none w-full h-[360px] textBaseApp flex flex-col">
-            {/*--- filter 1 - customer's address ---*/}
-            <div className="searchModalCategoryContainer">
-              <div className="">
-                <div className="font-medium">{t("searchModal.customerAddress")}</div>
-                <div className="text-base desktop:text-xs italic leading-none pb-[5px]">{t("searchModal.enterChars")}</div>
-              </div>
-              <input
-                className="text-xl w-[104px] h-[48px] text-center rounded-md placeholderColor inputColor"
-                onChange={(e) => {
-                  setTempFilter({ ...tempFilter, last4Chars: e.currentTarget.value });
-                }}
-                value={tempFilter?.last4Chars}
-                maxLength={4}
-                placeholder="ABCD"
-              />
+        <div className="sidebarModalContentContainer textBaseApp">
+          {/*--- filter 1 - customer's address ---*/}
+          <div className="searchModalCategoryContainer">
+            <div className="">
+              <div className="font-medium">{t("searchModal.customerAddress")}</div>
+              <div className="text-base desktop:text-xs italic leading-none pb-[5px]">{t("searchModal.enterChars")}</div>
             </div>
-            {/*--- filter 2 - "to refund" payments ---*/}
-            <div className="searchModalCategoryContainer">
-              <div className="font-medium">{t("searchModal.toRefund")}</div>
-              <input
-                type="checkbox"
-                className="checkbox"
-                onChange={(e) => setTempFilter({ ...tempFilter, toRefund: e.target.checked ? true : false })}
-                checked={tempFilter?.toRefund}
-              />
-            </div>
-            {/*--- filter 3 - refunded payments ---*/}
-            <div className="searchModalCategoryContainer">
-              <div className="font-medium">{t("searchModal.refunded")}</div>
-              <input
-                type="checkbox"
-                className="checkbox"
-                onChange={(e) => setTempFilter({ ...tempFilter, refunded: e.target.checked ? true : false })}
-                checked={tempFilter?.refunded}
-              />
-            </div>
-            {/*--- filter 4 - date ---*/}
-            <div className="searchModalCategoryContainer border-none">
-              <div className="font-medium">{t("searchModal.date")}</div>
-              <div
-                className={`${
-                  tempFilter?.searchDate?.to ? "" : "text-slate-400 dark:text-slate-600 italic"
-                } inputColor rounded-md px-4 min-w-[110px] h-[48px] flex items-center justify-center cursor-pointer`}
-                onClick={() => setCalendarModal({ render: true, show: true })}
-              >
-                {tempFilter?.searchDate?.to
-                  ? `${tempFilter.searchDate.from?.toLocaleDateString()} - ${tempFilter.searchDate.to.toLocaleDateString()}`
-                  : t("searchModal.selectDates")}
-              </div>
+            <input
+              className="w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[88px] inputHeightApp textInputAppLg text-center inputColor placeholder:placeholderColor"
+              onChange={(e) => {
+                setTempFilter({ ...tempFilter, last4Chars: e.currentTarget.value });
+              }}
+              value={tempFilter?.last4Chars}
+              maxLength={4}
+              placeholder="Af19"
+            />
+          </div>
+          {/*--- filter 2 - "to refund" payments ---*/}
+          <div className="searchModalCategoryContainer">
+            <div className="font-medium">{t("searchModal.toRefund")}</div>
+            <input
+              type="checkbox"
+              className="checkbox"
+              onChange={(e) => setTempFilter({ ...tempFilter, toRefund: e.target.checked ? true : false })}
+              checked={tempFilter?.toRefund}
+            />
+          </div>
+          {/*--- filter 3 - refunded payments ---*/}
+          <div className="searchModalCategoryContainer">
+            <div className="font-medium">{t("searchModal.refunded")}</div>
+            <input
+              type="checkbox"
+              className="checkbox"
+              onChange={(e) => setTempFilter({ ...tempFilter, refunded: e.target.checked ? true : false })}
+              checked={tempFilter?.refunded}
+            />
+          </div>
+          {/*--- filter 4 - date ---*/}
+          <div className="searchModalCategoryContainer border-none">
+            <div className="font-medium">{t("searchModal.date")}</div>
+            <div
+              className={`${
+                tempFilter?.searchDate?.to ? "" : "italic text-slate-400 dark:text-zinc-700"
+              } inputColor px-[12px] min-w-[110px] inputHeightApp textBaseAppPx flex items-center justify-center cursor-pointer`}
+              onClick={() => setCalendarModal({ render: true, show: true })}
+            >
+              {tempFilter?.searchDate?.to ? `${tempFilter.searchDate.from?.toLocaleDateString()} - ${tempFilter.searchDate.to.toLocaleDateString()}` : t("searchModal.selectDates")}
             </div>
           </div>
           {/*--- button ---*/}
-          <div className="mt-8 mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full flex justify-between">
-            <button className="buttonSecondary w-[35%]" onClick={clearFilter}>
+          <div className="mt-[40px] mb-12 portrait:sm:mt-12 landscape:lg:mt-12 w-full grid grid-cols-[1fr_2fr] gap-[20px]">
+            <button className="appButton2" onClick={clearFilter}>
               {t("searchModal.clear")}
             </button>
-            <button className="buttonPrimary w-[60%]" onClick={search}>
+            <button className="appButton1" onClick={search}>
               {t("searchModal.search")}
             </button>
           </div>

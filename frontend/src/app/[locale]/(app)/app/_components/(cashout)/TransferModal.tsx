@@ -294,6 +294,7 @@ export default function TransferModal({
             />
           </>
         )}
+
         {/*--- title ---*/}
         <div className={`${transferState === "sent" ? "invisible" : ""} fullModalHeader whitespace-nowrap`}>
           {transferModal === "toCex" && tcommon("transferToCEX", { cex: cashoutSettings.cex ? cashoutSettings.cex : tcommon("CEX") })}
@@ -326,7 +327,7 @@ export default function TransferModal({
                     )}
                   </div>
                   {/*--- from info text ---*/}
-                  <div className="transferModalInfoText">
+                  <div className="transferInfoText">
                     {(transferModal === "toCex" || transferModal === "toAny") && (
                       <>
                         <div className="font-medium">{tcommon("fromFlash")}</div>
@@ -418,7 +419,7 @@ export default function TransferModal({
                       </div>
                     )}
                     {/*--- to info text ---*/}
-                    <div className="transferModalInfoText">
+                    <div className="transferInfoText">
                       {transferModal != "toBank" && (
                         <>
                           <div className="font-medium">
@@ -526,7 +527,7 @@ export default function TransferModal({
             {transferState == "initial" && (
               <button
                 onClick={transferModal === "toCex" || transferModal === "toAny" ? onClickTransferToCexSubmit : onClickTransferToBankSubmit}
-                className="buttonPrimary w-full"
+                className="appButton1 w-full"
                 disabled={transferModal === "toCex" && !cbEvmAddress ? true : false}
               >
                 {transferModal === "toCex" &&
@@ -538,14 +539,14 @@ export default function TransferModal({
               </button>
             )}
             {transferState === "sending" && (
-              <button className="flex items-center justify-center w-full buttonPending">
+              <button className="flex items-center justify-center w-full appButtonPending">
                 <SpinningCircleWhite />
                 &nbsp; {tcommon("transferring")}...
               </button>
             )}
             {transferState === "sent" && (
               <button
-                className="buttonPrimary w-full"
+                className="appButton1 w-full"
                 onClick={() => {
                   setTransferState("initial");
                   setTransferModal(null);

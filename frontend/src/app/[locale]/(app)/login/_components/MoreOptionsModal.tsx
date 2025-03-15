@@ -35,7 +35,7 @@ export default function MoreOptionsModal({ setMoreOptionsModal, myConnectorsMore
         {/*---close button---*/}
         <button
           onClick={() => setMoreOptionsModal(false)}
-          className="mt-8 text-xl font-bold w-[160px] py-3 bg-white border border-gray-200 rounded-full tracking-wide drop-shadow-md"
+          className="mt-8 text-xl font-bold w-[160px] py-3 bg-white border border-slate-200 rounded-full tracking-wide drop-shadow-md"
         >
           CLOSE
         </button>

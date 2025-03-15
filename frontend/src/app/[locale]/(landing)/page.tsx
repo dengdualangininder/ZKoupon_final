@@ -63,7 +63,7 @@ export default async function Home() {
   console.log("allRates", allRates);
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden textLgLoose tracking-[-0.01em]">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">

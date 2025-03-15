@@ -3,9 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
-import { getCookie, deleteCookie } from "cookies-next";
 // wagmi
-import { useConnect, useDisconnect } from "wagmi";
+import { useConnect } from "wagmi";
 // i18n
 import { useTranslations } from "next-intl";
 // components
@@ -14,10 +13,8 @@ import SelectLang from "@/utils/components/SelectLang";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // images
-import { PiEyeLight, PiEyeSlashLight, PiGlobeLight, PiCaretDownBold } from "react-icons/pi";
+import { PiEyeLight, PiEyeSlashLight } from "react-icons/pi";
 import { ImSpinner2 } from "react-icons/im";
-// actions
-import { setFlashCookies } from "@/actions";
 // types
 import { MyConnector } from "@/utils/types";
 import { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
@@ -34,7 +31,6 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   // states
   const [merchantEmail, setMerchantEmail] = useState("");
   const [employeePass, setEmployeePass] = useState("");
-  const [errorModal, setErrorModal] = useState<React.ReactNode | null>(null);
   const [show, setShow] = useState(false); // eye - show/hide password
   const [userType, setUserType] = useState(userTypeFromCookies ?? "owner");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -44,31 +40,32 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
     { name: "Google", img: "/google.svg", connectorIndex: 0 },
     { name: "Facebook", img: "/facebook.svg", connectorIndex: 1 },
   ]);
+  const [errorModal, setErrorModal] = useState<React.ReactNode | null>(null);
 
+  // redirect to "saveToHome" page if mobile & not standalone
   useEffect(() => {
-    console.log("/login useEffect");
-    // redirect to "saveToHome" page if mobile & not standalone
     const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
       router.push("/saveAppToHome");
       return;
     }
+  }, []);
 
-    // if Apple, add Apple social login
+  // if Apple, add Apple social login
+  useEffect(() => {
     const isApple = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
-    if (isApple) setMyConnectors([...myConnectors, { name: "Apple", img: "/apple.svg", connectorIndex: 2 }]);
+    if (isApple && myConnectors.length === 2) setMyConnectors([...myConnectors, { name: "Apple", img: "/apple.svg", connectorIndex: 2 }]);
   }, []);
 
   const ownerLogin = async (connectorIndex: number) => {
-    console.log("/login, clicked ownerLogin");
     setIsLoggingIn(true);
-
     try {
       await connectAsync({ connector: connectors[connectorIndex] }); // wait for web3Auth.on CONNECT to initiate and redirect to /app
     } catch (e) {
       console.log(e);
       setSelectedSocial("");
+      setIsLoggingIn(false);
     }
   };
 
@@ -98,38 +95,40 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   };
 
   return (
-    <div className="w-full h-screen font-medium textBaseApp flex flex-col items-center overflow-y-auto bg-light2 text-lightText1">
+    <div className="w-full h-screen flex flex-col items-center overflow-y-auto text-lg desktop:text-sm bg-light2 text-lightText1">
       {/*---showLang mask---*/}
       {langModal && <div className="absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
 
       {/*--- CONTENT CONTAINER (for some reason, pb does not work, so added to last element) ---*/}
-      <div className="pt-[12px] w-[320px] portrait:sm:w-[360px] landscape:lg:w-[360px] desktop:!w-[300px] h-full max-h-[900px] flex flex-col items-center my-auto">
+      <div className="pt-[12px] w-[320px] desktop:w-[280px] h-full max-h-[900px] flex flex-col items-center my-auto">
         {/*--- LANG/LOGO/MENU CONTAINER ---*/}
-        <div className="flex-none w-full h-[39%] min-h-[280px] flex flex-col items-center justify-between">
+        <div className="flex-none w-full h-[38%] min-h-[280px] flex flex-col items-center justify-between">
           {/*--- lang ---*/}
           <div className="h-[38px] ml-auto">
             <SelectLang langModal={langModal} setLangModal={setLangModal} />
           </div>
           {/*--- logo ---*/}
-          <div className="pb-[24px] w-full flex flex-col items-center gap-[8px]">
-            <div className="relative w-full h-[90px] desktop:h-[75px]">
+          <div className="pb-[24px] desktop:pb-[16px] w-full flex flex-col items-center gap-[8px]">
+            <div className="relative w-full h-[80px] desktop:h-[75px]">
               <Image src="/logoBlackNoBg.svg" alt="Flash logo" fill />
             </div>
-            <div className="text-base desktop:!text-sm tracking-wide text-center">{t("subheader")}</div>
+            <div className="text-base desktop:text-xs font-medium tracking-wide text-center">{t("subheader")}</div>
           </div>
 
           {/*--- menu bar ---*/}
-          <div className="w-full h-[56px] desktop:!h-[48px] flex relative">
-            <div className="w-full h-full rounded-full shadow-[inset_4px_4px_16px_0px_rgb(84,84,84,0.20),inset_2px_2px_8px_0px_rgb(120,116,140,0.20)] bg-white bg-opacity-20"></div>
+          <div className="pb-[16px] desktop:pb-[12px] w-full grid grid-cols-2 justify-items-center font-semibold">
             {["owner", "employee"].map((i) => (
               <div
                 key={i}
-                className={`${userType === i ? "bg-black drop-shadow-md text-white" : "bg-transparent text-gray-500"} ${
-                  i === "owner" ? "left-0" : "right-0"
-                } absolute w-[52%] h-full cursor-pointer flex items-center justify-center rounded-full z-[1]`}
+                className={`${userType === i ? "" : "text-slate-400"} w-full h-[40px] desktop:h-[32px] flex justify-center cursor-pointer relative`}
                 onClick={() => setUserType(i)}
               >
                 {t(i)}
+                <div
+                  className={`${userType === i ? "bg-lightText1" : "bg-slate-300"} ${
+                    userType === "owner" ? "rounded-l-md" : "rounded-r-md"
+                  } absolute left-0 bottom-0 w-full h-[4px] cursor-pointer`}
+                ></div>
               </div>
             ))}
           </div>
@@ -139,18 +138,18 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
         <div className="pt-[24px] pb-[48px] w-full">
           {/*--- FOR OWNERS ---*/}
           {userType == "owner" && (
-            <div className="pt-[16px] w-full flex flex-col space-y-[32px] portrait:sm:space-y-[32px] landscape:lg:space-y-[28px]">
+            <div className="pt-[16px] w-full flex flex-col gap-[32px] desktop:gap-[24px]">
               {/*--- connectors: google, facebook, apple ---*/}
               {myConnectors.map((i: MyConnector) => (
                 <div
                   key={i.name}
-                  className="w-full h-[60px] portrait:sm:h-[68px] landscape:lg:h-[68px] desktop:!h-[56px] flex items-center text-slate-700 bg-white rounded-md desktop:hover:opacity-60 active:opacity-60 border border-gray-200 drop-shadow-md cursor-pointer select-none"
+                  className="w-full h-[64px] desktop:h-[52px] flex items-center font-medium text-slate-700 bg-white rounded-[8px] desktop:hover:drop-shadow-sm active:drop-shadow-sm border border-slate-200 drop-shadow-md cursor-pointer select-none"
                   onClick={() => {
                     setSelectedSocial(i.name);
                     ownerLogin(i.connectorIndex);
                   }}
                 >
-                  <div className="relative ml-[20px] mr-[16px] w-[40px] h-[32px]">
+                  <div className="relative ml-[20px] mr-[16px] w-[40px] h-[32px] desktop:h-[26px]">
                     <Image src={i.img} alt={i.name} fill />
                   </div>
                   <div>
@@ -176,17 +175,17 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
           {userType == "employee" && (
             <div className="flex flex-col">
               {/*--email---*/}
-              <div className="">{t("email")}</div>
-              <input type="email" className="loginInputFont" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
+              <div className="loginLabel">{t("email")}</div>
+              <input type="email" className="loginInput" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
-              <div className="mt-[16px] portrait:sm:mt-[24px] landscape:lg:mt-[20px] desktop:!mt-[12px]">{t("password")}</div>
+              <div className="mt-[24px] desktop:mt-[16px] loginLabel">{t("password")}</div>
               <div className="w-full relative">
                 <input
                   ref={passwordRef}
                   type={show ? "text" : "password"}
                   autoComplete="none"
                   autoCapitalize="none"
-                  className="loginInputFont peer"
+                  className="loginInput peer"
                   onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
@@ -200,10 +199,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 </div>
               </div>
               {/*--sign in button---*/}
-              <button
-                className="buttonPrimary mt-[32px] portrait:sm:mt-[36px] landscape:lg:mt-[36px]desktop:!mt-[32px] w-full flex justify-center items-center"
-                onClick={employeeLogin}
-              >
+              <button className="loginButton mt-[50px] desktop:mt-[40px] w-full flex justify-center items-center" onClick={employeeLogin}>
                 {isLoggingIn ? (
                   <div className="flex items-center gap-[16px]">
                     <ImSpinner2 className="animate-spin text-[24px]" />
@@ -215,7 +211,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               </button>
               {/*--forgot password?---*/}
               <div
-                className="pt-[48px] textSmApp text-center link"
+                className="pt-[48px] text-lg desktop:text-sm text-center link"
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
                 }}

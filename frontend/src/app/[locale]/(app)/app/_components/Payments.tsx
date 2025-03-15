@@ -34,6 +34,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const loadRef = useRef(null);
   const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery, while setTempFilter will not
   const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(w3Info, flashInfo, filter);
+  console.log("txns:", txns);
 
   // states
   const [tempFilter, setTempFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } });
@@ -47,17 +48,18 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const [clearSearchModal, setClearSearchModal] = useState(false);
 
   // set up intersection observer payments inifinite load
+  // TODO: not optimal, as observer is triggered upon mount (thus fetchNextPage is also triggered)
   useEffect(() => {
+    // 1. point loadRef.current a to variable
     const loadEl = loadRef.current;
-    if (!loadEl) return;
+    if (!loadEl) return; // needed for TS
 
+    // 2. create observer. when intersected, trigger an action
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        console.log("isIntersecting");
-        fetchNextPage();
-      }
+      if (entry.isIntersecting) fetchNextPage();
     });
 
+    // 3. have observer observe the element
     observer.observe(loadEl);
 
     return () => {
@@ -155,7 +157,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
                         <div
                           className={`${
                             txn.refund ? "text-slate-300 dark:text-slate-700" : ""
-                          } portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)] relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] desktop:!min-h-[74px] flex items-center justify-center border-t border-light5 dark:border-slate-800 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
+                          } portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)] relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] desktop:!min-h-[74px] flex items-center justify-center border-t border-light5 dark:border-dark3 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
                           key={txn.txnHash}
                           onClick={() => {
                             setClickedTxn(txn);
