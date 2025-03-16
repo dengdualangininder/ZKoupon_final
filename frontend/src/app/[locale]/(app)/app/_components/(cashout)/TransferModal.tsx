@@ -314,7 +314,7 @@ export default function TransferModal({
                   <div className="transferIcon">
                     {(transferModal === "toCex" || transferModal === "toAny") && (
                       <>
-                        <Image src="/icon-svg.svg" alt="logo" fill />
+                        <Image src="/icon.svg" alt="logo" fill />
                       </>
                     )}
                     {transferModal === "toBank" && (
