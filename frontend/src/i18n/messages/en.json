@@ -1,15 +1,15 @@
 {
   "HomePage": {
-    "Navbar": { "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center", "enterApp": "Enter App", "support": "Customer Support" },
+    "Navbar": { "how": "How It Works", "why": "Why Use Nulla Pay", "learn": "Learning Center", "enterApp": "Enter App", "support": "Customer Support" },
     "Hero": {
       "title1": "CRYPTO PAYMENTS",
       "title2": "WITH 0% FEES",
       "subtitle1": "With a",
       "trueP2P": " true peer-2-peer",
-      "subtitle2": " design, Flash is a simple and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
+      "subtitle2": " design, Nulla Pay is a simple and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
       "enterApp": "Enter App",
-      "tooltip1": "True P2P means there is no middlemen, so Flash cannot charge any fees, forever.",
-      "tooltip2": "True P2P means there is no middlemen. Therefore, Flash cannot charge fees or make profit by giving you or your customers bad token-fiat exchange rates."
+      "tooltip1": "True P2P means there is no middlemen, so Nulla Pay cannot charge any fees, forever.",
+      "tooltip2": "True P2P means there is no middlemen. Therefore, Nulla Pay cannot charge fees or make profit by giving you or your customers bad token-fiat exchange rates."
     },
     "How": {
       "header": "How It Works",
@@ -21,38 +21,38 @@
       "step-1-1": "<a1>Enter App</a1> and receive a QR code (set up in 1 minute). Display it at the cash register.",
       "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app</span2><div>{tooltip}</div></span1> will open",
       "step-2-2": "The customer enters the amount of {merchantCurrency} for payment",
-      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens</span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Flash app",
-      "step-3-1": "~5s after payment, successful payments will appear on the Flash app. You and multiple employees can simultaneously log in to confirm customer payments.",
+      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens</span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask app to your Nulla App",
+      "step-3-1": "~5s after payment, successful payments will appear on the Nulla App. You and multiple employees can simultaneously log in to confirm customer payments.",
       "step-4-1cb": "Register an account on Coinbase",
-      "step-4-2cb": "In the Flash app, click \u0022Link Coinbase Account\u0022",
+      "step-4-2cb": "In the Nulla App, click \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "Click \u0022Cash Out\u0022 and follow the on-screen instructions. USDC will be automatically converted to {merchantCurrency}<span> at a 1:1 rate</span> and the money sent to your bank (~0% fees)",
       "step-4-1": "Download MaiCoin's <a>MAX App</a> and register an account",
-      "step-4-2": "In the Flash App, transfer USDC to your MAX account",
+      "step-4-2": "In the Nulla App, transfer USDC to your MAX account",
       "step-4-3": "In the MAX App, sell USDC for TWD and withdraw the money to your bank",
-      "step-4-notUSD": "Flash is designed to minimize your loss from fluctuating exchange rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>",
+      "step-4-notUSD": "Nulla Pay is designed to minimize your loss from fluctuating exchange rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>",
       "setup": "set up in 1 minute",
       "signup": "sign up here"
     },
     "LowCost": {
       "header-1": "Global payments",
       "header-2": "with zero fees",
-      "body": "Blockchains enable instant global money transfers with near zero fees. Flash integrates already existing blockchain infrastructure (Polygon network, Web3Auth, cryptocurrency exchanges, and others) to create a cost-efficient system.",
+      "body": "Blockchains enable instant global money transfers with near zero fees. Nulla Pay integrates already existing blockchain infrastructure (Polygon network, Web3Auth, cryptocurrency exchanges, and others) to create a cost-efficient system.",
       "card-1-header": "<span>0%</span> Transaction Fees",
       "card-2-header": "<span>{withdrawalFee}</span> Withdrawal Fee",
       "card-3-header-1": "<span>Best</span> USDC-{merchantCurrency} Rates +",
       "card-3-header-2": "<span>{conversionFee}</span> Conversion Fees",
-      "card-1-body": "Flash does not take a cut from any transaction.",
+      "card-1-body": "Nulla Pay does not take a cut from any transaction.",
       "card-2-body-1": "Transferring funds to the bank costs near zero",
-      "card-2-body-2": "Flash\u279E{cex} Exchange",
+      "card-2-body-2": "Nulla Pay\u279E{cex} Exchange",
       "card-2-body-3": "{cex} Exchange\u279EYour bank",
-      "card-3-body-1": "Flash does not skim profits by giving you bad USDC-{merchantCurrency} conversion rates. We use the rates from {cex} Exchange, which are true market rates.",
+      "card-3-body-1": "Nulla Pay does not skim profits by giving you bad USDC-{merchantCurrency} conversion rates. We use the rates from {cex} Exchange, which are true market rates.",
       "card-3-body-2": "{cex} Exchange's conversion fee is {conversionFee}."
     },
     "Simple": {
       "header-1": "Simplicity means",
       "header-2": "low overhead",
       "body-1": "Our app is minimalistic and easy to learn.",
-      "body-2": "<span>If you have a PoS system,</span> just glance at the Flash app to confirm payment. Then, enter the transaction in your PoS system as a cash payment. This way, all transactions are kept in a single system and your overhead remains low while using Flash."
+      "body-2": "<span>If you have a PoS system,</span> just glance at the Nulla App to confirm payment. Then, enter the transaction in your PoS system as a cash payment. This way, all transactions are kept in a single system and your overhead remains low while using Nulla Pay."
     },
     "Why": {
       "header": "Attract new customers & enable frictionless spending",
@@ -62,7 +62,7 @@
       "card-3-header": "Attract <span>big spenders</span>",
       "card-1-body": "There are now 50+ million users with MetaMask. These numbers are growing fast, particularly among young people.",
       "card-2-body": "Surveys show >80% of travelers prefer paying with USDC instead of cash/card because the USDC\u279C{merchantCurrency} rate is usually 1-5% better than the USD\u279C{merchantCurrency} rate at any bank<span>, including Wise</span>.",
-      "card-2-usd-body": "You control the entire payments process when you use Flash. No one can withhold payment or block you from using the system.",
+      "card-2-usd-body": "You control the entire payments process when you use Nulla Pay. No one can withhold payment or block you from using the system.",
       "card-3-body": "People who keep their savings on the blockchain may be willing to spend more when using USDC than when using card or cash."
     },
     "Learn": {
@@ -73,29 +73,29 @@
       "title2": "What is an EVM address?",
       "title3": "Are tokens real money?",
       "title4": "How do I use the blockchain?",
-      "title5": "How does Flash help?",
+      "title5": "How does Nulla Pay help?",
       "lesson-1-1": "A <span>blockchain</span> is like a banking system.",
       "lesson-1-2": "The banking system is composed of accounts, where accounts can transfer currencies (USD, EUR, YEN) to other accounts. Account balances and transactions are stored in servers secured by bank employees.",
       "lesson-1-3": "Similarly, a blockchain is composed of <span1>blockchain accounts</span1>, where accounts can transfer <span2>tokens</span2> (USDC, USDT, BTC) to other accounts. Account balances and transactions are stored in thousands of servers globally and secured by tens of thousands of individuals who are incentivized to maintain accurate records. Over 10+ years with $30+ trillion transacted, blockchains have proven to be very secure financial networks.",
       "lesson-1-4": "Every blockchain account is assigned a unique <span>address</span>, which is like a bank account number. When you send tokens, you will need to enter the recipient’s blockchain address. To receive tokens, you will need to share your blockchain address with the sender. As you see, sending and receiving tokens on the blockchain is very similar to sending and recieving money in the banking system.",
-      "lesson-2": "Today, there are 100’s of blockchains. What helps simplify matters is that most blockchains, including 7 of the top 10 blockchains (Ethereum, BSC, Arbitrum, Optimism, Base, Polygon, Avalanche, Blast), are built using the same technology called the <span1>Ethereum Virtual Machine (EVM)</span1>. An advantage of EVM is that a single EVM blockchain account can be used for all EVM blockchains. For example, if you have an EVM blockchain account and your EVM address is <span2>0x709D8145D21681f8287a556C67cD58Cb8A7FB3Aa</span2>, you can use this same address to receive tokens on the Ethereum chain, Polygon chain, or any other EVM chain. Payments on Flash use an EVM chain (Polygon), so for now we'll only focus on EVM blockchains.",
+      "lesson-2": "Today, there are 100’s of blockchains. What helps simplify matters is that most blockchains, including 7 of the top 10 blockchains (Ethereum, BSC, Arbitrum, Optimism, Base, Polygon, Avalanche, Blast), are built using the same technology called the <span1>Ethereum Virtual Machine (EVM)</span1>. An advantage of EVM is that a single EVM blockchain account can be used for all EVM blockchains. For example, if you have an EVM blockchain account and your EVM address is <span2>0x709D8145D21681f8287a556C67cD58Cb8A7FB3Aa</span2>, you can use this same address to receive tokens on the Ethereum chain, Polygon chain, or any other EVM chain. Payments on Nulla Pay use an EVM chain (Polygon), so for now we'll only focus on EVM blockchains.",
       "lesson-3-1": "Some tokens do not have value, while others do. USDC is a token issued by Circle (a highly regulated U.S.-based company) and is backed one-to-one by USD. The USD reserves are held in major U.S. banks with quarterly attestations. Therefore, 1 USDC has a value equal to 1 USD.",
-      "lesson-3-2": "USDC is an example of a currency-backed stablecoin. Similarly, EUROC and JPYC are also currency-backed stablecoins that represent 1 EURO and 1 JPY, respectively. Currently, Flash only allows USDC transactions because most blockchain users already possess and use USDC. When other stablecoins become more popular, we will integrate them.",
+      "lesson-3-2": "USDC is an example of a currency-backed stablecoin. Similarly, EUROC and JPYC are also currency-backed stablecoins that represent 1 EURO and 1 JPY, respectively. Currently, Nulla Pay only allows USDC transactions because most blockchain users already possess and use USDC. When other stablecoins become more popular, we will integrate them.",
       "lesson-4-1": "To start using the blockchain, most people will first register an account on a <span>cryptocurrency exchange</span>. A cryptocurrency exchange (e.g., Coinbase, Binance, Crypto.com, etc.) is a platform where you can buy or sell tokens (e.g., USDC) with fiat currency (e.g., {merchantCurrency}). A cryptocurrency exchange account comes with an EVM blockchain address, so you can use your cryptocurrency exchange account to send tokens to or receive tokens from other EVM blockchain accounts. Cryptocurrency exchanges are essentially gateways to the blockchain world.",
       "lesson-4-2": "After getting a cryptocurrency exchange account, most people will then download a <span>Web3 wallet app</span> (e.g., MetaMask, Coinbase Wallet, Phantom, SafePal, etc.) and then send tokens from their cryptocurrency exchange account to it. MetaMask is by far the most popular Web3 wallet, so we’ll use MetaMask as an example. When you download the MetaMask app, you will be asked to create an EVM blockchain account. You can then send/receive tokens from the app, just like a cryptocurrency exchange account.",
       "lesson-4-3": "There are 2 main reasons why people want their tokens in a Web3 wallet rather than on a cryptocurrency exchange: 1) Sending/receiving tokens on a Web3 wallet takes ~3s, compared to ~3 minutes on a cryptocurrency exchange. 2) A Web3 wallet can connect with thousands of blockchain-based web applications. For example, you can earn U.S. treasury rates on the blockchain. To do this, first buy USDC tokens on a cryptocurrency exchange. Then, send the USDC to MetaMask. With MetaMask, you can connect to the Flux Finance website and deposit your USDC on there to earn U.S. treasury rates (~5% APR).",
-      "lesson-4-4": "With 50+ million people transacting on the blockchain, a large majority of these people will likely have the MetaMask app on their phones and USDC tokens in it. That is why Flash was designed for customers to pay with the MetaMask app and USDC tokens.",
-      "lesson-5-1": "If you have MetaMask, you can easily receive USDC payments from customers. What can Flash do that MetaMask cannot do?",
-      "lesson-5-2": "First, most blockchain users transact in USDC (1 USDC = 1 USD). In non-USD countries, businesses and customers will have to agree on how much USDC should be sent for payment. With Flash, the customer can enter the amount of local currency ({merchantCurrency}) for payment. Flash then applies a fair exchange rate to calculate the amount of USDC sent for payment. Flash does not profit through exchange rates, so you and your customers are always gauranteed true market rates. Furthermore, Flash is designed so that you will not lose money from fluctuating rates (<span1><span2>how?</span2><div>{tooltip}</div></span1>).",
-      "lesson-5-3": "Furthermore, with Flash, businesses do not need to worry about 12-word secret phrases or gas tokens, making Flash much easier to use than MetaMask. Lastly, businesses can download a .CSV file of all payment details to help with accounting.",
-      "lesson-5-4": "Flash also helps businesses cash out to the bank with zero additional fees. Without Flash, businesses will have to transfer tokens from MetaMask to their cryptocurrency exchange, log into their cryptocurrency exchange, sell USDC, and make a withdrawal to their bank. This is a time consuming process. With Flash,businesses can cash out to their bank in a single interface on the Flash app.",
-      "lesson-5-5": "The functions above cannot be completed with MetaMask alone. Flash is a simple, low-cost tool that can help any business set up crypto payments."
+      "lesson-4-4": "With 50+ million people transacting on the blockchain, a large majority of these people will likely have the MetaMask app on their phones and USDC tokens in it. That is why Nulla Pay was designed for customers to pay with the MetaMask app and USDC tokens.",
+      "lesson-5-1": "If you have MetaMask, you can easily receive USDC payments from customers. What can Nulla Pay do that MetaMask cannot do?",
+      "lesson-5-2": "First, most blockchain users transact in USDC (1 USDC = 1 USD). In non-USD countries, businesses and customers will have to agree on how much USDC should be sent for payment. With Nulla Pay, the customer can enter the amount of local currency ({merchantCurrency}) for payment. Nulla Pay then applies a fair exchange rate to calculate the amount of USDC sent for payment. Nulla Pay does not profit through exchange rates, so you and your customers are always gauranteed true market rates. Furthermore, Nulla Pay is designed so that you will not lose money from fluctuating rates (<span1><span2>how?</span2><div>{tooltip}</div></span1>).",
+      "lesson-5-3": "Furthermore, with Nulla Pay, businesses do not need to worry about 12-word secret phrases or gas tokens, making Nulla Pay much easier to use than MetaMask. Lastly, businesses can download a .CSV file of all payment details to help with accounting.",
+      "lesson-5-4": "Nulla Pay also helps businesses cash out to the bank with zero additional fees. Without Nulla Pay, businesses will have to transfer tokens from MetaMask to their cryptocurrency exchange, log into their cryptocurrency exchange, sell USDC, and make a withdrawal to their bank. This is a time consuming process. With Nulla Pay,businesses can cash out to their bank in a single interface on the Nulla App.",
+      "lesson-5-5": "The functions above cannot be completed with MetaMask alone. Nulla Pay is a simple, low-cost tool that can help any business set up crypto payments."
     },
     "Support": {
       "header": "Support",
-      "body": "For helpful information, read the “Instructions” under the “Settings” menu in the Flash App or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@flashpayments.xyz"
+      "body": "For helpful information, read the “Instructions” under the “Settings” menu in the Nulla App or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@flashpayments.xyz"
     },
-    "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Flash", "learn": "Learning Center" }
+    "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Nulla Pay", "learn": "Learning Center" }
   },
   "App": {
     "Page": {
@@ -115,7 +115,7 @@
       "password": "Password",
       "forgot": "Forgot password?",
       "signIn": "Sign In",
-      "forgotModalText": "Please contact your employer. The person who created this Flash account should know the Employee Password or can set a new one."
+      "forgotModalText": "Please contact your employer. The person who created this Nulla Pay account should know the Employee Password or can set a new one."
     },
     "Intro": {
       "welcome": { "text-1": "Set up global payments", "text-2": "with 0% fees", "start": "START" },
@@ -131,24 +131,24 @@
         "title": "How do customers pay?",
         "text-1": "When a customer scans your QR code, their <span1><span2>MetaMask App<div>{tooltip}</div></span2></span1> will open",
         "text-2": "The customer then <span>enters the amount of {merchantCurrency} for payment</span>",
-        "text-3": "When the customer submits payment, <span1><span2>USDC tokens<div>{tooltip}</div></span2></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask App to your Flash App"
+        "text-3": "When the customer submits payment, <span1><span2>USDC tokens<div>{tooltip}</div></span2></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask App to your Nulla App"
       },
       "cashoutCb-1": {
         "title": "How do I cash out?",
         "text-1": "To cash out, you first need a <span1><span2>Coinbase</span2><div>{tooltip}</div></span1> account (<a>register here\u2197</a>).",
-        "text-2": "Then, in the Flash app, click \u0022Link your Coinbase account\u0022. Then click \u0022Cash Out\u0022.",
+        "text-2": "Then, in the Nulla App, click \u0022Link your Coinbase account\u0022. Then click \u0022Cash Out\u0022.",
         "text-3": "When you click \u0022Cash Out\u0022, USDC will be sent to your Coinbase account and converted to {merchantCurrency}. The funds will then be deposited to your bank.",
-        "text-4": "Flash minimizes potential losses from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>."
+        "text-4": "Nulla Pay minimizes potential losses from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>."
       },
       "notCoinbase-1": {
         "title": "How do I cash out?",
         "text-1": "<a1>Download the {cex} Exchange App</a1> and register an account (what is <span1><span2>{cex} Exchange</span2><div>{tooltip}</div></span1>?)",
         "text-1NoCex": "Register an account on a cryptocurrency exchange",
-        "text-2": "Transfer USDC from Flash to your {cex} account",
-        "text-2NoCex": "Transfer USDC from Flash to your cryptocurrency exchange account",
+        "text-2": "Transfer USDC from Nulla Pay to your {cex} account",
+        "text-2NoCex": "Transfer USDC from Nulla Pay to your cryptocurrency exchange account",
         "text-3": "On the {cex} App, convert USDC to {merchantCurrency} and withdraw the money to your bank.",
         "text-3NoCex": "In your cryptocurrency exchange, convert USDC to {merchantCurrency} and withdraw the money to your bank.",
-        "text-4": "With Flash, you should not lose money from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>.",
+        "text-4": "With Nulla Pay, you should not lose money from fluctuating rates <span3>(<span1><span2>how?</span2><div>{tooltip}</div></span1>)</span3>.",
         "text-5": "Do you have a {cex} Exchange account?",
         "text-5-default": "Do you have a cryptocurrency exchange account?",
         "button-1": "I have a {cex} account",
@@ -164,10 +164,10 @@
         "text-1": "Creating a {cex} account is easy and only takes several minutes.",
         "text-2": "Just <a1>download the {cex} Exchange App</a1> and create an account.",
         "text-2-default": "Pick an exchange that is popular in your country. The exchange must accept native USDC deposits on the Polygon network (most do).",
-        "text-3": "After you get your account, there will be instructions in the Flash app on how to cash out."
+        "text-3": "After you get your account, there will be instructions in the Nulla App on how to cash out."
       },
       "final": {
-        "text-1": "Your Flash account is ready and can start accepting payments!",
+        "text-1": "Your Nulla Pay account is ready and can start accepting payments!",
         "text-2": "For questions, refer to the <span>Instructions</span> (under Settings) or email support@flashpayments.xyz",
         "finish": "FINISH"
       },
@@ -286,14 +286,14 @@
       "info": {
         "employeePass": {
           "title": "What is the Employee Password?",
-          "text-1": "If you set an <span1>Employee Password</span1>, employees can sign into the Flash app using your account's email address and the employee password. Employees will be able to see all customer payments, so they can confirm payments when customers pay.",
+          "text-1": "If you set an <span1>Employee Password</span1>, employees can sign into the Nulla App using your account's email address and the employee password. Employees will be able to see all customer payments, so they can confirm payments when customers pay.",
           "text-2": "Can employees make refunds?",
-          "text-3": "Because employees do not have access to the funds in Flash, they cannot make refunds. However, employees can label/unlabel payments with the \u0022To Refund\u0022 tag. You (the owner) can then later refund all payments with this label in a single click."
+          "text-3": "Because employees do not have access to the funds in Nulla Pay, they cannot make refunds. However, employees can label/unlabel payments with the \u0022To Refund\u0022 tag. You (the owner) can then later refund all payments with this label in a single click."
         },
         "cashback": {
           "title": "What is the 2% Cashback?",
-          "text-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Flash does not make any profit from transactions.",
-          "text-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and credit cards charge > 3% fees, you still save money when using Flash. Furthermore, the discount may attract new customers to your business.",
+          "text-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Nulla Pay does not make any profit from transactions.",
+          "text-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business.",
           "text-3": "When crypto payments become more popular, we will make this cashback optional."
         },
         "google": {
@@ -322,7 +322,7 @@
     "CashoutIntroModal": {
       "title": "How To Cash Out",
       "step-1-1": "Step 1 of 2",
-      "step-1-2": "Click <span1>{transferToCEX}</span1> to transfer USDC from your Flash account to your {cex} account.",
+      "step-1-2": "Click <span1>{transferToCEX}</span1> to transfer USDC from your Nulla Pay account to your {cex} account.",
       "step-2-1": "Step 2 of 2",
       "step-2-2": "Log into your {cex} and convert USDC to {merchantCurrency}. Then, withdraw the money to your bank.",
       "step-2-2cb": "Under <span1>Coinbase Account</span1>, click <span2>{transferToBank}</span2> to transfer funds from your Coinbase account to your bank.",
@@ -330,16 +330,16 @@
     },
     "CbIntroModal": {
       "text-1": "Your Coinbase account is linked!",
-      "text-2": "Your Flash account is ready to start accepting payments.",
+      "text-2": "Your Nulla Pay account is ready to start accepting payments.",
       "text-3": "If you have questions, read the <span1>Instructions</span1> in the <span2>Settings</span2> menu. If you need further assistance, contact us at support@flashpayments.xyz",
       "enterApp": "Enter App"
     },
     "CashbackModal": {
-      "text-1": "Welcome to Flash!",
+      "text-1": "Welcome to Nulla Pay!",
       "text-2": "Our mission is to create a global payments platform with near-zero fees.",
       "text-3": "However, a major challenge is that credit cards give ~1% back to customers (while taking 3-5% from businesses), locking customers into only using credit cards.",
-      "text-4": "To be able to compete, we are temporarily requiring businesses give a 2% discount to customers who pay through Flash. The discount will be applied at the time of payment.",
-      "text-5": "You will still save money using Flash (0% fees) over credit cards. This discount may also attract new customers to your business!",
+      "text-4": "To be able to compete, we are temporarily requiring businesses give a 2% discount to customers who pay through Nulla Pay. The discount will be applied at the time of payment.",
+      "text-5": "You will still save money using Nulla Pay (0% fees) over credit cards. This discount may also attract new customers to your business!",
       "text-6": "When crypto payments become more popular, we will make this 2% discount optional."
     },
     "ErrorModal": {},
@@ -363,42 +363,42 @@
       "setup-3": "Instructions on how to print and display your QR Code will be provided when you export it.",
       "pay-1": "Before payment, the customer must have the <span1><span2>MetaMask app<sup1>?</sup1></span2><div1>{tooltip1}</div1></span1> and <span3><span4>USDC<sup2>?</sup2></span4><div2>{tooltip2}</div2></span3> tokens on the <span5><span6>Polygon network<sup3>?</sup3></span6><div3>{tooltip3}</div3></span5>.",
       "pay-2": "To pay, the customer scans your QR code, which opens their Metamask app. In the app, the customer <span> enters the amount of {merchantCurrency} for payment</span>.",
-      "pay-3": "When the customer submits payment, USDC tokens (equal <span>in value </span>to the amount of {merchantCurrency} entered) will be sent from their MetaMask to your Flash app.",
-      "confirm-1": "About 3-6s after a customer makes a payment, you will receive a notification in the Flash app and see the payment under <span>Payments</span>.",
-      "log-1": "A record of all payments made through Flash can be downloaded as a .CSV file in the <span>Payments</span> menu.",
+      "pay-3": "When the customer submits payment, USDC tokens (equal <span>in value </span>to the amount of {merchantCurrency} entered) will be sent from their MetaMask to your Nulla App.",
+      "confirm-1": "About 3-6s after a customer makes a payment, you will receive a notification in the Nulla App and see the payment under <span>Payments</span>.",
+      "log-1": "A record of all payments made through Nulla Pay can be downloaded as a .CSV file in the <span>Payments</span> menu.",
       "log-2": "If you have PoS device, we recommend you log the payment in your PoS device as a cash payment. That way, you have a record of the payment in your PoS system.",
       "refund-1": "You (the owner) can refund payments by clicking on a transaction in <span>Payments</span>, then clicking \u0022Refund Now\u0022.",
       "refund-2": "Employees cannot make refunds, as they are restricted from transferring funds due to security reasons.",
-      "refund-3": "Instead, employees can label a payment as \u0022To Refund\u0022 (click a transaction and check \u0022To Refund\u0022). At a later time, you will need to log into the Flash app to make the appropriate refunds. To help with this process, we recommend you first search payments with the \u0022To Refund\u0022 label to only view payments with this label.",
+      "refund-3": "Instead, employees can label a payment as \u0022To Refund\u0022 (click a transaction and check \u0022To Refund\u0022). At a later time, you will need to log into the Nulla App to make the appropriate refunds. To help with this process, we recommend you first search payments with the \u0022To Refund\u0022 label to only view payments with this label.",
       "refund-4": "Security is our top concern and we believe this is the most secure way to conduct refunds.",
       "cashout-settingUp": "SETTING UP",
       "cashout-cashingOut": "CASHING OUT",
       "cashout-1": "Sign up for a {cex} account if you don't have one. <span1>You can register an account on the {cex} app or the {cex} website.</span1><span2>Pick an exchange that allows you to convert USDC to your local currency and allows USDC deposits on the Polygon chain.</span2>",
-      "cashout-2": "Log into your {cex} account and find the USDC deposit address on Polygon. Paste this address into the \u0022Cash Out Platform Address\u0022 field in the <span>Settings</span> menu of your Flash app.",
-      "cashout-3": "In the Flash app, go to the <span>Cash Out</span> menu and transfer USDC to your {cex}.",
+      "cashout-2": "Log into your {cex} account and find the USDC deposit address on Polygon. Paste this address into the \u0022Cash Out Platform Address\u0022 field in the <span>Settings</span> menu of your Nulla App.",
+      "cashout-3": "In the Nulla App, go to the <span>Cash Out</span> menu and transfer USDC to your {cex}.",
       "cashout-4": "Log into your {cex} and convert USDC to {merchantCurrency}. Then, withdraw the money to your bank.",
       "cashout-tradeMAX": "How To Convert USDC to TWD on MAX Exchange?",
       "cashout-1cb": "Sign up for a Coinbase account if you don't have one. Under \u0022Settings\u0022 of your Coinbase account, link a bank account.",
-      "cashout-2cb": "In the <span>Cash Out</span> menu of your Flash app, click \u0022Link your Coinbase account\u0022.",
-      "cashout-3cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Coinbase\u0022 to transfer USDC from your Flash app to your Coinbase account. Wait 1-5 minutes for the Coinbase balance to update.",
+      "cashout-2cb": "In the <span>Cash Out</span> menu of your Nulla App, click \u0022Link your Coinbase account\u0022.",
+      "cashout-3cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Coinbase\u0022 to transfer USDC from your Nulla App to your Coinbase account. Wait 1-5 minutes for the Coinbase balance to update.",
       "cashout-4cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Bank\u0022. When you submit a transfer, USDC will be automatically converted to {merchantCurrency} and the money will be deposited to your bank within 1-2 days.",
-      "cashback-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Flash does not make any profit from transactions.",
-      "cashback-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Flash charges 0% fees and credit cards charge > 3% fees, you still save money when using Flash. Furthermore, the discount may attract new customers to your business.",
+      "cashback-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Nulla Pay does not make any profit from transactions.",
+      "cashback-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business.",
       "cashback-3": "When crypto payments become more popular, we will make this cashback optional.",
-      "fees-1": "During payment, the customer pays a ~0.01 USDC blockchain fee. You (the business) pay zero fees. Flash does not charge any processing fees.",
-      "fees-2": "When you transfer USDC from Flash to {cex}, there is a ~0.05 USDC blockchain fee.",
+      "fees-1": "During payment, the customer pays a ~0.01 USDC blockchain fee. You (the business) pay zero fees. Nulla Pay does not charge any processing fees.",
+      "fees-2": "When you transfer USDC from Nulla Pay to {cex}, there is a ~0.05 USDC blockchain fee.",
       "fees-3cb": "When you transfer funds from Coinbase to your bank, there is no transfer fee. However, as USDC will be converted to {merchantCurrency}, there is a 0.001-0.0015% conversion fee.",
       "fees-3max": "When you convert USDC to TWD on MAX Exchange, there is a 0.3% conversion fee.",
       "fees-3none": "When you convert USDC to your local currency on your cryptocurrency exchange, there may be a small conversion fee (typically 0.1-0.3%). Furthermore, when you transfer money to your bank, there may or may not be a fee. Please check the information on your cryptocurrency exchange.",
-      "fees-nonUSD-1": "However, we remind you that when a customer pays, they are paying an extra 0.3% in USDC. These extra earnings should help reduce potential losses from fluctuating conversion rates or potential fees. Using Flash over other payment platforms (which typically have 1-5% in fees) should save you a significant amount of money.",
-      "fees-nonUSD-2": "Finally, Flash does not profit from exchange rates, so you and your customers will always get the best USDC\u21C4{merchantCurrency} rates.",
+      "fees-nonUSD-1": "However, we remind you that when a customer pays, they are paying an extra 0.3% in USDC. These extra earnings should help reduce potential losses from fluctuating conversion rates or potential fees. Using Nulla Pay over other payment platforms (which typically have 1-5% in fees) should save you a significant amount of money.",
+      "fees-nonUSD-2": "Finally, Nulla Pay does not profit from exchange rates, so you and your customers will always get the best USDC\u21C4{merchantCurrency} rates.",
       "lose-1": "Over the long run, you will not lose money from fluctuating USDC-to-{merchantCurrency} rates (in fact, you might earn a little).",
       "lose-2": "During payment, our interface alters the USDC-to-{merchantCurrency} market rate by 0.3% in favor of the business. This means that businesses will earn an extra 0.3%. Over the long run, these extra earnings should cover any potential losses from fluctuating rates.",
       "lose-3": "Here is an example",
       "lose-4": "Let's assume the USDC-to-{merchantCurrency} rate is {rate}. When a customer enters {localSent} {merchantCurrency} in MetaMask and clicks \u0022Pay\u0022, you will receive",
-      "lose-5": "in your Flash app. This includes the 2% discount that you had given to the customer. When you cash out to the bank and if the rate of {rate} did not change, you will receive {usdcReceived} * {rate} = {localReceived} {merchantCurrency}. With the 2% discount, you should have received {localReceivedIntended} {merchantCurrency}. Instead, you recieved {localReceived} {merchantCurrency} or an extra ~0.3%. These extra earnings should offset any losses from fluctuating exchange rates, if you cash out frequently (about once every 2 weeks).",
+      "lose-5": "in your Nulla App. This includes the 2% discount that you had given to the customer. When you cash out to the bank and if the rate of {rate} did not change, you will receive {usdcReceived} * {rate} = {localReceived} {merchantCurrency}. With the 2% discount, you should have received {localReceivedIntended} {merchantCurrency}. Instead, you recieved {localReceived} {merchantCurrency} or an extra ~0.3%. These extra earnings should offset any losses from fluctuating exchange rates, if you cash out frequently (about once every 2 weeks).",
       "lose-6": "We don't believe customers will care about this extra 0.3%, as they are receiving a 2% discount from you already. But, even without this 2% discount, customers (particularly international travelers) will not care because the USDC-to-{merchantCurrency} rate used during payment will usually be 0.5-5% better than the USD-to-{merchantCurrency} rate they will get at any bank or currency exchanger.",
-      "rate-1": "Flash uses the USDC\u21C4{merchantCurrency} rate from {cex}. This rate is usually 0.5-5% better than USD-to-{merchantCurrency} rate given by any bank or money exchanger.",
+      "rate-1": "Nulla Pay uses the USDC\u21C4{merchantCurrency} rate from {cex}. This rate is usually 0.5-5% better than USD-to-{merchantCurrency} rate given by any bank or money exchanger.",
       "rate-1USD": "USDC is converted to USD at a 1:1 rate with no fees."
     },
     "IntroErrorModal": {},
@@ -412,7 +412,7 @@
     "close": "CLOSE",
     "comfirm": "Confirm",
     "cancel": "Cancel",
-    "reduceFxLossTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these earnings should offset losses due to fluctuating rates. Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Flash is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
+    "reduceFxLossTooltip": "When a customer pays, our interface alters the USDC-{merchantCurrency} rate by 0.3% in favor of the business. So, you actually earn an extra 0.3%. In the long run, these earnings should offset losses due to fluctuating rates. Customers will not mind the extra 0.3% because the USDC-to-{merchantCurrency} rate offered by Nulla Pay is usually 1-5% better than the USD-to-{merchantCurrency} rate at any bank.",
     "mmTooltip": "MetaMask is the most popular app to send/receive tokens and is used by 50+ million people worldwide",
     "usdcTooltip": "1 USDC token = 1 USD, as gauranteed by Circle. USDC is a popular token that almost all crypto users have.",
     "cbTooltip": "Coinbase is a platform where USDC can be exchanged for {merchantCurrency} and where you can link a bank account",
@@ -435,7 +435,7 @@
     "max": "MAX",
     "balance": "Balance",
     "blockchainFee": "blockchain fee",
-    "fromFlash": "From: Flash",
+    "fromFlash": "From: Nulla Pay",
     "fromCoinbase": "From: Coinbase",
     "toCEX": "To: {cex}",
     "toBank": "To: Bank",

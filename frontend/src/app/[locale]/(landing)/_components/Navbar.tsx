@@ -66,13 +66,11 @@ export default function Navbar() {
       <div className="mx-[12px] xs:mx-[24px] lg:mx-[32px] w-full max-w-[1440px] h-full flex justify-center items-center relative">
         {/*---logo ---*/}
         <Image
-          src="/logo.svg"
-          alt="Flash logo"
+          src="/logoBlackNoBg.svg"
+          alt="logo"
           width={0}
           height={0}
-          className={`${
-            isScrollTop ? "w-[150px] desktop:w-[150px]" : "w-[100px] portrait:sm:w-[110px] landscape:lg:w-[110px] desktop:!w-[90px]"
-          } absolute left-0 h-full transition-all duration-[1000ms]`}
+          className={`${isScrollTop ? "w-[180px]" : "w-[120px]"} absolute left-0 h-full transition-all duration-[1000ms]`}
         />
 
         {/*---DESKTOP MENU LINKS---*/}

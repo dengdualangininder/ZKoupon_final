@@ -2,9 +2,9 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Flash Payments",
+    name: "Nulla Pay",
     theme_color: "#000000",
-    short_name: "Flash",
+    short_name: "Nulla",
     description: "Crypto payments with 0% fees",
     start_url: "/app",
     display: "standalone",

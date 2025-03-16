@@ -59,13 +59,13 @@ export const POST = async (request: Request) => {
       <a href="https://www.amazon.com/s?k=a6+acrylic+sign+holders" target="_blank">an acrylic sign holder</a> and place it next to your cash register.
     </p>
     <p>If you have any questions, please email support@flashpayments.xyz</p>
-    <p>Sincerely,<br />Flash Payments</p>
+    <p>Sincerely,<br />Nulla Pay</p>
   </div>
   `;
 
   try {
     await mailTransporter.sendMail({
-      from: { name: "Flash Payments", address: "support@flashpayments.xyz" },
+      from: { name: "Nulla Pay", address: "support@flashpayments.xyz" },
       to: merchantEmail,
       subject: "Your QR Code",
       html: html,

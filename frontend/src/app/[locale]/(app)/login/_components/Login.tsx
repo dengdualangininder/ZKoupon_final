@@ -109,10 +109,10 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
           </div>
           {/*--- logo ---*/}
           <div className="pb-[24px] desktop:pb-[16px] w-full flex flex-col items-center gap-[8px]">
-            <div className="relative w-full h-[80px] desktop:h-[75px]">
-              <Image src="/logoBlackNoBg.svg" alt="Flash logo" fill />
+            <div className="relative w-full h-[62px] desktop:h-[45px]">
+              <Image src="/logoBlackNoBg.svg" alt="logo" fill />
             </div>
-            <div className="text-base desktop:text-xs font-medium tracking-wide text-center">{t("subheader")}</div>
+            <div className="text-base desktop:text-xs font-medium text-center">{t("subheader")}</div>
           </div>
 
           {/*--- menu bar ---*/}
@@ -211,7 +211,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               </button>
               {/*--forgot password?---*/}
               <div
-                className="pt-[40px] text-lg desktop:text-sm text-center link"
+                className="pt-[40px] text-base desktop:text-sm text-center link"
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
                 }}

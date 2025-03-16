@@ -191,7 +191,7 @@ export default function Intro() {
         {step == "welcome" && (
           <div className="w-full h-full flex flex-col items-center justify-center">
             <div className="pb-[60px] w-full flex flex-col items-center gap-[70px] portrait:sm:gap-[90px] landscape:lg:gap-[90px] desktop:!gap-[70px]">
-              <Image src="/logo.svg" width={0} height={0} alt="Flash logo" className="w-[230px] h-auto mr-1" />
+              <Image src="/logo.svg" width={0} height={0} alt="logo" className="w-[230px] h-auto mr-1" />
               <div className="pb-[12px] text-xl desktop:text-lg leading-relaxed font-medium text-center animate-fadeInAnimation">
                 {t("welcome.text-1")}
                 <br />

@@ -8,8 +8,9 @@ import { getMessages } from "next-intl/server";
 const inter = Inter({ subsets: ["latin"], display: "swap" }); // inter is variable font so no "weight" needed, recommended
 
 export const metadata: Metadata = {
-  title: "Flash Payments | Crypto payments with 0% fees",
-  description: "With a true peer-2-peer payments design, Flash is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
+  title: "Nulla Pay | Crypto payments with 0% fees",
+  description:
+    "With a true peer-2-peer payments design, Nulla Pay is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
   keywords: ["crypto payments", "blockchain payments", "stablecoin payments", "cryptocurrency payments"],
   metadataBase: new URL("https://www.flashpayments.xyz"),
   alternates: {
@@ -21,20 +22,20 @@ export const metadata: Metadata = {
   },
   openGraph: {
     url: "https://www.flashpayments.xyz",
-    title: "Flash Payments | Crypto payments with 0% fees",
+    title: "Nulla Pay | Crypto payments with 0% fees",
     description:
-      "With a true peer-2-peer payments design, Flash is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
+      "With a true peer-2-peer payments design, Nulla Pay is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
     images: [
       {
         url: "/logoOG.png",
         width: 1030,
         height: 451,
-        alt: "Flash Payments",
+        alt: "Nulla Pay",
       },
     ],
     type: "website",
   },
-  applicationName: "Flash Payments",
+  applicationName: "Nulla Pay",
 };
 
 // inter.className to inter.variable

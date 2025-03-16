@@ -168,7 +168,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     });
   }
 
-  // merchantEvmAddress needed to set Flash cookies, so combine with set W3Info
+  // merchantEvmAddress needed to set Nulla cookies, so combine with set W3Info
   async function setW3InfoAndFlashCookies() {
     try {
       const userInfo = await web3AuthInstance?.getUserInfo();

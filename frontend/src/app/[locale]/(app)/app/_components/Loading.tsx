@@ -18,7 +18,7 @@ export default function Loading() {
         <div className="w-full h-full flex flex-col items-center justify-center">
           <div className="pb-16 w-full flex flex-col items-center portrait:space-y-12 landscape:space-y-6 portrait:sm:space-y-24 landscape:lg:space-y-24 landscape:lg:desktop:space-y-16">
             <div className="relative w-[300px] h-[100px] landscape:lg:h-[100px] portrait:sm:h-[100px] landscape:lg:desktop:h-[100px] mr-1">
-              <Image src="/logo.svg" alt="Flash logo" fill priority />
+              <Image src="/logo.svg" alt="logo" fill priority />
             </div>
             <div className="text-xl pb-4 text-center animate-fadeInAnimation leading-relaxed invisible">
               Set up crypto payments

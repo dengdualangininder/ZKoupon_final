@@ -50,7 +50,7 @@ export default function CashoutIntroModal({
               </p>
               {/*--- image ---*/}
               <div className="cashoutCard w-full scale-[0.8] dark:shadow-[1px_1px_10px_0px_rgb(255,255,255,0.3)]">
-                <div className="cashoutHeader h-[36px] flex items-center">Flash {tcommon("account")}</div>
+                <div className="cashoutHeader h-[36px] flex items-center">Nulla {tcommon("account")}</div>
                 <div className="cashoutBalanceContainer">
                   <div className="cashoutBalance">
                     <div>

@@ -9,13 +9,13 @@ export default function FlashToBankAnimation({ settings }: { settings: any }) {
         <div className="w-[52px] h-[68px] flex items-center justify-center relative">
           {/*--- solid img ---*/}
           <div className="absolute w-[52px] h-[68px] animate-flashSolid">
-            <Image src="/ani-flash-solid.svg" alt="Flash logo" fill />
+            <Image src="/ani-flash-solid.svg" alt="logo" fill />
           </div>
           {/*--- outline img ---*/}
           <div className="absolute w-[52px] h-[68px] animate-flashOutline">
-            <Image src="/ani-flash-outline.svg" alt="Flash logo outline" fill />
+            <Image src="/ani-flash-outline.svg" alt="logo outline" fill />
           </div>
-          <div className="w-full absolute left-0 bottom-[-14px] animate-flashText text-center text-[18px]">Flash</div>
+          <div className="w-full absolute left-0 bottom-[-14px] animate-flashText text-center text-[18px]">Nulla Pay</div>
         </div>
       </div>
 

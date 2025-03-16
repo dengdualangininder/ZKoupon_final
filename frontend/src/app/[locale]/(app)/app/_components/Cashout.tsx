@@ -196,7 +196,7 @@ export default function CashOut({
         {/*--- title + more options ---*/}
         <div className="w-full h-[36px] flex justify-between items-center relative">
           {/*--- title ---*/}
-          <div className="cashoutHeader">Flash {tcommon("account")}</div>
+          <div className="cashoutHeader">Nulla {tcommon("account")}</div>
           {/*--- more options ---*/}
           {flashBalance && rates && (
             <div
