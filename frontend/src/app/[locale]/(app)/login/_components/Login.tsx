@@ -178,7 +178,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               <div className="loginLabel">{t("email")}</div>
               <input type="email" className="loginInput" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
-              <div className="mt-[24px] desktop:mt-[16px] loginLabel">{t("password")}</div>
+              <div className="mt-[16px] loginLabel">{t("password")}</div>
               <div className="w-full relative">
                 <input
                   ref={passwordRef}
@@ -199,7 +199,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 </div>
               </div>
               {/*--sign in button---*/}
-              <button className="loginButton mt-[50px] desktop:mt-[40px] w-full flex justify-center items-center" onClick={employeeLogin}>
+              <button className="loginButton mt-[32px] w-full flex justify-center items-center" onClick={employeeLogin}>
                 {isLoggingIn ? (
                   <div className="flex items-center gap-[16px]">
                     <ImSpinner2 className="animate-spin text-[24px]" />
@@ -211,7 +211,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               </button>
               {/*--forgot password?---*/}
               <div
-                className="pt-[48px] text-lg desktop:text-sm text-center link"
+                className="pt-[40px] text-lg desktop:text-sm text-center link"
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
                 }}

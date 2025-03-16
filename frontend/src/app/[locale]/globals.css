@@ -178,26 +178,6 @@
 @layer components {
   /*--- BUTTONS ---*/
 
-  /*--- homepage buttons ---*/
-
-  .homeButtonBase {
-    @apply flex items-center justify-center button1ColorLight font-medium rounded-full;
-  }
-
-  .homeButton {
-    @apply homeButtonBase px-[28px] desktop:px-[24px] h-[56px] desktop:h-[48px] text-lg desktop:text-base;
-  }
-
-  .homeButtonSm {
-    @apply homeButtonBase px-[20px] desktop:px-[18px] h-[44px] desktop:h-[38px] text-base desktop:text-sm;
-  }
-
-  /*--- login button ---*/
-
-  .loginButton {
-    @apply button1ColorLight h-[56px] desktop:!h-[44px] text-lg desktop:text-sm font-semibold rounded-[8px] flex items-center justify-center;
-  }
-
   /*--- button colors ---*/
 
   .button1ColorLight {
@@ -214,6 +194,26 @@
 
   .buttonPendingColor {
     @apply border-[2px] bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
+  }
+
+  /*--- homepage buttons ---*/
+
+  .homeButtonBase {
+    @apply button1ColorLight font-medium rounded-full flex items-center justify-center;
+  }
+
+  .homeButton {
+    @apply homeButtonBase px-[28px] desktop:px-[24px] h-[56px] desktop:h-[48px] text-lg desktop:text-base;
+  }
+
+  .homeButtonSm {
+    @apply homeButtonBase px-[20px] desktop:px-[18px] h-[44px] desktop:h-[38px] text-base desktop:text-sm;
+  }
+
+  /*--- login button ---*/
+
+  .loginButton {
+    @apply button1ColorLight h-[60px] desktop:!h-[44px] text-lg desktop:text-sm font-semibold rounded-[8px] flex items-center justify-center;
   }
 
   /*--- button font & height ---*/
@@ -267,7 +267,7 @@
   }
 
   .loginLabel {
-    @apply pb-[2px] font-semibold text-lg desktop:text-sm;
+    @apply desktop:pb-[2px] font-semibold text-lg desktop:text-sm;
   }
 
   .loginInput {
