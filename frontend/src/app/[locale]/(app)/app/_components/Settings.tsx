@@ -251,24 +251,24 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
 
       <div className="settingsFont settingsWidth">
         {/*---form ---*/}
-        <form className="w-full max-w-[640px]">
+        <form className="w-full">
           <div className="settingsTitle">{t("account")}</div>
 
           {/*---QR Code---*/}
           <div className="settingsField">
             <label className="settingsLabel">{t("qrCode")}</label>
             <div className="relative h-full flex gap-[28px] py-[6px] desktop:py-[2px]">
-              <button className="h-full px-[20px] button1Color rounded-full settingsFontButton" type="button" onClick={downloadQrCode}>
+              <button className="settingsFontButton" type="button" onClick={downloadQrCode}>
                 {tcommon("download")}
               </button>
-              <button className="h-full px-[20px] button1Color rounded-full settingsFontButton" type="button" onClick={() => setEmailModal(true)}>
+              <button className="settingsFontButton" type="button" onClick={() => setEmailModal(true)}>
                 {tcommon("email")}
               </button>
             </div>
           </div>
 
           {/*---EVM Address---*/}
-          <div className="settingsField">
+          <div className="settingsField border-b">
             <label className="settingsLabel">{t("accountAddress")}</label>
             <div
               className="relative h-full"
@@ -556,7 +556,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           </div>
           {/*--- Contact Us ---*/}
           <div
-            className="settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            className="settingsField border-b text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setErrorModal(tcommon("contact"))}
           >
             <div className="settingsLabelNoColor cursor-pointer">{t("contact")}</div>
@@ -566,13 +566,13 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
         </form>
 
         {/*---Sign Out---*/}
-        <div className="mb-[20px] portrait:sm:mb-[40px] landscape:lg:mb-[40px] h-[120px] portrait:sm:h-[130px] landscape:lg:h-[130px] landscape:xl:desktop:h-[120px] flex flex-col justify-center items-center">
+        <div className="py-[48px] portrait:sm:my-[28px] landscape:lg:my-[28px] desktop:!py-[32px] flex items-center justify-center">
           <button
             onClick={async () => {
               setLoggingOut(true);
               logout();
             }}
-            className="h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] w-[120px] portrait:sm:w-[150px] landscape:lg:w-[150px] desktop:!w-[120px] rounded-full font-medium button1Color flex items-center justify-center"
+            className="signoutButton"
           >
             {loggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
           </button>

@@ -219,10 +219,10 @@
   /*--- button font & height ---*/
 
   .appButtonHeight {
-    @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px];
+    @apply h-[60px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px];
   }
 
-  .buttonHeightSm {
+  .appButtonHeightSm {
     @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px];
   }
 
@@ -249,11 +249,19 @@
   }
 
   .cashoutButton {
-    @apply ml-auto button1Color textSmApp font-medium w-[220px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[200px] buttonHeightSm translate-x-[4px] rounded-full;
+    @apply button1Color appButtonHeightSm textSmApp ml-auto px-[18px] portrait:sm:px-[20px] landscape:lg:px-[20px] desktop:!px-[16px] font-medium translate-x-[4px] rounded-full;
   }
 
   .refundButtonBase {
-    @apply w-[100px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[100px] buttonHeightSm textSmApp font-semibold border-2 rounded-full;
+    @apply appButtonHeightSm textSmApp px-[20px] portrait:sm:px-[22px] landscape:lg:px-[22px] desktop:!px-[18px] font-semibold rounded-full;
+  }
+
+  .settingsFontButton {
+    @apply button1Color h-full px-[15px] portrait:sm:px-[18px] landscape:lg:px-[18px] desktop:!px-[15px] font-medium text-sm portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm rounded-full;
+  }
+
+  .signoutButton {
+    @apply button1Color h-[48px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] px-[18px] portrait:sm:px-[24px] landscape:lg:px-[24px] desktop:!px-[18px] rounded-full font-medium flex items-center justify-center;
   }
 
   /* --- input --- */
@@ -515,7 +523,7 @@
   }
 
   .transferFromCard {
-    @apply pt-[24px] pb-[48px] desktop:pb-[36px] transferCard;
+    @apply py-[0px];
   }
 
   .transferToCard {
@@ -542,20 +550,8 @@
     @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
   }
 
-  .transferArrowContainer {
-    @apply w-[200px] h-[70px] desktop:w-[160px] desktop:h-[60px] absolute bottom-[-20px] flex items-center justify-center rounded-full z-[2];
-  }
-
-  .transferArrowFont {
-    @apply text-[16px] desktop:text-[14px] ml-[8px] leading-tight desktop:leading-tight;
-  }
-
-  .transferArrowArrow {
-    @apply text-[34px] desktop:text-[30px] text-lightText1 dark:text-darkText1;
-  }
-
   .settingsFont {
-    @apply font-medium text-base portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
   }
 
   .settingsFontFixed {
@@ -564,10 +560,6 @@
 
   .settingsFontFixedSmall {
     @apply portrait:text-[13px] landscape:text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
-  }
-
-  .settingsFontButton {
-    @apply font-medium text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-sm;
   }
 
   .settingsWidth {
@@ -591,7 +583,7 @@
   }
 
   .settingsLabelNoColor {
-    @apply flex-none flex items-center tracking-tight mr-[12px];
+    @apply flex-none flex items-center font-medium mr-[12px];
   }
 
   .settingsInputColor {
