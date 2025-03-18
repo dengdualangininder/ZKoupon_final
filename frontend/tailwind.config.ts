@@ -261,7 +261,7 @@ module.exports = {
       xs: "480px",
       sm: "600px",
       md: "750px",
-      lg: "940px",
+      lg: "980px",
       lgg: "1100px",
       xl: "1250px",
       xxl: "1440px",
@@ -282,5 +282,6 @@ module.exports = {
     plugin(function ({ addVariant }) {
       addVariant("desktop", ["@media (hover: hover)", "@media (pointer: fine)"]);
     }),
+    require("@tailwindcss/forms"),
   ],
 };

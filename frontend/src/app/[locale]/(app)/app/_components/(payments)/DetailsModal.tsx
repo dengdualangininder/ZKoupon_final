@@ -259,7 +259,7 @@ const DetailsModal = ({
 
   return (
     <>
-      <div className="detailsModal">
+      <div className="fullModal">
         {/*--- tablet/desktop close ---*/}
         {refundState != "refunding" && (
           <>
@@ -276,7 +276,7 @@ const DetailsModal = ({
         <div className="modalHeader">{t("title")}</div>
 
         {/*--- CONTENT ---*/}
-        <div className="detailsModalContentContainer settingsFont font-medium tracking-tighter pb-[16px]">
+        <div className="detailsModalContentContainer settingsFont pb-[16px]">
           {/*--- details ---*/}
           <div className="detailsField">
             <p className="detailsLabelText">{t("time")}</p>
@@ -326,7 +326,7 @@ const DetailsModal = ({
               {clickedTxn?.customerAddress.slice(-5)} <LuCopy className="inline-block pb-[3px] ml-[6px] w-[20px] h-[20px]" />
               {/*--- "copied" popup ---*/}
               {popup == "copyAddress" && (
-                <div className="copiedText absolute whitespace-nowrap left-[50%] bottom-[calc(100%-4px)] translate-x-[-50%] px-[12px] py-[4px] bg-slate-700 text-white font-normal rounded-full">
+                <div className="textSmApp font-normal absolute left-[50%] bottom-[calc(100%+4px)] translate-x-[-50%] px-[12px] py-[4px] bg-slate-700 text-white rounded-full">
                   {tcommon("copied")}
                 </div>
               )}

@@ -1,11 +1,11 @@
 "use client";
 // nextjs
-import { useState, useCallback, useEffect, useRef, useTransition } from "react";
+import { useState, useCallback, useRef, useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
 import { useTheme } from "next-themes";
 import { useW3Info } from "../../Web3AuthProvider";
-import { useLogout, useSettingsMutation, logoutNoDisconnect } from "../../hooks";
+import { useLogout, useSettingsMutation } from "../../hooks";
 // i18n
 import { useLocale, useTranslations } from "next-intl";
 // react query
@@ -19,27 +19,24 @@ import { QRCodeSVG } from "qrcode.react";
 import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer/lib/react-pdf.browser";
 import { saveAs } from "file-saver";
 // components
-import FaqModal from "./modals/FaqModal";
-import EmployeePassModal from "./modals/EmployeePassModal";
-import InstructionsModal from "./modals/InfoModal";
+import FaqModal from "./(settings)/FaqModal";
+import EmployeePassModal from "./(settings)/EmployeePassModal";
+import InfoModal from "./(settings)/InfoModal";
 import SwitchLangModal from "./modals/SwitchLangModal";
 import Placard from "./placard/Placard";
-// utils
-import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
-import Toggle from "@/utils/components/Toggle";
-import { countryData, countryCurrencyList, langObjectArray } from "@/utils/constants";
 // images
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { LuCopy } from "react-icons/lu";
 import { ImSpinner2 } from "react-icons/im";
-import { FaAngleLeft, FaCircleCheck } from "react-icons/fa6";
-// types
+// utils
+import Toggle from "@/utils/components/Toggle";
+import { countryData, countryCurrencyList, langObjectArray } from "@/utils/constants";
 import { W3Info } from "@/utils/types";
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
+import EmailModal from "./(settings)/EmailModal";
 
 // zod
 const schema = z.object({
-  merchantEmail: z.string().email({ message: "merchantEmail" }), // Invalid email
   merchantName: z.string().min(1, { message: "merchantName" }), // Enter a business name
   merchantCountryAndCurrency: z.string(),
   cex: z.string(),
@@ -69,7 +66,6 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   const tcommon = useTranslations("Common");
   const queryClient = useQueryClient();
   const merchantNameRef = useRef<HTMLInputElement | null>(null);
-  const merchantEmailRef = useRef<HTMLInputElement | null>(null);
   const [isSwitchingLang, startSwitchingLang] = useTransition();
   const logout = useLogout();
 
@@ -85,7 +81,6 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
     values: {
-      merchantEmail: paymentSettings.merchantEmail,
       merchantName: paymentSettings.merchantName,
       merchantCountryAndCurrency: `${paymentSettings.merchantCountry} / ${paymentSettings.merchantCurrency}`,
       cex: cashoutSettings.cex,
@@ -95,7 +90,6 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
     },
   });
   const { ref: refMerchantName, ...restMerchantName } = register("merchantName");
-  const { ref: refMerchantEmail, ...restMerchantEmail } = register("merchantEmail");
 
   const { mutate: saveSettings } = useSettingsMutation();
   const { mutate: saveEmployeePass } = useMutation({
@@ -132,7 +126,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
   const [hiddenLabel, setHiddenLabel] = useState(""); // googleId | cexEvmAddress
   const [hideCexEvmAddress, setHideCexEvmAddress] = useState<boolean>(cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other"); // needed for optimistic update
-  // email
+  // email qr code
   const [email, setEmail] = useState(paymentSettings.merchantEmail);
   const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
   const [emailModal, setEmailModal] = useState(false);
@@ -268,57 +262,33 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           </div>
 
           {/*---EVM Address---*/}
-          <div className="settingsField border-b">
+          <div className="settingsField">
             <label className="settingsLabel">{t("accountAddress")}</label>
             <div
-              className="relative h-full"
+              className="settingsFontFixed flex items-center desktop:cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[300ms] relative"
               onClick={() => {
                 setPopup("copyAddress");
                 setTimeout(() => setPopup(""), 1500);
                 navigator.clipboard.writeText(paymentSettings.merchantEvmAddress);
               }}
             >
-              <div className="settingsFontFixed h-full flex items-center cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[300ms]">
-                {paymentSettings.merchantEvmAddress.slice(0, 7)}...{paymentSettings.merchantEvmAddress.slice(-5)} <LuCopy className="ml-[8px] w-[20px] h-[20px]" />
-              </div>
+              {paymentSettings.merchantEvmAddress.slice(0, 7)}...{paymentSettings.merchantEvmAddress.slice(-5)} <LuCopy className="ml-[8px] w-[20px] h-[20px]" />
               {/*--- "copied" popup ---*/}
               {popup == "copyAddress" && (
-                <div className="copiedText absolute whitespace-nowrap left-[50%] bottom-[calc(100%-4px)] translate-x-[-50%] px-3 py-1 bg-slate-700 text-white font-normal rounded-full">
+                <div className="textSmApp font-normal absolute left-[50%] bottom-[calc(100%+4px)] translate-x-[-50%] px-[12px] py-[4px] bg-slate-700 text-white rounded-full">
                   {tcommon("copied")}
                 </div>
               )}
             </div>
           </div>
 
-          <div className="settingsTitle">{t("settings")}</div>
-
           {/*--- merchantEmail ---*/}
-          <div className="settingsField">
-            <label className="settingsLabel">{t("email")}</label>
-            <div
-              className="settingsInputContainer group w-full max-w-[300px] portrait:sm:max-w-[470px] landscape:lg:max-w-[400px] desktop:!max-w-[360px]"
-              onClick={() => {
-                if (merchantEmailRef.current && isClicked != "merchantEmail") {
-                  setIsClicked("merchantEmail");
-                  const end = merchantEmailRef.current.value.length;
-                  merchantEmailRef.current.setSelectionRange(end, end);
-                  merchantEmailRef.current.focus();
-                }
-              }}
-            >
-              <input
-                {...restMerchantEmail}
-                ref={(e) => {
-                  refMerchantEmail(e);
-                  merchantEmailRef.current = e;
-                }}
-                onBlur={async () => validateAndSave("merchantEmail", "paymentSettings")}
-                placeholder={t("empty")}
-                className="settingsInput settingsFontFixed peer"
-              ></input>
-              <div className="settingsRightAngle">&#10095;</div>
-            </div>
+          <div className="settingsField border-b">
+            <label className="textGray">{t("email")}</label>
+            <div className="settingsFontFixed text-end">{paymentSettings.merchantEmail}</div>
           </div>
+
+          <div className="settingsTitle">{t("settings")}</div>
 
           {/*---merchantName---*/}
           <div className="settingsField">
@@ -441,7 +411,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className="settingsLabel">
               {t("employeePass")}
-              <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("employeePassword")} />
+              <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("employeePassword")} />
             </label>
             <div className="relative w-full max-w-[280px] desktop:max-w-[240px] h-full">
               {/*--- employeePassMask ---*/}
@@ -453,7 +423,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
                   {cashoutSettings.isEmployeePass ? (
                     "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
                   ) : (
-                    <div className="italic pr-[3px] font-medium text-slate-400 dark:text-slate-500">{t("empty")}</div>
+                    <div className="italic pr-[3px] text-slate-400 dark:text-slate-500">{t("empty")}</div>
                   )}
                 </div>
                 <div className="pt-[2px] text-[18px] desktop:peer-hover:text-slate-500 transition-all duration-[300ms]">&#10095;</div>
@@ -477,7 +447,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className={`${hiddenLabel === "googleId" ? "hidden" : ""} settingsLabel`}>
               {t("google")}
-              <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("googleId")} />
+              <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("googleId")} />
             </label>
             <div
               className={`${hiddenLabel === "googleId" ? "w-full" : "w-[148px] portrait:sm:w-[204px] landscape:lg:w-[204px] desktop:!w-[150px]"} settingsInputContainer group`}
@@ -499,7 +469,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             <div className="settingsField border-b relative">
               <label className="settingsLabel">
                 {t("cashback")}
-                <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cashback")} />
+                <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("cashback")} />
               </label>
               <Toggle checked={true} onClick={() => setInfoModal("cashback")} />
             </div>
@@ -509,7 +479,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsTitle">{t("display")}</div>
           {/*---DARK MODE ---*/}
           <div className="settingsField">
-            <label className="settingsLabelNoColor">{t("dark")}</label>
+            <label className="">{t("dark")}</label>
             <Toggle
               checked={theme === "dark" ? true : false}
               onClick={() => {
@@ -525,7 +495,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           </div>
           {/*---LANGUAGE ---*/}
           <div className="settingsField border-b">
-            <label className="settingsLabelNoColor">{t("language")}</label>
+            <label className="">{t("language")}</label>
             <div className="settingsInputContainer group">
               <select
                 className="settingsSelect peer"
@@ -551,7 +521,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             className="settingsField desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setFaqModal(true)}
           >
-            <div className="settingsLabelNoColor cursor-pointer">{t("instructions")}</div>
+            <div className="cursor-pointer">{t("instructions")}</div>
             <div className="pt-[1px] text-[18px]">&#10095;</div>
           </div>
           {/*--- Contact Us ---*/}
@@ -559,105 +529,29 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             className="settingsField border-b desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setErrorModal(tcommon("contact"))}
           >
-            <div className="settingsLabelNoColor cursor-pointer">{t("contact")}</div>
+            <div className="cursor-pointer">{t("contact")}</div>
             <div className="pt-[1px] text-[18px]">&#10095;</div>
           </div>
           {/*--- can insert feedbackField here (see unused) ---*/}
         </form>
 
         {/*---Sign Out---*/}
-        <div className="py-[48px] portrait:sm:my-[28px] landscape:lg:my-[28px] desktop:!py-[32px] flex items-center justify-center">
-          <button
-            onClick={async () => {
-              setLoggingOut(true);
-              logout();
-            }}
-            className="signoutButton"
-          >
-            {loggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            setLoggingOut(true);
+            logout();
+          }}
+          className="signoutButton mx-auto my-[48px]"
+        >
+          {loggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
+        </button>
       </div>
 
-      {infoModal && <InstructionsModal infoModal={infoModal} setInfoModal={setInfoModal} />}
+      {infoModal && <InfoModal infoModal={infoModal} setInfoModal={setInfoModal} />}
       {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} onClickChangeEmployeePass={onClickChangeEmployeePass} />}
       {faqModal && <FaqModal paymentSettings={paymentSettings} cashoutSettings={cashoutSettings} setFaqModal={setFaqModal} />}
       {isSwitchingLang && <SwitchLangModal />}
-      {emailModal && (
-        <div className="z-[20]">
-          <div className="transferModal z-[22]">
-            <div className="w-full flex flex-col items-center">
-              {isSendingEmail != "sending" && (
-                <>
-                  {/*--- tablet/desktop close ---*/}
-                  <div
-                    className="xButtonContainer"
-                    onClick={() => {
-                      setEmailModal(false);
-                      setEmail(paymentSettings.merchantEmail);
-                      setIsSendingEmail("initial");
-                    }}
-                  >
-                    <div className="xButton">&#10005;</div>
-                  </div>
-                  {/*--- mobile back ---*/}
-                  <FaAngleLeft
-                    className="mobileBack"
-                    onClick={() => {
-                      setEmailModal(false);
-                      setEmail(paymentSettings.merchantEmail);
-                      setIsSendingEmail("initial");
-                    }}
-                  />
-                </>
-              )}
-              {/*--- header ---*/}
-              <div className="fullModalHeader">{t("emailModal.title")}</div>
-
-              {/*---content---*/}
-              <div className="transferModalContentContainer items-start">
-                <div className="mt-[32px]">{t("emailModal.text")}</div>
-                <label className="mt-[32px] w-full font-semibold">{t("emailModal.label")}</label>
-                <div className="mt-[4px] w-full flex items-center relative">
-                  <input
-                    className="text-[18px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[18px] peer w-full h-[56px] landscape:xl:desktop:h-[44px] px-[12px] focus:cursor-text rounded-md outline-none bg-transparent dark:focus:bg-dark3 border border-slate-300 focus:border-blue-500 focus:dark:border-slate-500 transition-all duration-[300ms] placeholder:text-slate-400 placeholder:dark:text-slate-600 placeholder:font-normal placeholder:italic"
-                    onChange={(e) => setEmail(e.currentTarget.value)}
-                    value={email}
-                    placeholder="Enter an email address"
-                  />
-                  {email && (
-                    <div className="absolute w-[28px] h-[28px] right-2 cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden" onClick={() => setEmail("")}>
-                      &#10005;
-                    </div>
-                  )}
-                </div>
-                {/*---button---*/}
-                <div className="w-full pt-[50px] pb-[16px] flex justify-center items-center">
-                  {isSendingEmail == "initial" && (
-                    <button onClick={emailQrCode} className="appButton1 w-full">
-                      {t("emailModal.button")}
-                    </button>
-                  )}
-                  {isSendingEmail == "sending" && (
-                    <div onClick={emailQrCode} className="appButton1 bg-lightButtonHover dark:bg-darkButtonHover w-full flex justify-center items-center">
-                      <SpinningCircleWhite />
-                      <div className="ml-[12px] textBaseApp">{t("emailModal.sending")}...</div>
-                    </div>
-                  )}
-                  {isSendingEmail == "sent" && (
-                    <div onClick={emailQrCode} className="appButton1 !bg-transparent border-none flex items-center justify-center">
-                      <FaCircleCheck className="text-green-500 text-[24px]" />
-                      <div className="ml-[12px]">{t("emailModal.sent")}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="modalBlackout z-[21]"></div>
-        </div>
-      )}
-      {/*--- insert merchantTypeModal here (see unused) ---*/}
+      {emailModal && <EmailModal setEmailModal={setEmailModal} emailQrCode={emailQrCode} isSendingEmail={isSendingEmail} email={email} setEmail={setEmail} />}
     </section>
   );
 }

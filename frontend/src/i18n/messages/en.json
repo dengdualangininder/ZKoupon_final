@@ -288,19 +288,19 @@
       "info": {
         "employeePass": {
           "title": "What is the Employee Password?",
-          "text-1": "If you set an <span1>Employee Password</span1>, employees can sign into the Nulla App using your account's email address and the employee password. Employees will be able to see all customer payments, so they can confirm payments when customers pay.",
+          "text-1": "If you set an <span1>Employee Password</span1>, employees can sign into the Nulla App (with restricted functionality) using your account's email and the employee password. The employee will primarily use the App to confirm successful payments.",
           "text-2": "Can employees make refunds?",
-          "text-3": "Because employees do not have access to the funds in Nulla Pay, they cannot make refunds. However, employees can label/unlabel payments with the \u0022To Refund\u0022 tag. You (the owner) can then later refund all payments with this label in a single click."
+          "text-3": "Employees do not have access to funds and, therefore, cannot make refunds. However, employees can label/unlabel payments with a \u0022To Refund\u0022 tag. You (the owner) can then view and refund these payments at the end of each day."
         },
         "cashback": {
           "title": "What is the 2% Cashback?",
-          "text-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Nulla Pay does not make any profit from transactions.",
-          "text-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business.",
+          "text-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Nulla Pay charges zero fees per transaction.",
+          "text-2": "Because most credit cards offer 1% cashback, consumers are locked into using credit cards. The 2% discount is needed to help pull customers away from using credit cards. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business. This is a win-win situation for you and you customers.",
           "text-3": "When crypto payments become more popular, we will make this cashback optional."
         },
         "google": {
           "title": "What is the Google ID?",
-          "text-1": "Search \u0022Google Place ID Finder\u0022 and go to the Google Place ID Finder website. Find your Google Place ID and paste it here. When you do, your business will be added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments, thus allowing crypto users to more easily find your business."
+          "text-1": "You can find your Google ID (aka Google Place ID) on the <a1>Google Place ID Finder</a1> website. If you fill out this field, your business will be added to https://www.stablecoinmap.com, which is a database of places that accept crypto payments. This allows crypto users to more easily find your business."
         },
         "platformAddress": {
           "title": "What is the Cash Out Address?",

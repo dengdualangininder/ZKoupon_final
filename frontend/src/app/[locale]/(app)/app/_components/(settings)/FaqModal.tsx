@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 // constants
 import { currencyToExample } from "@/utils/constants";
 // components
-import TradeMAXModal from "./exchanges/TradeMAXModal";
+import TradeMAXModal from "../modals/exchanges/TradeMAXModal";
 // images
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -51,7 +51,7 @@ const Instructions = ({ paymentSettings, cashoutSettings, setFaqModal }: { payme
   return (
     <div>
       {/*--- QUESITONS MODAL ---*/}
-      <div className="instructionsModal">
+      <div className="fullModal">
         {/*--- header ---*/}
         <div className="fullModalHeader">{t("instructions")}</div>
         {/*--- mobile back ---*/}
@@ -79,7 +79,7 @@ const Instructions = ({ paymentSettings, cashoutSettings, setFaqModal }: { payme
 
       {/*--- ANSWER MODAL ---*/}
       {expand && (
-        <div className="instructionsModal z-[91]">
+        <div className="fullModal z-[91]">
           {/*--- header ---*/}
           <div className="fullModalHeader">
             {expand == "setup" && <div>{t("title.setup")}</div>}

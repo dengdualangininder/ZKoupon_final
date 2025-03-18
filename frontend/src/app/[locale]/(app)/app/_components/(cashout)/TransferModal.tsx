@@ -373,7 +373,7 @@ export default function TransferModal({
               </div> */}
 
               {/*--- ARROW ---*/}
-              <div className="flex h-[40px] relative">
+              <div className="flex-none flex h-[40px] relative">
                 <div className="absolute translate-y-[-50px] translate-x-[-50%] w-[70px] h-[70px] rotate-45 bg-light3 dark:bg-dark3"></div>
               </div>
 

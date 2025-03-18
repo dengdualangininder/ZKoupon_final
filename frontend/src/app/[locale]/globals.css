@@ -189,7 +189,7 @@
   }
 
   .button2Color {
-    @apply border-2 bg-transparent text-slate-500 border-slate-500 desktop:hover:text-slate-400 desktop:hover:border-slate-400 active:text-slate-400 active:border-slate-400; /*--- same for dark and light ---*/
+    @apply border-2 bg-transparent text-slate-500 border-current desktop:hover:text-slate-400 active:text-slate-400; /*--- same for dark and light ---*/
   }
 
   .buttonPendingColor {
@@ -301,11 +301,15 @@
   }
 
   .inputColor {
-    @apply bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 rounded-[8px] border-[1.5px] border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms];
+    @apply rounded-[8px] border-[1.5px] bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms];
   }
 
   .settingsInputColor {
-    @apply bg-light1 dark:bg-dark1 focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 rounded-[8px] border-[1.5px] border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
+    @apply rounded-[8px] border-[1.5px] bg-light1 dark:bg-dark1 focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms] desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
+  }
+
+  .checkboxColor {
+    @apply rounded-[8px] border-[1.5px] bg-light1 dark:bg-dark1 border-slate-400 dark:border-dark5 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
   }
 
   .loginLabel {
@@ -331,11 +335,7 @@
   /* --- input elements --- */
 
   .checkbox {
-    @apply w-[36px] h-[36px] desktop:w-[24px] desktop:h-[24px] rounded-[8px] checkboxColor cursor-pointer;
-  }
-
-  .checkboxColor {
-    @apply border-[1.5px] border-slate-400 dark:border-dark5 bg-light1 dark:bg-dark4 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
+    @apply w-[36px] h-[36px] desktop:w-[28px] desktop:h-[28px] checkboxColor cursor-pointer;
   }
 
   /* --- home --- */
@@ -423,6 +423,10 @@
   }
 
   /* --- app --- */
+
+  .appNavColor {
+    @apply bg-light1 dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:via-dark2 dark:to-dark3 from-0% via-80% to-100% portrait:border-t landscape:border-r dark:!border-none border-light5;
+  }
 
   .appPageContainer {
     @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center; /* navbar is fixed, so need margins to center */
@@ -561,7 +565,7 @@
   }
 
   .settingsFont {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base;
+    @apply text-base portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-medium tracking-tight portrait:sm:tracking-normal landscape:lg:tracking-normal;
   }
 
   .settingsFontFixed {
@@ -573,11 +577,11 @@
   }
 
   .settingsWidth {
-    @apply px-[12px] w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[480px];
+    @apply px-[12px] w-full max-w-[440px] portrait:sm:max-w-[580px] landscape:lg:max-w-[580px] desktop:!max-w-[480px];
   }
 
   .settingsTitle {
-    @apply mt-[8px] h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] desktop:!h-[90px] text-2xl portrait:sm:text-3xl landscape:lg:text-3xl desktop:!text-2xl font-bold flex items-center justify-center flex-none text-blue-700 dark:text-white;
+    @apply mt-[8px] h-[64px] portrait:sm:h-[80px] landscape:lg:h-[80px] portrait:lg:h-[90px] desktop:!h-[90px] text-2xl portrait:sm:text-3xl landscape:lg:text-3xl desktop:!text-2xl font-bold flex items-center justify-center flex-none text-blue-700 dark:text-darkText1;
   }
 
   .settingsField {
@@ -589,19 +593,15 @@
   }
 
   .settingsLabel {
-    @apply settingsLabelNoColor textGray;
-  }
-
-  .settingsLabelNoColor {
-    @apply flex-none flex items-center font-medium mr-[12px];
+    @apply textGray;
   }
 
   .settingsInput {
-    @apply w-full h-full px-[12px] py-[4px] text-end cursor-pointer focus:cursor-text settingsInputColor transition-all duration-[300ms] placeholder:font-normal placeholder:pr-[2px] focus:placeholder:text-transparent rounded-[6px];
+    @apply w-full h-full px-[12px] py-[4px] text-end focus:cursor-text settingsInputColor placeholder:pr-[2px] cursor-pointer;
   }
 
   .settingsSelect {
-    @apply h-full px-[12px] py-[4px] [text-align-last:right] cursor-pointer bg-none settingsInputColor transition-all duration-[300ms] rounded-[6px] scrollbar;
+    @apply h-full px-[12px] py-[4px] [text-align-last:right] bg-none settingsInputColor cursor-pointer scrollbar;
   }
 
   .settingsRightAngle {
@@ -609,14 +609,10 @@
   }
 
   .settingsInfo {
-    @apply flex-none inline ml-[6px] w-[20px] h-[20px] text-blue-500 dark:text-darkButton cursor-pointer desktop:hover:brightness-[1.5] active:brightness-[1.5];
+    @apply flex-none inline ml-[6px] text-[20px] text-blue-500 dark:text-darkButton desktop:cursor-pointer desktop:hover:brightness-[1.5] active:brightness-[1.5];
   }
 
   /* --- tooltips --- */
-
-  .copiedText {
-    @apply text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm;
-  }
 
   .tooltip {
     @apply invisible group-hover:visible absolute px-[16px] py-[12px] rounded-lg desktop:px-[12px] desktop:py-[8px] bg-slate-800 text-white border-slate-500 border z-[1];
@@ -633,11 +629,11 @@
   /* modal base & color */
 
   .modalBase {
-    @apply flex flex-col items-center rounded-[16px] fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
+    @apply flex flex-col items-center fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11] rounded-[16px];
   }
 
   .modalFullBase {
-    @apply flex flex-col items-center portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] desktop:!rounded-[16px] absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11];
+    @apply flex flex-col items-center fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] z-[11] portrait:sm:rounded-[16px] landscape:lg:rounded-[16px] desktop:!rounded-[16px];
   }
 
   .sidebarModalBase {
@@ -662,28 +658,20 @@
     @apply w-[93%] portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:!max-w-[440px] max-h-[90%];
   }
 
-  .cbIntroModalSize {
-    @apply w-[93%] portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[350px] max-h-[90%];
-  }
-
   .cashoutIntroModalSize {
     @apply w-[93%] portrait:sm:w-[500px] landscape:lg:w-[500px] desktop:!w-[420px] h-[620px] portrait:sm:h-[680px] landscape:lg:h-[680px] desktop:!h-[620px] max-h-[90%];
   }
 
-  .infoModalSize {
-    @apply w-[95%] portrait:sm:max-w-[700px] landscape:lg:max-w-[700px] desktop:!max-w-[600px] max-h-[90%];
+  .modalFullSizeDynamic {
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[600px] h-screen portrait:sm:h-auto landscape:lg:h-auto portrait:sm:max-h-[90%] landscape:lg:max-h-[90%];
   }
 
-  .instructionsModalSize {
-    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[600px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
-  }
-
-  .detailsModalSize {
-    @apply w-full portrait:sm:max-w-[600px] landscape:lg:max-w-[600px] desktop:!max-w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
+  .modalFullSize {
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .transferModalSize {
-    @apply w-full portrait:sm:max-w-[450px] landscape:lg:max-w-[450px] desktop:!max-w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
+    @apply w-full portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] portrait:sm:max-h-[700px] landscape:lg:max-h-[700px] desktop:!max-h-[620px];
   }
 
   .sidebarModalSize {
@@ -697,31 +685,49 @@
   }
 
   .infoModal {
-    @apply modalBase modalColor infoModalSize modalYpadding;
-  }
-
-  .cbIntroModal {
-    @apply modalBase modalColor cbIntroModalSize modalYpadding;
+    @apply modalFullBase modalFullColor modalFullSizeDynamic pb-[28px];
   }
 
   .cashoutIntroModal {
     @apply modalBase modalColor cashoutIntroModalSize modalYpadding;
   }
 
-  .instructionsModal {
-    @apply modalFullBase modalFullColor instructionsModalSize pb-[24px];
-  }
-
-  .detailsModal {
-    @apply modalFullBase modalFullColor detailsModalSize pb-[24px];
+  .fullModal {
+    @apply modalFullBase modalFullColor modalFullSize pb-[28px];
   }
 
   .transferModal {
-    @apply modalFullBase modalFullColor dark:bg-dark2 transferModalSize desktop:pb-[12px];
+    @apply modalFullBase modalFullColor transferModalSize desktop:pb-[12px];
   }
 
   .sidebarModal {
-    @apply sidebarModalSize sidebarModalColor sidebarModalBase;
+    @apply sidebarModalBase sidebarModalColor sidebarModalSize;
+  }
+
+  .cbIntroModal {
+    @apply modalBase modalColor cbIntroModalSize modalYpadding;
+  }
+
+  .cbIntroModalSize {
+    @apply w-[93%] portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[350px] max-h-[90%];
+  }
+
+  /* modal content container */
+
+  .infoModalContentContainer {
+    @apply modalXpadding overflow-y-auto;
+  }
+
+  .errorModalContentContainer {
+    @apply w-full flex flex-col items-center modalXpaddingLg overflow-y-auto;
+  }
+
+  .detailsModalContentContainer {
+    @apply flex-1 w-full px-[12px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px] overflow-y-auto scrollbar;
+  }
+
+  .transferModalContentContainer {
+    @apply w-full max-w-[450px] h-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col items-center overflow-y-auto;
   }
 
   /* modal styling */
@@ -743,11 +749,11 @@
   }
 
   .fullModalHeader {
-    @apply modalHeaderFont w-[290px] portrait:sm:w-[240px] landscape:lg:w-[240px] desktop:!w-[280px] py-[23px];
+    @apply modalHeaderFont w-[calc(100%-130px)] py-[24px];
   }
 
   .modalHeaderFont {
-    @apply text-center text-2xl desktop:!text-xl font-semibold;
+    @apply text-center text-2xl desktop:text-xl font-semibold;
   }
 
   .transferSuccessModalHeaderContainer {
@@ -766,26 +772,10 @@
     @apply w-[300px];
   }
 
-  /* modal content container and button container */
+  /* modal button container */
 
   .qrCodeModalIconContainer {
     @apply absolute w-[60px] h-[60px] rounded-full portrait:sm:border-2 landscape:lg:border-2 border-white flex items-center justify-center cursor-pointer desktop:hover:opacity-80 active:opacity-80;
-  }
-
-  .infoModalContentContainer {
-    @apply modalXpadding overflow-y-auto;
-  }
-
-  .errorModalContentContainer {
-    @apply w-full flex flex-col items-center modalXpaddingLg overflow-y-auto;
-  }
-
-  .detailsModalContentContainer {
-    @apply flex-1 w-full px-[16px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px] overflow-y-auto scrollbar;
-  }
-
-  .transferModalContentContainer {
-    @apply w-full h-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col items-center overflow-y-auto;
   }
 
   .sidebarModalContentContainer {

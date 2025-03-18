@@ -100,11 +100,11 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
             w3Info ? "grid-cols-[25%_25%_50%]" : "grid-cols-[50%_50%]"
           } items-center`}
         >
-          <div className="paymentsIconContainer" onClick={() => setSearchModal({ render: true, show: true })}>
+          <button className="paymentsIconContainer" onClick={() => setSearchModal({ render: true, show: true })}>
             <FiSearch className="paymentsIcon" />
-          </div>
+          </button>
           {w3Info && (
-            <div
+            <button
               className="paymentsIconContainer"
               onClick={() => {
                 if (txns && txns.pages.length > 0) {
@@ -115,11 +115,11 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
               }}
             >
               <FiDownload className="paymentsIcon" />
-            </div>
+            </button>
           )}
-          <div className="paymentsIconContainer justify-self-end" onClick={() => setQrCodeModal(true)}>
+          <button className="paymentsIconContainer justify-self-end" onClick={() => setQrCodeModal(true)}>
             <HiQrCode className="paymentsIcon" />
-          </div>
+          </button>
         </div>
 
         {/*--- HEADERS ---*/}
@@ -131,9 +131,9 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
 
         {/*--- CLEAR SEARCH MODAL ---*/}
         {txns && clearSearchModal && (
-          <div className="w-full h-[96px] left-0 top-0 absolute flex justify-center items-center bg-light1 dark:bg-dark1">
-            <button onClick={clearFilter} className="border rounded-full px-[20px] py-[8px] border-slate-500 dark:border-slate-400 text-black dark:text-darkText1">
-              &#10005; {t("clearSearch")}
+          <div className="w-full h-[100px] left-0 top-0 absolute flex justify-center items-center bg-light1 dark:bg-dark1">
+            <button onClick={clearFilter} className="button2Color textLgApp px-[1em] py-[0.7em] font-medium rounded-full cursor-pointer">
+              <span className="font-bold pr-[4px]">&#10005;</span> {t("clearSearch")}
             </button>
           </div>
         )}

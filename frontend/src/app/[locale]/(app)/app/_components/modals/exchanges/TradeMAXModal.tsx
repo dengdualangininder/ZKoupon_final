@@ -13,7 +13,7 @@ const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {
   const t = useTranslations("App.InstructionsModal");
 
   return (
-    <div className="instructionsModal z-[92]">
+    <div className="fullModal z-[92]">
       {/*--- header ---*/}
       <div className="modalHeader">{t("cashout-tradeMAX")}</div>
       {/*--- mobile back ---*/}
