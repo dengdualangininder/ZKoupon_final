@@ -308,7 +308,7 @@ export default function TransferModal({
           {transferState != "sent" && (
             <>
               {/*--- FROM CARD ---*/}
-              <div className="p-[16px] bg-dark3 rounded-[12px] flex flex-col z-[2]">
+              <div className="transferCard z-[2]">
                 {/*--- from info ---*/}
                 <div className="flex items-center gap-x-[12px]">
                   <div className="transferIcon">
@@ -374,11 +374,11 @@ export default function TransferModal({
 
               {/*--- ARROW ---*/}
               <div className="flex h-[40px] relative">
-                <div className="absolute translate-y-[-50px] translate-x-[-50%] w-[70px] h-[70px] rotate-45 bg-dark3"></div>
+                <div className="absolute translate-y-[-50px] translate-x-[-50%] w-[70px] h-[70px] rotate-45 bg-light3 dark:bg-dark3"></div>
               </div>
 
               {/*--- TO CARD ---*/}
-              <div className="w-full px-[16px] py-[16px] bg-dark3 rounded-[12px] flex flex-col">
+              <div className="transferCard">
                 {/*--- to info ---*/}
                 {(transferModal === "toCex" || transferModal === "toBank") && (
                   <div className="flex items-center gap-x-[12px]">

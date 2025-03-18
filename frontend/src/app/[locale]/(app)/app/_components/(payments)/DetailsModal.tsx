@@ -346,7 +346,7 @@ const DetailsModal = ({
           </div>
 
           {/*--- REFUND STATUS ---*/}
-          <div className="mt-[16px] w-full bg-dark3 rounded-[16px] px-[24px] py-[20px] tracking-normal">
+          <div className="mt-[16px] w-full bg-light3 dark:bg-dark3 rounded-[16px] px-[24px] py-[20px] tracking-normal">
             <div className="modalHeaderFont pb-[40px]">Refund Status</div>
             {refundState === "refunded" ? (
               <div className="w-full flex flex-col items-center gap-[8px]">

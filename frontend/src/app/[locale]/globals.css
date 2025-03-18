@@ -305,7 +305,7 @@
   }
 
   .settingsInputColor {
-    @apply bg-white dark:bg-dark1 focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 rounded-[8px] border-[1.5px] border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
+    @apply bg-light1 dark:bg-dark1 focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 rounded-[8px] border-[1.5px] border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
   }
 
   .loginLabel {
@@ -525,7 +525,7 @@
   }
 
   .transferCard {
-    @apply flex-none w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[24px] flex flex-col items-center rounded-[12px] relative border-none border-slate-400 dark:border-dark4;
+    @apply p-[16px] w-full bg-light3 dark:bg-dark3 rounded-[12px] flex flex-col;
   }
 
   .transferFromCard {
