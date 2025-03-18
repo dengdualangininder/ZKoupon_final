@@ -182,15 +182,17 @@
       "time": "時間",
       "customer": "客戶地址",
       "clearSearch": "清除搜尋結果",
-      "noPayments": "還沒有收款",
+      "noPayments": "沒有付款",
       "toRefund": "要退款",
       "detailsModal": {
         "title": "收款資料",
         "time": "時間",
         "value": "支付價值",
+        "valueAfter": "2%回饋後支付價值",
         "tokens": "收到的幣",
         "rate": "匯率",
         "customerAddress": "客戶地址",
+        "notes": "筆記",
         "toRefund": "標為\u0022要退款\u0022？",
         "refundNow": "現在退款？",
         "confirmRefund": "確認退款？",
@@ -240,7 +242,7 @@
         "lowBalance": "金額超過餘額",
         "unknownTransferError": "出金失敗，請重試或聯絡我們。對於造成的不便，我們深表歉意。"
       },
-      "toAddress": "接收 EVM 地址",
+      "toAddress": "任何地址在",
       "enterAnEvmAddress": "輸入地址",
       "transferToCexSuccessModal": "<span1>{amount} USDC</span1> 已出金到您的 {cex} 帳戶。請等 5-10 分鐘以便您的 {cex} 餘額更新。",
       "transferToBankSuccessModal": {
@@ -300,7 +302,6 @@
       "employeePassModal": { "text": "您想要改員工密碼？", "change": "是，要改", "cancel": "取消" },
       "yes": "我要",
       "empty": "無",
-      "copied": "已複製",
       "emailModal": {
         "title": "Email QR 碼",
         "text": "以電子郵件傳送 QR 碼給自己或列印店。",
@@ -439,6 +440,8 @@
     "transferSuccessful": "出金成功",
     "contact": "如需任何協助，請隨時透過 support@flashpayments.xyz 與我們聯絡。",
     "email": "寄電子郵件",
-    "download": "下載"
+    "download": "下載",
+    "loading": "載入中",
+    "copied": "已複製"
   }
 }

@@ -17,6 +17,8 @@ export default function App({ flashInfo, allRates }: { flashInfo: FlashInfo; all
   const w3Info = useW3Info();
   const { data: settings } = useSettingsQuery(w3Info, flashInfo);
 
+  // const settings = null;
+
   // reason we have App and LazyApp is to fetch App JS bundle only after flashInfo cookies have been set (don't want to fetch App JS twice)
   return (
     <div className="textBaseApp bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1 overscroll-none" style={{ scrollbarGutter: "stable" }}>

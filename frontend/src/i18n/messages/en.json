@@ -184,15 +184,17 @@
       "time": "Time",
       "customer": "Customer",
       "clearSearch": "Clear search",
-      "noPayments": "No payments yet",
+      "noPayments": "No payments",
       "toRefund": "To Refund",
       "detailsModal": {
         "title": "Payment Details",
         "time": "Time",
         "value": "Payment Value",
-        "tokens": "Tokens Received",
+        "valueAfter": "Value After 2% Cashback",
+        "tokens": "USDC Received",
         "rate": "Rate",
         "customerAddress": "Customer's Address",
+        "notes": "Notes",
         "toRefund": "Label as \u0022To Refund\u0022?",
         "refundNow": "Refund now?",
         "confirmRefund": "Confirm refund?",
@@ -248,8 +250,8 @@
         "lowBalance": "Amount exceeds balance",
         "unknownTransferError": "Something happened and the transfer was not made. Please try again or contact us. We apologize for the inconvenience."
       },
-      "toAddress": "Any EVM address",
-      "enterAnEvmAddress": "Enter an EVM address",
+      "toAddress": "Any address on",
+      "enterAnEvmAddress": "Enter address here",
       "transferToCexSuccessModal": "<span1>{amount} USDC</span1> was sent to your {cex} account. Please wait 5-10 minutes for your {cex} balance to update.",
       "transferToBankSuccessModal": {
         "text-1": "was deducted from your Coinbase account.",
@@ -308,7 +310,6 @@
       "employeePassModal": { "text": "Do you want to change the Employee Password?", "change": "Change Password", "cancel": "Cancel" },
       "yes": "Yes",
       "empty": "empty",
-      "copied": "copied",
       "emailModal": {
         "title": "Email QR Code",
         "text": "Email the QR code to yourself or to a print shop.",
@@ -437,7 +438,7 @@
     "skip": "SKIP",
     "max": "MAX",
     "balance": "Balance",
-    "blockchainFee": "blockchain fee",
+    "transferCost": "Transfer fee is",
     "fromCoinbase": "From: Coinbase",
     "toCEX": "To: {cex}",
     "toBank": "To: Bank",
@@ -446,6 +447,8 @@
     "transferSuccessful": "Transfer successful",
     "contact": "For any assistance, feel free to contact us at support@flashpayments.xyz",
     "email": "Email",
-    "download": "Download"
+    "download": "Download",
+    "loading": "Loading",
+    "copied": "copied"
   }
 }

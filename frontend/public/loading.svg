@@ -1,0 +1,24 @@
+<svg width="184" height="184" viewBox="0 0 184 184" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 92C22 86.4772 17.5228 82 12 82C6.47715 82 2 86.4772 2 92H22ZM92 162C53.3401 162 22 130.66 22 92H2C2 141.706 42.2944 182 92 182V162Z" fill="url(#a)"/>
+<path d="M172 92C172 136.183 136.183 172 92 172" stroke="url(#b)" stroke-width="20"/>
+<path d="M92 12C136.183 12 172 47.8172 172 92" stroke="url(#c)" stroke-width="20"/>
+<path d="M12 92C12 47.8172 47.8172 12 92 12" stroke="url(#d)" stroke-width="20"/>
+<defs>
+<linearGradient id="a" x1="5.5" y1="83" x2="92" y2="162" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-opacity="0.6"/>
+</linearGradient>
+<linearGradient id="b" x1="172" y1="92" x2="92" y2="162" gradientUnits="userSpaceOnUse">
+<stop stop-opacity="0.35"/>
+<stop offset="1" stop-opacity="0.6"/>
+</linearGradient>
+<linearGradient id="c" x1="92" y1="22" x2="162" y2="92" gradientUnits="userSpaceOnUse">
+<stop stop-opacity="0.15"/>
+<stop offset="1" stop-opacity="0.35"/>
+</linearGradient>
+<linearGradient id="d" x1="92" y1="21.5" x2="22" y2="58" gradientUnits="userSpaceOnUse">
+<stop stop-opacity="0.15"/>
+<stop offset="1" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

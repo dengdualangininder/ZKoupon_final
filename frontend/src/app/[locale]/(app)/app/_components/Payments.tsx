@@ -156,7 +156,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
                       page.map((txn: Transaction) => (
                         <div
                           className={`${
-                            txn.refund ? "text-slate-300 dark:text-slate-700" : ""
+                            txn.refund ? "textGrayer" : ""
                           } portrait:h-[calc((100vh-80px-140px)/5)] portrait:sm:h-[calc((100vh-140px-180px)/5)] relative paymentsWidth flex-none portrait:sm:px-[12px] landscape:lg:px-[12px] landscape:h-[80px] landscape:lg:h-[calc((100vh-180px)/5)] desktop:!h-[calc((100vh-160px)/5)] desktop:!min-h-[74px] flex items-center justify-center border-t border-light5 dark:border-dark3 desktop:hover:bg-light2 dark:desktop:hover:bg-dark2 active:bg-light2 dark:active:bg-dark2 desktop:cursor-pointer`}
                           key={txn.txnHash}
                           onClick={() => {
@@ -175,7 +175,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
                             <div className="relative">
                               <div
                                 className={`absolute bottom-[calc(100%-2px)] portrait:sm:bottom-[calc(100%+2px)] landscape:lg:bottom-[calc(100%+2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium ${
-                                  txn.refund ? "text-slate-300 dark:text-slate-700" : "textGray"
+                                  txn.refund ? "textGrayer" : "textGray"
                                 }`}
                               >
                                 {getLocalDateWords(txn.date)?.toUpperCase()}

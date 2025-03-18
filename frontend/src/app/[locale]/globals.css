@@ -181,7 +181,7 @@
   /*--- button colors ---*/
 
   .button1ColorLight {
-    @apply border-[2px] text-white bg-lightButton border-lightButton outline-none focus:bg-lightButtonHover focus:border-lightButtonHover desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover;
+    @apply border-2 text-white bg-lightButton border-lightButton outline-none focus:bg-lightButtonHover focus:border-lightButtonHover desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover;
   }
 
   .button1Color {
@@ -189,11 +189,11 @@
   }
 
   .button2Color {
-    @apply border-[2px] bg-transparent text-slate-500 border-slate-500 desktop:hover:text-slate-400 desktop:hover:border-slate-400 active:text-slate-400 active:border-slate-400; /*--- same for dark and light ---*/
+    @apply border-2 bg-transparent text-slate-500 border-slate-500 desktop:hover:text-slate-400 desktop:hover:border-slate-400 active:text-slate-400 active:border-slate-400; /*--- same for dark and light ---*/
   }
 
   .buttonPendingColor {
-    @apply border-[2px] bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
+    @apply border-2 bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
   }
 
   /*--- homepage buttons ---*/
@@ -218,50 +218,76 @@
 
   /*--- button font & height ---*/
 
-  .appButtonHeight {
-    @apply h-[60px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px];
+  .appButtonSizeStd {
+    @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] textBaseApp font-medium;
   }
 
-  .appButtonHeightSm {
-    @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px];
+  .appButtonSizeSm {
+    @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:!h-[40px] textSmApp font-medium;
+  }
+
+  .appButtonHeight {
+    @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px];
   }
 
   /*--- app buttons ---*/
 
-  .appButtonBase {
-    @apply flex items-center justify-center font-medium rounded-[10px];
-  }
-
   .appButton1 {
-    @apply appButtonBase button1Color appButtonHeight textBaseApp;
+    @apply button1Color appButtonSizeStd flex items-center justify-center rounded-[8px];
   }
 
   .appButton2 {
-    @apply appButtonBase button2Color appButtonHeight textBaseApp;
+    @apply button2Color appButtonSizeStd flex items-center justify-center rounded-[8px];
   }
 
   .appButton1Light {
-    @apply button1ColorLight appButtonHeight textBaseApp;
+    @apply button1ColorLight appButtonSizeStd flex items-center justify-center rounded-[8px];
   }
 
   .appButtonPending {
-    @apply appButtonBase buttonPendingColor appButtonHeight textBaseApp;
+    @apply buttonPendingColor appButtonSizeStd flex items-center justify-center rounded-[8px];
   }
 
   .cashoutButton {
-    @apply button1Color appButtonHeightSm textSmApp ml-auto px-[18px] portrait:sm:px-[20px] landscape:lg:px-[20px] desktop:!px-[16px] font-medium translate-x-[4px] rounded-full;
+    @apply button1Color appButtonSizeSm px-[1em] rounded-full ml-auto translate-x-[4px];
   }
 
   .refundButtonBase {
-    @apply appButtonHeightSm textSmApp px-[20px] portrait:sm:px-[22px] landscape:lg:px-[22px] desktop:!px-[18px] font-semibold rounded-full;
+    @apply appButtonSizeSm px-[1em] rounded-full;
   }
 
   .settingsFontButton {
-    @apply button1Color h-full px-[15px] portrait:sm:px-[18px] landscape:lg:px-[18px] desktop:!px-[15px] font-medium text-sm portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm rounded-full;
+    @apply button1Color h-full text-sm portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm px-[1em] rounded-full;
   }
 
   .signoutButton {
-    @apply button1Color h-[48px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] px-[18px] portrait:sm:px-[24px] landscape:lg:px-[24px] desktop:!px-[18px] rounded-full font-medium flex items-center justify-center;
+    @apply button1Color h-[48px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] w-[108px] portrait:sm:w-[140px] landscape:lg:w-[140px] desktop:!w-[108px] rounded-full font-medium flex items-center justify-center;
+  }
+
+  /* --- intro buttons --- */
+
+  .introButtonPrimary {
+    @apply w-[120px] appButtonHeight button1ColorLight font-medium rounded-full;
+  }
+
+  .introButtonSecondary {
+    @apply w-[120px] appButtonHeight border-2 button2Color font-medium rounded-full;
+  }
+
+  .introNextNoColor {
+    @apply mr-[4px] w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold rounded-[6px];
+  }
+
+  .introNext {
+    @apply introNextNoColor button1ColorLight;
+  }
+
+  .cashoutIntroNext {
+    @apply introNextNoColor button1Color;
+  }
+
+  .introBack {
+    @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
   }
 
   /* --- input --- */
@@ -270,8 +296,16 @@
     @apply h-[54px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px];
   }
 
+  .placeholderColor {
+    @apply italic text-slate-400 dark:text-zinc-700;
+  }
+
   .inputColor {
-    @apply dark:text-gray-400 bg-light1 dark:bg-dark4 border-[1.5px] rounded-[8px] border-slate-300 dark:border-dark5 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none transition-all duration-[500ms];
+    @apply bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 rounded-[8px] border-[1.5px] border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms];
+  }
+
+  .settingsInputColor {
+    @apply bg-white dark:bg-dark1 focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 rounded-[8px] border-[1.5px] border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
   }
 
   .loginLabel {
@@ -297,15 +331,11 @@
   /* --- input elements --- */
 
   .checkbox {
-    @apply w-[36px] h-[36px] desktop:w-[30px] desktop:h-[30px] rounded-[8px] checkboxColor cursor-pointer;
+    @apply w-[36px] h-[36px] desktop:w-[24px] desktop:h-[24px] rounded-[8px] checkboxColor cursor-pointer;
   }
 
   .checkboxColor {
     @apply border-[1.5px] border-slate-400 dark:border-dark5 bg-light1 dark:bg-dark4 text-lightButton dark:text-darkButton dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
-  }
-
-  .placeholderColor {
-    @apply italic text-slate-400 dark:text-zinc-700;
   }
 
   /* --- home --- */
@@ -392,35 +422,7 @@
     @apply flex-none mr-[12px] w-[28px] h-[28px] desktop:w-[24px] desktop:h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[13px] text-white;
   }
 
-  .introButtonPrimary {
-    @apply w-[120px] appButtonHeight border-2 button1ColorLight font-medium rounded-full;
-  }
-
-  .introButtonSecondary {
-    @apply w-[120px] appButtonHeight border-2 button2Color font-medium rounded-full;
-  }
-
-  .introNextNoColor {
-    @apply mr-[4px] w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold rounded-[6px];
-  }
-
-  .introNext {
-    @apply introNextNoColor button1ColorLight;
-  }
-
-  .cashoutIntroNext {
-    @apply introNextNoColor button1Color;
-  }
-
-  .introBack {
-    @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
-  }
-
   /* --- app --- */
-
-  .menuText {
-    @apply mt-[3px] text-[0.8125rem] portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-semibold select-none;
-  }
 
   .appPageContainer {
     @apply grow portrait:w-full portrait:mb-[80px] portrait:sm:mb-[140px] landscape:h-full landscape:ml-[120px] landscape:lg:ml-[160px] landscape:desktop:!ml-[200px] flex flex-col items-center; /* navbar is fixed, so need margins to center */
@@ -450,12 +452,16 @@
     @apply font-semibold text-lg portrait:sm:text-2xl landscape:lg:text-2xl desktop:!text-lg textGray;
   }
 
+  .detailsField {
+    @apply py-[16px] desktop:py-[12px] w-full border-t border-slate-300 dark:border-dark6 flex items-center justify-between;
+  }
+
   .detailsLabelText {
-    @apply text-lg leading-snug portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base text-slate-500 font-semibold;
+    @apply textGray;
   }
 
   .detailsValueText {
-    @apply text-[20px] leading-snug portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
+    @apply text-end;
   }
 
   .notificationText {
@@ -491,7 +497,7 @@
   }
 
   .cashoutMoreOptionsContainer {
-    @apply absolute top-[calc(100%+4px)] right-0 px-[22px] py-[14px] desktop:py-[10px] textSmApp font-medium rounded-[6px] bg-slate-200 text-black dark:text-white dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap;
+    @apply absolute top-[calc(100%+4px)] right-0 px-[1em] appButtonSizeSm flex items-center rounded-[8px] bg-slate-200 dark:bg-dark5 desktop:hover:bg-slate-300 dark:desktop:hover:bg-dark6 cursor-pointer whitespace-nowrap;
   }
 
   .cashoutEllipsisContainer {
@@ -530,12 +536,16 @@
     @apply pt-[40px] desktop:pt-[36px] pb-[24px] transferCard;
   }
 
-  .transferInfoText {
-    @apply ml-[12px] flex flex-col;
+  .transferIcon {
+    @apply flex-none w-[52px] h-[52px] desktop:w-[48px] desktop:h-[48px] rounded-[8px] overflow-hidden relative;
   }
 
-  .transferIcon {
-    @apply relative w-[52px] h-[52px] desktop:w-[44px] desktop:h-[44px] rounded-[6px] overflow-hidden flex-none;
+  .transferText {
+    @apply font-medium !leading-[1.1];
+  }
+
+  .transferSubtext {
+    @apply textSmApp !leading-[1.1] textGray;
   }
 
   .transferUsdc {
@@ -543,11 +553,11 @@
   }
 
   .transferAmountFromBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-[124px];
+    @apply w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] font-semibold text-[30px] desktop:text-[24px] rounded-[8px] pl-[12px] desktop:pl-[10px] pr-[124px];
   }
 
   .transferAmountToBox {
-    @apply w-full h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[48px] font-semibold text-[30px] desktop:text-[24px] rounded-[6px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
+    @apply w-full h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px] font-semibold text-[30px] desktop:text-[24px] rounded-[8px] pl-[12px] pr-0 mt-[16px] flex items-center justify-between border border-slate-300 dark:border-dark6;
   }
 
   .settingsFont {
@@ -584,10 +594,6 @@
 
   .settingsLabelNoColor {
     @apply flex-none flex items-center font-medium mr-[12px];
-  }
-
-  .settingsInputColor {
-    @apply outline-none focus:ring-0 bg-transparent focus:bg-white dark:focus:!bg-dark3 border-[1.5px] border-transparent focus:border-blue-500 dark:focus:border-darkButton desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
   }
 
   .settingsInput {
@@ -643,7 +649,7 @@
   }
 
   .modalFullColor {
-    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark3 landscape:lg:dark:bg-dark3 portrait:sm:border-2 landscape:lg:border-2 border-light5 dark:border-dark6;
+    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark2 landscape:lg:dark:bg-dark2 portrait:sm:border landscape:lg:border border-light5 dark:border-dark6;
   }
 
   .sidebarModalColor {
@@ -677,7 +683,7 @@
   }
 
   .transferModalSize {
-    @apply w-full portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:!max-w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
+    @apply w-full portrait:sm:max-w-[450px] landscape:lg:max-w-[450px] desktop:!max-w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .sidebarModalSize {
@@ -775,11 +781,11 @@
   }
 
   .detailsModalContentContainer {
-    @apply flex-1 w-full px-[24px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px] space-y-[12px] overflow-y-auto scrollbar;
+    @apply flex-1 w-full px-[16px] portrait:sm:px-[40px] landscape:lg:px-[40px] desktop:!px-[32px] overflow-y-auto scrollbar;
   }
 
   .transferModalContentContainer {
-    @apply w-full h-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] desktop:!px-[72px] flex flex-col items-center overflow-y-auto;
+    @apply w-full h-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col items-center overflow-y-auto;
   }
 
   .sidebarModalContentContainer {
@@ -854,7 +860,11 @@
   }
 
   .textGray {
-    @apply text-slate-500 dark:text-slate-400;
+    @apply text-slate-500 dark:text-slate-500;
+  }
+
+  .textGrayer {
+    @apply text-slate-400 dark:text-gray-800;
   }
 
   .dotted {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
+import { getCookie, deleteCookie } from "cookies-next";
 // custom hooks
 import { useSettingsMutation } from "../../hooks";
 import { useW3Info } from "../../Web3AuthProvider";
@@ -21,6 +22,7 @@ import Placard from "../../app/_components/placard/Placard";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 import { countryData, countryCurrencyList, abb2full, cexLinks } from "@/utils/constants";
+import { FlashInfo } from "@/utils/types";
 
 export default function Intro() {
   console.log("/intro.tsx");
@@ -46,13 +48,59 @@ export default function Intro() {
     const isAppleTemp = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
     setIsMobile(!isDesktop);
     setIsApple(isAppleTemp);
+
+    // need in case user refreshes while in /intro
+    if (window.localStorage.getItem("isIntro")) {
+      getSettings();
+      return; // skip createNewUser() if isIntro
+    }
+
     if (w3Info) createNewUser();
   }, [w3Info]);
+
+  const getSettings = async () => {
+    console.log("getSettings()");
+    // get flashInfo from cookies
+    const userType = getCookie("userType");
+    const userJwt = getCookie("userJwt");
+    if (!userType || !userJwt) {
+      router.push("/login");
+      return;
+    }
+    const flashInfo: FlashInfo = { userType, userJwt };
+    // get settings and setSettings
+    const res = await fetch("/api/getSettings", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ w3Info, flashInfo }),
+    });
+    if (!res.ok) router.push("/login");
+    const resJson = await res.json();
+    if (resJson.status === "success") {
+      const { paymentSettings, cashoutSettings } = resJson.data;
+      console.log("setSettings with fetched settings", paymentSettings, cashoutSettings);
+      setSettings({
+        merchantEmail: paymentSettings.merchantEmail,
+        merchantName: paymentSettings.merchantName,
+        merchantCountry: paymentSettings.merchantCountry,
+        merchantCurrency: paymentSettings.merchantCurrency,
+        cex: cashoutSettings.cex,
+        cexEvmAddress: cashoutSettings.cexEvmAddress,
+        qrCodeUrl: paymentSettings.qrCodeUrl,
+      });
+      setStep("welcome");
+    }
+  };
 
   const createNewUser = async () => {
     console.log("creating new user");
 
-    // get 1) merchantCountry, 2) merchantCurrency, 3) cex, 4) merchantEmail, and 5) merchantEvmAddress
+    if (!w3Info?.email) {
+      console.log("w3Info.email not detected, push to /login");
+      router.push("/login");
+    }
+
+    // get merchantCountry, merchantCurrency, cex, merchantEmail
     try {
       const res = await axios.get("https://api.country.is");
       var merchantCountry = abb2full[res.data.country] ?? "Other";
@@ -74,23 +122,15 @@ export default function Intro() {
       });
       if (!res.ok) router.push("/login");
       const resJson = await res.json();
-      console.log("/api/createUser response:", resJson);
-
       if (resJson === "success") {
+        console.log("user created");
+        window.localStorage.setItem("isIntro", "true");
         setSettings({ merchantEmail, merchantName: "", merchantCountry, merchantCurrency, cex, cexEvmAddress: "", qrCodeUrl: "" });
         setStep("welcome");
       } else if (resJson === "user already exists") {
-        // test
-        setSettings({
-          merchantEmail: "brianhu27@gmail.com",
-          merchantName: "Store in Germany",
-          merchantCountry: "Philippines",
-          merchantCurrency: "PHP",
-          cex: "Coins.ph",
-          cexEvmAddress: "",
-          qrCodeUrl: "",
-        });
-        // router.push("/login");
+        console.log("user already exists, push to /app");
+        router.push("/app");
+        return;
       } else {
         router.push("/login");
       }
@@ -180,29 +220,39 @@ export default function Intro() {
   }
 
   return (
-    <div className="w-full h-screen flex justify-center bg-light2 text-black overflow-y-auto textBaseApp">
-      {step == "loading" && <div className="w-full h-full flex flex-col items-center justify-center"></div>}
-      <div className="w-[94%] min-w-[354px] max-w-[480px] desktop:!max-w-[450px] h-full min-h-[600px] max-h-[900px] my-auto">
+    <div className="w-full h-screen flex justify-center bg-light2 text-lightText1 textBaseApp overflow-y-auto">
+      <div className="w-full mx-[16px] max-w-[450px] h-full min-h-[600px] max-h-[900px] my-auto">
         <div className="hidden">
           <QRCodeSVG id="introQrCode" xmlns="http://www.w3.org/2000/svg" size={210} bgColor={"#ffffff"} fgColor={"#000000"} level={"L"} value={settings.qrCodeUrl} />
         </div>
 
-        {/*--- welcome ---*/}
-        {step == "welcome" && (
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="pb-[60px] w-full flex flex-col items-center gap-[70px] portrait:sm:gap-[90px] landscape:lg:gap-[90px] desktop:!gap-[70px]">
-              <Image src="/logo.svg" width={0} height={0} alt="logo" className="w-[230px] h-auto mr-1" />
-              <div className="pb-[12px] text-xl desktop:text-lg leading-relaxed font-medium text-center animate-fadeInAnimation">
-                {t("welcome.text-1")}
-                <br />
-                {t("welcome.text-2")}
-              </div>
-              <button
-                className="w-[220px] desktop:w-[190px] appButtonHeight font-semibold tracking-wide rounded-full button1ColorLight animate-fadeInAnimation"
-                onClick={() => setStep("info")}
-              >
-                {t("welcome.start")}
-              </button>
+        {/*--- loading & welcome ---*/}
+        {(step == "welcome" || step == "loading") && (
+          <div className="w-full h-full flex flex-col items-center justify-center pb-[50px]">
+            <Image src="/logoBlackNoBg.svg" width={220} height={55} alt="logo" priority />
+            {/*--- loading || welcome ---*/}
+            <div className="w-full h-[272px] flex flex-col items-center">
+              {step === "loading" && (
+                <>
+                  <Image src="/loading.svg" width={80} height={80} alt="loading" className="mt-[80px] animate-spin" />
+                  <div className="mt-4 font-medium textBaseApp text-slate-500">{tcommon("loading")}...</div>
+                </>
+              )}
+              {step === "welcome" && (
+                <>
+                  <div className="mt-[70px] text-xl desktop:text-lg leading-relaxed font-medium text-center animate-fadeInAnimation">
+                    {t("welcome.text-1")}
+                    <br />
+                    {t("welcome.text-2")}
+                  </div>
+                  <button
+                    className="mt-[70px] w-[220px] desktop:w-[190px] appButtonHeight font-semibold tracking-wide rounded-full button1ColorLight animate-fadeInAnimation"
+                    onClick={() => setStep("info")}
+                  >
+                    {t("welcome.start")}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -249,11 +299,11 @@ export default function Intro() {
                   ))}
                 </select>
               </div>
-              <div>
+              {/* <div>
                 <label className="introLabelFont">{t("info.label-3")}</label>
                 <input className="introInputFont" onChange={(e) => setSettings({ ...settings, merchantEmail: e.currentTarget.value })} value={settings.merchantEmail}></input>
                 <div className="mt-[2px] textSmApp italic">{t("info.note")}</div>
-              </div>
+              </div> */}
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
@@ -293,7 +343,7 @@ export default function Intro() {
             {/*--- content ---*/}
             <div className="flex-1 w-full flex flex-col items-center gap-[28px]">
               <div className="introHeaderFont">{t("how.title")}</div>
-              <div className="relative w-full desktop:w-[85%] aspect-[16/9]">
+              <div className="relative w-full max-w-[380px] aspect-[16/9]">
                 <Image src="/intro-scan.png" alt="customer scanning QR code" fill className="object-cover rounded-3xl" />
               </div>
               {/*--- text ---*/}
@@ -552,6 +602,7 @@ export default function Intro() {
                 onClick={() => {
                   window.localStorage.setItem("cashbackModal", "true");
                   window.localStorage.setItem("cashoutIntroModal", "true");
+                  window.localStorage.removeItem("isIntro");
                   router.push("/app");
                 }}
               >

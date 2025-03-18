@@ -4,8 +4,16 @@ import { SignJWT } from "jose";
 import { createSecretKey } from "crypto";
 import { keccak256, getAddress } from "viem";
 
-export async function setCurrencyCookieAction(currency: string) {
+export async function setCurrencyCookie(currency: string) {
   cookies().set("currency", currency);
+}
+
+export async function setIsIntroCookie() {
+  cookies().set("isIntro", "true");
+}
+
+export async function deleteIsIntroCookie() {
+  cookies().delete("isIntro");
 }
 
 export async function setFlashCookies(userType: string, merchantEvmAddress: string) {

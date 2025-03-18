@@ -1,5 +1,5 @@
 "use client";
-import { setCurrencyCookieAction } from "@/actions";
+import { setCurrencyCookie } from "@/actions";
 // constants
 import { currencyList } from "@/utils/constants";
 
@@ -7,7 +7,7 @@ export default function HowClient({ merchantCurrency }: { merchantCurrency: stri
   return (
     <select
       className="mt-4 sm:mt-0 h-[44px] sm:h-[36px] py-0 font-medium pr-10 text-xl sm:text-base leading-none border bg-dark6 border-slate-600 outline-none focus:outline-none focus:ring-0 focus:border-slate-400 transition-colors duration-500 rounded-md"
-      onChange={async (e) => setCurrencyCookieAction(e.currentTarget.value)}
+      onChange={async (e) => setCurrencyCookie(e.currentTarget.value)}
       value={merchantCurrency}
     >
       {currencyList.map((i, index) => (

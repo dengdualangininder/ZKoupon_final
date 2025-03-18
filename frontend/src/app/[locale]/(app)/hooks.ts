@@ -33,6 +33,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) =>
         return resJson.data;
       }
       if (resJson === "create new user") {
+        console.log("queryFn detected new user, pushed to /intro");
         router.push("/intro");
         return null;
       }

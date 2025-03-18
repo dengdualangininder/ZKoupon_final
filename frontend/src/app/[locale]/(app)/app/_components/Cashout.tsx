@@ -55,8 +55,8 @@ export default function CashOut({
   const [isCbLinked, setIsCbLinked] = useState(true); // if Coinbase is linked or not
   const [cbEvmAddress, setCbEvmAddress] = useState("");
   const [cbBankAccountName, setCbBankAccountName] = useState("");
-  const [cexMoreOptions, setCexMoreOptions] = useState(false);
-  const [flashMoreOptions, setFlashMoreOptions] = useState(false);
+  const [cbOptionsModal, setCbOptionsModal] = useState(false);
+  const [nullaOptionsModal, setNullaOptionsModal] = useState(false);
   const [flashDetails, setFlashDetails] = useState(false);
   const [cexDetails, setCexDetails] = useState(false);
   const [transferModal, setTransferModal] = useState<"toCex" | "toBank" | "toAny" | null>(null);
@@ -144,7 +144,6 @@ export default function CashOut({
           window.sessionStorage.setItem("cbAccessToken", resJson.data.newAccessToken);
           window.localStorage.setItem("cbRefreshToken", resJson.data.newRefreshToken);
         }
-        console.log("cbEvmAddress:", resJson.data.cbEvmAddress);
         setCbEvmAddress(resJson.data.cbEvmAddress);
         return;
       }
@@ -154,7 +153,6 @@ export default function CashOut({
 
   async function onClickTransferToBank() {
     setTransferModal("toBank");
-
     const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
     const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
     try {
@@ -178,14 +176,14 @@ export default function CashOut({
     }
   }
 
-  const hideCexMoreOptions = () => {
-    setCexMoreOptions(false);
-    document.removeEventListener("click", hideCexMoreOptions);
+  const onClickOutsideCexOptions = () => {
+    setCbOptionsModal(false);
+    document.removeEventListener("click", onClickOutsideCexOptions);
   };
 
-  const hideFlashMoreOptions = () => {
-    setFlashMoreOptions(false);
-    document.removeEventListener("click", hideFlashMoreOptions);
+  const onClickOutsideFlashOptions = () => {
+    setNullaOptionsModal(false);
+    document.removeEventListener("click", onClickOutsideFlashOptions);
   };
 
   return (
@@ -200,17 +198,17 @@ export default function CashOut({
           {/*--- more options ---*/}
           {flashBalance && rates && (
             <div
-              className={`${flashMoreOptions ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
+              className={`${nullaOptionsModal ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
               onClick={() => {
-                setFlashMoreOptions(!flashMoreOptions);
-                if (!flashMoreOptions) document.addEventListener("click", hideFlashMoreOptions);
+                setNullaOptionsModal(!nullaOptionsModal);
+                if (!nullaOptionsModal) document.addEventListener("click", onClickOutsideFlashOptions);
               }}
             >
               <FaEllipsisVertical className="textLgAppPx" />
             </div>
           )}
           {/*--- flashMoreOptionsModal ---*/}
-          <div className={`${flashMoreOptions ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
+          <div className={`${nullaOptionsModal ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
             {t("transferToAny")}
           </div>
         </div>
@@ -235,17 +233,17 @@ export default function CashOut({
               {/*--- ellipsis ---*/}
               {isCbLinked && cexBalance && rates && (
                 <div
-                  className={`${cexMoreOptions ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
+                  className={`${cbOptionsModal ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
                   onClick={() => {
-                    setCexMoreOptions(!cexMoreOptions);
-                    if (!cexMoreOptions) document.addEventListener("click", hideCexMoreOptions);
+                    setCbOptionsModal(!cbOptionsModal);
+                    if (!cbOptionsModal) document.addEventListener("click", onClickOutsideCexOptions);
                   }}
                 >
                   <FaEllipsisVertical className="textLgAppPx" />
                 </div>
               )}
               {/*--- cexMoreOptionsModal ---*/}
-              <div className={`${cexMoreOptions ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
+              <div className={`${cbOptionsModal ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
                 {t("unlink")}
               </div>
             </div>

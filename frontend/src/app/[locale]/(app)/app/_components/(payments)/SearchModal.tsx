@@ -72,7 +72,7 @@ export default function SearchModal({
               <div className="text-base desktop:text-xs italic leading-none pb-[5px]">{t("searchModal.enterChars")}</div>
             </div>
             <input
-              className="w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[88px] inputHeightApp textInputAppLg text-center inputColor placeholder:placeholderColor"
+              className="w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[88px] inputHeightApp textInputAppLg text-center inputColor"
               onChange={(e) => {
                 setTempFilter({ ...tempFilter, last4Chars: e.currentTarget.value });
               }}

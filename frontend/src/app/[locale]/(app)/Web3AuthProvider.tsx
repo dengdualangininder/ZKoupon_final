@@ -109,6 +109,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     // get user type from cookies (must use getCookie inside useEffect) & session Id
     const userType = getCookie("userType");
     const userJwt = getCookie("userJwt");
+
     let sessionId;
     const auth_store = window.localStorage.getItem("auth_store");
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
@@ -181,6 +182,13 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
         if (!userType || userType === "employee" || !userJwt) await setFlashCookies("owner", merchantEvmAddress); // setFlashCookies will re-render entire route
         setW3Info({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
         console.log("web3Auth-provider.tsx, setW3Info successful");
+
+        // check for isIntro; if true, then redirect. Need in case user refresh/crash while in /intro
+        if (window.localStorage.getItem("isIntro")) {
+          router.push("/intro");
+          return;
+        }
+
         if (pathname != "/app") {
           console.log("pathname is", pathname, ", so pushed to /app");
           router.push("/app");

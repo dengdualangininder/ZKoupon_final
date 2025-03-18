@@ -279,12 +279,12 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               }}
             >
               <div className="settingsFontFixed h-full flex items-center cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[300ms]">
-                {paymentSettings.merchantEvmAddress.slice(0, 7)}...{paymentSettings.merchantEvmAddress.slice(-5)} <LuCopy className="ml-2 w-[20px] h-[20px]" />
+                {paymentSettings.merchantEvmAddress.slice(0, 7)}...{paymentSettings.merchantEvmAddress.slice(-5)} <LuCopy className="ml-[8px] w-[20px] h-[20px]" />
               </div>
               {/*--- "copied" popup ---*/}
               {popup == "copyAddress" && (
                 <div className="copiedText absolute whitespace-nowrap left-[50%] bottom-[calc(100%-4px)] translate-x-[-50%] px-3 py-1 bg-slate-700 text-white font-normal rounded-full">
-                  {t("copied")}
+                  {tcommon("copied")}
                 </div>
               )}
             </div>
@@ -548,7 +548,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsTitle">{t("support")}</div>
           {/*--- FAQs ---*/}
           <div
-            className="settingsField text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            className="settingsField desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setFaqModal(true)}
           >
             <div className="settingsLabelNoColor cursor-pointer">{t("instructions")}</div>
@@ -556,7 +556,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           </div>
           {/*--- Contact Us ---*/}
           <div
-            className="settingsField border-b text-lightText1 dark:text-darkText1 desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            className="settingsField border-b desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
             onClick={() => setErrorModal(tcommon("contact"))}
           >
             <div className="settingsLabelNoColor cursor-pointer">{t("contact")}</div>

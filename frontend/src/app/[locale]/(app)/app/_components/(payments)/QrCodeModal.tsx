@@ -16,7 +16,7 @@ export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { payme
           className="qrCodeModalIconContainer top-[8px] right-[8px] portrait:sm:top-[32px] portrait:sm:right-[32px] landscape:lg:top-[32px] landscape:lg:right-[32px]"
           onClick={() => setQrCodeModal(false)}
         >
-          <div className="text-4xl text-white">&#10005;</div>
+          <div className="text-4xl text-darkText1">&#10005;</div>
         </div>
       </div>
 

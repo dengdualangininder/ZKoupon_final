@@ -58,7 +58,7 @@ export default function TransferModal({
   // states
   const [blockchainFee, setBlockchainFee] = useState(0.01); // in USDC
   const [usdcTransferAmount, setUsdcTransferAmount] = useState<string | null>(null);
-  const [anyAddress, setAnyAddress] = useState<string | null>(null);
+  const [anyAddress, setAnyAddress] = useState<string>("");
   const [transferState, setTransferState] = useState("initial"); // "initial" | "sending" | "sent"
   const [txHash, setTxHash] = useState<string | undefined>(); // withdrawal tx hash
   const [usdcTransferToBankActual, setUsdcTransferToBankActual] = useState<string | null>(null);
@@ -306,183 +306,184 @@ export default function TransferModal({
         {/*--- CONTENT ---*/}
         <div className="transferModalContentContainer">
           {transferState != "sent" && (
-            <div className="flex flex-col justify-between h-[350px] relative">
-              {/*--- arrow ---*/}
-              {/* <div className="absolute top-[9px] right-[calc(100%+12px)]">
-                <div className="w-[20px] h-[4px] bg-white"></div>
-                <div className="h-[205px] w-[3px] bg-white"></div>
-                <div className="absolute top-[calc(100%-13px)] left-[-1px]">
-                  <FaArrowRight className="text-[24px] text-white" />
-                </div>
-              </div> */}
-
-              {/*--- FROM container ---*/}
-              <div className="mt-[16px] w-full flex flex-col">
-                <div>
-                  {/*--- from info text ---*/}
+            <>
+              {/*--- FROM CARD ---*/}
+              <div className="p-[16px] bg-dark3 rounded-[12px] flex flex-col z-[2]">
+                {/*--- from info ---*/}
+                <div className="flex items-center gap-x-[12px]">
+                  <div className="transferIcon">
+                    {(transferModal === "toCex" || transferModal === "toAny") && <Image src="/logoIcon.svg" alt="logo" fill />}
+                    {transferModal === "toBank" && <Image src="/coinbase.svg" alt="logo" fill />}
+                  </div>
                   {(transferModal === "toCex" || transferModal === "toAny") && (
-                    <>
-                      <div className="font-medium">Nulla {tcommon("account")}</div>
-                      <div className="textSmApp !leading-tight textGray italic">
+                    <div>
+                      <p className="transferText">{tcommon("from")}: Nulla</p>
+                      <p className="transferSubtext">
                         {tcommon("address")}: {paymentSettings?.merchantEvmAddress.slice(0, 7)}...
                         {paymentSettings?.merchantEvmAddress.slice(-5)}
-                      </div>
-                      <div className="textSmApp !leading-tight textGray italic">
+                      </p>
+                      <p className="transferSubtext">
                         {tcommon("balance")}: {flashBalance} USDC
-                      </div>
-                    </>
+                      </p>
+                    </div>
                   )}
                   {transferModal === "toBank" && (
-                    <>
-                      <div className="font-medium">{tcommon("fromCoinbase")}</div>
-                      <div className="break-all textGray">
-                        {cashoutSettings?.cexEvmAddress.slice(0, 10)}...
-                        {cashoutSettings?.cexEvmAddress.slice(-8)}
+                    <div className="">
+                      <div className="transferText">{tcommon("fromCoinbase")}</div>
+                      <div className="transferSubtext">
+                        {cbEvmAddress.slice(0, 7)}...
+                        {cbEvmAddress.slice(-5)}
                       </div>
-                      <div className="textSmApp textGray italic">
+                      <div className="transferSubtext">
                         {tcommon("balance")}: {cexBalance} USDC
                       </div>
-                    </>
-                  )}
-                  {/*--- from amount ---*/}
-                  <div className="mt-[8px] w-full flex items-center relative">
-                    <input
-                      className="transferAmountFromBox inputColor border-slate-500 placeholderColor placeholder:not-italic dark:bg-dark2"
-                      type="number"
-                      inputMode="decimal"
-                      onChange={(e) => setUsdcTransferAmount(e.currentTarget.value)}
-                      value={usdcTransferAmount || ""}
-                      placeholder="0"
-                      readOnly={transferState === "sending" ? true : false}
-                    />
-                    {/*--- max + USDC ---*/}
-                    <div className="h-full right-0 absolute flex space-x-[12px] items-center">
-                      <div
-                        className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer"
-                        onClick={() => setUsdcTransferAmount(transferModal === "toBank" ? cexBalance ?? "0" : flashBalance ?? "0")}
-                      >
-                        {tcommon("max")}
-                      </div>
-                      <div className="transferUsdc">USDC</div>
                     </div>
+                  )}
+                </div>
+
+                {/*--- from amount ---*/}
+                <div className="mt-[11px] w-full flex items-center relative">
+                  <input
+                    className="transferAmountFromBox inputColor placeholder:not-italic"
+                    type="number"
+                    inputMode="decimal"
+                    onChange={(e) => setUsdcTransferAmount(e.currentTarget.value)}
+                    value={usdcTransferAmount || ""}
+                    placeholder="0"
+                    disabled={transferState === "sending" ? true : false}
+                  />
+                  {/*--- max + USDC ---*/}
+                  <div className="h-full right-0 absolute flex space-x-[12px] items-center">
+                    <div
+                      className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer"
+                      onClick={() => setUsdcTransferAmount(transferModal === "toBank" ? cexBalance ?? "0" : flashBalance ?? "0")}
+                    >
+                      {tcommon("max")}
+                    </div>
+                    <div className="transferUsdc">USDC</div>
                   </div>
                 </div>
               </div>
 
+              {/*--- FUNNEL ---*/}
+              {/* <div className="flex h-[40px] relative">
+                <div className="absolute right-[calc(100%-14px)] w-[20px] h-full bg-dark2 rounded-r-[18px] z-[2]"></div>
+                <div className="w-[52px] h-full bg-dark3"></div>
+                <div className="absolute left-[calc(100%-14px)] w-[20px] bg-dark2 h-full bg-none rounded-l-[18px] z-[2]"></div>
+              </div> */}
+
               {/*--- ARROW ---*/}
-              <div className="py-[32px] desktop:py-[32px] flex-none w-full flex items-center justify-center">
-                <div className="relative flex items-center">
-                  <FaLongArrowAltDown className="text-[60px] desktop:text-[48px] textGray" />
-                  {/* <div className="absolute w-[120px] desktop:w-[100px] left-[calc(100%+8px)] italic text-[16px] desktop:text-[14px] !leading-tight textGray">
-                    {transferModal === "toCex" || transferModal === "toAny" ? (
-                      <>
-                        {blockchainFee} USDC <br />
-                        {tcommon("blockchainFee")}
-                      </>
-                    ) : (
-                      <>
-                        <div className="">
-                          1 USDC <span>={paymentSettings?.merchantCurrency != "USD" && <br />}</span> {currency2symbol[paymentSettings?.merchantCurrency!]}
-                          {rates.usdcToLocal}
-                        </div>
-                        {paymentSettings?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
-                      </>
-                    )}
-                  </div> */}
-                </div>
+              <div className="flex h-[40px] relative">
+                <div className="absolute translate-y-[-50px] translate-x-[-50%] w-[70px] h-[70px] rotate-45 bg-dark3"></div>
               </div>
 
-              {/*--- TO container ---*/}
-              <div className="w-full flex flex-col">
-                <div>
-                  {/*--- to info ---*/}
-                  {(transferModal === "toCex" || transferModal === "toBank") && (
-                    <div className="w-full flex items-center">
-                      {/*--- to info icon ---*/}
+              {/*--- TO CARD ---*/}
+              <div className="w-full px-[16px] py-[16px] bg-dark3 rounded-[12px] flex flex-col">
+                {/*--- to info ---*/}
+                {(transferModal === "toCex" || transferModal === "toBank") && (
+                  <div className="flex items-center gap-x-[12px]">
+                    {/*--- icon ---*/}
+                    <div className="transferIcon">
                       {transferModal === "toCex" && (
-                        <div className="transferIcon">
+                        <>
                           {cashoutSettings?.cex == "Coinbase" && <Image src="/coinbase.svg" alt="Coinbase icon" fill />}
                           {cashoutSettings?.cex == "MAX" && <Image src="/max.svg" alt="MAX icon" fill />}
                           {cashoutSettings?.cex == "BitoPro" && <Image src="/coinbase.svg" alt="BitoPro icon" fill />}
                           {cashoutSettings?.cex == "Other" && <Image src="/coinbase.svg" alt="other" fill />}{" "}
-                        </div>
+                        </>
                       )}
                       {transferModal === "toBank" && (
-                        <div className="transferIcon border-[1.5px] border-slate-600 flex justify-center items-center">
+                        <div className="w-full h-full border border-dark6 rounded-[8px] flex justify-center items-center">
                           <CiBank className="text-[40px] text-slate-600 dark:text-white" />
                         </div>
                       )}
-                      {/*--- to info text ---*/}
-                      <div className="transferInfoText">
-                        {transferModal != "toBank" && (
-                          <>
-                            <div className="font-medium">
-                              {tcommon("toCEX", {
-                                cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
-                              })}
-                            </div>
-                            <div className="break-all textGray">
-                              {cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other" ? (
-                                cbEvmAddress ? (
-                                  `${cbEvmAddress.slice(0, 10)}...${cbEvmAddress.slice(-8)}`
-                                ) : (
-                                  <div className="w-[160px] skeleton">0000</div>
-                                )
+                    </div>
+                    {/*--- text ---*/}
+                    <div>
+                      {transferModal === "toCex" && (
+                        <>
+                          <div className="font-medium !leading-[1.15]">
+                            {tcommon("toCEX", {
+                              cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
+                            })}
+                          </div>
+                          <div className="transferSubtext">
+                            {cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other" ? (
+                              cbEvmAddress ? (
+                                `${tcommon("address")}: ${cbEvmAddress.slice(0, 7)}...${cbEvmAddress.slice(-5)}`
                               ) : (
-                                `${cashoutSettings?.cexEvmAddress.slice(0, 10)}...${cashoutSettings?.cexEvmAddress.slice(-8)}`
-                              )}
-                            </div>
-                          </>
-                        )}
-                        {transferModal === "toBank" && (
-                          <>
-                            <div className="font-medium">{tcommon("toBank")}</div>
-                            {cbBankAccountName ? <div className="textSmApp textGray">{cbBankAccountName}</div> : <div className="w-[160px] textSmApp py-[4px] skeleton">0000</div>}
-                          </>
-                        )}
-                      </div>
+                                <div className="w-[160px] skeleton">0000</div>
+                              )
+                            ) : (
+                              `${cashoutSettings?.cexEvmAddress.slice(0, 10)}...${cashoutSettings?.cexEvmAddress.slice(-8)}`
+                            )}
+                          </div>
+                        </>
+                      )}
+                      {transferModal === "toBank" && (
+                        <>
+                          <div className="font-medium !leading-[1.1]">{tcommon("toBank")}</div>
+                          {cbBankAccountName ? <div className="transferSubtext">{cbBankAccountName}</div> : <div className="w-[160px] textSmApp py-[4px] skeleton">0000</div>}
+                        </>
+                      )}
                     </div>
-                  )}
-                  {transferModal === "toAny" && (
-                    <div className="w-full flex flex-col">
-                      <label className="w-full font-medium">{t("toAddress")}</label>
-                      <textarea
-                        id="settingsCexDepositAddress"
-                        rows={2}
-                        className="mt-[4px] py-[4px] px-[6px] textSmAppPx leading-normal inputColor border-slate-500 placeholderColor rounded-[6px] dark:bg-dark2 resize-none"
-                        placeholder={t("enterAnEvmAddress")}
-                        onChange={(e) => {
-                          let element = document.getElementById("settingsCexDepositAddress") as HTMLTextAreaElement;
-                          e.target.value ? (element.rows = 2) : (element.rows = 1);
-                          setAnyAddress(e.target.value);
-                        }}
-                      />
-                    </div>
-                  )}
-                  {/*--- to amount ---*/}
-                  <div className="transferAmountToBox">
-                    {transferModal != "toBank" && (
-                      <>
-                        <div className="">{Number(usdcTransferAmount) >= 1 ? (Number(usdcTransferAmount) - blockchainFee).toFixed(2) : "0"}</div>
-                        <div className="transferUsdc">USDC</div>
-                      </>
-                    )}
-                    {transferModal === "toBank" && (
-                      <>
-                        <div className="">
-                          {currency2symbol[paymentSettings?.merchantCurrency!]}{" "}
-                          {usdcTransferAmount
-                            ? paymentSettings?.merchantCurrency == "USD"
-                              ? ((Number(usdcTransferAmount) - 0.01) * 0.99987).toFixed(2)
-                              : (Number(usdcTransferAmount) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])
-                            : (0).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}
-                        </div>
-                      </>
-                    )}
                   </div>
+                )}
+                {transferModal === "toAny" && (
+                  <>
+                    <div className="font-medium">
+                      {tcommon("to")}: {t("toAddress")} <Image src="./polygon.svg" alt="polygon" width={20} height={18} className="inline-block pb-[4px] mx-[2px]" /> Polygon
+                    </div>
+                    <textarea
+                      id="settingsCexDepositAddress"
+                      rows={2}
+                      className="mt-[2px] w-full py-[6px] px-[8px] textSmAppPx !leading-tight inputColor rounded-[8px] resize-none"
+                      placeholder={t("enterAnEvmAddress")}
+                      onChange={(e) => setAnyAddress(e.target.value)}
+                      value={anyAddress}
+                    />
+                  </>
+                )}
+                {/*--- to amount ---*/}
+                <div className="transferAmountToBox">
+                  {transferModal != "toBank" && (
+                    <>
+                      <div className="">{Number(usdcTransferAmount) >= 1 ? (Number(usdcTransferAmount) - blockchainFee).toFixed(2) : "0"}</div>
+                      <div className="transferUsdc">USDC</div>
+                    </>
+                  )}
+                  {transferModal === "toBank" && (
+                    <>
+                      <div className="">
+                        {currency2symbol[paymentSettings?.merchantCurrency!]}{" "}
+                        {usdcTransferAmount
+                          ? paymentSettings?.merchantCurrency == "USD"
+                            ? ((Number(usdcTransferAmount) - 0.01) * 0.99987).toFixed(2)
+                            : (Number(usdcTransferAmount) * rates.usdcToLocal * 0.99988).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])
+                          : (0).toFixed(currency2decimal[paymentSettings?.merchantCurrency!])}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-            </div>
+
+              {/*--- TRANSFER FEE ---*/}
+              <div className="flex-1 flex items-center textSmApp textGray">
+                {transferModal === "toCex" || transferModal === "toAny" ? (
+                  <>
+                    {tcommon("transferCost")} ~{blockchainFee} USDC
+                  </>
+                ) : (
+                  <>
+                    <div className="">
+                      1 USDC <span>={paymentSettings?.merchantCurrency != "USD"}</span> {currency2symbol[paymentSettings?.merchantCurrency!]}
+                      {rates.usdcToLocal}
+                    </div>
+                    {paymentSettings?.merchantCurrency == "USD" && <div>~0.001% fee</div>}
+                  </>
+                )}
+              </div>
+            </>
           )}
 
           {transferState === "sent" && (

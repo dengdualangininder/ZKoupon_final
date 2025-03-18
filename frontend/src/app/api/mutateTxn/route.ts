@@ -4,11 +4,11 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { keccak256, getAddress } from "viem";
 
 export const POST = async (request: Request) => {
-  console.log("entered /api/toRefund");
-  const { txnHash, toRefund, w3Info, flashInfo } = await request.json();
+  console.log("entered /api/mutateTxn");
+  const { w3Info, flashInfo, txnHash, change } = await request.json();
 
   if (w3Info) {
-    // verify merchant
+    // verify owner
     const prefix = ["0", "2", "4", "6", "8", "a", "c", "e"].includes(w3Info.publicKey.slice(-1)) ? "02" : "03"; // if y is even, then prefix is 02
     const publicKeyCompressed = prefix + w3Info.publicKey.substring(2).slice(0, -64); // substring(2) removes first 2 chars, slice(0, -64) removes last 64 chars
     var merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(w3Info.publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
@@ -25,11 +25,15 @@ export const POST = async (request: Request) => {
   // if not verified
   if (!verified) return Response.json("not verified");
 
+  // for security reasons, did not make generic logic. only "toRefund" and "note" can be changed
   try {
     await dbConnect();
-    await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress, "transactions.txnHash": txnHash }, { "transactions.$.toRefund": !toRefund });
+    if (change.key === "toRefund") {
+      await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress, "transactions.txnHash": txnHash }, { "transactions.$.toRefund": change.value });
+    } else if (change.key === "note") {
+      await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress, "transactions.txnHash": txnHash }, { "transactions.$.note": change.value });
+    }
     return Response.json("saved");
-  } catch (e) {
-    return Response.json("error");
-  }
+  } catch (e) {}
+  return Response.json("error");
 };

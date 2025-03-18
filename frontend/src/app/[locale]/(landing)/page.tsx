@@ -94,11 +94,11 @@ export default async function Home() {
         <Learn merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="Support" data-show="yes" className="w-full flex justify-center bg-dark1 text-white opacity-0 transition-all duration-1000">
+      <div id="Support" data-show="yes" className="w-full flex justify-center bg-dark1 text-darkText1 opacity-0 transition-all duration-1000">
         <Support />
       </div>
 
-      <div className="w-full flex justify-center bg-gradient-to-b from-dark1 to-dark5 text-white">
+      <div className="w-full flex justify-center bg-gradient-to-b from-dark1 to-dark5 text-darkText1">
         <Footer />
       </div>
     </div>
