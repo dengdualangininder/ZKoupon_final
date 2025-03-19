@@ -295,7 +295,7 @@
         "cashback": {
           "title": "What is the 2% Cashback?",
           "text-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Nulla Pay charges zero fees per transaction.",
-          "text-2": "Because most credit cards offer 1% cashback, consumers are locked into using credit cards. The 2% discount is needed to help pull customers away from using credit cards. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business. This is a win-win situation for you and you customers.",
+          "text-2": "Because most credit cards offer 1% cashback, consumers are locked into using credit cards. The 2% discount is needed to help attract customers away from using credit cards. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business. This is a win-win situation for you and you customers.",
           "text-3": "When crypto payments become more popular, we will make this cashback optional."
         },
         "google": {
@@ -384,7 +384,7 @@
       "cashout-3cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Coinbase\u0022 to transfer USDC from your Nulla App to your Coinbase account. Wait 1-5 minutes for the Coinbase balance to update.",
       "cashout-4cb": "In the <span>Cash Out</span> menu, click \u0022Transfer to Bank\u0022. When you submit a transfer, USDC will be automatically converted to {merchantCurrency} and the money will be deposited to your bank within 1-2 days.",
       "cashback-1": "We are temporarily requiring businesses give customers a 2% discount, which will be applied at the time of payment. The entire discount will go to the customer, as Nulla Pay does not make any profit from transactions.",
-      "cashback-2": "Because most credit cards offer 1% cashback, the 2% discount is needed to help motivate customers to pay with USDC instead. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business.",
+      "cashback-2": "Because most credit cards offer 1% cashback, consumers are locked into using credit cards. The 2% discount is needed to help attract customers away from using credit cards. Because Nulla Pay charges 0% fees and credit cards charge > 3% fees, you still save money when using Nulla Pay. Furthermore, the discount may attract new customers to your business. This is a win-win situation for you and you customers.",
       "cashback-3": "When crypto payments become more popular, we will make this cashback optional.",
       "fees-1": "During payment, the customer pays a ~0.01 USDC blockchain fee. You (the business) pay zero fees. Nulla Pay does not charge any processing fees.",
       "fees-2": "When you transfer USDC from Nulla Pay to {cex}, there is a ~0.05 USDC blockchain fee.",
@@ -438,7 +438,7 @@
     "skip": "SKIP",
     "max": "MAX",
     "balance": "Balance",
-    "transferCost": "Transfer fee is",
+    "transferCost": "blockchain fee",
     "fromCoinbase": "From: Coinbase",
     "toCEX": "To: {cex}",
     "toBank": "To: Bank",

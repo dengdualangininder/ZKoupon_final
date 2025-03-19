@@ -498,14 +498,14 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             <label className="">{t("language")}</label>
             <div className="settingsInputContainer group">
               <select
-                className="settingsSelect peer"
+                className="settingsSelect settingsFontFixed peer"
                 onChange={(e) => {
                   startSwitchingLang(() => router.replace(`/app`, { locale: e.currentTarget.value }));
                 }}
                 value={`${locale}`}
               >
                 {langObjectArray.map((langObject) => (
-                  <option key={langObject.id} value={langObject.id}>
+                  <option key={langObject.id} value={langObject.id} className="px-[16px]">
                     {langObject.text}
                   </option>
                 ))}
@@ -551,7 +551,16 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
       {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} onClickChangeEmployeePass={onClickChangeEmployeePass} />}
       {faqModal && <FaqModal paymentSettings={paymentSettings} cashoutSettings={cashoutSettings} setFaqModal={setFaqModal} />}
       {isSwitchingLang && <SwitchLangModal />}
-      {emailModal && <EmailModal setEmailModal={setEmailModal} emailQrCode={emailQrCode} isSendingEmail={isSendingEmail} email={email} setEmail={setEmail} />}
+      {emailModal && (
+        <EmailModal
+          setEmailModal={setEmailModal}
+          emailQrCode={emailQrCode}
+          isSendingEmail={isSendingEmail}
+          email={email}
+          setEmail={setEmail}
+          setIsSendingEmail={setIsSendingEmail}
+        />
+      )}
     </section>
   );
 }

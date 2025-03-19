@@ -22,38 +22,40 @@ export default function InstructionsModal({ infoModal, setInfoModal }: { infoMod
           <div className="xButton">&#10005;</div>
         </div>
 
-        <div className="infoModalContentContainer">
-          {/*--- text ---*/}
-          {infoModal == "employeePassword" && (
-            <div className="space-y-3">
-              <p>
-                {t.rich("info.employeePass.text-1", {
-                  span1: (chunks) => <span className="font-bold">{chunks}</span>,
+        <div className="fullModalContentContainer">
+          <div className="fullModalContentContainer2 max-w-[600px]">
+            {/*--- text ---*/}
+            {infoModal == "employeePassword" && (
+              <div className="space-y-3">
+                <p>
+                  {t.rich("info.employeePass.text-1", {
+                    span1: (chunks) => <span className="font-bold">{chunks}</span>,
+                  })}
+                </p>
+                <p className="pt-2 font-bold">{t("info.employeePass.text-2")}</p>
+                <p className="">{t("info.employeePass.text-3")}</p>
+              </div>
+            )}
+            {infoModal == "cashback" && (
+              <div className="space-y-3">
+                <p>{t("info.cashback.text-1")}</p>
+                <p>{t("info.cashback.text-2")}</p>
+                <p>{t("info.cashback.text-3")}</p>
+              </div>
+            )}
+            {infoModal == "googleId" && (
+              <div>
+                {t.rich("info.google.text-1", {
+                  a1: (chunks) => (
+                    <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" className="link">
+                      {chunks}
+                    </a>
+                  ),
                 })}
-              </p>
-              <p className="pt-2 font-bold">{t("info.employeePass.text-2")}</p>
-              <p className="">{t("info.employeePass.text-3")}</p>
-            </div>
-          )}
-          {infoModal == "cashback" && (
-            <div className="space-y-3">
-              <p>{t("info.cashback.text-1")}</p>
-              <p>{t("info.cashback.text-2")}</p>
-              <p>{t("info.cashback.text-3")}</p>
-            </div>
-          )}
-          {infoModal == "googleId" && (
-            <div>
-              {t.rich("info.google.text-1", {
-                a1: (chunks) => (
-                  <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" className="link">
-                    {chunks}
-                  </a>
-                ),
-              })}
-            </div>
-          )}
-          {infoModal == "cexDepositAddress" && <div>{t("info.platformAddress.text-1")}</div>}
+              </div>
+            )}
+            {infoModal == "cexDepositAddress" && <div>{t("info.platformAddress.text-1")}</div>}
+          </div>
         </div>
       </div>
       <div className="modalBlackout" onClick={() => setInfoModal(null)}></div>
