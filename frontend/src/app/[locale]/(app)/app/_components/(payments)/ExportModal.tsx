@@ -146,7 +146,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
             <select
               className={`${
                 downloadDates.length === 0 ? "italic text-slate-400 dark:text-zinc-700" : ""
-              } textBaseAppPx w-[140px] desktop:w-[120px] inputColor px-[12px] inputHeightApp`}
+              } textBaseAppPx w-[140px] desktop:w-[120px] inputColor px-[12px] appInputHeight`}
               value={startMonthYear}
               onChange={(e) => {
                 setStartMonthYear(e.target.value);
@@ -167,7 +167,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
             <select
               className={`${
                 downloadDates.length === 0 ? "italic text-slate-400 dark:text-zinc-700" : ""
-              } textBaseAppPx w-[140px] desktop:w-[120px] inputColor px-[12px] inputHeightApp`}
+              } textBaseAppPx w-[140px] desktop:w-[120px] inputColor px-[12px] appInputHeight`}
               value={endMonthYear}
               onChange={(e) => {
                 setEndMonthYear(e.target.value);

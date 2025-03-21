@@ -5,9 +5,7 @@ import { useTranslations } from "next-intl";
 // constants
 import { currency2symbol } from "@/utils/constants";
 // images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FaAngleDown } from "react-icons/fa6";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 
@@ -58,7 +56,7 @@ export default function CashoutIntroModal({
                       <span>123.45</span>
                     </div>
                     <div className="cashoutArrowContainer">
-                      <FontAwesomeIcon icon={faAngleDown} className="cashoutArrow" />
+                      <FaAngleDown className="cashoutArrow" />
                     </div>
                   </div>
                 </div>
@@ -97,7 +95,7 @@ export default function CashoutIntroModal({
                       <span>123.45</span>
                     </div>
                     <div className="cashoutArrowContainer">
-                      <FontAwesomeIcon icon={faAngleDown} className="cashoutArrow" />
+                      <FaAngleDown className="cashoutArrow" />
                     </div>
                   </div>
                 </div>

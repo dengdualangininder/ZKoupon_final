@@ -16,18 +16,19 @@ import { SlGlobe, SlMenu } from "react-icons/sl";
 import { CgClose } from "react-icons/cg";
 
 export default function Navbar() {
-  const [isScrollTop, setIsScrollTop] = useState(true);
-  const [menuModal, setMenuModal] = useState(false);
-  const [langModal, setLangModal] = useState(false);
-
   // hooks
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("HomePage.Navbar");
 
+  // states
+  const [isScrollTop, setIsScrollTop] = useState(true);
+  const [menuModal, setMenuModal] = useState(false);
+  const [langModal, setLangModal] = useState(false);
+  const [position, setPosition] = useState<number | null>(null);
+
   useEffect(() => {
     window.scrollY < 20 ? setIsScrollTop(true) : setIsScrollTop(false);
-
     window.onscroll = () => {
       if (window.scrollY < 20) {
         setIsScrollTop(true);
@@ -35,6 +36,12 @@ export default function Navbar() {
         setIsScrollTop(false);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const el = document.getElementById("heroButton");
+    const positions = el?.getBoundingClientRect();
+    setPosition(positions?.bottom ?? null);
   }, []);
 
   const onClickLink = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -88,16 +95,17 @@ export default function Navbar() {
         </div>
 
         {/*--- ANIMATED ENTER BUTTON  ---*/}
-        <div
-          id="animated-button"
-          className={`${
-            isScrollTop ? "translate-y-[max(410px,calc(250px+100vh*0.4))]" : "translate-x-[24px] xs:translate-x-0"
-          } lg:hidden w-full flex justify-center absolute left-0 transition-transform duration-[1200ms]`}
-        >
-          <button className={`${isScrollTop ? "homeButton" : "homeButtonSm"} [transition:height_1.2s,padding_1.2s,font-size_1.2s]`} onClick={() => router.push("/app")}>
-            {t("enterApp")}
-          </button>
-        </div>
+        {position && (
+          <div
+            id="animated-button"
+            className={`${isScrollTop ? "" : "translate-x-[24px] xs:translate-x-0"} lg:hidden w-full flex justify-center absolute left-0 transition-transform duration-[1200ms]`}
+            style={{ transform: isScrollTop ? `translateY(${position - 60}px)` : "" }}
+          >
+            <button className={`${isScrollTop ? "homeButton" : "homeButtonSm"} [transition:height_1.2s,padding_1.2s,font-size_1.2s]`} onClick={() => router.push("/app")}>
+              {t("enterApp")}
+            </button>
+          </div>
+        )}
 
         {/*--- (desktop) BUTTON + LANG ---*/}
         <div className={`hidden lg:flex h-[52px] desktop:h-[44px] absolute right-0 items-center gap-[18px] z-[100]`}>

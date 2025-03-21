@@ -3,9 +3,6 @@ import Image from "next/image";
 // other
 import { useTranslations } from "next-intl";
 // images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FaAngleLeft } from "react-icons/fa6";
 
 const TradeMAXModal = ({ setTradeMAXModal }: { setTradeMAXModal: any }) => {

@@ -93,7 +93,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                   <div className="appInputLabel">New Password</div>
                   <div className="w-full relative">
                     <input
-                      className={`textBaseApp appButtonHeight px-[0.75em] inputColor pr-[42px] w-full peer ${errors.password1 ? "!border-red-500 !focus:border-red-500" : ""}`}
+                      className={`appInput pr-[42px] w-full peer ${errors.password1 ? "!border-red-500 !focus:border-red-500" : ""}`}
                       ref={passwordInputRef1}
                       type={show ? "text" : "password"}
                       autoComplete="none"
@@ -133,7 +133,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                   <div className="appInputLabel">Repeat New Password</div>
                   <div className="w-full relative">
                     <input
-                      className={`textBaseApp appButtonHeight px-[0.75em] inputColor pr-[42px] w-full peer ${errors.password2 ? "!border-red-500 !focus:border-red-500" : ""}`}
+                      className={`appInput pr-[42px] w-full peer ${errors.password2 ? "!border-red-500 !focus:border-red-500" : ""}`}
                       ref={passwordInputRef2}
                       type={show2 ? "text" : "password"}
                       autoComplete="none"

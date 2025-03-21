@@ -32,7 +32,9 @@
     "../_unused/settings-mechant-fields.tsx",
     "../_unused/transferSuccessModalOLD.tsx",
     "../_unused/transferToBankModal.tsx",
-    "../_unused/savings/savings.tsx"
+    "../_unused/savings/savings.tsx",
+    "../_unused/MoreOptionsModal.tsx",
+    "../_unused/CbIntroModal.tsx"
   ],
   "exclude": ["node_modules"]
 }

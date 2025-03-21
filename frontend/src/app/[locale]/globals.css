@@ -221,12 +221,6 @@
     @apply homeButtonBase px-[20px] desktop:px-[18px] h-[44px] desktop:h-[38px] text-base desktop:text-sm;
   }
 
-  /*--- login button ---*/
-
-  .loginButton {
-    @apply button1ColorLight h-[60px] desktop:!h-[44px] text-lg desktop:text-sm font-semibold rounded-[8px] flex items-center justify-center;
-  }
-
   /*--- button font & height ---*/
 
   .appButtonSizeStd {
@@ -242,6 +236,10 @@
   }
 
   /*--- app buttons ---*/
+
+  .loginButton {
+    @apply button1ColorLight appButtonSizeStd flex items-center justify-center rounded-[8px];
+  }
 
   .appButton1 {
     @apply button1Color appButtonSizeStd flex items-center justify-center rounded-[8px];
@@ -305,11 +303,7 @@
     @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[96px] appButtonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
   }
 
-  /* --- input --- */
-
-  .inputHeightApp {
-    @apply h-[54px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[44px];
-  }
+  /* --- input colors --- */
 
   .placeholderColor {
     @apply italic text-slate-400 dark:text-zinc-700;
@@ -317,6 +311,10 @@
 
   .inputColor {
     @apply rounded-[8px] border-[1.5px] bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms];
+  }
+
+  .loginInputColor {
+    @apply rounded-[8px] border-[1.5px] bg-white text-lightText1 border-slate-300 focus:border-blue-500 focus:ring-0 outline-none transition-[all] duration-[500ms];
   }
 
   .settingsInputColor {
@@ -327,13 +325,25 @@
     @apply rounded-[8px] border-[1.5px] bg-light1 dark:bg-dark1 text-lightButton dark:text-darkButton border-slate-300 dark:border-dark4 dark:checked:bg-darkButton checked:border-none focus:ring-0 focus:ring-offset-0;
   }
 
-  .loginLabel {
-    @apply desktop:pb-[2px] font-semibold text-lg desktop:text-sm;
+  /* --- app input --- */
+
+  .appInputHeight {
+    @apply h-[54px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:!h-[46px];
+  }
+
+  .appInput {
+    @apply textBaseApp appInputHeight inputColor px-[0.75em];
   }
 
   .loginInput {
-    @apply w-full h-[52px] desktop:h-[40px] px-[10px] desktop:px-[8px] text-lg desktop:text-sm rounded-[8px] bg-white text-lightText1 outline-none border-[1.5px] border-slate-300 focus:border-blue-500 transition-[all] duration-[500ms];
+    @apply appInputHeight textBaseApp loginInputColor px-[0.75em];
   }
+
+  .appInputLabel {
+    @apply mb-[4px] font-medium;
+  }
+
+  /* --- intro input --- */
 
   .introLabelFont {
     @apply font-medium text-lg desktop:text-base;
@@ -345,10 +355,6 @@
 
   .introInputFontSmall {
     @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[4px] text-[15px] tracking-tighter bg-white border border-slate-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic placeholder:text-lg placeholder:pl-[8px] placeholder:focus:text-transparent;
-  }
-
-  .appInputLabel {
-    @apply mb-[4px] font-medium;
   }
 
   /* --- input elements --- */
@@ -444,7 +450,7 @@
   /* --- app --- */
 
   .appNavColor {
-    @apply bg-light1 dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:via-dark2 dark:to-dark3 from-0% via-80% to-100% portrait:border-t landscape:border-r dark:!border-none border-light5;
+    @apply bg-light1 dark:portrait:bg-gradient-to-t dark:landscape:bg-gradient-to-r dark:from-dark1 dark:via-dark2 dark:to-dark3 from-0% via-80% to-100% border-light5 shadow-[0px_0px_16px_1px_rgba(0,0,0,0.2)] dark:shadow-none;
   }
 
   .appPageContainer {
@@ -668,7 +674,7 @@
   }
 
   .modalFullColor {
-    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark2 landscape:lg:dark:bg-dark2 desktop:!bg-dark2 portrait:sm:border landscape:lg:border desktop:border border-light5 dark:border-dark6;
+    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark2 landscape:lg:dark:bg-dark2 desktop:dark:!bg-dark2 portrait:sm:border landscape:lg:border desktop:border border-light5 dark:border-dark6;
   }
 
   .sidebarModalColor {
@@ -698,7 +704,7 @@
   }
 
   .transferModalSize {
-    @apply w-full portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[420px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[700px] landscape:lg:max-h-[700px] desktop:!max-h-[620px];
+    @apply w-full portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[420px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[700px] landscape:lg:max-h-[700px] desktop:!max-h-[650px];
   }
 
   .sidebarModalSize {

@@ -8,7 +8,6 @@ import { useConnect } from "wagmi";
 // i18n
 import { useTranslations } from "next-intl";
 // components
-import MoreOptionsModal from "./MoreOptionsModal";
 import SelectLang from "@/utils/components/SelectLang";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
@@ -95,28 +94,28 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   };
 
   return (
-    <div className="w-full h-screen flex flex-col items-center overflow-y-auto text-lg desktop:text-sm bg-light2 text-lightText1">
+    <div className="w-full h-screen flex flex-col items-center overflow-y-auto textBaseApp bg-light2 text-lightText1">
       {/*---showLang mask---*/}
       {langModal && <div className="absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
 
       {/*--- CONTENT CONTAINER (for some reason, pb does not work, so added to last element) ---*/}
-      <div className="pt-[12px] w-[320px] desktop:w-[280px] h-full max-h-[900px] flex flex-col items-center my-auto">
+      <div className="px-[12px] pt-[12px] w-full max-w-[420px] desktop:max-w-[330px] h-full max-h-[900px] flex flex-col items-center my-auto">
         {/*--- LANG/LOGO/MENU CONTAINER ---*/}
-        <div className="flex-none w-full h-[38%] min-h-[280px] flex flex-col items-center justify-between">
+        <div className="flex-none w-full h-[34%] min-h-[240px] flex flex-col items-center justify-between">
           {/*--- lang ---*/}
           <div className="h-[38px] ml-auto">
             <SelectLang langModal={langModal} setLangModal={setLangModal} />
           </div>
           {/*--- logo ---*/}
-          <div className="pb-[24px] desktop:pb-[16px] w-full flex flex-col items-center gap-[8px]">
-            <div className="relative w-full h-[62px] desktop:h-[45px]">
+          <div className="w-full flex flex-col items-center gap-[8px]">
+            <div className="relative w-full h-[58px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[50px]">
               <Image src="/logoBlackNoBg.svg" alt="logo" fill />
             </div>
-            <div className="text-base desktop:text-xs font-medium text-center">{t("subheader")}</div>
+            <div className="textSmApp font-medium text-center">{t("subheader")}</div>
           </div>
 
           {/*--- menu bar ---*/}
-          <div className="pb-[16px] desktop:pb-[12px] w-full grid grid-cols-2 justify-items-center font-semibold">
+          <div className="w-full grid grid-cols-2 justify-items-center font-semibold">
             {["owner", "employee"].map((i) => (
               <div
                 key={i}
@@ -127,7 +126,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 <div
                   className={`${userType === i ? "bg-lightText1" : "bg-slate-300"} ${
                     userType === "owner" ? "rounded-l-md" : "rounded-r-md"
-                  } absolute left-0 bottom-0 w-full h-[4px] cursor-pointer`}
+                  } absolute left-0 bottom-[-4px] w-full h-[4px] cursor-pointer`}
                 ></div>
               </div>
             ))}
@@ -135,15 +134,14 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
         </div>
 
         {/*--- content below MENU ---*/}
-        <div className="pt-[24px] pb-[48px] w-full">
+        <div className="pt-[40px] pb-[48px] w-full">
           {/*--- FOR OWNERS ---*/}
           {userType == "owner" && (
-            <div className="pt-[16px] w-full flex flex-col gap-[32px] desktop:gap-[24px]">
-              {/*--- connectors: google, facebook, apple ---*/}
+            <div className="pt-[16px] w-full flex flex-col gap-[32px]">
               {myConnectors.map((i: MyConnector) => (
                 <div
                   key={i.name}
-                  className="w-full h-[64px] desktop:h-[52px] flex items-center font-medium text-slate-700 bg-white rounded-[8px] desktop:hover:drop-shadow-sm active:drop-shadow-sm border border-slate-200 drop-shadow-md cursor-pointer select-none"
+                  className="w-full h-[68px] desktop:h-[54px] flex items-center text-slate-600 font-medium bg-white rounded-[8px] border drop-shadow-md desktop:hover:drop-shadow-lg active:drop-shadow-lg transition-all duration-300 cursor-pointer select-none"
                   onClick={() => {
                     setSelectedSocial(i.name);
                     ownerLogin(i.connectorIndex);
@@ -175,17 +173,17 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
           {userType == "employee" && (
             <div className="flex flex-col">
               {/*--email---*/}
-              <div className="loginLabel">{t("email")}</div>
-              <input type="email" className="loginInput" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
+              <label className="appInputLabel">{t("email")}</label>
+              <input type="email" className="loginInput w-full" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
-              <div className="mt-[16px] loginLabel">{t("password")}</div>
+              <label className="mt-[24px] appInputLabel">{t("password")}</label>
               <div className="w-full relative">
                 <input
                   ref={passwordRef}
                   type={show ? "text" : "password"}
                   autoComplete="off"
                   autoCapitalize="off"
-                  className="loginInput peer"
+                  className="loginInput w-full peer"
                   onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
@@ -199,7 +197,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 </div>
               </div>
               {/*--sign in button---*/}
-              <button className="loginButton mt-[32px] w-full flex justify-center items-center" onClick={employeeLogin}>
+              <button className="loginButton mt-[40px] w-full flex justify-center items-center" onClick={employeeLogin}>
                 {isLoggingIn ? (
                   <div className="flex items-center gap-[16px]">
                     <ImSpinner2 className="animate-spin text-[24px]" />
@@ -211,7 +209,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               </button>
               {/*--forgot password?---*/}
               <div
-                className="pt-[40px] text-base desktop:text-sm text-center link"
+                className="mx-auto mt-[60px] desktop:mt-[50px] textSmApp link"
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
                 }}

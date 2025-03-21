@@ -8,9 +8,6 @@ import { currencyToExample } from "@/utils/constants";
 // components
 import TradeMAXModal from "../modals/exchanges/TradeMAXModal";
 // images
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FaAngleLeft } from "react-icons/fa6";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 

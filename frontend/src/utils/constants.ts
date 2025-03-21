@@ -1,8 +1,7 @@
-import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDollar, faUserTag, faCartArrowDown, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { RateKey, AllRates } from "@/utils/types";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
+import { IconType } from "react-icons";
+import { FaCircleUser, FaBed, FaCar, FaMapLocationDot, FaTicket, FaHandHoldingDollar, FaUserTag, FaCartArrowDown, FaCartShopping } from "react-icons/fa6";
 
 export const currencyToKeys: Record<string, { usdToLocal: RateKey; usdcToLocal: RateKey }> = {
   EUR: { usdToLocal: "usdToEur", usdcToLocal: "usdcToEur" },
@@ -310,7 +309,7 @@ type MerchantType2data = {
     merchantFields: string[];
     merchantName: string;
     itemlabel: string;
-    fa: IconDefinition;
+    fa: IconType;
     tooltip?: string;
   };
 };
@@ -321,7 +320,7 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item", "shipping"],
     merchantName: "An Online Store in",
     itemlabel: "Item Name",
-    fa: faShoppingCart,
+    fa: FaCartShopping,
     tooltip: "Copy and paste the item name(s) from the business's official website. Generally, include enough information so the business knows what you are purchasing.",
   },
   onlinedigital: {
@@ -330,16 +329,16 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item"],
     merchantName: "An Online Store in",
     itemlabel: "Item Name",
-    fa: faCartArrowDown,
+    fa: FaCartArrowDown,
     tooltip: "Copy and paste the item name(s) from the business's official website. Generally, include enough information so the business knows what you are purchasing.",
   },
-  creators: { text: "Creators", merchantFields: ["email", "item"], merchantName: "InfluencerX in", itemlabel: "Item Name", fa: faCircleUser },
+  creators: { text: "Creators", merchantFields: ["email", "item"], merchantName: "InfluencerX in", itemlabel: "Item Name", fa: FaCircleUser },
   hotels: {
     text: "Hotels",
     merchantFields: ["email", "item", "count", "daterange"],
     merchantName: "A Hotel in",
     itemlabel: "Room Name",
-    fa: faBed,
+    fa: FaBed,
     tooltip: "Enter the name of the room type found on the hotel's official website. Include any special requests.",
   },
   taxis: {
@@ -347,7 +346,7 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item", "date", "time", "count"],
     merchantName: "A Taxi Service in",
     itemlabel: "Trip Details",
-    fa: faCar,
+    fa: FaCar,
     tooltip: "Enter a description of where to be picked up and where to be dropped off",
   },
   tours: {
@@ -355,7 +354,7 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item", "daterange", "count"],
     merchantName: "AmazingTours in",
     itemlabel: "Tour Name",
-    fa: faMapLocationDot,
+    fa: FaMapLocationDot,
     tooltip: "Enter the name of the tour package from the business's official website",
   },
   gigs: {
@@ -363,7 +362,7 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item"],
     merchantName: "Jane Smith in",
     itemlabel: "Item Name",
-    fa: faUserTag,
+    fa: FaUserTag,
     tooltip: "Enter what you are paying the person for",
   },
   tickets: {
@@ -371,7 +370,7 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item"],
     merchantName: "A Concert in",
     itemlabel: "Ticket Name",
-    fa: faTicket,
+    fa: FaTicket,
     tooltip: "Enter the name of the ticket from the official website",
   },
   donations: {
@@ -379,7 +378,7 @@ export const merchantType2data: MerchantType2data = {
     merchantFields: ["email", "item"],
     merchantName: "Tom's Medical Treatment in",
     itemlabel: "Message",
-    fa: faHandHoldingDollar,
+    fa: FaHandHoldingDollar,
   },
 };
 

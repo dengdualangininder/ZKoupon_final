@@ -89,13 +89,7 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
             <div className="mt-[32px]">{t("emailModal.text")}</div>
             <label className="mt-[32px] appInputLabel">{tcommon("email")}</label>
             <div className="flex items-center relative">
-              <input
-                className="textBaseApp appButtonHeight px-[0.75em] inputColor pr-[42px] w-full peer"
-                ref={inputRef}
-                onChange={onChangeEmail}
-                value={email}
-                placeholder="Enter an email address"
-              />
+              <input className="appInput pr-[42px] w-full peer" ref={inputRef} onChange={onChangeEmail} value={email} placeholder="Enter an email address" />
               {email && (
                 <div
                   className="absolute w-[32px] h-[32px] flex items-center justify-center right-[10px] cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden"

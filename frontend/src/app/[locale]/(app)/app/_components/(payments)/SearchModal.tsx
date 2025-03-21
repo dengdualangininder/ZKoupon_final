@@ -72,7 +72,7 @@ export default function SearchModal({
               <div className="text-base desktop:text-xs italic leading-none pb-[5px]">{t("searchModal.enterChars")}</div>
             </div>
             <input
-              className="w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[88px] inputHeightApp textInputAppLg text-center inputColor"
+              className="w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:!w-[88px] appInputHeight textInputAppLg text-center inputColor"
               onChange={(e) => {
                 setTempFilter({ ...tempFilter, last4Chars: e.currentTarget.value });
               }}
@@ -107,7 +107,7 @@ export default function SearchModal({
             <div
               className={`${
                 tempFilter?.searchDate?.to ? "" : "italic text-slate-400 dark:text-zinc-700"
-              } inputColor px-[12px] min-w-[110px] inputHeightApp textBaseAppPx flex items-center justify-center cursor-pointer`}
+              } inputColor px-[12px] min-w-[110px] appInputHeight textBaseAppPx flex items-center justify-center cursor-pointer`}
               onClick={() => setCalendarModal({ render: true, show: true })}
             >
               {tempFilter?.searchDate?.to ? `${tempFilter.searchDate.from?.toLocaleDateString()} - ${tempFilter.searchDate.to.toLocaleDateString()}` : t("searchModal.selectDates")}

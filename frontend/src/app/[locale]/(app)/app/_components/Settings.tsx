@@ -34,7 +34,7 @@ import Spinner from "@/utils/components/Spinner";
 
 // zod
 const schema = z.object({
-  merchantName: z.string().min(1, { message: "merchantName" }), // Enter a business name
+  merchantName: z.string().min(1, { message: "merchantName" }),
   merchantCountryAndCurrency: z.string(),
   cex: z.string(),
   cexEvmAddress: z

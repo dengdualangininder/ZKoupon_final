@@ -5,7 +5,7 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string | 
   const t = useTranslations("HomePage.Hero");
 
   return (
-    <div id="hero" className="homeSectionSize h-screen min-h-[550px] max-h-[950px] flex flex-col justify-center items-center gap-[48px]">
+    <div id="hero" className="homeSectionSize pb-[calc(100vh*0.08)] h-screen min-h-[550px] max-h-[950px] flex flex-col justify-center items-center gap-[48px]">
       {/*--- header ---*/}
       <h1 className="text-[2.875rem] leading-[3.375rem] sm:leading-[4rem] lg:text-[3.75rem] lg:leading-[4.625rem] text-center font-extrabold">
         {t("title1")}
@@ -24,7 +24,7 @@ export default function Hero({ merchantCurrency }: { merchantCurrency: string | 
         {t("subtitle2")}
       </div>
       {/*--- button ---*/}
-      <Link className={`invisible lg:visible homeButton`} href={"/app"}>
+      <Link id="heroButton" className={`invisible lg:visible homeButton`} href={"/app"}>
         {t("enterApp")}
       </Link>
     </div>

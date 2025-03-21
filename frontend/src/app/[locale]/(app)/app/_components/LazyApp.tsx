@@ -16,7 +16,7 @@ import Payments from "./Payments";
 const CashOut = dynamic(() => import("./Cashout")); // preloaded
 const Settings = dynamic(() => import("./Settings")); // preloaded
 const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal")); // preloaded
-const CbIntroModal = dynamic(() => import("./modals/CbIntroModal"));
+const CbIntroModal = dynamic(() => import("../../../../../../../_unused/CbIntroModal"));
 const CashbackModal = dynamic(() => import("./modals/CashbackModal"));
 const TradeMAXModal = dynamic(() => import("./modals/exchanges/TradeMAXModal"));
 import SignOutModal from "./modals/SignOutModal";
@@ -41,7 +41,6 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
   const [menu, setMenu] = useState("payments"); // "payments" | "cashout" | "settings"
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
   const [qrCodeModal, setQrCodeModal] = useState(false);
-  const [cbIntroModal, setCbIntroModal] = useState(false);
   const [cashbackModal, setCashbackModal] = useState(false);
   const [errorModal, setErrorModal] = useState<React.ReactNode>(null); // React.ReactNode includes string and null
   const [tradeMAXModal, setTradeMAXModal] = useState(false);
@@ -134,7 +133,6 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
       {newTxn && <Notification paymentSettings={settings.paymentSettings} newTxn={newTxn} setNewTxn={setNewTxn} />}
       {errorModal && <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />}
       {qrCodeModal && settings.paymentSettings && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={settings.paymentSettings} />}
-      {cbIntroModal && <CbIntroModal setCbIntroModal={setCbIntroModal} setCashbackModal={setCashbackModal} />}
       {cashbackModal && <CashbackModal setCashbackModal={setCashbackModal} />}
       {tradeMAXModal && <TradeMAXModal setTradeMAXModal={setTradeMAXModal} />}
       {signOutModal && <SignOutModal setSignOutModal={setSignOutModal} />}
