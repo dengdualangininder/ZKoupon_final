@@ -16,7 +16,7 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
 
   //states
   const [email, setEmail] = useState(defaultEmail);
-  const [isSendingEmail, setIsSendingEmail] = useState("sent"); // "initial" | "sending" | "sent"
+  const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
 
   const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
