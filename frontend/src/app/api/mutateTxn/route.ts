@@ -5,7 +5,7 @@ import { keccak256, getAddress } from "viem";
 
 export const POST = async (request: Request) => {
   console.log("entered /api/mutateTxn");
-  const { w3Info, flashInfo, txnHash, change } = await request.json();
+  const { w3Info, nullaInfo, txnHash, change } = await request.json();
 
   if (w3Info) {
     // verify owner
@@ -18,7 +18,7 @@ export const POST = async (request: Request) => {
   } else {
     // verify employee
     const secret = new TextEncoder().encode(process.env.JWT_KEY!); // format secret
-    var { payload: merchantEvmAddress }: { payload: `0x${string}` } = await jwtVerify(flashInfo.userJwt, secret, {}); // verify token
+    var { payload: merchantEvmAddress }: { payload: `0x${string}` } = await jwtVerify(nullaInfo.userJwt, secret, {}); // verify token
     var verified = merchantEvmAddress ? true : false;
   }
 

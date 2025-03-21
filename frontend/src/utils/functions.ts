@@ -1,5 +1,17 @@
 import { FallbackProvider, JsonRpcProvider } from "ethers";
 import type { Chain, Client, Transport } from "viem";
+import { currency2decimal } from "./constants";
+
+export async function fetchPost(url: string, obj: { [key: string]: any }) {
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(obj),
+    headers: { "content-type": "application/json" },
+  });
+  if (!res.ok) throw new Error("error");
+  const resJson = await res.json();
+  return resJson;
+}
 
 export function clientToProvider(client: Client<Transport, Chain>) {
   const { chain, transport } = client;
@@ -39,11 +51,20 @@ export const getLocalDate = (mongoDate: string) => {
   return `${date[2]}-${date[1]}-${date[0]}`;
 };
 
+export const formatCurrency = (currency: string, amount: string) => {
+  const decimals = currency2decimal[currency];
+  return (Math.floor(Number(amount) * Math.pow(10, decimals)) / Math.pow(10, decimals)).toString();
+};
+
+export const formatUsd = (amount: string) => {
+  return (Math.floor(Number(amount) * 100) / 100).toString();
+};
+
 // const { data: settings } = useQuery({
 //   queryKey: ["settings"],
 //   queryFn: async () => {
 //     console.log("useSettingsQuery queryFn");
-//     if (flashInfo.isUsabilityTest) {
+//     if (nullaInfo.isUsabilityTest) {
 //       return;
 //       // return { paymentSettings: fakePaymentSettings, cashoutSettings: fakeCashoutSettings };
 //     } else {
@@ -64,7 +85,7 @@ export const getLocalDate = (mongoDate: string) => {
 //       throw new Error("error");
 //     }
 //   },
-//   enabled: w3Info && flashInfo ? true : false,
+//   enabled: w3Info && nullaInfo ? true : false,
 //   staleTime: Infinity,
 //   gcTime: Infinity,
 // });
@@ -77,14 +98,14 @@ export const getLocalDate = (mongoDate: string) => {
 //   queryKey: ["payments"],
 //   queryFn: async () => {
 //     console.log("usePaymentsQuery queryFn");
-//     if (flashInfo.isUsabilityTest) {
+//     if (nullaInfo.isUsabilityTest) {
 //       // return fakeTxns;
 //       return;
 //     } else {
 //       const res = await fetch("/api/getPayments", {
 //         method: "POST",
 //         headers: { "content-type": "application/json" },
-//         body: JSON.stringify({ w3Info: w3Info, flashInfo: flashInfo }),
+//         body: JSON.stringify({ w3Info: w3Info, nullaInfo: nullaInfo }),
 //       });
 //       if (!res.ok) throw new Error("Failed to fetch");
 //       const resJson = await res.json();
@@ -98,7 +119,7 @@ export const getLocalDate = (mongoDate: string) => {
 //       }
 //     }
 //   },
-//   enabled: w3Info && flashInfo ? true : false,
+//   enabled: w3Info && nullaInfo ? true : false,
 // });
 
 async function verifyAndGetMerchantData() {

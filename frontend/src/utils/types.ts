@@ -1,7 +1,7 @@
 import { DateRange } from "react-day-picker";
 
 export type Rates = { usdcToLocal: number; usdToLocal: number };
-export type FlashInfo = { userType: string; userJwt: string };
+export type NullaInfo = { userType: string; userJwt: string };
 export type W3Info = { idToken: string; publicKey: string; email?: string };
 export type MyConnector = { name: string; img: string; connectorIndex: number };
 type OrientationLockType = "any" | "landscape" | "landscape-primary" | "landscape-secondary" | "natural" | "portrait" | "portrait-primary" | "portrait-secondary";

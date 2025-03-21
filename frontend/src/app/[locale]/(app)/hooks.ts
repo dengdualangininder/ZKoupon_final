@@ -1,9 +1,10 @@
 import { useCallback } from "react";
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
-import { useDisconnect } from "wagmi";
 import { useRouter } from "@/i18n/routing";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useDisconnect, useAccount, useReadContract } from "wagmi";
+import { getTransactionReceipt } from "@wagmi/core";
 // utils
-import { FlashInfo, W3Info } from "@/utils/types";
+import { NullaInfo, W3Info } from "@/utils/types";
 import erc20Abi from "@/utils/abis/erc20Abi";
 // actions
 import { deleteUserJwtCookie } from "@/actions";
@@ -11,10 +12,9 @@ import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 // types
 import { Transaction } from "@/db/UserModel";
 import { Rates, Filter } from "@/utils/types";
-import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 
-export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) => {
+export const useSettingsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo) => {
   const router = useRouter();
   const logout = useLogout();
   return useQuery({
@@ -25,7 +25,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) =>
       const res = await fetch("/api/getSettings", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ w3Info, flashInfo }),
+        body: JSON.stringify({ w3Info, nullaInfo }),
       });
       const resJson = await res.json();
       if (resJson.status === "success") {
@@ -43,7 +43,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo) =>
       }
       throw new Error();
     },
-    enabled: (flashInfo && flashInfo.userType === "owner" && w3Info) || (flashInfo && flashInfo.userType === "employee") ? true : false,
+    enabled: (nullaInfo && nullaInfo.userType === "owner" && w3Info) || (nullaInfo && nullaInfo.userType === "employee") ? true : false,
     staleTime: Infinity,
     gcTime: Infinity,
   });
@@ -72,7 +72,7 @@ export const useSettingsMutation = () => {
   });
 };
 
-export const useTxnsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo, filter: Filter) => {
+export const useTxnsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo, filter: Filter) => {
   const logout = useLogout();
   return useInfiniteQuery({
     queryKey: ["txns", filter],
@@ -82,7 +82,7 @@ export const useTxnsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo, filter
       const res = await fetch("/api/getPayments", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pageParam, w3Info, flashInfo, filter }),
+        body: JSON.stringify({ pageParam, w3Info, nullaInfo, filter }),
       });
       const resJson = await res.json();
       if (resJson.status === "success") {
@@ -98,7 +98,7 @@ export const useTxnsQuery = (w3Info: W3Info | null, flashInfo: FlashInfo, filter
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => (lastPage?.length ? allPages.length : undefined), // lastPage = [10 items], allPages = [[10 items]]; should return "undefined" if no next page
-    enabled: (flashInfo && flashInfo.userType === "owner" && w3Info) || (flashInfo && flashInfo.userType === "employee") ? true : false,
+    enabled: (nullaInfo && nullaInfo.userType === "owner" && w3Info) || (nullaInfo && nullaInfo.userType === "employee") ? true : false,
   });
 };
 
@@ -163,7 +163,7 @@ export const useCexTxnsQuery = () => {
   });
 };
 
-export const useFlashBalanceQuery = () => {
+export const useNullaBalanceQuery = () => {
   const account = useAccount();
   return useReadContract({
     address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",

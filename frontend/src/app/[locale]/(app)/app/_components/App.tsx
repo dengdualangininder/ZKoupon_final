@@ -8,22 +8,22 @@ import { useSettingsQuery } from "../../hooks";
 const LazyApp = dynamic(() => import("./LazyApp"));
 import Loading from "./Loading";
 // types
-import { FlashInfo, AllRates } from "@/utils/types";
+import { NullaInfo, AllRates } from "@/utils/types";
 
-export default function App({ flashInfo, allRates }: { flashInfo: FlashInfo; allRates: AllRates }) {
+export default function App({ nullaInfo, allRates }: { nullaInfo: NullaInfo; allRates: AllRates }) {
   console.log("(app)/app/_components/App.tsx");
 
   // get user settings
   const w3Info = useW3Info();
-  const { data: settings } = useSettingsQuery(w3Info, flashInfo);
+  const { data: settings } = useSettingsQuery(w3Info, nullaInfo);
 
   // const settings = null;
 
-  // reason we have App and LazyApp is to fetch App JS bundle only after flashInfo cookies have been set (don't want to fetch App JS twice)
+  // reason we have App and LazyApp is to fetch App JS bundle only after nullaInfo cookies have been set (don't want to fetch App JS twice)
   return (
     <div className="textBaseApp bg-light1 text-lightText1 dark:bg-dark1 dark:text-darkText1 overscroll-none" style={{ scrollbarGutter: "stable" }}>
-      {(flashInfo?.userType === "owner" && settings) || (flashInfo?.userType === "employee" && settings?.paymentSettings) ? (
-        <LazyApp flashInfo={flashInfo} allRates={allRates} settings={settings} />
+      {(nullaInfo?.userType === "owner" && settings) || (nullaInfo?.userType === "employee" && settings?.paymentSettings) ? (
+        <LazyApp nullaInfo={nullaInfo} allRates={allRates} settings={settings} />
       ) : (
         <Loading />
       )}

@@ -93,7 +93,7 @@
     },
     "Support": {
       "header": "Support",
-      "body": "For helpful information, read the “Instructions” under the “Settings” menu in the Nulla App or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@flashpayments.xyz"
+      "body": "For helpful information, read the “Instructions” under the “Settings” menu in the Nulla App or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@nullapay.com"
     },
     "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Nulla Pay", "learn": "Learning Center" }
   },
@@ -168,7 +168,7 @@
       },
       "final": {
         "text-1": "Your Nulla Pay account is ready and can start accepting payments!",
-        "text-2": "For questions, refer to the <span>Instructions</span> (under Settings) or email support@flashpayments.xyz",
+        "text-2": "For questions, refer to the <span>Instructions</span> (under Settings) or email support@nullapay.com",
         "finish": "FINISH"
       },
       "errors": { "enterName": "Please enter the name of your business", "enterEmail": "Please enter your email address", "validEmail": "Please enter a valid email" }
@@ -241,7 +241,7 @@
         "platformAddress": "Please first enter your <span1>Cash Out Platform's Address</span1> under <span2>Settings</span2>. Or, click the menu icon <span4>(<icon></icon>)</span4> and choose <span3>transfer to any EVM address</span3>.",
         "linkCb": "Please first link your Coinbase account",
         "enterAmount": "Please enter an amount",
-        "minUSDC": "1 USDC minimum transfer",
+        "minUSDC": "0.1 USDC minimum transfer",
         "minUSDC11": "11 USDC minimum transfer",
         "maxUSDC": "10,000 USDC maximum transfer",
         "toEvmAddress": "Please enter an EVM address in the \u0022To:\u0022 field",
@@ -307,15 +307,22 @@
           "text-1": "The Cash Out Address is your Cash Out Platform's USDC deposit address on the Polygon chain. To find this address, in your cryptocurrency exchange, click the \u0022Deposit\u0022, \u0022Receive\u0022, or similar button. Select \u0022USDC\u0022 as the token you want to deposit and select \u0022Polygon\u0022 as the network. Copy the shown address (starts with \u00220x\u0022)."
         }
       },
-      "employeePassModal": { "text": "Do you want to change the Employee Password?", "change": "Change Password", "cancel": "Cancel" },
+      "employeePassModal": {
+        "changeTitle": "Change Employee Password",
+        "addTitle": "Add Employee Password",
+        "changeButton": "Change Password",
+        "addButton": "Add Password",
+        "removeButton": "Remove Password",
+        "changeMsg": "Password changed!",
+        "addMsg": "Password added!",
+        "removeMsg": "Password removed!"
+      },
       "yes": "Yes",
       "empty": "empty",
       "emailModal": {
         "title": "Email QR Code",
         "text": "Email the QR code to yourself or to a print shop.",
-        "label": "Receiving Email",
-        "button": "Send Email",
-        "sending": "Sending",
+        "sendEmail": "Send Email",
         "sent": "Email sent!",
         "errors": { "validEmail": "Please enter a valid email", "notSent": "Email was not sent. Please try again." }
       }
@@ -332,7 +339,7 @@
     "CbIntroModal": {
       "text-1": "Your Coinbase account is linked!",
       "text-2": "Your Nulla Pay account is ready to start accepting payments.",
-      "text-3": "If you have questions, read the <span1>Instructions</span1> in the <span2>Settings</span2> menu. If you need further assistance, contact us at support@flashpayments.xyz",
+      "text-3": "If you have questions, read the <span1>Instructions</span1> in the <span2>Settings</span2> menu. If you need further assistance, contact us at support@nullapay.com",
       "enterApp": "Enter App"
     },
     "CashbackModal": {
@@ -360,8 +367,8 @@
         "rate": "What conversion rate is used?"
       },
       "setup-1": "To start accepting crypto payments, print out and display your QR code so that customers can see it.",
-      "setup-2": "We emailed you the QR code when you created this account. You can re-send the email or download the QR code by going to <span>Payments > QR Code > Export</span>.",
-      "setup-3": "Instructions on how to print and display your QR Code will be provided when you export it.",
+      "setup-2": "We emailed you the QR code when you created this account. You can re-send the email or download the QR code by going to <span>Settings</span>.",
+      "setup-3": "Recommendations on how to print and display your QR Code will be provided when you export it.",
       "pay-1": "Before payment, the customer must have the <span1><span2>MetaMask app<sup1>?</sup1></span2><div1>{tooltip1}</div1></span1> and <span3><span4>USDC<sup2>?</sup2></span4><div2>{tooltip2}</div2></span3> tokens on the <span5><span6>Polygon network<sup3>?</sup3></span6><div3>{tooltip3}</div3></span5>.",
       "pay-2": "To pay, the customer scans your QR code, which opens their Metamask app. In the app, the customer <span> enters the amount of {merchantCurrency} for payment</span>.",
       "pay-3": "When the customer submits payment, USDC tokens (equal <span>in value </span>to the amount of {merchantCurrency} entered) will be sent from their MetaMask to your Nulla App.",
@@ -410,7 +417,7 @@
     "no": "No",
     "yes2": "Yes",
     "no2": "No",
-    "close": "CLOSE",
+    "close": "Close",
     "comfirm": "Confirm",
     "cancel": "Cancel",
     "from": "From",
@@ -431,24 +438,24 @@
     "transferToCEX": "Transfer to {cex}",
     "transferToBank": "Transfer to Bank",
     "transfer": "Transfer",
-    "next": "NEXT",
-    "back": "BACK",
-    "finish": "FINISH",
-    "done": "DONE",
-    "skip": "SKIP",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "done": "Done",
+    "skip": "Skip",
     "max": "MAX",
     "balance": "Balance",
     "transferCost": "blockchain fee",
     "fromCoinbase": "From: Coinbase",
-    "toCEX": "To: {cex}",
     "toBank": "To: Bank",
     "enterAnEvmAddress": "Enter an EVM address",
     "transferring": "Transferring",
     "transferSuccessful": "Transfer successful",
-    "contact": "For any assistance, feel free to contact us at support@flashpayments.xyz",
+    "contact": "For any assistance, feel free to contact us at support@nullapay.com",
     "email": "Email",
     "download": "Download",
     "loading": "Loading",
-    "copied": "copied"
+    "copied": "copied",
+    "viewTxn": "View Transaction"
   }
 }

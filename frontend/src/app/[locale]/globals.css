@@ -22,12 +22,19 @@
     --rdp-day-width: 30px;
   }
 
-  /* select:-webkit-autofill,
+  select:-webkit-autofill,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active,
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px rgb(255, 255, 255) inset !important;
-  } */
+    -webkit-box-shadow: 0 0 0 30px rgb(249, 249, 249) inset !important;
+  }
+
+  .dark select:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px rgb(0, 0, 0) inset !important;
+  }
 
   /* custom scrollbar */
   .hideScrollbar::-webkit-scrollbar {
@@ -192,6 +199,10 @@
     @apply border-2 bg-transparent text-slate-500 border-current desktop:hover:text-slate-400 active:text-slate-400; /*--- same for dark and light ---*/
   }
 
+  .buttonRedColor {
+    @apply bg-red-500 text-white hover:bg-red-400 active:bg-red-400;
+  }
+
   .buttonPendingColor {
     @apply border-2 bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
   }
@@ -238,6 +249,10 @@
 
   .appButton2 {
     @apply button2Color appButtonSizeStd flex items-center justify-center rounded-[8px];
+  }
+
+  .appButtonRed {
+    @apply buttonRedColor appButtonSizeStd flex items-center justify-center rounded-[8px];
   }
 
   .appButton1Light {
@@ -305,7 +320,7 @@
   }
 
   .settingsInputColor {
-    @apply rounded-[8px] border-[1.5px] bg-light1 dark:bg-dark1 focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms] desktop:group-hover:text-slate-500 focus:desktop:group-hover:text-lightText1 dark:focus:desktop:group-hover:text-darkText1;
+    @apply rounded-[8px] border-[1.5px] bg-transparent focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 focus:!text-lightText1 dark:focus:!text-darkText1 border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-none placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms] desktop:group-hover:text-slate-500;
   }
 
   .checkboxColor {
@@ -330,6 +345,10 @@
 
   .introInputFontSmall {
     @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[4px] text-[15px] tracking-tighter bg-white border border-slate-400 outline-none focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic placeholder:text-lg placeholder:pl-[8px] placeholder:focus:text-transparent;
+  }
+
+  .appInputLabel {
+    @apply mb-[4px] font-medium;
   }
 
   /* --- input elements --- */
@@ -485,7 +504,7 @@
   }
 
   .pendingCard {
-    @apply mt-[2px] text-base portrait:sm:text-lg landscape:lg:text-lg desktop:!text-sm cashoutCardWidth p-[16px] portrait:sm:p-[24px] landscape:lg:p-[24px] desktop:!p-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark3 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
+    @apply mt-[2px] textSmApp cashoutCardWidth p-[16px] portrait:sm:p-[24px] landscape:lg:p-[24px] desktop:!p-[20px] flex flex-col rounded-[16px] bg-light1 dark:bg-dark4 shadow-[0px_2px_12px_0px_rgb(0,0,0,0.15)];
   }
 
   .cashoutHeader {
@@ -549,7 +568,7 @@
   }
 
   .transferSubtext {
-    @apply textSmApp !leading-[1.2] textGray;
+    @apply text-base desktop:text-sm !leading-[1.2] textGray;
   }
 
   .transferUsdc {
@@ -565,11 +584,11 @@
   }
 
   .settingsFont {
-    @apply text-base portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-medium tracking-tight portrait:sm:tracking-normal landscape:lg:tracking-normal;
+    @apply text-[1.0625rem] portrait:sm:text-xl landscape:lg:text-xl desktop:!text-base font-medium;
   }
 
   .settingsFontFixed {
-    @apply text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
+    @apply text-[17px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px];
   }
 
   .settingsFontFixedSmall {
@@ -593,19 +612,23 @@
   }
 
   .settingsLabel {
-    @apply textGray;
+    @apply text-slate-500 dark:text-slate-500 font-semibold whitespace-nowrap pr-[8px];
   }
 
   .settingsInput {
-    @apply w-full h-full px-[12px] py-[4px] text-end focus:cursor-text settingsInputColor placeholder:pr-[2px] cursor-pointer;
+    @apply w-full h-full px-[12px] text-end focus:cursor-text settingsInputColor placeholder:pr-[2px] cursor-pointer;
   }
 
   .settingsSelect {
-    @apply h-full px-[12px] py-[4px] [text-align-last:right] bg-none settingsInputColor cursor-pointer scrollbar;
+    @apply h-full pr-[21px] py-[1px] [text-align-last:right] bg-none settingsInputColor cursor-pointer scrollbar;
   }
 
   .settingsRightAngle {
-    @apply pt-[2px] desktop:pt-[1px] text-[18px] desktop:group-hover:text-slate-500 transition-all duration-[300ms] peer-focus:hidden;
+    @apply pt-[2px] text-[18px] desktop:group-hover:text-slate-500 transition-all duration-[500ms] peer-focus:hidden;
+  }
+
+  .settingsRightAngleSelect {
+    @apply settingsRightAngle absolute right-0 pointer-events-none;
   }
 
   .settingsInfo {
@@ -641,11 +664,11 @@
   }
 
   .modalColor {
-    @apply bg-light1 dark:bg-dark3 border-2 border-light5 dark:border-dark4;
+    @apply bg-light1 dark:bg-dark2 border border-light5 dark:border-dark6;
   }
 
   .modalFullColor {
-    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark2 landscape:lg:dark:bg-dark2 portrait:sm:border landscape:lg:border border-light5 dark:border-dark6;
+    @apply bg-light1 dark:bg-dark1 portrait:sm:dark:bg-dark2 landscape:lg:dark:bg-dark2 desktop:!bg-dark2 portrait:sm:border landscape:lg:border desktop:border border-light5 dark:border-dark6;
   }
 
   .sidebarModalColor {
@@ -663,19 +686,19 @@
   }
 
   .modalFullSizeDynamic {
-    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[600px] h-screen portrait:sm:h-auto landscape:lg:h-auto portrait:sm:max-h-[90%] landscape:lg:max-h-[90%];
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[600px] h-screen portrait:sm:h-auto landscape:lg:h-auto portrait:sm:max-h-[90%] landscape:lg:max-h-[90%] desktop:!max-h-[90%];
   }
 
   .modalFullSize {
-    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[480px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .passwordModalSize {
-    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[420px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
+    @apply w-full portrait:sm:w-[600px] landscape:lg:w-[600px] desktop:!w-[420px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[750px] landscape:lg:max-h-[750px];
   }
 
   .transferModalSize {
-    @apply w-full portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[400px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] portrait:sm:max-h-[700px] landscape:lg:max-h-[700px] desktop:!max-h-[620px];
+    @apply w-full portrait:sm:w-[450px] landscape:lg:w-[450px] desktop:!w-[420px] h-screen portrait:sm:h-[90%] landscape:lg:h-[90%] desktop:!h-[90%] portrait:sm:max-h-[700px] landscape:lg:max-h-[700px] desktop:!max-h-[620px];
   }
 
   .sidebarModalSize {
@@ -701,7 +724,7 @@
   }
 
   .transferModal {
-    @apply modalFullBase modalFullColor transferModalSize;
+    @apply modalFullBase modalFullColor transferModalSize pb-[12px];
   }
 
   .sidebarModal {
@@ -837,16 +860,8 @@
     animation-delay: 4s;
   }
 
-  .flash {
-    width: 28px;
-    height: 55px;
-    border: 3px solid black;
-    background: white;
-    clip-path: polygon(87% 0%, 52% 44%, 100% 44%, 13% 100%, 48% 56%, 0% 56%);
-  }
-
   .skeleton {
-    @apply text-transparent bg-slate-300 dark:bg-dark5 animate-pulse rounded-md;
+    @apply !text-transparent bg-slate-300 dark:bg-dark5 animate-pulse rounded-md;
   }
 
   .textGray {
@@ -871,5 +886,9 @@
 
   .linkDark {
     @apply cursor-pointer text-blue-400 xs:hover:underline active:underline;
+  }
+
+  .loginError {
+    @apply absolute top-[calc(100%+3px)] text-red-500 textSmApp !leading-[1.1];
   }
 }

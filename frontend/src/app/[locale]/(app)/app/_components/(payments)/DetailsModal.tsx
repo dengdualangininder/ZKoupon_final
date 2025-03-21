@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 // context
 import { useW3Info } from "../../../Web3AuthProvider";
 // hooks
-import { useFlashBalanceQuery } from "../../../hooks";
+import { useNullaBalanceQuery } from "../../../hooks";
 import { useQueryClient } from "@tanstack/react-query";
 // i18n
 import { useTranslations } from "next-intl";
@@ -22,21 +22,21 @@ import { LuCopy } from "react-icons/lu";
 // utils
 import { currency2decimal } from "@/utils/constants";
 import { PaymentSettings, Transaction } from "@/db/UserModel";
-import { FlashInfo } from "@/utils/types";
+import { NullaInfo } from "@/utils/types";
 import { networkToInfo } from "@/utils/web3Constants";
 import erc20Abi from "@/utils/abis/erc20Abi";
-import flashAbi from "@/utils/abis/flashAbi";
+import nullaAbi from "@/utils/abis/nullaAbi";
 
 const DetailsModal = ({
   paymentSettings,
-  flashInfo,
+  nullaInfo,
   clickedTxn,
   setClickedTxn,
   setDetailsModal,
   setErrorModal,
 }: {
   paymentSettings: PaymentSettings;
-  flashInfo: FlashInfo;
+  nullaInfo: NullaInfo;
   clickedTxn: Transaction | null;
   setClickedTxn: any;
   setDetailsModal: any;
@@ -51,7 +51,7 @@ const DetailsModal = ({
   const account = useAccount();
   const config = useConfig();
   const w3Info = useW3Info();
-  const { queryKey: flashBalanceQueryKey } = useFlashBalanceQuery();
+  const { queryKey: nullaBalanceQueryKey } = useNullaBalanceQuery();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // states
@@ -73,7 +73,7 @@ const DetailsModal = ({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           w3Info,
-          flashInfo,
+          nullaInfo,
           txnHash: clickedTxn.txnHash,
           change: { key: "toRefund", value: !clickedTxn.toRefund },
         }),
@@ -106,7 +106,7 @@ const DetailsModal = ({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           w3Info,
-          flashInfo,
+          nullaInfo,
           txnHash: clickedTxn.txnHash,
           change: { key: "note", value: note },
         }),
@@ -134,7 +134,7 @@ const DetailsModal = ({
 
     // 1. define variables
     const usdcAddress = networkToInfo[String(chainId)].usdcAddress;
-    const flashAddress = networkToInfo[String(chainId)].flashAddress;
+    const nullaAddress = networkToInfo[String(chainId)].nullaAddress;
     const deadline = Math.floor(Date.now() / 1000) + 60 * 3; // 3 minute deadline
     const nonce = (await readContract(config, {
       address: usdcAddress,
@@ -158,7 +158,7 @@ const DetailsModal = ({
       domain: { name: "USD Coin", version: "2", chainId: chainId, verifyingContract: usdcAddress },
       message: {
         owner: paymentSettings?.merchantEvmAddress as Address,
-        spender: flashAddress,
+        spender: nullaAddress,
         value: parseUnits(usdcTransferAmount, 6),
         nonce: nonce,
         deadline: BigInt(deadline),
@@ -172,7 +172,7 @@ const DetailsModal = ({
         ],
       } as const satisfies TypedData, // must const-assert
       primaryType: "Pay",
-      domain: { name: "FlashPayments", version: "1", chainId: chainId, verifyingContract: flashAddress },
+      domain: { name: "NullaPayments", version: "1", chainId: chainId, verifyingContract: nullaAddress },
       message: { toAddress: toAddress as Address, nonce: nonce },
     });
 
@@ -187,13 +187,13 @@ const DetailsModal = ({
       amount: parseUnits(usdcTransferAmount, 6),
       permitData: { deadline: deadline, signature: { v: permitSignature.v, r: permitSignature.r, s: permitSignature.s } },
     };
-    const payCalldata = encodeFunctionData({ abi: flashAbi, functionName: "pay", args: [paymentData, paySignature] }); // GelatoRelay request.data only takes encoded calldata
+    const payCalldata = encodeFunctionData({ abi: nullaAbi, functionName: "pay", args: [paymentData, paySignature] }); // GelatoRelay request.data only takes encoded calldata
 
     // 5. make Gelato Relay API call
     const relay = new GelatoRelay();
     const request: CallWithSyncFeeRequest = {
       chainId: BigInt(chainId),
-      target: flashAddress,
+      target: nullaAddress,
       data: payCalldata,
       feeToken: usdcAddress,
       isRelayContext: true,
@@ -214,7 +214,7 @@ const DetailsModal = ({
       } catch {}
       if (taskStatus && taskStatus.taskState == "ExecSuccess") {
         refundTxnHashTemp = taskStatus.transactionHash;
-        queryClient.invalidateQueries({ queryKey: [flashBalanceQueryKey] });
+        queryClient.invalidateQueries({ queryKey: [nullaBalanceQueryKey] });
         console.log("txn executed, try:", i);
         console.log("refundTxnHash:", refundTxnHashTemp);
         break;
@@ -291,7 +291,7 @@ const DetailsModal = ({
               <div className="flex items-center">
                 <p className="detailsValueText">{clickedTxn?.currencyAmount}</p>
                 {/*--- 2% cashback arrow ---*/}
-                <div className="ml-[8px] mr-[16px] w-[48px] h-[1.5px] bg-darkText1 relative">
+                <div className="ml-[8px] mr-[16px] w-[48px] h-[1.5px] bg-lightText1 dark:bg-darkText1 relative">
                   <p className="text-[14px] absolute translate-x-[3px] bottom-[calc(100%-3px)] tracking-tight">2% off</p>
                   <div className="absolute left-[100%] translate-y-[-4px] w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[9px] border-l-darkText1"></div>
                 </div>
@@ -347,12 +347,12 @@ const DetailsModal = ({
             </div>
 
             {/*--- REFUND STATUS ---*/}
-            <div className="mt-[14px] w-full bg-light3 dark:bg-dark3 rounded-[16px] px-[24px] py-[20px] tracking-normal">
+            <div className="mt-[14px] w-full bg-light3 dark:bg-dark3 rounded-[16px] px-[24px] py-[20px]">
               <div className="text-center pb-[24px]">Refund Status</div>
               {refundState === "refunded" ? (
-                <div className="w-full flex flex-col items-center gap-[8px]">
-                  <div className="">{t("refunded")}</div>
-                  <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${refundTxnHash}`} target={"_blank"}>
+                <div className="textSmApp w-full flex flex-col items-center gap-[8px]">
+                  <div className="textGray">{t("refunded")}</div>
+                  <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${refundTxnHash}`} target="_blank">
                     See transaction <FaArrowUpRightFromSquare className="inline-block text-[16px]" />
                   </a>
                 </div>

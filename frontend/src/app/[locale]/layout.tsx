@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "With a true peer-2-peer payments design, Nulla Pay is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",
   keywords: ["crypto payments", "blockchain payments", "stablecoin payments", "cryptocurrency payments"],
-  metadataBase: new URL("https://www.flashpayments.xyz"),
+  metadataBase: new URL("https://www.nullapay.com"),
   alternates: {
     canonical: "/",
     languages: {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    url: "https://www.flashpayments.xyz",
+    url: "https://www.nullapay.com",
     title: "Nulla Pay | Crypto payments with 0% fees",
     description:
       "With a true peer-2-peer payments design, Nulla Pay is an easy-to-use and near-zero cost platform to help small businesses set up crypto payments. Set up in 1 minute.",

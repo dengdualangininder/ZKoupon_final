@@ -2,6 +2,7 @@ import { faCircleUser, faBed, faCar, faMapLocationDot, faTicket, faHandHoldingDo
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { RateKey, AllRates } from "@/utils/types";
+import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 
 export const currencyToKeys: Record<string, { usdToLocal: RateKey; usdcToLocal: RateKey }> = {
   EUR: { usdToLocal: "usdToEur", usdcToLocal: "usdcToEur" },
@@ -560,4 +561,24 @@ export const CEXdata: { [key: string]: CEX } = {
     withdrawalFee: 15,
     tradingFee: 0.002,
   },
+};
+
+export const paymentSettings: PaymentSettings = {
+  merchantEvmAddress: "",
+  merchantEmail: "",
+  merchantName: "",
+  merchantCountry: "",
+  merchantCurrency: "",
+  merchantPaymentType: "",
+  merchantWebsite: "",
+  merchantBusinessType: "",
+  merchantFields: [],
+  merchantGoogleId: "",
+  qrCodeUrl: "",
+};
+
+export const cashoutSettings: CashoutSettings = {
+  cex: "Coinbase",
+  cexEvmAddress: "",
+  isEmployeePass: false,
 };

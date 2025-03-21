@@ -3,10 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
-import { useCexBalanceQuery, useFlashBalanceQuery, useCexTxnsQuery } from "../../hooks";
-// wagmi & viem & ethers
-import { useAccount, useReadContract } from "wagmi";
-import { formatUnits } from "viem";
+import { useCexBalanceQuery, useNullaBalanceQuery, useCexTxnsQuery } from "../../hooks";
 // other
 import { v4 as uuidv4 } from "uuid";
 // i18n
@@ -20,17 +17,17 @@ import CashoutBalance from "./(cashout)/CashoutBalance";
 import { FaEllipsisVertical } from "react-icons/fa6";
 // types
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
-import { FlashInfo, AllRates } from "@/utils/types";
+import { NullaInfo, AllRates } from "@/utils/types";
 
 export default function CashOut({
-  flashInfo,
+  nullaInfo,
   paymentSettings,
   cashoutSettings,
   setErrorModal,
   setTradeMAXModal,
   allRates,
 }: {
-  flashInfo: FlashInfo;
+  nullaInfo: NullaInfo;
   paymentSettings: PaymentSettings;
   cashoutSettings: CashoutSettings;
   setErrorModal: any;
@@ -43,21 +40,20 @@ export default function CashOut({
 
   // hooks
   const router = useRouter();
-  const account = useAccount();
   const t = useTranslations("App.CashOut");
   const tcommon = useTranslations("Common");
-  const { data: flashBalance, refetch: refetchFlashBalance } = useFlashBalanceQuery();
+  const { data: nullaBalance, refetch: refetchNullaBalance } = useNullaBalanceQuery();
   const { data: cexBalance } = useCexBalanceQuery();
   const { data: cexTxns } = useCexTxnsQuery();
-  console.log(cexTxns);
 
   // states
   const [isCbLinked, setIsCbLinked] = useState(true); // if Coinbase is linked or not
   const [cbEvmAddress, setCbEvmAddress] = useState("");
+  const [cbAccountName, setCbAccountName] = useState("");
   const [cbBankAccountName, setCbBankAccountName] = useState("");
   const [cbOptionsModal, setCbOptionsModal] = useState(false);
   const [nullaOptionsModal, setNullaOptionsModal] = useState(false);
-  const [flashDetails, setFlashDetails] = useState(false);
+  const [nullaDetails, setNullaDetails] = useState(false);
   const [cexDetails, setCexDetails] = useState(false);
   const [transferModal, setTransferModal] = useState<"toCex" | "toBank" | "toAny" | null>(null);
   const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
@@ -92,7 +88,7 @@ export default function CashOut({
 
   const onClickTransferToCex = async () => {
     // if coinbase
-    if (cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other") {
+    if (cashoutSettings.cex === "Coinbase") {
       if (isCbLinked) {
         setTransferModal("toCex");
         getCbAccountInfo();
@@ -101,10 +97,7 @@ export default function CashOut({
         setErrorModal(t("errors.linkCb"));
         return;
       }
-    }
-
-    // if not coinbase
-    if (cashoutSettings?.cexEvmAddress) {
+    } else if (cashoutSettings?.cexEvmAddress) {
       setTransferModal("toCex");
     } else {
       setErrorModal(
@@ -145,6 +138,7 @@ export default function CashOut({
           window.localStorage.setItem("cbRefreshToken", resJson.data.newRefreshToken);
         }
         setCbEvmAddress(resJson.data.cbEvmAddress);
+        setCbAccountName(resJson.data.cbAccountName);
         return;
       }
     } catch (e) {}
@@ -181,14 +175,24 @@ export default function CashOut({
     document.removeEventListener("click", onClickOutsideCexOptions);
   };
 
-  const onClickOutsideFlashOptions = () => {
+  const onClickOutsideNullaOptions = () => {
     setNullaOptionsModal(false);
-    document.removeEventListener("click", onClickOutsideFlashOptions);
+    document.removeEventListener("click", onClickOutsideNullaOptions);
   };
 
   return (
     // 96px is height of mobile top menu bar + 14px mt
     <section className="appPageContainer bg-light2 dark:bg-dark1 py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] overflow-y-auto">
+      {/* <button
+        className="w-full h-[60px] bg-red-300"
+        onClick={async () => {
+          const receipt = await getTransactionReceipt(config, { hash: "0x6512870f8ef0cf679003d7f5577e6b803d4ee7481b7388a6d6bd87dbaef8e333" });
+          const amount = formatUnits(hexToBigInt(receipt.logs[3].data), 6);
+          console.log(amount);
+        }}
+      >
+        TEST
+      </button> */}
       {/*---FLASH CARD ---*/}
       <div className="cashoutCard">
         {/*--- title + more options ---*/}
@@ -196,26 +200,26 @@ export default function CashOut({
           {/*--- title ---*/}
           <div className="cashoutHeader">Nulla {tcommon("account")}</div>
           {/*--- more options ---*/}
-          {flashBalance && rates && (
+          {nullaBalance && rates && (
             <div
               className={`${nullaOptionsModal ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
               onClick={() => {
                 setNullaOptionsModal(!nullaOptionsModal);
-                if (!nullaOptionsModal) document.addEventListener("click", onClickOutsideFlashOptions);
+                if (!nullaOptionsModal) document.addEventListener("click", onClickOutsideNullaOptions);
               }}
             >
               <FaEllipsisVertical className="textLgAppPx" />
             </div>
           )}
-          {/*--- flashMoreOptionsModal ---*/}
+          {/*--- nullaMoreOptionsModal ---*/}
           <div className={`${nullaOptionsModal ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
             {t("transferToAny")}
           </div>
         </div>
         {/*--- balance ---*/}
-        <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={flashBalance} details={flashDetails} setDetails={setFlashDetails} />
+        <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={nullaBalance} details={nullaDetails} setDetails={setNullaDetails} />
         {/*--- button ---*/}
-        {flashBalance && rates && (
+        {nullaBalance && rates && (
           <button className="cashoutButton" onClick={onClickTransferToCex}>
             {cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer")}
           </button>
@@ -273,12 +277,12 @@ export default function CashOut({
                   <p>{txn.amount.amount}</p>
                 </div>
               ))}
-              {/* {cexTxns.pendingUsdcWithdrawals.map((txn) => (
+              {cexTxns.pendingUsdcWithdrawals.map((txn) => (
                 <div className="w-full flex justify-between">
                   <p>Pending USDC withdrawal</p>
                   <p>{txn.amount.amount}</p>
                 </div>
-              ))} */}
+              ))}
               {cexTxns.pendingUsdWithdrawals.map((txn, index) => (
                 <div key={index} className="w-full flex justify-between">
                   <p>Pending USD withdrawal</p>
@@ -298,8 +302,9 @@ export default function CashOut({
           cashoutSettings={cashoutSettings}
           rates={rates}
           setErrorModal={setErrorModal}
-          flashInfo={flashInfo}
+          nullaInfo={nullaInfo}
           cbEvmAddress={cbEvmAddress}
+          cbAccountName={cbAccountName}
           cbBankAccountName={cbBankAccountName}
         />
       )}

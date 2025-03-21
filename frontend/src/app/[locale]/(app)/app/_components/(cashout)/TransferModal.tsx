@@ -3,28 +3,27 @@
 import { useState } from "react";
 import Image from "next/image";
 // custom hooks
-import { useFlashBalanceQuery, useCexBalanceQuery, useCexTxnsQuery } from "../../../hooks";
+import { useNullaBalanceQuery, useCexBalanceQuery, useCexTxnsQuery } from "../../../hooks";
 // wagmi & viem
 import { useConfig, useAccount } from "wagmi";
-import { readContract, signTypedData } from "@wagmi/core";
-import { parseUnits, formatUnits, encodeFunctionData, hexToSignature, isAddress, Abi, Address, TypedData } from "viem";
+import { readContract, signTypedData, getTransactionReceipt } from "@wagmi/core";
+import { parseUnits, formatUnits, encodeFunctionData, hexToSignature, isAddress, Address, TypedData, hexToBigInt } from "viem";
 // gelato relay
 import { GelatoRelay, CallWithSyncFeeRequest } from "@gelatonetwork/relay-sdk";
 // i18n
 import { useTranslations } from "next-intl";
 // images
 import { CiBank } from "react-icons/ci";
-import { FaArrowDown, FaCircleCheck, FaAngleLeft, FaCircleArrowDown, FaArrowDownLong } from "react-icons/fa6";
-import { FaLongArrowAltDown } from "react-icons/fa";
-
+import { FaCircleCheck, FaAngleLeft, FaArrowUpRightFromSquare } from "react-icons/fa6";
 // utils
+import { formatUsd } from "@/utils/functions";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 import { currency2decimal, currency2symbol } from "@/utils/constants";
 import { networkToInfo } from "@/utils/web3Constants";
 import erc20Abi from "@/utils/abis/erc20Abi";
-import flashAbi from "@/utils/abis/flashAbi";
-import { FlashInfo } from "@/utils/types";
+import nullaAbi from "@/utils/abis/nullaAbi";
+import { NullaInfo } from "@/utils/types";
 
 export default function TransferModal({
   transferModal,
@@ -33,8 +32,9 @@ export default function TransferModal({
   cashoutSettings,
   rates,
   setErrorModal,
-  flashInfo,
+  nullaInfo,
   cbEvmAddress,
+  cbAccountName,
   cbBankAccountName,
 }: {
   transferModal: "toCex" | "toAny" | "toBank" | null;
@@ -43,8 +43,9 @@ export default function TransferModal({
   cashoutSettings: CashoutSettings;
   rates: any;
   setErrorModal: any;
-  flashInfo: FlashInfo;
+  nullaInfo: NullaInfo;
   cbEvmAddress: string;
+  cbAccountName: string;
   cbBankAccountName: string;
 }) {
   // hooks
@@ -52,18 +53,19 @@ export default function TransferModal({
   const tcommon = useTranslations("Common");
   const account = useAccount();
   const config = useConfig();
-  const { data: flashBalance, refetch: refetchFlashBalance } = useFlashBalanceQuery();
+  const { data: nullaBalance, refetch: refetchNullaBalance } = useNullaBalanceQuery();
   const { data: cexBalance } = useCexBalanceQuery();
   const { refetch: refetchCexTxns } = useCexTxnsQuery();
 
   // states
-  const [blockchainFee, setBlockchainFee] = useState(0.01); // in USDC
-  const [usdcTransferAmount, setUsdcTransferAmount] = useState<string | null>(null);
+  const [blockchainFee, setBlockchainFee] = useState(0.01); // TODO: poll gas fee
+  const [usdcTransferAmount, setUsdcTransferAmount] = useState<string>("");
   const [anyAddress, setAnyAddress] = useState<string>("");
   const [transferState, setTransferState] = useState("initial"); // "initial" | "sending" | "sent"
-  const [txHash, setTxHash] = useState<string | undefined>(); // withdrawal tx hash
-  const [usdcTransferToBankActual, setUsdcTransferToBankActual] = useState<string | null>(null);
-  const [fiatDeposited, setFiatDeposited] = useState<string | null>(null);
+  const [txHash, setTxHash] = useState<string | undefined>(); // nulla to cex txHash
+  const [usdcTransferToBankActual, setUsdcTransferToBankActual] = useState("");
+  const [usdcTransferToCexActual, setUsdcTransferToCexActual] = useState("");
+  const [fiatDeposited, setFiatDeposited] = useState<string>("");
 
   const onClickTransferToCexSubmit = async () => {
     // check if amount exists
@@ -71,38 +73,38 @@ export default function TransferModal({
       setErrorModal(t("errors.enterAmount"));
       return;
     }
-    // check if amount >= 1
-    if (Number(usdcTransferAmount) < 1) {
+    // check min amount
+    if (Number(usdcTransferAmount) < 0.1) {
       setErrorModal(t("errors.minUSDC"));
+      return;
+    }
+    // check if exceed balance
+    if (Number(usdcTransferAmount) > Number(nullaBalance)) {
+      setErrorModal(t("errors.lowBalance"));
       return;
     }
 
     // determine toAddress
-    let toAddress = "";
     if (transferModal === "toAny") {
       if (anyAddress) {
-        toAddress = anyAddress;
+        var toAddress = anyAddress;
       } else {
         setErrorModal(t("errors.toEvmAddress"));
+        return;
       }
     } else {
       if (cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other") {
         if (cbEvmAddress) {
-          toAddress = cbEvmAddress;
+          var toAddress = cbEvmAddress;
         } else {
-          setErrorModal("Error: Did not detect a deposit address");
+          setErrorModal("Error: Did not detect a deposit address"); // should not be possible
           return;
         }
       } else {
         if (cashoutSettings?.cexEvmAddress) {
-          toAddress = cashoutSettings?.cexEvmAddress;
+          var toAddress = cashoutSettings?.cexEvmAddress;
         } else {
-          // this condition should not be possible but will add anyway
-          setErrorModal(
-            <div className="">
-              Please first enter your <span className="font-semibold">Cash Out Platform's Address</span> under <span className="font-semibold">Settings</span>
-            </div>
-          );
+          setErrorModal("Error: Did not detect a deposit address"); // should not be possible
           return;
         }
       }
@@ -121,7 +123,7 @@ export default function TransferModal({
 
       // 1. define variables
       const usdcAddress = networkToInfo[String(chainId)].usdcAddress;
-      const flashAddress = networkToInfo[String(chainId)].flashAddress;
+      const nullaAddress = networkToInfo[String(chainId)].nullaAddress;
       const deadline = Math.floor(Date.now() / 1000) + 60 * 3; // 3 minute deadline
       const nonce = (await readContract(config, {
         address: usdcAddress,
@@ -145,7 +147,7 @@ export default function TransferModal({
         domain: { name: "USD Coin", version: "2", chainId: chainId, verifyingContract: usdcAddress },
         message: {
           owner: paymentSettings?.merchantEvmAddress as Address,
-          spender: flashAddress,
+          spender: nullaAddress,
           value: parseUnits(usdcTransferAmount, 6),
           nonce: nonce,
           deadline: BigInt(deadline),
@@ -159,7 +161,7 @@ export default function TransferModal({
           ],
         } as const satisfies TypedData, // must const-assert
         primaryType: "Pay",
-        domain: { name: "FlashPayments", version: "1", chainId: chainId, verifyingContract: flashAddress },
+        domain: { name: "FlashPayments", version: "1", chainId: chainId, verifyingContract: nullaAddress },
         message: { toAddress: toAddress as Address, nonce: nonce },
       });
 
@@ -174,13 +176,13 @@ export default function TransferModal({
         amount: parseUnits(usdcTransferAmount, 6),
         permitData: { deadline: deadline, signature: { v: permitSignature.v, r: permitSignature.r, s: permitSignature.s } },
       };
-      const payCalldata = encodeFunctionData({ abi: flashAbi, functionName: "pay", args: [paymentData, paySignature] }); // GelatoRelay request.data only takes encoded calldata
+      const payCalldata = encodeFunctionData({ abi: nullaAbi, functionName: "pay", args: [paymentData, paySignature] }); // GelatoRelay request.data only takes encoded calldata
 
       // 5. make Gelato Relay API call
       const relay = new GelatoRelay();
       const request: CallWithSyncFeeRequest = {
         chainId: BigInt(chainId),
-        target: flashAddress,
+        target: nullaAddress,
         data: payCalldata,
         feeToken: usdcAddress,
         isRelayContext: true,
@@ -200,9 +202,13 @@ export default function TransferModal({
         } catch {} // try needed so one failed request won't exit function
         if (taskStatus && taskStatus.taskState == "ExecSuccess") {
           setTxHash(taskStatus.transactionHash);
+          const receipt = await getTransactionReceipt(config, { hash: taskStatus.transactionHash as `0x${string}` });
+          setUsdcTransferToCexActual(formatUnits(hexToBigInt(receipt.logs[3].data), 6));
+          refetchNullaBalance();
           setTransferState("sent");
-          refetchFlashBalance();
-          setTimeout(() => refetchCexTxns(), 10000);
+          if (cashoutSettings.cex === "Coinbase") {
+            setTimeout(() => refetchCexTxns(), 10000); // 10s likely not be enough. sometimes wait ~3min for Coinbase's pending txns to appear
+          }
           return;
         }
         if (taskStatus?.taskState == "ExecReverted" || taskStatus?.taskState == "Cancelled") {
@@ -226,12 +232,12 @@ export default function TransferModal({
       setErrorModal(t("errors.enterAmount"));
       return;
     }
-    // if amount exceeds Coinbase balance
+    // check if exceed balance
     if (Number(usdcTransferAmount) > Number(cexBalance)) {
       setErrorModal(t("errors.lowBalance"));
       return;
     }
-    // check if amount >= 1
+    // check min and max amounts
     if (Number(usdcTransferAmount) < 11) {
       setErrorModal(t("errors.minUSDC11"));
       return;
@@ -281,7 +287,7 @@ export default function TransferModal({
               className="xButtonContainer"
               onClick={() => {
                 setTransferModal(null);
-                setUsdcTransferAmount(null);
+                setUsdcTransferAmount("");
               }}
             >
               <div className="xButton">&#10005;</div>
@@ -291,7 +297,7 @@ export default function TransferModal({
               className="mobileBack"
               onClick={() => {
                 setTransferModal(null);
-                setUsdcTransferAmount(null);
+                setUsdcTransferAmount("");
               }}
             />
           </>
@@ -320,36 +326,45 @@ export default function TransferModal({
                     {(transferModal === "toCex" || transferModal === "toAny") && (
                       <div>
                         <p className="transferText">{tcommon("from")}: Nulla</p>
+                        <p className="transferSubtext truncate">{paymentSettings.merchantName}</p>
                         <p className="transferSubtext">
                           {tcommon("address")}: {paymentSettings?.merchantEvmAddress.slice(0, 7)}...
                           {paymentSettings?.merchantEvmAddress.slice(-5)}
-                        </p>
-                        <p className="transferSubtext">
-                          {tcommon("balance")}: {flashBalance} USDC
                         </p>
                       </div>
                     )}
                     {transferModal === "toBank" && (
                       <div className="">
                         <div className="transferText">{tcommon("fromCoinbase")}</div>
-                        <div className="transferSubtext">
-                          {cbEvmAddress.slice(0, 7)}...
-                          {cbEvmAddress.slice(-5)}
-                        </div>
-                        <div className="transferSubtext">
-                          {tcommon("balance")}: {cexBalance} USDC
-                        </div>
+                        {cbEvmAddress ? (
+                          <div className="transferSubtext">
+                            <p>
+                              {tcommon("address")}: {cbEvmAddress.slice(0, 7)}...{cbEvmAddress.slice(-5)}
+                            </p>
+                            <p>{cbAccountName}</p>
+                          </div>
+                        ) : (
+                          <div className="transferSubtext skeleton w-[160px]">
+                            <p>0</p>
+                            <p>0</p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
 
                   {/*--- from amount ---*/}
-                  <div className="mt-[11px] w-full flex items-center relative">
+                  <div className="pl-[2px] mt-[20px] transferSubtext">
+                    {tcommon("balance")}: {(Math.floor(Number(transferModal === "toBank" ? cexBalance : nullaBalance) * 100) / 100).toFixed(2)} USDC
+                  </div>
+                  <div className="w-full flex items-center relative">
                     <input
                       className="transferAmountFromBox inputColor placeholder:not-italic"
                       type="number"
+                      step="0.01"
                       inputMode="decimal"
                       onChange={(e) => setUsdcTransferAmount(e.currentTarget.value)}
+                      onBlur={(e) => setUsdcTransferAmount(Number(e.currentTarget.value).toFixed(2))}
                       value={usdcTransferAmount || ""}
                       placeholder="0"
                       disabled={transferState === "sending" ? true : false}
@@ -357,8 +372,8 @@ export default function TransferModal({
                     {/*--- max + USDC ---*/}
                     <div className="h-full right-0 absolute flex space-x-[12px] items-center">
                       <div
-                        className="text-base landscape:xl:desktop:text-sm font-bold text-blue-500 cursor-pointer"
-                        onClick={() => setUsdcTransferAmount(transferModal === "toBank" ? cexBalance ?? "0" : flashBalance ?? "0")}
+                        className="text-base desktop:text-sm font-bold text-blue-500 hover:text-blue-400 cursor-pointer"
+                        onClick={() => setUsdcTransferAmount(transferModal === "toBank" ? cexBalance ?? "" : nullaBalance ?? "")}
                       >
                         {tcommon("max")}
                       </div>
@@ -368,7 +383,7 @@ export default function TransferModal({
                 </div>
 
                 {/*--- ARROW ---*/}
-                <div className="mx-auto relative flex items-center">
+                <div className="mx-auto flex items-center relative">
                   <Image src="./transferArrow.svg" alt="arrow" width={38} height={50} className="my-[8px] mx-auto" />
                   {/*--- TRANSFER FEE ---*/}
                   <div className="w-[150px] absolute left-[calc(100%+12px)] text-base desktop:text-xs desktop:leading-[1.2] textGray leading-tight">
@@ -412,28 +427,41 @@ export default function TransferModal({
                       {/*--- text ---*/}
                       {transferModal === "toCex" && (
                         <div>
-                          <div className="transferText">
-                            {tcommon("toCEX", {
-                              cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
-                            })}
-                          </div>
-                          <div className="transferSubtext">
-                            {cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other" ? (
-                              cbEvmAddress ? (
-                                `${tcommon("address")}: ${cbEvmAddress.slice(0, 7)}...${cbEvmAddress.slice(-5)}`
-                              ) : (
-                                <div className="w-[160px] textSmApp py-[2px] skeleton">0000</div>
-                              )
+                          <p className="transferText">
+                            {tcommon("to")}: {cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX")}
+                          </p>
+                          {cashoutSettings.cex === "Coinbase" ? (
+                            cbEvmAddress ? (
+                              <div className="transferSubtext">
+                                <p>{cbAccountName}</p>
+                                <p>
+                                  {tcommon("address")}: {cbEvmAddress.slice(0, 7)}...{cbEvmAddress.slice(-5)}
+                                </p>
+                              </div>
                             ) : (
-                              `${cashoutSettings?.cexEvmAddress.slice(0, 10)}...${cashoutSettings?.cexEvmAddress.slice(-8)}`
-                            )}
-                          </div>
+                              <div className="transferSubtext skeleton w-[160px]">
+                                <p>0</p>
+                                <p>0</p>
+                              </div>
+                            )
+                          ) : (
+                            <p>
+                              {cashoutSettings?.cexEvmAddress.slice(0, 7)}...${cashoutSettings?.cexEvmAddress.slice(-5)}
+                            </p>
+                          )}
                         </div>
                       )}
                       {transferModal === "toBank" && (
                         <div>
                           <div className="transferText">{tcommon("toBank")}</div>
-                          {cbBankAccountName ? <div className="transferSubtext">{cbBankAccountName}</div> : <div className="w-[160px] textSmApp py-[5px] skeleton">0000</div>}
+                          {cbBankAccountName ? (
+                            <p className="transferSubtext">{cbBankAccountName}</p>
+                          ) : (
+                            <div className="transferSubtext skeleton w-[160px]">
+                              <p>0</p>
+                              <p>0</p>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -479,52 +507,77 @@ export default function TransferModal({
             )}
 
             {transferState === "sent" && (
-              <div className="h-[460px] desktop:h-[400px] flex flex-col justify-center gap-[60px]">
+              <div className="h-[420px] portrait:sm:h-[450px] landscape:lg:h-[450px] desktop:!h-[380px] flex flex-col justify-center gap-[60px]">
                 <div className="w-full flex flex-col items-center gap-[16px]">
                   <FaCircleCheck className="text-[100px] text-green-500" />
                   <div className="text2XlApp font-medium">{tcommon("transferSuccessful")}!</div>
                 </div>
-                <div className="text-center">
-                  {(transferModal === "toCex" || transferModal === "toAny") &&
-                    t.rich("transferToCexSuccessModal", {
-                      span1: (chunks) => <span className="font-bold">{chunks}</span>,
-                      amount: usdcTransferAmount,
-                      cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
-                    })}
-                  {transferModal === "toBank" && (
-                    <div className="space-y-[16px]">
-                      <div>
-                        <span className="font-bold">{Number(usdcTransferAmount).toFixed(2)} USDC</span> {t("transferToBankSuccessModal.text-1")}
-                      </div>
-                      <div>
-                        <span className="font-bold">
-                          {currency2symbol[paymentSettings?.merchantCurrency!]}
-                          {fiatDeposited}
-                        </span>{" "}
-                        {t("transferToBankSuccessModal.text-2")}
-                      </div>
-                      <div>{t("transferToBankSuccessModal.text-3")}</div>
+                {(transferModal === "toCex" || transferModal === "toAny") && (
+                  <div className="text-center flex flex-col items-center gap-[40px]">
+                    <p>
+                      {t.rich("transferToCexSuccessModal", {
+                        span1: (chunks) => <span className="font-bold">{chunks}</span>,
+                        amount: usdcTransferAmount,
+                        cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
+                      })}
+                    </p>
+                    <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${txHash}`} target="_blank">
+                      {tcommon("viewTxn")} <FaArrowUpRightFromSquare className="inline-block text-[16px]" />
+                    </a>
+                  </div>
+                )}
+                {transferModal === "toBank" && (
+                  <div className="space-y-[16px] text-center">
+                    <div>
+                      <span className="font-bold">{formatUsd(usdcTransferToCexActual)} USDC</span> {t("transferToBankSuccessModal.text-1")}
                     </div>
-                  )}
-                </div>
+                    <div>
+                      <span className="font-bold">
+                        {currency2symbol[paymentSettings?.merchantCurrency!]}
+                        {fiatDeposited}
+                      </span>{" "}
+                      {t("transferToBankSuccessModal.text-2")}
+                    </div>
+                    <div>{t("transferToBankSuccessModal.text-3")}</div>
+                  </div>
+                )}
               </div>
             )}
 
             {/*--- BUTTON ---*/}
-            <div className="flex-1 min-h-[120px] desktop:min-h-[90px] w-full flex flex-col items-center justify-center">
+            <div className="flex-1 flex items-center min-h-[140px]">
               {transferState == "initial" && (
-                <button
-                  onClick={transferModal === "toCex" || transferModal === "toAny" ? onClickTransferToCexSubmit : onClickTransferToBankSubmit}
-                  className="appButton1 w-full"
-                  disabled={transferModal === "toCex" && !cbEvmAddress ? true : false}
-                >
-                  {transferModal === "toCex" &&
-                    tcommon("transferToCEX", {
-                      cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex).replace(" Exchange", "") : tcommon("CEX"),
-                    })}
-                  {transferModal === "toAny" && tcommon("transfer")}
-                  {transferModal === "toBank" && tcommon("transferToBank")}
-                </button>
+                <>
+                  {transferModal === "toCex" && (
+                    <button
+                      className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
+                      onClick={onClickTransferToCexSubmit}
+                      disabled={!cbEvmAddress ? true : false}
+                    >
+                      {tcommon("transferToCEX", {
+                        cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex).replace(" Exchange", "") : tcommon("CEX"),
+                      })}
+                    </button>
+                  )}
+                  {transferModal === "toAny" && (
+                    <button
+                      className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
+                      onClick={onClickTransferToCexSubmit}
+                      disabled={!cbEvmAddress || !anyAddress ? true : false}
+                    >
+                      {tcommon("transfer")}
+                    </button>
+                  )}
+                  {transferModal === "toBank" && (
+                    <button
+                      className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
+                      onClick={onClickTransferToBankSubmit}
+                      disabled={!cbBankAccountName ? true : false}
+                    >
+                      {tcommon("transferToBank")}
+                    </button>
+                  )}
+                </>
               )}
               {transferState === "sending" && (
                 <button className="flex items-center justify-center w-full appButtonPending">
@@ -538,10 +591,10 @@ export default function TransferModal({
                   onClick={() => {
                     setTransferState("initial");
                     setTransferModal(null);
-                    setUsdcTransferAmount(null);
+                    setUsdcTransferAmount("");
                     if (transferModal === "toBank") {
-                      setUsdcTransferToBankActual(null);
-                      setFiatDeposited(null);
+                      setUsdcTransferToBankActual("");
+                      setFiatDeposited("");
                     }
                   }}
                 >

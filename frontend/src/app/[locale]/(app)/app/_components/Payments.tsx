@@ -23,9 +23,9 @@ import { getLocalTime, getLocalDateWords, getLocalDate } from "@/utils/functions
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 // types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
-import { FlashInfo, Filter, ModalState } from "@/utils/types";
+import { NullaInfo, Filter, ModalState } from "@/utils/types";
 
-export default function Payments({ flashInfo, setErrorModal, paymentSettings }: { flashInfo: FlashInfo; setErrorModal: any; paymentSettings: PaymentSettings }) {
+export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: { nullaInfo: NullaInfo; setErrorModal: any; paymentSettings: PaymentSettings }) {
   console.log("(app)/_components/Payments.tsx");
 
   // hooks
@@ -33,7 +33,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
   const w3Info = useW3Info();
   const loadRef = useRef(null);
   const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery, while setTempFilter will not
-  const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(w3Info, flashInfo, filter);
+  const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(w3Info, nullaInfo, filter);
   console.log("txns:", txns);
 
   // states
@@ -232,7 +232,7 @@ export default function Payments({ flashInfo, setErrorModal, paymentSettings }: 
       {detailsModal && (
         <DetailsModal
           paymentSettings={paymentSettings}
-          flashInfo={flashInfo}
+          nullaInfo={nullaInfo}
           clickedTxn={clickedTxn}
           setClickedTxn={setClickedTxn}
           setDetailsModal={setDetailsModal}

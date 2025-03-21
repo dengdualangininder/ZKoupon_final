@@ -14,7 +14,7 @@ export default function Navbar({ menu, setMenu, setSignOutModal }: { menu: strin
 
   return (
     <div className="appNavColor fixed landscape:w-[120px] landscape:lg:w-[160px] landscape:desktop:!w-[200px] landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] portrait:desktop:!h-[140px] flex justify-center items-center z-[1]">
-      <div className="w-full h-full flex landscape:flex-col items-center justify-around landscape:lg:max-h-[640px] desktop:!max-h-[500px] portrait:portrait:px-[4px] portrait:max-w-[650px] portrait:pb-[14px]">
+      <div className="w-full h-full flex landscape:flex-col items-center justify-around landscape:lg:max-h-[640px] desktop:!max-h-[500px] portrait:portrait:px-[4px] portrait:max-w-[650px] portrait:pb-[15px]">
         {w3Info &&
           menuItems.map((item) => (
             <div

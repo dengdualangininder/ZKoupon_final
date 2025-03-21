@@ -16,8 +16,8 @@ export async function deleteIsIntroCookie() {
   cookies().delete("isIntro");
 }
 
-export async function setFlashCookies(userType: string, merchantEvmAddress: string) {
-  console.log("server action: setFlashInfoAction()");
+export async function setNullaCookies(userType: string, merchantEvmAddress: string) {
+  console.log("server action: setNullaCookies");
   const secretKey = createSecretKey(process.env.JWT_KEY!, "utf-8");
 
   if (userType === "owner") {

@@ -17,12 +17,12 @@ import { useTranslations } from "next-intl";
 // others
 import axios from "axios";
 // components
-import FlashToBankAnimation from "./FlashToBankAnimation";
+import NullaToBankAnimation from "./NullaToBankAnimation";
 import Placard from "../../app/_components/placard/Placard";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 import { countryData, countryCurrencyList, abb2full, cexLinks } from "@/utils/constants";
-import { FlashInfo } from "@/utils/types";
+import { NullaInfo } from "@/utils/types";
 
 export default function Intro() {
   console.log("/intro.tsx");
@@ -60,19 +60,19 @@ export default function Intro() {
 
   const getSettings = async () => {
     console.log("getSettings()");
-    // get flashInfo from cookies
+    // get nullaInfo from cookies
     const userType = getCookie("userType");
     const userJwt = getCookie("userJwt");
     if (!userType || !userJwt) {
       router.push("/login");
       return;
     }
-    const flashInfo: FlashInfo = { userType, userJwt };
+    const nullaInfo: NullaInfo = { userType, userJwt };
     // get settings and setSettings
     const res = await fetch("/api/getSettings", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ w3Info, flashInfo }),
+      body: JSON.stringify({ w3Info, nullaInfo }),
     });
     if (!res.ok) router.push("/login");
     const resJson = await res.json();
@@ -399,7 +399,7 @@ export default function Intro() {
               <div className="introHeaderFont">{t("cashoutCb-1.title")}</div>
               {/*--- animation ---*/}
               <div className="py-[16px] w-full flex items-center justify-center">
-                <FlashToBankAnimation settings={settings} />
+                <NullaToBankAnimation settings={settings} />
               </div>
               {/*--- text ---*/}
               <div className="flex flex-col gap-[16px]">

@@ -8,8 +8,6 @@ import { useW3Info } from "../../Web3AuthProvider";
 import { useLogout, useSettingsMutation } from "../../hooks";
 // i18n
 import { useLocale, useTranslations } from "next-intl";
-// react query
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 // hook-form & zod
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,13 +25,12 @@ import Placard from "./placard/Placard";
 // images
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { LuCopy } from "react-icons/lu";
-import { ImSpinner2 } from "react-icons/im";
 // utils
 import Toggle from "@/utils/components/Toggle";
 import { countryData, countryCurrencyList, langObjectArray } from "@/utils/constants";
-import { W3Info } from "@/utils/types";
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 import EmailModal from "./(settings)/EmailModal";
+import Spinner from "@/utils/components/Spinner";
 
 // zod
 const schema = z.object({
@@ -45,11 +42,6 @@ const schema = z.object({
     .startsWith("0x")
     .length(42)
     .or(z.literal("")),
-  employeePass: z
-    .string({ errorMap: () => ({ message: "employeePass" }) }) // Password must be \u2265 8 characters and contain an uppercase letter, a lowercase letter, and a number.
-    .min(8)
-    .regex(new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"))
-    .or(z.literal("")),
   merchantGoogleId: z.string(),
 });
 type FormFields = z.infer<typeof schema>;
@@ -58,23 +50,22 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   console.log("/app Settings.tsx");
 
   // hooks
+  const merchantNameRef = useRef<HTMLInputElement | null>(null); // needed to focus input and move cursor to right
   const router = useRouter();
   const w3Info = useW3Info();
   const { theme, setTheme } = useTheme();
   const locale = useLocale();
   const t = useTranslations("App.Settings");
   const tcommon = useTranslations("Common");
-  const queryClient = useQueryClient();
-  const merchantNameRef = useRef<HTMLInputElement | null>(null);
   const [isSwitchingLang, startSwitchingLang] = useTransition();
   const logout = useLogout();
-
+  // react query
+  const { mutate: saveSettings } = useSettingsMutation();
   // react-hook-form & zod
   const {
     register,
     trigger,
     getValues,
-    setValue,
     setFocus,
     formState: { errors },
     reset,
@@ -85,63 +76,58 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
       merchantCountryAndCurrency: `${paymentSettings.merchantCountry} / ${paymentSettings.merchantCurrency}`,
       cex: cashoutSettings.cex,
       cexEvmAddress: cashoutSettings.cexEvmAddress,
-      employeePass: "",
       merchantGoogleId: paymentSettings.merchantGoogleId,
     },
   });
   const { ref: refMerchantName, ...restMerchantName } = register("merchantName");
 
-  const { mutate: saveSettings } = useSettingsMutation();
-  const { mutate: saveEmployeePass } = useMutation({
-    mutationFn: async ({ employeePass, w3Info }: { employeePass: string; w3Info: W3Info | null }) => {
-      console.log("saveEmployeePass mutationFn ran", employeePass);
-      const res = await fetch("/api/saveEmployeePass", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ employeePass, w3Info }),
-      });
-      if (!res.ok) throw new Error("error");
-      const resJson = await res.json();
-      if (resJson === "not verified") await logout();
-      if (resJson === "error") throw new Error("error");
-    },
-    onSuccess: () => {
-      console.log("saveEmployeePass onSuccess => settingsQuery invalidated");
-      queryClient.invalidateQueries({ queryKey: ["settings"] });
-    },
-    onError: () => {
-      console.log("saveEmployeePass onError => reset");
-      reset();
-    },
-  });
-
   // states
   const [popup, setPopup] = useState("");
-  const [employeePassMask, setEmployeePassMask] = useState(true);
-  const [isClicked, setIsClicked] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState<string | null>(null); // needed so that subsequent clicks on input does not right-align cursor
   const [loggingOut, setLoggingOut] = useState(false);
   // modal states
   const [faqModal, setFaqModal] = useState(false);
   const [employeePassModal, setEmployeePassModal] = useState(false);
   const [infoModal, setInfoModal] = useState<string | null>(null); // employeePassword | googleId | cashback
+  const [emailModal, setEmailModal] = useState(false);
+  // settings input states
   const [hiddenLabel, setHiddenLabel] = useState(""); // googleId | cexEvmAddress
   const [hideCexEvmAddress, setHideCexEvmAddress] = useState<boolean>(cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other"); // needed for optimistic update
-  // email qr code
-  const [email, setEmail] = useState(paymentSettings.merchantEmail);
-  const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
-  const [emailModal, setEmailModal] = useState(false);
 
-  const onClickChangeEmployeePass = useCallback(async () => {
-    setEmployeePassMask(false);
-    setEmployeePassModal(false);
-    setValue("employeePass", "");
-    setFocus("employeePass");
-  }, []);
+  const onChangeMerchantCountry = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const [merchantCountry, merchantCurrency] = e.target.value.split(" / ");
+    const cex = merchantCountry === "Other" ? "" : countryData[merchantCountry].CEXes[0];
+    cex === "Coinbase" ? setHideCexEvmAddress(true) : setHideCexEvmAddress(false);
+    const qrCodeUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettings.merchantPaymentType}&merchantName=${encodeURI(
+      paymentSettings.merchantName
+    )}&merchantCurrency=${merchantCurrency}&merchantEvmAddress=${paymentSettings.merchantEvmAddress}`;
+    saveSettings({
+      changes: {
+        "paymentSettings.merchantCountry": merchantCountry,
+        "paymentSettings.merchantCurrency": merchantCurrency,
+        "paymentSettings.qrCodeUrl": qrCodeUrl,
+        "cashoutSettings.cex": cex,
+        "cashoutSettings.cexEvmAddress": "", // reset cexEvmAddress for all cases, even if CEX is the same
+      },
+      w3Info,
+    });
+    window.localStorage.removeItem("cbRefreshToken");
+    window.sessionStorage.removeItem("cbAccessToken");
+    e.target.closest("select")?.blur(); // makes outline disappear after item selected
+  };
 
-  // this function only applies to 1) mechantEmail, 2) merchantName, 3) cexEvmAddress, 4) merchantGoogleId
+  const onChangeCex = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.currentTarget.value === "Coinbase" ? setHideCexEvmAddress(true) : setHideCexEvmAddress(false);
+    saveSettings({ changes: { "cashoutSettings.cex": e.currentTarget.value, "cashoutSettings.cexEvmAddress": "" }, w3Info });
+    window.localStorage.removeItem("cbRefreshToken");
+    window.sessionStorage.removeItem("cbAccessToken");
+    e.target.closest("select")?.blur(); // makes outline disappear after item selected
+  };
+
+  // this applies to merchantName, cexEvmAddress, merchantGoogleId
   async function validateAndSave(key: keyof FormFields, settingsType?: string) {
-    setIsClicked(null); // not entirely efficient, as this is only applicable to merchantEmail and merchantName
-    setHiddenLabel(""); // not entirely efficient, as this is only applicable to cexEvmAddress and merchantGoogleId
+    setIsFocused(null); // only applies to merchantName
+    setHiddenLabel(""); // only applies to cexEvmAddress and merchantGoogleId
     const isValid = await trigger(key); // zod validation
     if (isValid) {
       const value = getValues(key);
@@ -152,9 +138,6 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           paymentSettings.merchantPaymentType
         }&merchantName=${encodeURI(value)}&merchantCurrency=${paymentSettings.merchantCurrency}&merchantEvmAddress=${paymentSettings.merchantEvmAddress}`;
         saveSettings({ changes: { "paymentSettings.merchantName": value, "paymentSettings.qrCodeUrl": qrCodeUrl }, w3Info });
-      } else if (key === "employeePass") {
-        saveEmployeePass({ employeePass: value, w3Info });
-        setValue("employeePass", "");
       }
     } else {
       let msg = "Error";
@@ -165,52 +148,6 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
       reset();
     }
   }
-
-  const emailQrCode = async () => {
-    // check if valid email
-    if (!email.split("@")[1]?.includes(".")) {
-      setErrorModal(t("emailModal.errors.validEmail"));
-      return;
-    }
-
-    setIsSendingEmail("sending");
-
-    // create PDF file blob
-    const el = document.getElementById("qrCodeForDownload");
-    const dataString = await pdf(
-      <Document>
-        <Page size="A5" style={{ position: "relative" }}>
-          <View>
-            <Placard />
-          </View>
-          <View style={{ position: "absolute", transform: "translate(108, 190)" }}>
-            {/* @ts-ignore */}
-            <Svg width="210" height="210" viewBox={el?.attributes.viewBox.value} fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* @ts-ignore */}
-              <Path fill="#ffffff" d={el?.children[0].attributes.d.value} shape-rendering="crispEdges"></Path>
-              {/* @ts-ignore */}
-              <Path fill="#000000" d={el?.children[1].attributes.d.value} shape-rendering="crispEdges"></Path>
-            </Svg>
-          </View>
-        </Page>
-      </Document>
-    ).toString();
-
-    // make api call
-    try {
-      const res = await fetch("/api/emailQrCode", {
-        method: "POST",
-        body: JSON.stringify({ merchantEmail: email, dataString }),
-      });
-      const resJson = await res.json();
-      if (resJson === "email sent") {
-        setIsSendingEmail("sent");
-        return;
-      }
-    } catch (e) {}
-    setErrorModal(t("emailModal.errors.notSend"));
-    setIsSendingEmail("initial");
-  };
 
   const downloadQrCode = async () => {
     const el = document.getElementById("qrCodeForDownload");
@@ -232,7 +169,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
         </Page>
       </Document>
     ).toBlob();
-    saveAs(blob, "Flash_QRCode");
+    saveAs(blob, "Nulla Pay QR Code");
   };
 
   // render notes: onBlur => 1. trigger() causes settings.tsx/hooks to re-render, 2. print isValid and field value 3. useMutateAsync runs => causes settings.tsx/hooks to re-render 4. settingsQuery invalidated & queryFn run at same time 5. settings.tsx is re-rendered
@@ -265,7 +202,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className="settingsLabel">{t("accountAddress")}</label>
             <div
-              className="settingsFontFixed flex items-center desktop:cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[300ms] relative"
+              className="settingsFontFixed flex items-center desktop:cursor-pointer active:text-slate-500 desktop:hover:text-slate-500 desktop:transition-all desktop:duration-[500ms] relative"
               onClick={() => {
                 setPopup("copyAddress");
                 setTimeout(() => setPopup(""), 1500);
@@ -284,7 +221,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
 
           {/*--- merchantEmail ---*/}
           <div className="settingsField border-b">
-            <label className="textGray">{t("email")}</label>
+            <label className="settingsLabel">{t("email")}</label>
             <div className="settingsFontFixed text-end">{paymentSettings.merchantEmail}</div>
           </div>
 
@@ -294,13 +231,13 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className="settingsLabel">{t("name")}</label>
             <div
-              className="settingsInputContainer group w-full max-w-[280px] portrait:sm:max-w-[380px] landscape:lg:max-w-[380px] desktop:!max-w-[320px]"
+              className="settingsInputContainer group w-full"
               onClick={() => {
-                if (merchantNameRef.current && isClicked != "merchantName") {
-                  setIsClicked("merchantName");
+                if (merchantNameRef.current && isFocused != "merchantName") {
+                  setIsFocused("merchantName"); // ensures this isn't run if already focused, so user can click elsewhere
                   const end = merchantNameRef.current.value.length;
                   merchantNameRef.current.setSelectionRange(end, end);
-                  merchantNameRef.current.focus();
+                  merchantNameRef.current.focus(); // needed if clicked on rightAngle
                 }
               }}
             >
@@ -311,7 +248,8 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
                   merchantNameRef.current = e;
                 }}
                 onBlur={async () => validateAndSave("merchantName", "paymentSettings")}
-                className="settingsInput settingsFontFixed peer"
+                autoComplete="off"
+                className="settingsInput settingsFontFixed peer truncate"
               ></input>
               <div className="settingsRightAngle">&#10095;</div>
             </div>
@@ -320,40 +258,15 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           {/*--- merchantCountry / merchantCurrency ---*/}
           <div className="settingsField">
             <label className="settingsLabel">{t("country")}</label>
-            <div className="settingsInputContainer group">
-              <select
-                className="settingsSelect settingsFontFixed peer"
-                {...register("merchantCountryAndCurrency")}
-                onChange={async (e) => {
-                  // TODO: focus select element when rightAngle clicked
-                  const [merchantCountry, merchantCurrency] = e.target.value.split(" / ");
-                  const cex = merchantCountry === "Other" ? "" : countryData[merchantCountry].CEXes[0];
-                  cex === "Coinbase" || merchantCountry === "Other" ? setHideCexEvmAddress(true) : setHideCexEvmAddress(false); // optimistic update
-                  const qrCodeUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${
-                    paymentSettings.merchantPaymentType
-                  }&merchantName=${encodeURI(paymentSettings.merchantName)}&merchantCurrency=${merchantCurrency}&merchantEvmAddress=${paymentSettings.merchantEvmAddress}`;
-                  saveSettings({
-                    changes: {
-                      "paymentSettings.merchantCountry": merchantCountry,
-                      "paymentSettings.merchantCurrency": merchantCurrency,
-                      "paymentSettings.qrCodeUrl": qrCodeUrl,
-                      "cashoutSettings.cex": cex,
-                      "cashoutSettings.cexEvmAddress": "", // reset cexEvmAddress for all cases, even if CEX is the same
-                    },
-                    w3Info,
-                  });
-                  window.localStorage.removeItem("cbRefreshToken");
-                  window.sessionStorage.removeItem("cbAccessToken");
-                  e.target.closest("select")?.blur(); // makes outline disappear after item selected
-                }}
-              >
+            <div className="settingsInputContainer group relative">
+              <select className="settingsSelect settingsFontFixed peer" {...register("merchantCountryAndCurrency")} onChange={onChangeMerchantCountry}>
                 {countryCurrencyList.map((i, index) => (
-                  <option key={index} className="px-[16px]">
+                  <option key={index} className="px-[12px]">
                     {i}
                   </option>
                 ))}
               </select>
-              <div className="settingsRightAngle">&#10095;</div>
+              <div className="settingsRightAngleSelect">&#10095;</div>
             </div>
           </div>
 
@@ -361,47 +274,33 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           {paymentSettings.merchantCountry != "Other" && (
             <div className="settingsField">
               <label className="settingsLabel">{t("platform")}</label>
-              <div className="settingsInputContainer group">
-                <select
-                  className="settingsSelect settingsFontFixed peer"
-                  {...register("cex")}
-                  onChange={(e) => {
-                    // focus select element when rightAngle clicked
-                    e.currentTarget.value === "Coinbase" || paymentSettings.merchantCountry === "Other" ? setHideCexEvmAddress(true) : setHideCexEvmAddress(false); // optimistic update
-                    saveSettings({ changes: { "cashoutSettings.cex": e.currentTarget.value, "cashoutSettings.cexEvmAddress": "" }, w3Info });
-                    window.localStorage.removeItem("cbRefreshToken");
-                    window.sessionStorage.removeItem("cbAccessToken");
-                    e.target.closest("select")?.blur(); // makes outline disappear after item selected
-                  }}
-                >
+              <div className="settingsInputContainer group relative">
+                <select className="settingsSelect settingsFontFixed peer" {...register("cex")} onChange={onChangeCex}>
                   {countryData[paymentSettings.merchantCountry].CEXes.map((i, index) => (
-                    <option key={index} className="px-[16px]">
+                    <option key={index} className="px-[12px]">
                       {i}
                     </option>
                   ))}
                 </select>
-                <div className="settingsRightAngle">&#10095;</div>
+                <div className="settingsRightAngleSelect">&#10095;</div>
               </div>
             </div>
           )}
 
           {/*---cexEvmAddress---*/}
           <div className={`${hideCexEvmAddress ? "hidden" : ""} settingsField`}>
-            <label className={`${hiddenLabel === "cexEvmAddress" ? "hidden" : ""} settingsLabel w-[160px] sm:w-auto leading-tight`}>
+            <label className={`${hiddenLabel === "cexEvmAddress" ? "hidden" : ""} settingsLabel`}>
               {t("platformAddress")}
               <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
             </label>
-            <div
-              className={`${hiddenLabel === "cexEvmAddress" ? "w-full" : "w-[148px] portrait:sm:w-[204px] landscape:lg:w-[204px] desktop:!w-[150px]"} settingsInputContainer group`}
-              onClick={() => setFocus("cexEvmAddress")}
-            >
+            <div className={`${hiddenLabel === "cexEvmAddress" ? "" : "max-w-[160px]"} w-full settingsInputContainer group`} onClick={() => setFocus("cexEvmAddress")}>
               <input
+                className="settingsInput settingsFontFixed focus:settingsFontFixedSmall placeholder:settingsFont peer truncate"
                 {...register("cexEvmAddress")}
                 onFocus={() => setHiddenLabel("cexEvmAddress")}
                 onBlur={async () => validateAndSave("cexEvmAddress", "cashoutSettings")}
-                autoComplete="none"
+                autoComplete="off"
                 placeholder={t("empty")}
-                className="settingsInput settingsFontFixed peer focus:settingsFontFixedSmall placeholder:settingsFont focus:placeholder:text-transparent peer truncate"
               ></input>
               <div className="settingsRightAngle">&#10095;</div>
             </div>
@@ -413,33 +312,16 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               {t("employeePass")}
               <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("employeePassword")} />
             </label>
-            <div className="relative w-full max-w-[280px] desktop:max-w-[240px] h-full">
-              {/*--- employeePassMask ---*/}
-              <div
-                className={`${employeePassMask ? "" : "hidden"} absolute w-full h-full flex items-center cursor-pointer z-[1]`}
-                onClick={() => (cashoutSettings.isEmployeePass ? setEmployeePassModal(true) : onClickChangeEmployeePass())}
-              >
-                <div className="peer w-full h-full px-[12px] text-end rounded-md flex items-center justify-end desktop:hover:text-slate-500 transition-all duration-[300ms]">
-                  {cashoutSettings.isEmployeePass ? (
-                    "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
-                  ) : (
-                    <div className="italic pr-[3px] text-slate-400 dark:text-slate-500">{t("empty")}</div>
-                  )}
-                </div>
-                <div className="pt-[2px] text-[18px] desktop:peer-hover:text-slate-500 transition-all duration-[300ms]">&#10095;</div>
-              </div>
-              {/*--- input ---*/}
-              <div className={`w-full h-full flex items-center cursor-pointer`}>
-                <input
-                  {...register("employeePass")}
-                  className="settingsInput settingsFontFixed"
-                  onBlur={async () => {
-                    validateAndSave("employeePass");
-                    setEmployeePassMask(true);
-                  }}
-                  autoComplete="off"
-                />
-              </div>
+            <div
+              className="h-full flex items-center gap-[12px] desktop:hover:text-slate-500 transition-all duration-[500ms] cursor-pointer"
+              onClick={() => setEmployeePassModal(true)}
+            >
+              {cashoutSettings.isEmployeePass ? (
+                "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+              ) : (
+                <p className="italic pr-[3px] text-slate-400 dark:text-slate-500">{t("empty")}</p>
+              )}
+              <div className="pt-[2px] text-[18px]">&#10095;</div>
             </div>
           </div>
 
@@ -449,10 +331,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               {t("google")}
               <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("googleId")} />
             </label>
-            <div
-              className={`${hiddenLabel === "googleId" ? "w-full" : "w-[148px] portrait:sm:w-[204px] landscape:lg:w-[204px] desktop:!w-[150px]"} settingsInputContainer group`}
-              onClick={() => setFocus("merchantGoogleId")}
-            >
+            <div className={`${hiddenLabel === "googleId" ? "" : "max-w-[160px]"} w-full settingsInputContainer group`} onClick={() => setFocus("merchantGoogleId")}>
               <input
                 {...register("merchantGoogleId")}
                 onFocus={() => setHiddenLabel("googleId")}
@@ -465,15 +344,13 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           </div>
 
           {/*---2% off---*/}
-          {paymentSettings.merchantPaymentType === "inperson" && (
-            <div className="settingsField border-b relative">
-              <label className="settingsLabel">
-                {t("cashback")}
-                <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("cashback")} />
-              </label>
-              <Toggle checked={true} onClick={() => setInfoModal("cashback")} />
-            </div>
-          )}
+          <div className="settingsField border-b relative">
+            <label className="settingsLabel">
+              {t("cashback")}
+              <IoInformationCircleOutline className="settingsInfo" onClick={() => setInfoModal("cashback")} />
+            </label>
+            <Toggle checked={true} onClick={() => setInfoModal("cashback")} />
+          </div>
 
           {/*--- DISPLAY  ---*/}
           <div className="settingsTitle">{t("display")}</div>
@@ -496,7 +373,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           {/*---LANGUAGE ---*/}
           <div className="settingsField border-b">
             <label className="">{t("language")}</label>
-            <div className="settingsInputContainer group">
+            <div className="settingsInputContainer group relative">
               <select
                 className="settingsSelect settingsFontFixed peer"
                 onChange={(e) => {
@@ -505,28 +382,25 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
                 value={`${locale}`}
               >
                 {langObjectArray.map((langObject) => (
-                  <option key={langObject.id} value={langObject.id} className="px-[16px]">
+                  <option key={langObject.id} value={langObject.id} className="px-[12px]">
                     {langObject.text}
                   </option>
                 ))}
               </select>
-              <div className="settingsRightAngle">&#10095;</div>
+              <div className="settingsRightAngleSelect">&#10095;</div>
             </div>
           </div>
 
           {/*--- SUPPORT ---*/}
           <div className="settingsTitle">{t("support")}</div>
           {/*--- FAQs ---*/}
-          <div
-            className="settingsField desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
-            onClick={() => setFaqModal(true)}
-          >
+          <div className="settingsField hover:text-slate-500 dark:hover:text-slate-500 cursor-pointer transition-all duration-[500ms]" onClick={() => setFaqModal(true)}>
             <div className="cursor-pointer">{t("instructions")}</div>
             <div className="pt-[1px] text-[18px]">&#10095;</div>
           </div>
           {/*--- Contact Us ---*/}
           <div
-            className="settingsField border-b desktop:hover:text-slate-500 dark:desktop:hover:text-slate-500 cursor-pointer transition-all duration-[300ms]"
+            className="settingsField border-b hover:text-slate-500 dark:hover:text-slate-500 cursor-pointer transition-all duration-[500ms]"
             onClick={() => setErrorModal(tcommon("contact"))}
           >
             <div className="cursor-pointer">{t("contact")}</div>
@@ -543,24 +417,15 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           }}
           className="signoutButton mx-auto my-[48px]"
         >
-          {loggingOut ? <ImSpinner2 className="animate-spin text-[28px] text-slate-300" /> : t("signOut")}
+          {loggingOut ? <Spinner /> : t("signOut")}
         </button>
       </div>
 
       {infoModal && <InfoModal infoModal={infoModal} setInfoModal={setInfoModal} />}
-      {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} onClickChangeEmployeePass={onClickChangeEmployeePass} />}
+      {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} setErrorModal={setErrorModal} isEmployeePass={cashoutSettings.isEmployeePass} />}
       {faqModal && <FaqModal paymentSettings={paymentSettings} cashoutSettings={cashoutSettings} setFaqModal={setFaqModal} />}
       {isSwitchingLang && <SwitchLangModal />}
-      {emailModal && (
-        <EmailModal
-          setEmailModal={setEmailModal}
-          emailQrCode={emailQrCode}
-          isSendingEmail={isSendingEmail}
-          email={email}
-          setEmail={setEmail}
-          setIsSendingEmail={setIsSendingEmail}
-        />
-      )}
+      {emailModal && <EmailModal defaultEmail={paymentSettings.merchantEmail} setEmailModal={setEmailModal} setErrorModal={setErrorModal} />}
     </section>
   );
 }

@@ -6,18 +6,18 @@ import { NextRequest } from "next/server";
 import { Filter } from "@/utils/types";
 
 export const POST = async (request: NextRequest) => {
-  const { w3Info, flashInfo, pageParam, filter } = await request.json();
+  const { w3Info, nullaInfo, pageParam, filter } = await request.json();
   console.log("entered /api/getPayments, pageParam:", pageParam, "filter:", filter);
 
   let verified = false;
-  if (flashInfo.userType === "owner") {
+  if (nullaInfo.userType === "owner") {
     const prefix = ["0", "2", "4", "6", "8", "a", "c", "e"].includes(w3Info.publicKey.slice(-1)) ? "02" : "03"; // if y is even, then prefix is 02
     const publicKeyCompressed = prefix + w3Info.publicKey.substring(2).slice(0, -64); // substring(2) removes first 2 chars, slice(0, -64) removes last 64 chars
     var merchantEvmAddress = getAddress("0x" + keccak256(Buffer.from(w3Info.publicKey.substring(2), "hex")).slice(-40)); // slice(-40) keeps last 40 chars
     const jwks = createRemoteJWKSet(new URL("https://api-auth.web3auth.io/jwks")); // for social logins
     const jwtDecoded = await jwtVerify(w3Info.idToken, jwks, { algorithms: ["ES256"] });
     verified = (jwtDecoded.payload as any).wallets[0].public_key.toLowerCase() === publicKeyCompressed.toLowerCase();
-  } else if (flashInfo.userType === "employee") {
+  } else if (nullaInfo.userType === "employee") {
     const employeeJwt = request.cookies.get("userJwt")?.value ?? "";
     const secret = new TextEncoder().encode(process.env.JWT_KEY!); // format secret
     var {

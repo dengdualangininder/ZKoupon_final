@@ -49,15 +49,15 @@ export const tokenAddresses: TokenAddresses = {
   },
 };
 
-export type NetworkToInfo = { [key: string]: { name: string; usdcAddress: `0x${string}`; flashAddress: `0x${string}` } };
+export type NetworkToInfo = { [key: string]: { name: string; usdcAddress: `0x${string}`; nullaAddress: `0x${string}` } };
 export const networkToInfo: NetworkToInfo = {
-  "10": { name: "Optimism", usdcAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", flashAddress: "0x0" },
   "137": {
     name: "Polgyon",
     usdcAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-    flashAddress: "0xb064c9EBB4dbf5955055Df1F6bC153957484B343",
+    nullaAddress: "0xb064c9EBB4dbf5955055Df1F6bC153957484B343",
   },
-  "8453": { name: "Base", usdcAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", flashAddress: "0x0" },
+  "10": { name: "Optimism", usdcAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", nullaAddress: "0x0" },
+  "8453": { name: "Base", usdcAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", nullaAddress: "0x0" },
 };
 
 type ChainIds = {

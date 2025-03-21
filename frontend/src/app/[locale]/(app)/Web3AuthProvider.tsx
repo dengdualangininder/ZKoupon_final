@@ -21,7 +21,7 @@ import { keccak256, getAddress } from "viem";
 // others
 import { getPublic } from "@toruslabs/eccrypto";
 // actions
-import { deleteUserJwtCookie, setFlashCookies } from "@/actions";
+import { deleteUserJwtCookie, setNullaCookies } from "@/actions";
 // types
 import { W3Info } from "@/utils/types";
 
@@ -137,7 +137,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
 
     if (web3AuthInstance.connected) {
       console.log("web3AuthInstance already connected");
-      setW3InfoAndFlashCookies(); // this sets W3Info and pushes to /app
+      setW3InfoAndNullaCookies(); // this sets W3Info and pushes to /app
     } else {
       // Condition 2
       console.log("sessionId exists but web3AuthInstance not connected");
@@ -165,12 +165,12 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     console.log("listening to on connect...");
     web3AuthInstance?.on(ADAPTER_EVENTS.CONNECTED, async (data: CONNECTED_EVENT_DATA) => {
       console.log("web3Auth-provider.tsx, CONNECTED to web3Auth", web3AuthInstance.connected);
-      setW3InfoAndFlashCookies();
+      setW3InfoAndNullaCookies();
     });
   }
 
   // merchantEvmAddress needed to set Nulla cookies, so combine with set W3Info
-  async function setW3InfoAndFlashCookies() {
+  async function setW3InfoAndNullaCookies() {
     try {
       const userInfo = await web3AuthInstance?.getUserInfo();
       const privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
@@ -179,7 +179,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       if (userInfo.idToken && publicKey) {
         const userType = getCookie("userType");
         const userJwt = getCookie("userJwt");
-        if (!userType || userType === "employee" || !userJwt) await setFlashCookies("owner", merchantEvmAddress); // setFlashCookies will re-render entire route
+        if (!userType || userType === "employee" || !userJwt) await setNullaCookies("owner", merchantEvmAddress); // setNullaCookies will re-render entire route
         setW3Info({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
         console.log("web3Auth-provider.tsx, setW3Info successful");
 
@@ -194,11 +194,11 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
           router.push("/app");
         }
       } else {
-        console.log("web3Auth-provider.tsx, setUserAndFlashInfo(), logged out: idToken or publicKey returned undefined");
+        console.log("web3Auth-provider.tsx, setUserAndNullaInfo(), logged out: idToken or publicKey returned undefined");
         logoutNoDisconnect();
       }
     } catch (e) {
-      console.log("web3Auth-provider.tsx, setUserAndFlashInfo(), logged out: error when getting idToken or publicKey");
+      console.log("web3Auth-provider.tsx, setUserAndNullaInfo(), logged out: error when getting idToken or publicKey");
       logoutNoDisconnect();
     }
   }

@@ -183,8 +183,8 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 <input
                   ref={passwordRef}
                   type={show ? "text" : "password"}
-                  autoComplete="none"
-                  autoCapitalize="none"
+                  autoComplete="off"
+                  autoCapitalize="off"
                   className="loginInput peer"
                   onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>

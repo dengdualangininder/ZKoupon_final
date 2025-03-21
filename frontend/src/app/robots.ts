@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: ["/"],
       disallow: ["/pay"],
     },
-    sitemap: ["https://www.flashpayments.xyz/sitemap.xml"],
+    sitemap: ["https://www.nullapay.com/sitemap.xml"],
   };
 }

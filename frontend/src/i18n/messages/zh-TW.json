@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "Navbar": { "how": "使用方法", "why": "Flash優點", "learn": "學習中心", "enterApp": "進入 App", "support": "顧客服務" },
+    "Navbar": { "how": "使用方法", "why": "Nulla優點", "learn": "學習中心", "enterApp": "進入 App", "support": "顧客服務" },
     "Hero": {
       "title1": "加密貨幣支付",
       "title2": "0% 手續費",
@@ -93,9 +93,9 @@
     },
     "Support": {
       "header": "顧客服務",
-      "body": "如果您有問題，請參考 Nulla App \u0022設定\u0022 選項裡的 \u0022說明書\u0022，或本網站中的 \u0022使用方法\u0022 和 \u0022學習中心\u0022 部分。如需更多協助，請發送電子郵件至 support@flashpayments.xyz"
+      "body": "如果您有問題，請參考 Nulla App \u0022設定\u0022 選項裡的 \u0022說明書\u0022，或本網站中的 \u0022使用方法\u0022 和 \u0022學習中心\u0022 部分。如需更多協助，請發送電子郵件至 support@nullapay.com"
     },
-    "Footer": { "company": "公司", "links": "連結", "about": "關於我們", "how": "使用方法", "why": "Flash優點", "learn": "學習中心" }
+    "Footer": { "company": "公司", "links": "連結", "about": "關於我們", "how": "使用方法", "why": "Nulla優點", "learn": "學習中心" }
   },
   "App": {
     "Page": {
@@ -166,7 +166,7 @@
       },
       "final": {
         "text-1": "您的 Nulla App 可以開始接受付款!",
-        "text-2": "有問題時，請參考 Nulla App 裡的詳細 \u0022<span>說明書</span>\u0022 (在\u0022設定\u0022下)，或聯絡我們 support@flashpayments.xyz",
+        "text-2": "有問題時，請參考 Nulla App 裡的詳細 \u0022<span>說明書</span>\u0022 (在\u0022設定\u0022下)，或聯絡我們 support@nullapay.com",
         "finish": "完成"
       },
       "errors": { "enterName": "請輸入您的企業名稱", "enterEmail": "請輸入您的電子信箱", "validEmail": "請輸入有效的電子郵件" }
@@ -233,7 +233,7 @@
         "platformAddress": "請先在 \u0022<span1>設定</span1>\u0022 裡輸入您的 \u0022<span2>出金平台地址</span2>\u0022",
         "linkCb": "請先連結您的 Coinbase 帳戶",
         "enterAmount": "請輸入金額",
-        "minUSDC": "1 USDC 最低出金金額",
+        "minUSDC": "0.1 USDC 最低出金金額",
         "minUSDC11": "11 USDC 最低出金金額",
         "maxUSDC": "10,00 USDC 最高出金金額",
         "toEvmAddress": "請輸入\u0022出金地址\u0022",
@@ -299,15 +299,22 @@
           "text-1": "在您的加密貨幣交易帳，點 \u0022入金\u0022 或類似的按鈕。選擇 \u0022USDC\u0022 為入金的幣，並選擇 \u0022Polygon\u0022 鏈。複製顯示的地址（以 \u00220x\u0022 開始）。"
         }
       },
-      "employeePassModal": { "text": "您想要改員工密碼？", "change": "是，要改", "cancel": "取消" },
+      "employeePassModal": {
+        "changeTitle": "更新員工密碼",
+        "addTitle": "新增員工密碼",
+        "changeButton": "更新密碼",
+        "addButton": "新增密碼",
+        "removeButton": "刪除密碼",
+        "changeMsg": "密碼更新成功!",
+        "addMsg": "密碼新增成功!",
+        "removeMsg": "密碼刪除成功!"
+      },
       "yes": "我要",
       "empty": "無",
       "emailModal": {
         "title": "Email QR 碼",
         "text": "以電子郵件傳送 QR 碼給自己或列印店。",
-        "label": "接收的電子郵件地址",
-        "button": "發送電郵",
-        "sending": "發送中",
+        "sendEmail": "發送電郵",
         "sent": "電郵已發送!",
         "errors": { "validEmail": "請輸入有效的電子郵件地址", "notSent": "電子郵件未發送。請再試一次。" }
       }
@@ -324,7 +331,7 @@
     "CbIntroModal": {
       "text-1": "您的 Coinbase 帳戶已連結！",
       "text-2": "您的 Nulla App 可以開始接受支付。",
-      "text-3": "有問題，請參考 \u0022<span1>設定</span1>\u0022 選項裡的 \u0022<span2>說明書</span2>\u0022。如需更多協助，請發送電子郵件至 support@flashpayments.xyz",
+      "text-3": "有問題，請參考 \u0022<span1>設定</span1>\u0022 選項裡的 \u0022<span2>說明書</span2>\u0022。如需更多協助，請發送電子郵件至 support@nullapay.com",
       "enterApp": "進入 App"
     },
     "CashbackModal": {
@@ -433,15 +440,17 @@
     "balance": "餘額",
     "blockchainFee": "區塊鏈費用",
     "fromCoinbase": "從 Coinbase",
-    "toCEX": "到 {cex}",
     "toBank": "到銀行",
     "enterAnEvmAddress": "輸入 EVM 地址",
     "transferring": "出金中",
     "transferSuccessful": "出金成功",
-    "contact": "如需任何協助，請隨時透過 support@flashpayments.xyz 與我們聯絡。",
+    "contact": "如需任何協助，請隨時透過 support@nullapay.com 與我們聯絡。",
     "email": "寄電子郵件",
     "download": "下載",
     "loading": "載入中",
-    "copied": "已複製"
+    "copied": "已複製",
+    "viewTxn": "查看交易",
+    "submit": "提交",
+    "submitChange": "更新"
   }
 }

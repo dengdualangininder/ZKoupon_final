@@ -23,12 +23,12 @@ import SignOutModal from "./modals/SignOutModal";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types
-import { FlashInfo, Filter, AllRates } from "@/utils/types";
+import { NullaInfo, Filter, AllRates } from "@/utils/types";
 import { CashoutSettings, PaymentSettings, Transaction } from "@/db/UserModel";
 type Settings = { paymentSettings: PaymentSettings; cashoutSettings: CashoutSettings };
 // import PullToRefresh from "pulltorefreshjs";
 
-export default function App({ flashInfo, allRates, settings }: { flashInfo: FlashInfo; allRates: AllRates; settings: Settings }) {
+export default function App({ nullaInfo, allRates, settings }: { nullaInfo: NullaInfo; allRates: AllRates; settings: Settings }) {
   console.log("(app)/app/_components/LazyApp.tsx");
 
   // hooks
@@ -117,10 +117,10 @@ export default function App({ flashInfo, allRates, settings }: { flashInfo: Flas
       <Navbar menu={menu} setMenu={setMenu} setSignOutModal={setSignOutModal} />
 
       {/*---menu tabs---*/}
-      {menu === "payments" && <Payments flashInfo={flashInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
+      {menu === "payments" && <Payments nullaInfo={nullaInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
       {menu === "cashout" && w3Info && (
         <CashOut
-          flashInfo={flashInfo}
+          nullaInfo={nullaInfo}
           paymentSettings={settings.paymentSettings}
           cashoutSettings={settings.cashoutSettings}
           setErrorModal={setErrorModal}

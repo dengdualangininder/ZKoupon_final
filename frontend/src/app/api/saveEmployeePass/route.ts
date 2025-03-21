@@ -28,7 +28,6 @@ export const POST = async (request: Request) => {
         { hashedEmployeePass: hashedEmployeePass, "cashoutSettings.isEmployeePass": true }
       );
     } else {
-      console.log("/api/saveEmployeePass, isEmployeePass saved as false");
       await UserModel.findOneAndUpdate({ "paymentSettings.merchantEvmAddress": merchantEvmAddress }, { hashedEmployeePass: "", "cashoutSettings.isEmployeePass": false });
     }
     return Response.json("saved");
