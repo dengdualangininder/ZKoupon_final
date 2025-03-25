@@ -17,11 +17,6 @@
     margin: 0;
   }
 
-  .rdp-root {
-    --rdp-day-height: 30px;
-    --rdp-day-width: 30px;
-  }
-
   select:-webkit-autofill,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active,

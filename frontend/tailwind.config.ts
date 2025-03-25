@@ -28,9 +28,7 @@ module.exports = {
         light5: "#B0BDCD", // slate-350
         lightButton: "#000000",
         lightButtonHover: "#334155", // slate-700
-        lightText0: "#F9F9F9", // off-white
         lightText1: "#212427", // very dark gray-blue text
-        lightText2: "#94A3B8",
         dark1: "#000000",
         dark2: "#111114",
         dark3: "#1A1A1F",
@@ -40,31 +38,7 @@ module.exports = {
         darkButton: "#5370A7",
         darkButtonHover: "#6983B2",
         darkText1: "#E2E8F0", // slate-200
-        darkText2: "#00C2FF",
-        darkText3: "#6A6D73",
-        darkText4: "#53565C",
-        dark0: "#9795A5",
-        light0: "#9795A5",
-        background: "#9795A5",
-        primary: "#9795A5",
-        buttonDark: "#9795A5",
-        buttonDark2: "#9795A5",
-        buttonLight1: "#9795A5",
-        buttonLight2: "#9795A5",
-        bggrayone: "#F5F5F7",
-        darkblue: "#140D6F",
-        darkbluelight: "#2A21A4",
-        bggraytwo: "#F6F9FC",
-        brightblue: "#635BFF",
-        purple: "#6554AF",
-        ethpurple: "#636890",
-        grad1: "#F46F69",
-        grad2: "#D675B0",
-        grad3: "#9396DA",
         "slate-250": "#D5DDE7",
-      },
-      fontFamily: {
-        nunito: ["Nunito Sans", "sans-serif"],
       },
       animation: {
         slideIn: "slideIn 0.3s ease-out forwards",
@@ -269,7 +243,7 @@ module.exports = {
   },
   darkMode: "class",
   plugins: [
-    plugin(function ({ addUtilities, addComponents, e, config }) {
+    plugin(function ({ addUtilities }) {
       addUtilities({
         ".backface-visible": {
           "backface-visibility": "visible",
