@@ -1,8 +1,8 @@
 /* Variables declaration */
 /* prettier-ignore */
 .rdp-root {
-  --rdp-accent-color: blue; /* The accent color used for selected days and UI elements. */
-  --rdp-accent-background-color: #f0f0ff; /* The accent background color used for selected days and UI elements. */
+  --rdp-accent-color: #000000; /* The accent color used for selected days and UI elements. */
+  --rdp-accent-background-color: #000000; /* The accent background color used for selected days and UI elements. */
 
   --rdp-day-height: 44px; /* The height of the day cells. */
   --rdp-day-width: 44px; /* The width of the day cells. */
@@ -27,7 +27,7 @@
   --rdp-nav-height: 2.75rem; /* default is 2.75rem, The height of the navigation bar. */
   
   --rdp-range_middle-background-color: var(--rdp-accent-background-color); /* The color of the background for days in the middle of a range. */
-  --rdp-range_middle-color: inherit;/* The color of the range text. */
+  --rdp-range_middle-color: white;/* The color of the range text. */
   
   --rdp-range_start-color: white; /* The color of the range text. */
   --rdp-range_start-background: linear-gradient(var(--rdp-gradient-direction), transparent 50%, var(--rdp-range_middle-background-color) 50%); /* Used for the background of the start of the selected range. */
@@ -55,6 +55,11 @@
   --rdp-animation_timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.dark .rdp-root {
+  --rdp-accent-color: #5370a7; /* The accent color used for selected days and UI elements. */
+  --rdp-accent-background-color: #5370a7; /* The accent background color used for selected days and UI elements. */
+}
+
 .rdp-root[dir="rtl"] {
   --rdp-gradient-direction: -90deg;
 }
@@ -76,13 +81,12 @@
 .rdp-day {
   /* width: var(--rdp-day-width);
   height: var(--rdp-day-height); */
-  border-radius: 8px;
+  /* border-radius: 8px; */
   text-align: center;
 }
 
 .rdp-day_button {
-  cursor: pointer;
-  /* background: none;
+  background: none;
   padding: 0;
   margin: 0;
   cursor: pointer;
@@ -91,10 +95,10 @@
   justify-content: center;
   align-items: center;
   display: flex;
-  width: var(--rdp-day_button-width);
-  height: var(--rdp-day_button-height);
+  /* width: var(--rdp-day_button-width);
+  height: var(--rdp-day_button-height); */
   border: var(--rdp-day_button-border);
-  border-radius: var(--rdp-day_button-border-radius); */
+  border-radius: var(--rdp-day_button-border-radius);
 }
 
 .rdp-day_button:disabled {

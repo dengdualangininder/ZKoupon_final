@@ -27,7 +27,7 @@ export default function Benefits({ merchantCurrency, allRates }: { merchantCurre
                   merchantCurrency: merchantCurrency,
                 })}
               </div>
-              <div className="text-[16px] leading-snug desktop:text-[14px] grid grid-cols-[1fr,auto]">
+              <div className="text-[16px] leading-snug desktop:text-[14px] grid grid-cols-[1fr_auto]">
                 <div>
                   USDC➜{merchantCurrency} ({currency2cex[merchantCurrency]}):
                 </div>

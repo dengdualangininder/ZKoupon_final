@@ -311,12 +311,12 @@ export default function TransferModal({
         </div>
 
         {/*--- CONTENT ---*/}
-        <div className="fullModalContentContainer">
+        <div className="fullModalContentContainer scrollbar">
           <div className="fullModalContentContainer2 max-w-[440px]">
             {transferState != "sent" && (
               <>
                 {/*--- FROM CARD ---*/}
-                <div className="transferCard z-[2]">
+                <div className="transferCard z-2">
                   {/*--- from info ---*/}
                   <div className="flex items-center gap-x-[12px]">
                     <div className="transferIcon">
@@ -474,7 +474,7 @@ export default function TransferModal({
                       <textarea
                         id="settingsCexDepositAddress"
                         rows={2}
-                        className="mt-[2px] w-full py-[6px] px-[8px] textSmAppPx !leading-tight inputColor rounded-[8px] resize-none"
+                        className="mt-[2px] w-full py-[6px] px-[8px] textSmAppPx leading-tight! inputColor rounded-[8px] resize-none"
                         placeholder={t("enterAnEvmAddress")}
                         onChange={(e) => setAnyAddress(e.target.value)}
                         value={anyAddress}
@@ -507,7 +507,7 @@ export default function TransferModal({
             )}
 
             {transferState === "sent" && (
-              <div className="h-[420px] portrait:sm:h-[450px] landscape:lg:h-[450px] desktop:!h-[380px] flex flex-col justify-center gap-[60px]">
+              <div className="h-[420px] portrait:sm:h-[450px] landscape:lg:h-[450px] desktop:h-[380px]! flex flex-col justify-center gap-[60px]">
                 <div className="w-full flex flex-col items-center gap-[16px]">
                   <FaCircleCheck className="text-[100px] text-green-500" />
                   <div className="text2XlApp font-medium">{tcommon("transferSuccessful")}!</div>

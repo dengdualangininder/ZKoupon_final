@@ -20,26 +20,6 @@ module.exports = {
         600: "600ms",
         1500: "1500ms",
       },
-      colors: {
-        light1: "#F9F9F9", // off-white
-        light2: "#EEF3F7", // slate-125
-        light3: "#E2E8F0", // slate-200
-        light4: "#CBD5E1", // slate-300
-        light5: "#B0BDCD", // slate-350
-        lightButton: "#000000",
-        lightButtonHover: "#334155", // slate-700
-        lightText1: "#212427", // very dark gray-blue text
-        dark1: "#000000",
-        dark2: "#111114",
-        dark3: "#1A1A1F",
-        dark4: "#222127",
-        dark5: "#2E2D35",
-        dark6: "#35343B",
-        darkButton: "#5370A7",
-        darkButtonHover: "#6983B2",
-        darkText1: "#E2E8F0", // slate-200
-        "slate-250": "#D5DDE7",
-      },
       animation: {
         slideIn: "slideIn 0.3s ease-out forwards",
         slideOut: "slideOut 0.3s ease-out forwards",
@@ -231,28 +211,19 @@ module.exports = {
         },
       },
     },
-    screens: {
-      xs: "480px",
-      sm: "600px",
-      md: "750px",
-      lg: "980px",
-      lgg: "1100px",
-      xl: "1250px",
-      xxl: "1440px",
-    },
   },
-  darkMode: "class",
+  darkMode: "selector",
   plugins: [
-    plugin(function ({ addUtilities }) {
-      addUtilities({
-        ".backface-visible": {
-          "backface-visibility": "visible",
-        },
-        ".backface-hidden": {
-          "backface-visibility": "hidden",
-        },
-      });
-    }),
+    // plugin(function ({ addUtilities }) {
+    //   addUtilities({
+    //     ".backface-visible": {
+    //       "backface-visibility": "visible",
+    //     },
+    //     ".backface-hidden": {
+    //       "backface-visibility": "hidden",
+    //     },
+    //   });
+    // }),
     plugin(function ({ addVariant }) {
       addVariant("desktop", ["@media (hover: hover)", "@media (pointer: fine)"]);
     }),

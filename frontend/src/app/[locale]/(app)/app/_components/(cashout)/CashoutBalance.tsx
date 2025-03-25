@@ -37,7 +37,7 @@ export default function CashoutBalance({
           </div>
           {/*--- arrow ---*/}
           <div className="cashoutArrowContainer group" onClick={() => setDetails(!details)}>
-            {details ? <FaAngleUp className="cashoutArrow group-hover:desktop:brightness-[1.2]" /> : <FaAngleDown className="cashoutArrow group-hover:desktop:brightness-[1.2]" />}
+            {details ? <FaAngleUp className="cashoutArrow desktop:group-hover:brightness-[1.2]" /> : <FaAngleDown className="cashoutArrow desktop:group-hover:brightness-[1.2]" />}
           </div>
         </div>
       ) : (
@@ -49,7 +49,7 @@ export default function CashoutBalance({
           <div className="cashoutDetailsContainer">
             {/*--- usdc label ---*/}
             <div className="flex items-center">
-              <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] desktop:!w-[18px] desktop:!h-[18px] mr-[4px]">
+              <div className="relative w-[20px] h-[20px] portrait:sm:w-[24px] landscape:lg:w-[24px] portrait:sm:h-[24px] landscape:lg:h-[24px] desktop:w-[18px]! desktop:h-[18px]! mr-[4px]">
                 <Image src="/usdc.svg" alt="USDC" fill />
               </div>
               USDC

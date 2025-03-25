@@ -27,7 +27,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
       {/*--- STEPS ---*/}
       <div
         data-show="slide"
-        className="mx-[16px] xs:mx-[24px] lg:mx-[32px] grid grid-cols-[minmax(auto,calc(600px-24px*2))] lg:grid-cols-[400px_400px] xl:grid-cols-[220px,repeat(3,300px)] justify-center lg:gap-x-[80px] xl:gap-x-[44px] gap-y-16 sm:gap-y-10 lg:gap-y-[64px]"
+        className="mx-[16px] xs:mx-[24px] lg:mx-[32px] grid grid-cols-[minmax(auto,calc(600px-24px*2))] lg:grid-cols-[400px_400px] xl:grid-cols-[220px_repeat(3,300px)] justify-center lg:gap-x-[80px] xl:gap-x-[44px] gap-y-16 sm:gap-y-10 lg:gap-y-[64px]"
       >
         {/*---step 1---*/}
         <div data-show="step" className="w-full flex flex-col items-center space-y-4 translate-x-[1600px] transition-all duration-1500 ease-out">
@@ -37,8 +37,8 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
             <div className="howStepTitle">{t("step-1")}</div>
           </div>
           {/*--- image ---*/}
-          <div className="py-[8px] lg:h-[500px] xl:h-[400px] lg:aspect-[1/2] flex items-center">
-            <div className="relative w-[300px] xl:w-[210px] aspect-[9/12]">
+          <div className="py-[8px] lg:h-[500px] xl:h-[400px] lg:aspect-1/2 flex items-center">
+            <div className="relative w-[300px] xl:w-[210px] aspect-9/12">
               <Image src={"/placardNoCashback.png"} alt="placard no cashback" sizes={"300px"} fill className="object-contain" />
             </div>
           </div>
@@ -62,11 +62,11 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
             <div className="howStepTitle">{t("step-2")}</div>
           </div>
           {/*--- image ---*/}
-          <div className="relative h-[500px] desktop:h-[400px] aspect-[1/2]">
+          <div className="relative h-[500px] desktop:h-[400px] aspect-1/2">
             <Image src={"/phonePay.png"} alt="Step 2 Payment" sizes={"260px"} fill className="object-contain" />
           </div>
           {/*---bullet points---*/}
-          <div className="grid grid-cols-[auto,auto] gap-[8px] howBulletFont">
+          <div className="grid grid-cols-[auto_auto] gap-[8px] howBulletFont">
             <div>1.</div>
             <div className="relative">
               {t.rich("step-2-1", {
@@ -102,7 +102,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
             <div className="howStepTitle">{t("step-3")}</div>
           </div>
           {/*--- image ---*/}
-          <div className="relative h-[500px] xl:h-[400px] aspect-[1/2]">
+          <div className="relative h-[500px] xl:h-[400px] aspect-1/2">
             <Image src={"/phoneConfirmPayment.png"} alt="Step 3 Confirm payment" sizes={"260px"} fill className="object-contain" />
           </div>
           {/*--- bullet points---*/}
@@ -117,12 +117,12 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
             <div className="howStepTitle">{t("step-4")}</div>
           </div>
           {/*--- image ---*/}
-          <div className="relative h-[500px] xl:h-[400px] aspect-[1/2]">
+          <div className="relative h-[500px] xl:h-[400px] aspect-1/2">
             <Image src={"/phoneCashOut.png"} alt="Step 4 Cash out" sizes={"260px"} fill className="object-contain" />
           </div>
           {/*---bullet points: USD & EUR---*/}
           {(merchantCurrency == "USD" || merchantCurrency == "EUR") && (
-            <div className="grid grid-cols-[auto,auto] gap-[8px] howBulletFont">
+            <div className="grid grid-cols-[auto_auto] gap-[8px] howBulletFont">
               <div>1.</div>
               <div>
                 {t("step-4-1cb")} (
@@ -146,7 +146,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
           )}
           {/*--- bullet points: TWD ---*/}
           {merchantCurrency == "TWD" && (
-            <div className="grid grid-cols-[auto,auto] gap-[8px] howBulletFont">
+            <div className="grid grid-cols-[auto_auto] gap-[8px] howBulletFont">
               <div>1.</div>
               <div>
                 {t.rich("step-4-1", {

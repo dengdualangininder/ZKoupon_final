@@ -84,8 +84,8 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
         <div className="fullModalHeader">{isEmployeePass ? t("employeePassModal.changeTitle") : t("employeePassModal.addTitle")}</div>
 
         {/*--- content ---*/}
-        <div className="fullModalContentContainer">
-          <div className="fullModalContentContainer2 max-w-[480px] desktop:max-w-[430px] gap-[44px] desktop:!gap-[36px]">
+        <div className="fullModalContentContainer scrollbar">
+          <div className="fullModalContentContainer2 max-w-[480px] desktop:max-w-[430px] gap-[44px] desktop:gap-[36px]!">
             {status === "initial" && (
               <>
                 {/*--password1---*/}
@@ -93,7 +93,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                   <div className="appInputLabel">New Password</div>
                   <div className="w-full relative">
                     <input
-                      className={`appInput pr-[42px] w-full peer ${errors.password1 ? "!border-red-500 !focus:border-red-500" : ""}`}
+                      className={`appInput pr-[42px] w-full peer ${errors.password1 ? "border-red-500! !focus:border-red-500" : ""}`}
                       ref={passwordInputRef1}
                       type={show ? "text" : "password"}
                       autoComplete="none"
@@ -111,7 +111,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                       disabled={status === "initial" ? false : true}
                     ></input>
                     <div
-                      className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-light-text1 [transition:color_500ms]"
+                      className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-lightText1 [transition:color_500ms]"
                       onClick={() => {
                         if (passwordInputRef1.current) {
                           setShow(!show);
@@ -133,7 +133,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                   <div className="appInputLabel">Repeat New Password</div>
                   <div className="w-full relative">
                     <input
-                      className={`appInput pr-[42px] w-full peer ${errors.password2 ? "!border-red-500 !focus:border-red-500" : ""}`}
+                      className={`appInput pr-[42px] w-full peer ${errors.password2 ? "border-red-500! !focus:border-red-500" : ""}`}
                       ref={passwordInputRef2}
                       type={show2 ? "text" : "password"}
                       autoComplete="none"
@@ -150,7 +150,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                       disabled={status === "initial" ? false : true}
                     ></input>
                     <div
-                      className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-light-text1 [transition:color_500ms]"
+                      className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-lightText1 [transition:color_500ms]"
                       onClick={() => {
                         if (passwordInputRef2.current) {
                           setShow2(!show2);

@@ -193,7 +193,7 @@ export default function CashOut({
       >
         TEST
       </button> */}
-      {/*---FLASH CARD ---*/}
+      {/*---NULLA CARD ---*/}
       <div className="cashoutCard">
         {/*--- title + more options ---*/}
         <div className="w-full h-[36px] flex justify-between items-center relative">
@@ -212,9 +212,11 @@ export default function CashOut({
             </div>
           )}
           {/*--- nullaMoreOptionsModal ---*/}
-          <div className={`${nullaOptionsModal ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={() => setTransferModal("toAny")}>
-            {t("transferToAny")}
-          </div>
+          {nullaOptionsModal && (
+            <div className="cashoutMoreOptionsContainer" onClick={() => setTransferModal("toAny")}>
+              {t("transferToAny")}
+            </div>
+          )}
         </div>
         {/*--- balance ---*/}
         <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={nullaBalance} details={nullaDetails} setDetails={setNullaDetails} />
@@ -247,9 +249,11 @@ export default function CashOut({
                 </div>
               )}
               {/*--- cexMoreOptionsModal ---*/}
-              <div className={`${cbOptionsModal ? "" : "hidden"} cashoutMoreOptionsContainer`} onClick={unlinkCb}>
-                {t("unlink")}
-              </div>
+              {cbOptionsModal && (
+                <div className="cashoutMoreOptionsContainer" onClick={unlinkCb}>
+                  {t("unlink")}
+                </div>
+              )}
             </div>
             {/*--- balance ---*/}
             {isCbLinked ? (

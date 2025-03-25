@@ -58,7 +58,7 @@ const Instructions = ({ paymentSettings, cashoutSettings, setFaqModal }: { payme
           <div className="xButton">&#10005;</div>
         </div>
         {/*--- content ---*/}
-        <div className="fullModalContentContainer font-medium">
+        <div className="fullModalContentContainer scrollbar font-medium">
           <div className="fullModalContentContainer2 max-w-[600px]">
             {/*--- questions ---*/}
             {titles.map((i, index) => (
@@ -78,7 +78,7 @@ const Instructions = ({ paymentSettings, cashoutSettings, setFaqModal }: { payme
 
       {/*--- ANSWER MODAL ---*/}
       {expand && (
-        <div className="fullModal z-[91]">
+        <div className="fullModal z-91">
           {/*--- header ---*/}
           <div className="fullModalHeader">
             {expand == "setup" && <div>{t("title.setup")}</div>}
@@ -99,7 +99,7 @@ const Instructions = ({ paymentSettings, cashoutSettings, setFaqModal }: { payme
             <div className="xButton">&#10005;</div>
           </div>
           {/*--- content ---*/}
-          <div className="fullModalContentContainer">
+          <div className="fullModalContentContainer scrollbar">
             <div className="fullModalContentContainer2 max-w-[600px]">
               {expand == "setup" && paymentSettings.merchantPaymentType == "inperson" && (
                 <div className="space-y-3">

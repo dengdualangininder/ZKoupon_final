@@ -343,7 +343,7 @@ export default function Intro() {
             {/*--- content ---*/}
             <div className="flex-1 w-full flex flex-col items-center gap-[28px]">
               <div className="introHeaderFont">{t("how.title")}</div>
-              <div className="relative w-full max-w-[380px] aspect-[16/9]">
+              <div className="relative w-full max-w-[380px] aspect-16/9">
                 <Image src="/intro-scan.png" alt="customer scanning QR code" fill className="object-cover rounded-3xl" />
               </div>
               {/*--- text ---*/}

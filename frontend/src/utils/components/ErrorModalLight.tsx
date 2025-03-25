@@ -4,7 +4,7 @@
 //   const tcommon = useTranslations("Common");
 
 //   return (
-//     <div className="z-[200]">
+//     <div className="z-200">
 //       <div className="errorModal font-normal">
 //         {/*--- content ---*/}
 //         <div className="modalXpaddingLg overflow-y-auto">

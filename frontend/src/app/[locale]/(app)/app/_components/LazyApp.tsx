@@ -37,7 +37,7 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
   const { setTheme } = useTheme();
 
   // states
-  const [menu, setMenu] = useState("payments"); // "payments" | "cashout" | "settings"
+  const [selectedMenu, setSelectedMenu] = useState("payments"); // "payments" | "cashout" | "settings"
   const [newTxn, setNewTxn] = useState<Transaction | null>(null);
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [cashbackModal, setCashbackModal] = useState(false);
@@ -61,7 +61,7 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
     if (window.localStorage.getItem("cashbackModal")) setCashbackModal(true);
     if (window.localStorage.getItem("cbNewlyLinked")) {
       window.localStorage.removeItem("cbNewlyLinked");
-      setMenu("cashout");
+      setSelectedMenu("cashout");
     }
     if (!window.localStorage.getItem("theme")) setTheme("dark");
   }, []);
@@ -112,11 +112,11 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
 
   return (
     <div className="w-full h-screen flex portrait:flex-col-reverse landscape:flex-row relative">
-      <Navbar menu={menu} setMenu={setMenu} setSignOutModal={setSignOutModal} />
+      <Navbar selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} setSignOutModal={setSignOutModal} />
 
       {/*---menu tabs---*/}
-      {menu === "payments" && <Payments nullaInfo={nullaInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
-      {menu === "cashout" && w3Info && (
+      {selectedMenu === "payments" && <Payments nullaInfo={nullaInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
+      {selectedMenu === "cashout" && w3Info && (
         <CashOut
           nullaInfo={nullaInfo}
           paymentSettings={settings.paymentSettings}
@@ -126,7 +126,7 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
           allRates={allRates}
         />
       )}
-      {menu === "settings" && w3Info && <Settings paymentSettings={settings.paymentSettings} cashoutSettings={settings.cashoutSettings} setErrorModal={setErrorModal} />}
+      {selectedMenu === "settings" && w3Info && <Settings paymentSettings={settings.paymentSettings} cashoutSettings={settings.cashoutSettings} setErrorModal={setErrorModal} />}
 
       {/*--- modals ---*/}
       {newTxn && <Notification paymentSettings={settings.paymentSettings} newTxn={newTxn} setNewTxn={setNewTxn} />}

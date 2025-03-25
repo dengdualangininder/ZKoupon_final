@@ -1,5 +1,4 @@
 import { DateRange } from "react-day-picker";
-
 export type Rates = { usdcToLocal: number; usdToLocal: number };
 export type NullaInfo = { userType: string; userJwt: string };
 export type W3Info = { idToken: string; publicKey: string; email?: string };

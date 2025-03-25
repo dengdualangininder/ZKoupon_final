@@ -84,7 +84,7 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
         <div className="fullModalHeader">{t("emailModal.title")}</div>
 
         {/*---content---*/}
-        <div className="fullModalContentContainer">
+        <div className="fullModalContentContainer scrollbar">
           <div className="fullModalContentContainer2 max-w-[480px] desktop:max-w-[430px]">
             <div className="mt-[32px]">{t("emailModal.text")}</div>
             <label className="mt-[32px] appInputLabel">{tcommon("email")}</label>

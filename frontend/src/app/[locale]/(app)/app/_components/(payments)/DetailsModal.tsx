@@ -276,7 +276,7 @@ const DetailsModal = ({
         <div className="modalHeader">{t("title")}</div>
 
         {/*--- CONTENT ---*/}
-        <div className="fullModalContentContainer settingsFont pb-[16px]">
+        <div className="fullModalContentContainer scrollbar settingsFont pb-[16px]">
           <div className="fullModalContentContainer2 max-w-[600px]">
             {/*--- details ---*/}
             <div className="detailsField">

@@ -189,10 +189,10 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className="settingsLabel">{t("qrCode")}</label>
             <div className="relative h-full flex gap-[28px] py-[6px] desktop:py-[2px]">
-              <button className="settingsFontButton" type="button" onClick={downloadQrCode}>
+              <button className="settingsButton" type="button" onClick={downloadQrCode}>
                 {tcommon("download")}
               </button>
-              <button className="settingsFontButton" type="button" onClick={() => setEmailModal(true)}>
+              <button className="settingsButton" type="button" onClick={() => setEmailModal(true)}>
                 {tcommon("email")}
               </button>
             </div>
@@ -259,7 +259,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           <div className="settingsField">
             <label className="settingsLabel">{t("country")}</label>
             <div className="settingsInputContainer group relative">
-              <select className="settingsSelect settingsFontFixed peer" {...register("merchantCountryAndCurrency")} onChange={onChangeMerchantCountry}>
+              <select className="settingsSelect settingsFontFixed peer scrollbar" {...register("merchantCountryAndCurrency")} onChange={onChangeMerchantCountry}>
                 {countryCurrencyList.map((i, index) => (
                   <option key={index} className="px-[12px]">
                     {i}
@@ -275,7 +275,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             <div className="settingsField">
               <label className="settingsLabel">{t("platform")}</label>
               <div className="settingsInputContainer group relative">
-                <select className="settingsSelect settingsFontFixed peer" {...register("cex")} onChange={onChangeCex}>
+                <select className="settingsSelect settingsFontFixed peer scrollbar" {...register("cex")} onChange={onChangeCex}>
                   {countryData[paymentSettings.merchantCountry].CEXes.map((i, index) => (
                     <option key={index} className="px-[12px]">
                       {i}
@@ -375,7 +375,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
             <label className="">{t("language")}</label>
             <div className="settingsInputContainer group relative">
               <select
-                className="settingsSelect settingsFontFixed peer"
+                className="settingsSelect settingsFontFixed peer scrollbar"
                 onChange={(e) => {
                   startSwitchingLang(() => router.replace(`/app`, { locale: e.currentTarget.value }));
                 }}

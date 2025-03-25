@@ -4,7 +4,7 @@ const ErrorModal = ({ errorModal, setErrorModal }: { errorModal: React.ReactNode
   const tcommon = useTranslations("Common");
 
   return (
-    <div className="z-[200]">
+    <div className="z-200">
       <div className="errorModal">
         <div className="errorModalContentContainer">
           {/*---text---*/}

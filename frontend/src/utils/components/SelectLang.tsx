@@ -17,7 +17,7 @@ export default function SelectLang({ langModal, setLangModal }: { langModal: boo
       <SlGlobe className="w-[22px] h-[22px] desktop:w-[20px] desktop:h-[20px]" />
       <FaCaretDown className="w-[18px] h-[18px] desktop:w-[16px] desktop:h-[16px]" />
       {langModal && (
-        <div className="absolute top-[calc(100%)] right-0 rounded-md rounded-tr-none p-[24px] space-y-[32px] bg-slate-250 z-[100]">
+        <div className="absolute top-[calc(100%)] right-0 rounded-md rounded-tr-none p-[24px] space-y-[32px] bg-slate-250 z-100">
           {langObjectArray.map((langObject) => (
             <div
               key={langObject.id}

@@ -22,7 +22,7 @@ export default function InstructionsModal({ infoModal, setInfoModal }: { infoMod
           <div className="xButton">&#10005;</div>
         </div>
 
-        <div className="fullModalContentContainer">
+        <div className="fullModalContentContainer scrollbar">
           <div className="fullModalContentContainer2 max-w-[600px]">
             {/*--- text ---*/}
             {infoModal == "employeePassword" && (

@@ -96,7 +96,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   return (
     <div className="w-full h-screen flex flex-col items-center overflow-y-auto textBaseApp bg-light2 text-lightText1">
       {/*---showLang mask---*/}
-      {langModal && <div className="absolute w-full h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
+      {langModal && <div className="absolute w-full h-screen left-0 top-0 z-99" onClick={() => setLangModal(false)}></div>}
 
       {/*--- CONTENT CONTAINER (for some reason, pb does not work, so added to last element) ---*/}
       <div className="px-[12px] pt-[12px] w-full max-w-[420px] desktop:max-w-[330px] h-full max-h-[900px] flex flex-col items-center my-auto">
@@ -108,7 +108,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
           </div>
           {/*--- logo ---*/}
           <div className="w-full flex flex-col items-center gap-[8px]">
-            <div className="relative w-full h-[58px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:!h-[50px]">
+            <div className="relative w-full h-[58px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:h-[50px]!">
               <Image src="/logoBlackNoBg.svg" alt="logo" fill />
             </div>
             <div className="textSmApp font-medium text-center">{t("subheader")}</div>
@@ -197,7 +197,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 </div>
               </div>
               {/*--sign in button---*/}
-              <button className="loginButton mt-[40px] w-full flex justify-center items-center" onClick={employeeLogin}>
+              <button className="appButton1Light mt-[40px] w-full flex justify-center items-center" onClick={employeeLogin}>
                 {isLoggingIn ? (
                   <div className="flex items-center gap-[16px]">
                     <ImSpinner2 className="animate-spin text-[24px]" />

@@ -51,7 +51,7 @@ export default function Inperson({
           </div>
           <input
             id="payCurrencyAmount"
-            className={`text-5xl font-medium p-0 text-center focus:placeholder:text-transparent bg-white outline-none focus:outline-none focus:ring-0 border-none focus:border-none placeholder:text-slate-400`}
+            className={`text-5xl font-medium p-0 text-center focus:placeholder:text-transparent bg-white outline-hidden focus:outline-hidden focus:ring-0 border-none focus:border-none placeholder:text-slate-400`}
             onChange={(e) => {
               setCurrencyAmount(e.currentTarget.value);
               const currencyAmountAfterCashbackTemp = (Number(e.currentTarget.value) * 0.98).toFixed(currency2decimal[urlParams.merchantCurrency]);

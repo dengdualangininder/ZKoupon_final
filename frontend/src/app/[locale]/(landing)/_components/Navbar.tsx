@@ -108,7 +108,7 @@ export default function Navbar() {
         )}
 
         {/*--- (desktop) BUTTON + LANG ---*/}
-        <div className={`hidden lg:flex h-[52px] desktop:h-[44px] absolute right-0 items-center gap-[18px] z-[100]`}>
+        <div className={`hidden lg:flex h-[52px] desktop:h-[44px] absolute right-0 items-center gap-[18px] z-100`}>
           <Link className="homeButtonSm" href={"/app"}>
             {t("enterApp")}
           </Link>
@@ -116,7 +116,7 @@ export default function Navbar() {
         </div>
 
         {/*---showLang mask---*/}
-        {langModal && <div className="hidden lg:block absolute w-screen h-screen left-0 top-0 z-[99]" onClick={() => setLangModal(false)}></div>}
+        {langModal && <div className="hidden lg:block absolute w-screen h-screen left-0 top-0 z-99" onClick={() => setLangModal(false)}></div>}
 
         {/*--- MOBILE MENU ICON ---*/}
         <div className="lg:hidden absolute right-[16px] cursor-pointer">
@@ -133,7 +133,7 @@ export default function Navbar() {
       {/*---mobile menu modal---*/}
       <div
         className={`${
-          menuModal ? "opacity-100 z-[100]" : "opacity-0 z-[-10] pointer-events-none"
+          menuModal ? "opacity-100 z-100" : "opacity-0 z-[-10] pointer-events-none"
         } w-full h-screen absolute left-0 top-0 bg-light2 transition-all duration-[500ms] overflow-y-auto`}
       >
         {/*--- close button ---*/}

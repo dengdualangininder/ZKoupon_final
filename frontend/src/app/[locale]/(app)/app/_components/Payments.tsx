@@ -11,7 +11,6 @@ import { useTranslations } from "next-intl";
 const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal"));
 const DetailsModal = dynamic(() => import("./(payments)/DetailsModal"));
 const SearchModal = dynamic(() => import("./(payments)/SearchModal"));
-const CalendarModal = dynamic(() => import("./(payments)/CalendarModal"));
 const ExportModal = dynamic(() => import("./(payments)/ExportModal"));
 // constants
 import { currency2decimal } from "@/utils/constants";
@@ -74,7 +73,6 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
       import("./(payments)/QrCodeModal");
       import("./(payments)/DetailsModal");
       import("./(payments)/SearchModal");
-      import("./(payments)/CalendarModal");
       import("./(payments)/ExportModal");
     };
     setTimeout(preload, 5000);
@@ -91,7 +89,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
     <section className="appPageContainer">
       {/*--- TOP BAR (h-140px/180px/160px) ---*/}
       <div
-        className="w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] desktop:!h-[160px] flex flex-col items-center justify-between overflow-y-auto relative"
+        className="w-full h-[140px] portrait:sm:h-[180px] landscape:lg:h-[180px] desktop:h-[160px]! flex flex-col items-center justify-between overflow-y-auto relative"
         style={{ scrollbarGutter: "stable" }}
       >
         {/*--- BUTTONS ---*/}
@@ -141,7 +139,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
 
       {/*--- LIST OF PAYMENTS ---*/}
       <div
-        className={`portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)] w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:!h-[calc(100vh-160px)] flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
+        className={`portrait:h-[calc(100vh-80px-140px)] portrait:sm:h-[calc(100vh-140px-180px)] w-full landscape:h-[calc(100vh-140px)] landscape:lg:h-[calc(100vh-180px)] landscape:desktop:h-[calc(100vh-160px)]! flex flex-col items-center overflow-y-auto overscroll-none overflow-x-hidden select-none relative`}
         style={{ scrollbarGutter: "stable" }}
       >
         {txns ? (
@@ -164,10 +162,10 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
                             setDetailsModal(true);
                           }}
                         >
-                          <div className="w-full paymentsGrid items-end paymentsText">
+                          <div className="w-full paymentsGrid items-end text-[24px] portrait:sm:text-[32px] landscape:lg:text-[32px] desktop:text-[24px]!">
                             {/*--- "to refund" tag ---*/}
                             {txn.toRefund && !txn.refund && (
-                              <div className="px-[16px] py-[2px] rounded-b-[8px] absolute top-0 right-0 text-sm portrait:sm:text-base landscape:lg:text-base desktop:!text-sm font-medium text-white bg-gradient-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton">
+                              <div className="px-[16px] py-[2px] rounded-b-[8px] absolute top-0 right-0 text-sm portrait:sm:text-base landscape:lg:text-base desktop:text-sm! font-medium text-white bg-linear-to-b from-[#E36161] to-[#FE9494] dark:from-darkButton dark:to-darkButton">
                                 {t("toRefund")}
                               </div>
                             )}
@@ -181,7 +179,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
                                 {getLocalDateWords(txn.date)?.toUpperCase()}
                               </div>
                               {getLocalTime(txn.date)?.time}
-                              <span className="leading-none ml-[6px] text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:!text-[16px] font-medium">
+                              <span className="leading-none ml-[6px] text-[16px] portrait:sm:text-[20px] landscape:lg:text-[20px] desktop:text-[16px]! font-medium">
                                 {getLocalTime(txn.date)?.ampm}
                               </span>
                             </div>
@@ -225,9 +223,6 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
         />
       )}
       {exportModal.render && <ExportModal exportModal={exportModal} setExportModal={setExportModal} setErrorModal={setErrorModal} />}
-      {calendarModal.render && (
-        <CalendarModal tempFilter={tempFilter} setTempFilter={setTempFilter} calendarModal={calendarModal} setCalendarModal={setCalendarModal} setErrorModal={setErrorModal} />
-      )}
       {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={paymentSettings} />}
       {detailsModal && (
         <DetailsModal

@@ -60,7 +60,7 @@ export default function CashoutIntroModal({
                     </div>
                   </div>
                 </div>
-                <div className="cashoutButtonContainer">
+                <div className=" w-full flex justify-end">
                   <div className="cashoutButton flex items-center justify-center relative">
                     {cashoutSettings.cex ? tcommon("transferToCEX", { cex: cashoutSettings.cex }) : tcommon("transfer")}
                     <div className="absolute w-[calc(100%+16px)] h-[calc(100%+16px)] border-4 border-red-500"></div>
@@ -99,7 +99,7 @@ export default function CashoutIntroModal({
                     </div>
                   </div>
                 </div>
-                <div className="cashoutButtonContainer">
+                <div className="w-full flex justify-end">
                   <div className="cashoutButton flex items-center justify-center relative">
                     {tcommon("transferToBank")}
                     <div className="absolute w-[calc(100%+16px)] h-[calc(100%+16px)] border-4 border-red-500"></div>

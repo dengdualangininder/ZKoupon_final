@@ -63,14 +63,14 @@ export default async function Home() {
   console.log("allRates", allRates);
 
   return (
-    <div className="overflow-x-hidden textLgLoose tracking-[-0.01em]">
+    <div className="overflow-x-hidden textLgHome tracking-[-0.01em]">
       <Navbar />
 
       <div className="w-full flex justify-center bg-light2 text-lightText1">
         <Hero merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="How" className="w-full flex justify-center bg-[#121212] sm:bg-gradient-to-b sm:from-black sm:to-dark4 text-darkText1">
+      <div id="How" className="w-full flex justify-center bg-[#121212] sm:bg-linear-to-b sm:from-black sm:to-dark4 text-darkText1">
         <How merchantCurrency={merchantCurrency} />
       </div>
 
@@ -98,7 +98,7 @@ export default async function Home() {
         <Support />
       </div>
 
-      <div className="w-full flex justify-center bg-gradient-to-b from-dark1 to-dark5 text-darkText1">
+      <div className="w-full flex justify-center bg-linear-to-b from-dark1 to-dark5 text-darkText1">
         <Footer />
       </div>
     </div>

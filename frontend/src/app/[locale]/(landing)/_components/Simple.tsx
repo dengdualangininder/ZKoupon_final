@@ -22,7 +22,7 @@ export default function Simple() {
       </div>
       {/*--- RIGHT ---*/}
       <div className="mt-[40px] lg:mt-0 w-full lg:w-[42%] flex items-center justify-center lg:justify-end">
-        <div className="w-full aspect-[3/2] rounded-3xl overflow-hidden relative">
+        <div className="w-full aspect-3/2 rounded-3xl overflow-hidden relative">
           <Image src="/pos.jpg" alt="Point-of-sale device" sizes={"480px"} fill />
         </div>
       </div>
