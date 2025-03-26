@@ -1,9 +1,14 @@
 import Web3AuthProvider from "./Web3AuthProvider";
+import { ThemeProvider } from "next-themes";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const date = new Date();
-  const time = date.toLocaleTimeString("en-US", { hour12: false }) + `.${date.getMilliseconds()}`;
-  console.log(time, "(app)/layout.tsx");
+  console.log("/(app)/layout.tsx");
 
-  return <Web3AuthProvider>{children}</Web3AuthProvider>;
+  return (
+    <Web3AuthProvider>
+      <ThemeProvider attribute="class" enableSystem={false}>
+        {children}
+      </ThemeProvider>
+    </Web3AuthProvider>
+  );
 }

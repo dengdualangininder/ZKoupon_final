@@ -15,10 +15,10 @@ const ExportModal = dynamic(() => import("./(payments)/ExportModal"));
 // constants
 import { currency2decimal } from "@/utils/constants";
 // images
-import { HiQrCode, HiMiniArrowRightStartOnRectangle } from "react-icons/hi2";
+import { HiQrCode } from "react-icons/hi2";
 import { FiDownload, FiSearch } from "react-icons/fi";
 // utils
-import { getLocalTime, getLocalDateWords, getLocalDate } from "@/utils/functions";
+import { getLocalTime, getLocalDateWords } from "@/utils/functions";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 // types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
@@ -26,7 +26,6 @@ import { NullaInfo, Filter, ModalState } from "@/utils/types";
 
 export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: { nullaInfo: NullaInfo; setErrorModal: any; paymentSettings: PaymentSettings }) {
   console.log("(app)/_components/Payments.tsx");
-
   // hooks
   const t = useTranslations("App.Payments");
   const w3Info = useW3Info();
@@ -41,7 +40,6 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
   // modal states
   const [searchModal, setSearchModal] = useState<ModalState>({ render: false, show: false });
   const [exportModal, setExportModal] = useState<ModalState>({ render: false, show: false });
-  const [calendarModal, setCalendarModal] = useState<ModalState>({ render: false, show: false });
   const [detailsModal, setDetailsModal] = useState(false);
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [clearSearchModal, setClearSearchModal] = useState(false);
@@ -216,7 +214,6 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
           setFilter={setFilter}
           tempFilter={tempFilter}
           setTempFilter={setTempFilter}
-          setCalendarModal={setCalendarModal}
           clearFilter={clearFilter}
           setErrorModal={setErrorModal}
           setClearSearchModal={setClearSearchModal}

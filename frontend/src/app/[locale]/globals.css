@@ -20,12 +20,18 @@
   --color-darkText1: #e2e8f0;
   --color-darkButton: #5370a7;
   --color-darkButtonHover: #6983b2;
-  --slate-250: #d5dde7;
+  --color-slate-250: #d5dde7;
   --breakpoint-xs: 480px;
   --breakpoint-sm: 600px;
   --breakpoint-md: 750px;
   --breakpoint-lg: 980px;
   --breakpoint-xl: 1250px;
+}
+
+@layer base {
+  button {
+    cursor: pointer;
+  }
 }
 
 /*--- text sizes ---*/
@@ -113,11 +119,11 @@
 /*--- button font & height ---*/
 
 @utility appButtonHeight {
-  @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:h-[48px]!;
+  @apply h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:h-[48px]!;
 }
 
 @utility appButtonSizeStd {
-  @apply h-[56px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:h-[48px]! textBaseApp font-medium;
+  @apply h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:h-[48px]! textBaseApp font-medium;
 }
 
 @utility appButtonSizeSm {
@@ -189,16 +195,12 @@
 }
 /* --- input colors --- */
 
-@utility placeholderColor {
-  @apply italic text-slate-400 dark:text-zinc-700;
+@utility appInputHeight {
+  @apply h-[54px] portrait:sm:h-[58px] landscape:lg:h-[58px] desktop:h-[46px]!;
 }
 
 @utility inputColor {
   @apply rounded-[8px] border-[1.5px] bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms];
-}
-
-@utility loginInputColor {
-  @apply rounded-[8px] border-[1.5px] bg-white text-lightText1 border-slate-300 focus:border-blue-500 focus:ring-0 outline-hidden transition-[all] duration-[500ms];
 }
 
 @utility settingsInputColor {
@@ -213,22 +215,22 @@
   @apply text-[20px] portrait:sm:text-[24px] landscape:lg:text-[24px] desktop:text-[16px]!;
 }
 
+@utility placeholderColor {
+  @apply italic text-slate-400 dark:text-zinc-700;
+}
+
 /* --- app input --- */
 
-@utility appInputHeight {
-  @apply h-[54px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:h-[46px]!;
-}
-
 .appInput {
-  @apply textBaseApp appInputHeight inputColor px-[0.75em];
+  @apply textBaseApp appInputHeight inputColor px-[0.7em];
 }
 
-.loginInput {
-  @apply appInputHeight textBaseApp loginInputColor px-[0.75em];
+.appInputPx {
+  @apply textBaseAppPx appInputHeight inputColor px-[0.7em];
 }
 
 .appInputLabel {
-  @apply mb-[4px] font-medium;
+  @apply pb-[1px] portrait:sm:pb-[3px] landscape:lg:pb-[3px] desktop:pb-[1px] font-medium;
 }
 /* --- intro input --- */
 

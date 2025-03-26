@@ -42,6 +42,7 @@ export const metadata: Metadata = {
 
 // inter.className to inter.variable
 export default async function RootLayout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
+  console.log("/layout.tsx");
   const messages = await getMessages();
   const { locale } = params;
 

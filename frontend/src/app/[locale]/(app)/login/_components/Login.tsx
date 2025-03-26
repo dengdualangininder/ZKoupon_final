@@ -84,32 +84,32 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
       } else if (resJson.status == "error") {
         console.log("Incorrect email or password");
         setErrorModal(resJson.message);
+        setIsLoggingIn(false);
       } else {
         setErrorModal("Server error");
+        setIsLoggingIn(false);
       }
     } catch (e) {
       setErrorModal("Server error");
+      setIsLoggingIn(false);
     }
-    setIsLoggingIn(false);
   };
 
   return (
     <div className="w-full h-screen flex flex-col items-center overflow-y-auto textBaseApp bg-light2 text-lightText1">
-      {/*---showLang mask---*/}
-      {langModal && <div className="absolute w-full h-screen left-0 top-0 z-99" onClick={() => setLangModal(false)}></div>}
-
-      {/*--- CONTENT CONTAINER (for some reason, pb does not work, so added to last element) ---*/}
-      <div className="px-[12px] pt-[12px] w-full max-w-[420px] desktop:max-w-[330px] h-full max-h-[900px] flex flex-col items-center my-auto">
+      <div className="pt-[12px] px-[24px] w-full max-w-[440px] desktop:max-w-[360px] h-full max-h-[900px] flex flex-col items-center my-auto">
         {/*--- LANG/LOGO/MENU CONTAINER ---*/}
         <div className="flex-none w-full h-[34%] min-h-[240px] flex flex-col items-center justify-between">
           {/*--- lang ---*/}
-          <div className="h-[38px] ml-auto">
+          <div className="h-[38px] ml-auto z-[2]">
             <SelectLang langModal={langModal} setLangModal={setLangModal} />
           </div>
+          {langModal && <div className="fixed left-0 top-0 w-screen h-screen z-[1]" onClick={() => setLangModal(false)}></div>}
+
           {/*--- logo ---*/}
           <div className="w-full flex flex-col items-center gap-[8px]">
             <div className="relative w-full h-[58px] portrait:sm:h-[64px] landscape:lg:h-[64px] desktop:h-[50px]!">
-              <Image src="/logoBlackNoBg.svg" alt="logo" fill />
+              <Image src="/logoBlackNoBg.svg" alt="logo" fill priority />
             </div>
             <div className="textSmApp font-medium text-center">{t("subheader")}</div>
           </div>
@@ -141,7 +141,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               {myConnectors.map((i: MyConnector) => (
                 <div
                   key={i.name}
-                  className="w-full h-[68px] desktop:h-[54px] flex items-center text-slate-600 font-medium bg-white rounded-[8px] border drop-shadow-md desktop:hover:drop-shadow-lg active:drop-shadow-lg transition-all duration-300 cursor-pointer select-none"
+                  className="w-full h-[68px] desktop:h-[54px] flex items-center text-slate-600 font-medium bg-white rounded-[8px] border border-slate-200 drop-shadow-md desktop:hover:drop-shadow-lg active:drop-shadow-lg transition-all duration-300 cursor-pointer select-none"
                   onClick={() => {
                     setSelectedSocial(i.name);
                     ownerLogin(i.connectorIndex);
@@ -174,7 +174,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
             <div className="flex flex-col">
               {/*--email---*/}
               <label className="appInputLabel">{t("email")}</label>
-              <input type="email" className="loginInput w-full" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
+              <input type="email" className="appInputPx w-full" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
               <label className="mt-[24px] appInputLabel">{t("password")}</label>
               <div className="w-full relative">
@@ -183,7 +183,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                   type={show ? "text" : "password"}
                   autoComplete="off"
                   autoCapitalize="off"
-                  className="loginInput w-full peer"
+                  className="appInputPx w-full peer"
                   onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div

@@ -11,7 +11,6 @@ export default function SearchModal({
   setFilter,
   tempFilter,
   setTempFilter,
-  setCalendarModal,
   setErrorModal,
   setClearSearchModal,
   clearFilter,
@@ -21,7 +20,6 @@ export default function SearchModal({
   setFilter: any;
   tempFilter: Filter;
   setTempFilter: any;
-  setCalendarModal: any;
   setErrorModal: any;
   setClearSearchModal: any;
   clearFilter: any;
@@ -41,26 +39,19 @@ export default function SearchModal({
     setSearchModal(false);
   };
 
-  function closeModal() {
+  function close() {
     setSearchModal({ render: true, show: false });
     setTimeout(() => setSearchModal({ render: false, show: false }), 500);
   }
 
   return (
     <>
-      <div
-        className={`fixed inset-0 z-10`}
-        onClick={() => {
-          closeModal();
-          setCalendarModal({ render: true, show: false });
-          setTimeout(() => setCalendarModal({ render: false, show: false }), 500);
-        }}
-      ></div>
+      <div className={`fixed inset-0 z-10`} onClick={close}></div>
       <div className={`${searchModal.show ? "animate-slideIn" : "animate-slideOut"} sidebarModal`}>
         {/*--- mobile back ---*/}
-        <FaAngleLeft className="mobileBack" onClick={() => closeModal()} />
+        <FaAngleLeft className="mobileBack" onClick={close} />
         {/*--- tablet/desktop close ---*/}
-        <div className="xButtonContainer rounded-tr-none" onClick={() => closeModal()}>
+        <div className="xButtonContainer rounded-tr-none" onClick={close}>
           <div className="xButton">&#10005;</div>
         </div>
 

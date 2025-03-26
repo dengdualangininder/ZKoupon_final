@@ -2,31 +2,27 @@
 // nextjs
 import { useState, useEffect, createContext, useContext } from "react";
 import { useRouter } from "@/i18n/routing";
-import { useSearchParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { getCookie } from "cookies-next";
+// my hooks
 import { logoutNoDisconnect } from "./hooks";
 // wagmi
 import { WagmiProvider, createConfig, http, type Config } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// web3auth
-import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
-import { Web3AuthNoModal } from "@web3auth/no-modal";
-import { AuthAdapter } from "@web3auth/auth-adapter";
-import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from "@web3auth/base";
-import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
-import { getCookie, deleteCookie } from "cookies-next";
-// wagmi
-import { ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
 import { keccak256, getAddress } from "viem";
-// others
+// web3auth
+import { Web3AuthNoModal } from "@web3auth/no-modal";
+import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK, ADAPTER_EVENTS, CONNECTED_EVENT_DATA } from "@web3auth/base";
+import { AuthAdapter } from "@web3auth/auth-adapter";
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { getPublic } from "@toruslabs/eccrypto";
-// actions
+// utils
 import { deleteUserJwtCookie, setNullaCookies } from "@/actions";
-// types
 import { W3Info } from "@/utils/types";
 
 const queryClient = new QueryClient();
-
 const W3InfoContext = createContext<W3Info | null>(null);
 export const useW3Info = () => useContext(W3InfoContext);
 
@@ -49,9 +45,10 @@ const web3AuthInstance: Web3AuthNoModal = new Web3AuthNoModal({
   clientId: process.env.NEXT_PUBLIC_WEB3AUTH_ID!,
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
   privateKeyProvider: privateKeyProvider,
+  // sessionTime: 7 * 24 * 60 * 60, // requires paid plan
 });
 
-// configure adapter, as 2FA prompt appears every now and then, which is undesired
+// turn off intermittent 2FA msg
 const authAdapter = new AuthAdapter({
   loginSettings: {
     mfaLevel: "none",
@@ -85,16 +82,15 @@ console.log("created new web3AuthInstance and config");
 
 export default function Web3AuthProvider({ children }: { children: React.ReactNode }) {
   console.log("(app)/web3auth-provider.tsx");
-  // hooks
   const router = useRouter();
   const pathname = usePathname();
-  // states
   const [w3Info, setW3Info] = useState<W3Info | null>(null);
 
-  // Need to satisfy 3 conditions:
-  // 1. user logins (no sessionId)
-  // 2. user refreshes (sessionId is valid)
-  // 3. user refreshes or returns to app, but sessionId is expired. TODO: find more efficient way to test if sessionId expired or not
+  // Need to satisfy 4 conditions:
+  // Condition 1 - userJwt exists, enters /app, no sessionId (user types in /app)
+  // Condition 2 - userJwt exists, enters /app, invalid sessionId (user returns aftere 3 days)
+  // Condition 3 - userJwt exists, enters /app, valid sessionId (e.g., user refreshes)
+  // Condition 4 - web3AuthInstance already exists (not sure when this happens)
   useEffect(() => {
     console.log("web3Auth-provider.tsx useEffect");
 
@@ -106,25 +102,14 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       return;
     }
 
-    // get user type from cookies (must use getCookie inside useEffect) & session Id
+    // get cookies & session Id (must use getCookie inside useEffect)
     const userType = getCookie("userType");
     const userJwt = getCookie("userJwt");
-
     let sessionId;
     const auth_store = window.localStorage.getItem("auth_store");
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
 
-    // if employee, then directly go to /app
-    if (userType === "employee") {
-      if (userJwt) {
-        console.log("web3Auth-provider.tsx useEffect, userType = employee & userJwt exists, pushed to /app");
-        if (pathname != "/app") router.push("/app");
-        return;
-      } else {
-        console.log("web3Auth-provider.tsx useEffect, userType = employee but no userJwt");
-        return;
-      }
-    }
+    if (userType === "employee") return; // if employee, skip web3auth flow
 
     // Condition 1
     if (!sessionId) {
@@ -146,10 +131,10 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       console.log("set 6s countdown");
       setTimeout(() => {
         if (!web3AuthInstance.connected) {
-          console.log("web3AuthInstance not connected after 10s, deleted userJwt and auth_store");
+          console.log("web3AuthInstance not connected after 6s, deleted userJwt and auth_store");
           deleteUserJwtCookie();
           window.localStorage.removeItem("auth_store");
-          window.location.reload();
+          window.location.reload(); // using router.push("/login") won't work, as middleware will redirect to /app, as userJwt cookie not deleted yet
         }
       }, 6000);
     }
@@ -161,6 +146,10 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     };
   }, []);
 
+  useEffect(() => {
+    console.log("web3AuthInstance.status:", web3AuthInstance.status);
+  }, [web3AuthInstance.status]);
+
   async function listenToOnConnect() {
     console.log("listening to on connect...");
     web3AuthInstance?.on(ADAPTER_EVENTS.CONNECTED, async (data: CONNECTED_EVENT_DATA) => {
@@ -171,6 +160,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
 
   // merchantEvmAddress needed to set Nulla cookies, so combine with set W3Info
   async function setW3InfoAndNullaCookies() {
+    console.log("setting w3Info and nullaCookies...");
     try {
       const userInfo = await web3AuthInstance?.getUserInfo();
       const privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
@@ -190,15 +180,15 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
         }
 
         if (pathname != "/app") {
-          console.log("pathname is", pathname, ", so pushed to /app");
+          console.log(`pathname is ${pathname}, so pushed to /app`);
           router.push("/app");
         }
       } else {
-        console.log("web3Auth-provider.tsx, setUserAndNullaInfo(), logged out: idToken or publicKey returned undefined");
+        console.log("logged out because idToken or publicKey returned undefined");
         logoutNoDisconnect();
       }
     } catch (e) {
-      console.log("web3Auth-provider.tsx, setUserAndNullaInfo(), logged out: error when getting idToken or publicKey");
+      console.log("logged out because error when getting idToken or publicKey");
       logoutNoDisconnect();
     }
   }

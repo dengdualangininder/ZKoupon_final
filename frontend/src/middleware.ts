@@ -9,8 +9,6 @@ export default async function middleware(request: NextRequest) {
   if (["en", "fr", "it", "zh-TW"].includes(segments[1])) pathname = `/${segments.slice(2).join("/")}`;
   console.log("middleware.ts, pathname:", pathname);
 
-  const handleI18nRouting = createMiddleware(routing);
-
   // redirect for these specific conditions
   if (pathname === "/app") {
     const hasUserJwt = request.cookies.has("userJwt");
@@ -22,10 +20,13 @@ export default async function middleware(request: NextRequest) {
   } else if (pathname === "/login") {
     const hasUserJwt = request.cookies.has("userJwt");
     if (hasUserJwt) {
+      console.log("middleware.ts, userJwt exists, pushed to /app");
       const newUrl = new URL(`/app`, request.url);
       return NextResponse.redirect(newUrl);
     }
   }
+
+  const handleI18nRouting = createMiddleware(routing);
 
   return handleI18nRouting(request);
 }

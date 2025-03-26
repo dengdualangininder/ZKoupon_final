@@ -16,7 +16,7 @@ export const POST = async (request: Request) => {
   // verify
   const jwks = jose.createRemoteJWKSet(new URL("https://api-auth.web3auth.io/jwks")); // for social logins
   const jwtDecoded = await jose.jwtVerify(idToken, jwks, { algorithms: ["ES256"] });
-  const verified = (jwtDecoded.payload as any).wallets[0].public_key.toLowerCase() === publicKeyCompressed.toLowerCase();
+  const verified = (jwtDecoded.payload as any).wallets[2].public_key.toLowerCase() === publicKeyCompressed.toLowerCase();
 
   // save to db
   if (verified) {
