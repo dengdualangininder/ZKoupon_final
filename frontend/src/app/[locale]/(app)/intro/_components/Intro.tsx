@@ -6,7 +6,7 @@ import { useRouter } from "@/i18n/routing";
 import { getCookie, deleteCookie } from "cookies-next";
 // custom hooks
 import { useSettingsMutation } from "../../hooks";
-import { useW3Info } from "../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 // pdf
 import { QRCodeSVG } from "qrcode.react";
 import { pdf, Document, Page, Path, Svg, View } from "@react-pdf/renderer";
@@ -31,7 +31,7 @@ export default function Intro() {
   const t = useTranslations("App.Intro");
   const tcommon = useTranslations("Common");
   const account = useAccount();
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const { mutateAsync: saveSettings } = useSettingsMutation();
 
   // states
@@ -41,90 +41,60 @@ export default function Intro() {
   const [isMobile, setIsMobile] = useState(false);
   const [isApple, setIsApple] = useState(false);
   const [settings, setSettings] = useState({ merchantEmail: "", merchantName: "", merchantCountry: "", merchantCurrency: "", cex: "", cexEvmAddress: "", qrCodeUrl: "" });
+  const [name, setName] = useState("");
+  const [countyCurrency, setCountyCurrency] = useState("");
 
   useEffect(() => {
-    console.log("/intro useEffect");
-    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
-    const isAppleTemp = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
-    setIsMobile(!isDesktop);
-    setIsApple(isAppleTemp);
+    if (web3AuthInfo?.publicKey) {
+      console.log("/intro useEffect");
+      const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+      const isAppleTemp = /Mac|iPhone|iPod|iPad/.test(window.navigator.userAgent);
+      setIsMobile(!isDesktop);
+      setIsApple(isAppleTemp);
 
-    // need in case user refreshes while in /intro
-    if (window.localStorage.getItem("isIntro")) {
-      getSettings();
-      return; // skip createNewUser() if isIntro
-    }
+      // need in case user refreshes while in /intro
+      if (window.localStorage.getItem("isIntro")) {
+        getSettings();
+        return; // skip createNewUser() if isIntro
+      }
 
-    if (w3Info) createNewUser();
-  }, [w3Info]);
-
-  const getSettings = async () => {
-    console.log("getSettings()");
-    // get nullaInfo from cookies
-    const userType = getCookie("userType");
-    const userJwt = getCookie("userJwt");
-    if (!userType || !userJwt) {
-      router.push("/login");
-      return;
+      if (web3AuthInfo) createNewUser();
     }
-    const nullaInfo: NullaInfo = { userType, userJwt };
-    // get settings and setSettings
-    const res = await fetch("/api/getSettings", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ w3Info, nullaInfo }),
-    });
-    if (!res.ok) router.push("/login");
-    const resJson = await res.json();
-    if (resJson.status === "success") {
-      const { paymentSettings, cashoutSettings } = resJson.data;
-      console.log("setSettings with fetched settings", paymentSettings, cashoutSettings);
-      setSettings({
-        merchantEmail: paymentSettings.merchantEmail,
-        merchantName: paymentSettings.merchantName,
-        merchantCountry: paymentSettings.merchantCountry,
-        merchantCurrency: paymentSettings.merchantCurrency,
-        cex: cashoutSettings.cex,
-        cexEvmAddress: cashoutSettings.cexEvmAddress,
-        qrCodeUrl: paymentSettings.qrCodeUrl,
-      });
-      setStep("welcome");
-    }
-  };
+  }, [web3AuthInfo]);
 
   const createNewUser = async () => {
     console.log("creating new user");
 
-    if (!w3Info?.email) {
-      console.log("w3Info.email not detected, push to /login");
+    // abort if no email
+    if (!web3AuthInfo || !web3AuthInfo.email) {
       router.push("/login");
+      return;
     }
 
-    // get merchantCountry, merchantCurrency, cex, merchantEmail
+    // get location and set default settings
+    let merchantCountry = "U.S.";
     try {
       const res = await axios.get("https://api.country.is");
-      var merchantCountry = abb2full[res.data.country] ?? "Other";
-    } catch (err) {
-      var merchantCountry = "U.S.";
-      console.log("api.country.is down, set country to U.S.");
+      merchantCountry = abb2full[res.data.country] ?? "Other";
+    } catch (e) {
+      console.log("api.country.is down");
     }
+    const merchantEmail = web3AuthInfo.email;
     const merchantCurrency = countryData[merchantCountry]?.currency ?? "USD";
     const cex = countryData[merchantCountry]?.CEXes[0] ?? "";
-    const merchantEmail = w3Info?.email ?? "";
-    console.log("creating user with settings:", merchantCountry, merchantCurrency, cex, merchantEmail);
 
     // create new user
     try {
       const res = await fetch("/api/createUser", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ merchantEmail, merchantCountry, merchantCurrency, cex, w3Info }),
+        body: JSON.stringify({ merchantEmail: web3AuthInfo.email, merchantCountry, merchantCurrency, cex, web3AuthInfo }),
       });
       if (!res.ok) router.push("/login");
       const resJson = await res.json();
       if (resJson === "success") {
         console.log("user created");
-        window.localStorage.setItem("isIntro", "true");
+        window.localStorage.setItem("isIntro", "true"); // this ensures createNewUser() is skipped if browser refreshed
         setSettings({ merchantEmail, merchantName: "", merchantCountry, merchantCurrency, cex, cexEvmAddress: "", qrCodeUrl: "" });
         setStep("welcome");
       } else if (resJson === "user already exists") {
@@ -138,6 +108,42 @@ export default function Intro() {
       console.log("request to createUser api failed");
       router.push("/login");
     }
+  };
+
+  const getSettings = async () => {
+    console.log("getSettings()");
+    // get cookies
+    const userType = getCookie("userType");
+    const userJwt = getCookie("userJwt");
+    if (!userType || !userJwt) {
+      router.push("/login");
+      return;
+    }
+
+    // get settings and setSettings
+    try {
+      const res = await fetch("/api/getSettings", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ web3AuthInfo, nullaInfo: { userType, userJwt } }),
+      });
+      if (!res.ok) router.push("/login");
+      const resJson = await res.json();
+      if (resJson.status === "success") {
+        const { paymentSettings, cashoutSettings } = resJson.data;
+        console.log("setSettings with fetched settings", paymentSettings, cashoutSettings);
+        setSettings({
+          merchantEmail: paymentSettings.merchantEmail,
+          merchantName: paymentSettings.merchantName,
+          merchantCountry: paymentSettings.merchantCountry,
+          merchantCurrency: paymentSettings.merchantCurrency,
+          cex: cashoutSettings.cex,
+          cexEvmAddress: cashoutSettings.cexEvmAddress,
+          qrCodeUrl: paymentSettings.qrCodeUrl,
+        });
+        setStep("welcome");
+      }
+    } catch (e) {}
   };
 
   const saveSettingsAndSendEmail = async () => {
@@ -170,7 +176,7 @@ export default function Intro() {
           "cashoutSettings.cex": settings.cex,
           "paymentSettings.qrCodeUrl": settings.qrCodeUrl,
         },
-        w3Info,
+        web3AuthInfo,
       },
       {
         onSuccess: async () => {
@@ -262,6 +268,7 @@ export default function Intro() {
           <div className="w-full h-full flex flex-col">
             {/*--- content ---*/}
             <div className="pb-[40px] flex-1 flex flex-col justify-center gap-[24px] portrait:sm:gap-[32px] landscape:lg:gap-[32px]">
+              {/*--- name  ---*/}
               <div className="textLgApp font-semibold">{t("info.text-1")}:</div>
               <div className="pt-[16px]">
                 <label className="introLabelFont">{t("info.label-1")}</label>
@@ -277,6 +284,7 @@ export default function Intro() {
                   value={settings.merchantName}
                 ></input>
               </div>
+              {/*--- country / currency ---*/}
               <div>
                 <label className="introLabelFont">{t("info.label-2")}</label>
                 <select
@@ -299,11 +307,6 @@ export default function Intro() {
                   ))}
                 </select>
               </div>
-              {/* <div>
-                <label className="introLabelFont">{t("info.label-3")}</label>
-                <input className="introInputFont" onChange={(e) => setSettings({ ...settings, merchantEmail: e.currentTarget.value })} value={settings.merchantEmail}></input>
-                <div className="mt-[2px] textSmApp italic">{t("info.note")}</div>
-              </div> */}
             </div>
             {/*--- buttons ---*/}
             <div className="introButtonContainer">
@@ -531,7 +534,7 @@ export default function Intro() {
               <div>{t("notCoinbase-2.text", { cex: settings.cex ? settings.cex : tcommon("CEX") })}</div>
               <input
                 onChange={(e) => setSettings({ ...settings, cexEvmAddress: e.currentTarget.value })}
-                onBlur={() => saveSettings({ changes: { "cashoutSettings.cexEvmAddress": settings.cexEvmAddress }, w3Info })}
+                onBlur={() => saveSettings({ changes: { "cashoutSettings.cexEvmAddress": settings.cexEvmAddress }, web3AuthInfo })}
                 value={settings.cexEvmAddress}
                 className="introInputFontSmall"
                 placeholder={t("notCoinbase-2.placeholder")}

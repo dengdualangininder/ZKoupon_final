@@ -1,25 +1,36 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+// merchantWebsite: string;
+// merchantBusinessType: string;
+// merchantFields: string[];
 export type PaymentSettings = {
+  merchantPaymentType: string; // "online" | "inperson"
   merchantEvmAddress: string;
   merchantEmail: string;
   merchantName: string;
   merchantCountry: string;
   merchantCurrency: string;
-  merchantPaymentType: string;
-  merchantWebsite: string;
-  merchantBusinessType: string;
-  merchantFields: string[];
   merchantGoogleId: string;
   qrCodeUrl: string;
+  hasEmployeePass: boolean;
 };
 
 export type CashoutSettings = {
   cex: string;
   cexEvmAddress: string;
-  isEmployeePass: boolean;
 };
 
+// online params
+// customerEmail?: string;
+// item?: string;
+// startDate?: string;
+// endDate?: string;
+// singleDate?: string;
+// time?: string;
+// countString?: string;
+// shipping?: any;
+// sku?: string;
+// 18 properties
 export type Transaction = {
   date: any;
   customerAddress: string;
@@ -35,20 +46,9 @@ export type Transaction = {
   fxSavings: string;
   cashback: string;
   totalSavings: string;
-  refund: string; // empty if not refunded, txnHash if refunded
+  refund: string; // "" if not refunded, txnHash if refunded
   toRefund: boolean;
   note: string;
-  // online params
-  customerEmail?: string;
-  item?: string;
-  startDate?: string;
-  endDate?: string;
-  singleDate?: string;
-  time?: string;
-  countString?: string;
-  shipping?: any;
-  sku?: string;
-  // txnHash
   txnHash: string;
 };
 
@@ -62,22 +62,19 @@ export interface IUser extends Document {
 const UserSchema: Schema = new Schema<IUser>({
   hashedEmployeePass: String,
   paymentSettings: {
+    merchantPaymentType: String,
     merchantEvmAddress: String,
     merchantEmail: { type: String, unique: true },
     merchantName: String,
     merchantCountry: String,
     merchantCurrency: String,
-    merchantPaymentType: String, // "online" | "inperson"
-    merchantWebsite: String,
-    merchantBusinessType: String,
-    merchantFields: [String], // dates, count, sku, shipping, custom, <custom>,
     merchantGoogleId: String,
     qrCodeUrl: String,
+    hasEmployeePass: Boolean,
   },
   cashoutSettings: {
     cex: String,
     cexEvmAddress: String,
-    isEmployeePass: Boolean, // needed because hashedEmployeePass is not passed to frontend and we need to know whether there is a password or not
   },
   transactions: [
     {
@@ -98,17 +95,6 @@ const UserSchema: Schema = new Schema<IUser>({
       refund: String,
       toRefund: Boolean,
       note: String,
-      // online params
-      customerEmail: String,
-      item: String,
-      startDate: String,
-      endDate: String,
-      singleDate: String,
-      time: String,
-      countString: String,
-      shipping: Object,
-      sku: String,
-      // txnHash
       txnHash: String,
     },
   ],

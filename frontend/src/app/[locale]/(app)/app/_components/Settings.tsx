@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
 import { useTheme } from "next-themes";
-import { useW3Info } from "../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 import { useLogout, useSettingsMutation } from "../../hooks";
 // i18n
 import { useLocale, useTranslations } from "next-intl";
@@ -52,7 +52,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   // hooks
   const merchantNameRef = useRef<HTMLInputElement | null>(null); // needed to focus input and move cursor to right
   const router = useRouter();
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const { theme, setTheme } = useTheme();
   const locale = useLocale();
   const t = useTranslations("App.Settings");
@@ -92,12 +92,10 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   const [emailModal, setEmailModal] = useState(false);
   // settings input states
   const [hiddenLabel, setHiddenLabel] = useState(""); // googleId | cexEvmAddress
-  const [hideCexEvmAddress, setHideCexEvmAddress] = useState<boolean>(cashoutSettings.cex === "Coinbase" && paymentSettings.merchantCountry != "Other"); // needed for optimistic update
 
   const onChangeMerchantCountry = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [merchantCountry, merchantCurrency] = e.target.value.split(" / ");
     const cex = merchantCountry === "Other" ? "" : countryData[merchantCountry].CEXes[0];
-    cex === "Coinbase" ? setHideCexEvmAddress(true) : setHideCexEvmAddress(false);
     const qrCodeUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${paymentSettings.merchantPaymentType}&merchantName=${encodeURI(
       paymentSettings.merchantName
     )}&merchantCurrency=${merchantCurrency}&merchantEvmAddress=${paymentSettings.merchantEvmAddress}`;
@@ -109,7 +107,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
         "cashoutSettings.cex": cex,
         "cashoutSettings.cexEvmAddress": "", // reset cexEvmAddress for all cases, even if CEX is the same
       },
-      w3Info,
+      web3AuthInfo,
     });
     window.localStorage.removeItem("cbRefreshToken");
     window.sessionStorage.removeItem("cbAccessToken");
@@ -117,8 +115,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
   };
 
   const onChangeCex = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.currentTarget.value === "Coinbase" ? setHideCexEvmAddress(true) : setHideCexEvmAddress(false);
-    saveSettings({ changes: { "cashoutSettings.cex": e.currentTarget.value, "cashoutSettings.cexEvmAddress": "" }, w3Info });
+    saveSettings({ changes: { "cashoutSettings.cex": e.currentTarget.value, "cashoutSettings.cexEvmAddress": "" }, web3AuthInfo });
     window.localStorage.removeItem("cbRefreshToken");
     window.sessionStorage.removeItem("cbAccessToken");
     e.target.closest("select")?.blur(); // makes outline disappear after item selected
@@ -132,12 +129,12 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
     if (isValid) {
       const value = getValues(key);
       if (["merchantEmail", "merchantGoogleId", "cexEvmAddress"].includes(key)) {
-        saveSettings({ changes: { [`${settingsType}.${key}`]: value }, w3Info });
+        saveSettings({ changes: { [`${settingsType}.${key}`]: value }, web3AuthInfo });
       } else if (key === "merchantName") {
         const qrCodeUrl = `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=${
           paymentSettings.merchantPaymentType
         }&merchantName=${encodeURI(value)}&merchantCurrency=${paymentSettings.merchantCurrency}&merchantEvmAddress=${paymentSettings.merchantEvmAddress}`;
-        saveSettings({ changes: { "paymentSettings.merchantName": value, "paymentSettings.qrCodeUrl": qrCodeUrl }, w3Info });
+        saveSettings({ changes: { "paymentSettings.merchantName": value, "paymentSettings.qrCodeUrl": qrCodeUrl }, web3AuthInfo });
       }
     } else {
       let msg = "Error";
@@ -288,23 +285,25 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
           )}
 
           {/*---cexEvmAddress---*/}
-          <div className={`${hideCexEvmAddress ? "hidden" : ""} settingsField`}>
-            <label className={`${hiddenLabel === "cexEvmAddress" ? "hidden" : ""} settingsLabel`}>
-              {t("platformAddress")}
-              <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
-            </label>
-            <div className={`${hiddenLabel === "cexEvmAddress" ? "" : "max-w-[160px]"} w-full settingsInputContainer group`} onClick={() => setFocus("cexEvmAddress")}>
-              <input
-                className="settingsInput settingsFontFixed focus:settingsFontFixedSmall placeholder:settingsFont peer truncate"
-                {...register("cexEvmAddress")}
-                onFocus={() => setHiddenLabel("cexEvmAddress")}
-                onBlur={async () => validateAndSave("cexEvmAddress", "cashoutSettings")}
-                autoComplete="off"
-                placeholder={t("empty")}
-              ></input>
-              <div className="settingsRightAngle">&#10095;</div>
+          {cashoutSettings.cex !== "Coinbase" && (
+            <div className="settingsField">
+              <label className={`${hiddenLabel === "cexEvmAddress" ? "hidden" : ""} settingsLabel`}>
+                {t("platformAddress")}
+                <IoInformationCircleOutline size={20} className="settingsInfo" onClick={() => setInfoModal("cexDepositAddress")} />
+              </label>
+              <div className={`${hiddenLabel === "cexEvmAddress" ? "" : "max-w-[160px]"} w-full settingsInputContainer group`} onClick={() => setFocus("cexEvmAddress")}>
+                <input
+                  className="settingsInput settingsFontFixed focus:settingsFontFixedSmall placeholder:settingsFont peer truncate"
+                  {...register("cexEvmAddress")}
+                  onFocus={() => setHiddenLabel("cexEvmAddress")}
+                  onBlur={async () => validateAndSave("cexEvmAddress", "cashoutSettings")}
+                  autoComplete="off"
+                  placeholder={t("empty")}
+                ></input>
+                <div className="settingsRightAngle">&#10095;</div>
+              </div>
             </div>
-          </div>
+          )}
 
           {/*---employee password---*/}
           <div className="settingsField">
@@ -316,7 +315,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               className="h-full flex items-center gap-[12px] desktop:hover:text-slate-500 transition-all duration-[500ms] cursor-pointer"
               onClick={() => setEmployeePassModal(true)}
             >
-              {cashoutSettings.isEmployeePass ? (
+              {paymentSettings.hasEmployeePass ? (
                 "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
               ) : (
                 <p className="italic pr-[3px] text-slate-400 dark:text-slate-500">{t("empty")}</p>
@@ -422,7 +421,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
       </div>
 
       {infoModal && <InfoModal infoModal={infoModal} setInfoModal={setInfoModal} />}
-      {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} setErrorModal={setErrorModal} isEmployeePass={cashoutSettings.isEmployeePass} />}
+      {employeePassModal && <EmployeePassModal setEmployeePassModal={setEmployeePassModal} setErrorModal={setErrorModal} hasEmployeePass={paymentSettings.hasEmployeePass} />}
       {faqModal && <FaqModal paymentSettings={paymentSettings} cashoutSettings={cashoutSettings} setFaqModal={setFaqModal} />}
       {isSwitchingLang && <SwitchLangModal />}
       {emailModal && <EmailModal defaultEmail={paymentSettings.merchantEmail} setEmailModal={setEmailModal} setErrorModal={setErrorModal} />}

@@ -309,6 +309,13 @@
 .footerLink {
   @apply desktop:hover:text-blue-400 active:text-blue-400 cursor-pointer;
 }
+
+/*--- login ---*/
+
+.loginEyeContainer {
+  @apply absolute h-full right-4 top-0 flex justify-center items-center text-[28px] desktop:text-[24px] desktop:cursor-pointer text-slate-400 dark:text-zinc-700 peer-focus:text-lightText1 dark:peer-focus:text-slate-600 [transition:color_500ms];
+}
+
 /*--- intro ---*/
 
 @utility introWidth {
@@ -338,6 +345,7 @@
 .introNumber {
   @apply flex-none mr-[12px] w-[28px] h-[28px] desktop:w-[24px] desktop:h-[24px] bg-blue-600 rounded-full flex justify-center items-center font-semibold text-base desktop:text-[13px] text-white;
 }
+
 /* --- app --- */
 
 .appNavColor {

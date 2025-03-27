@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { FaAngleLeft } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
 import { Transaction } from "@/db/UserModel";
-import { useW3Info } from "../../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../../Web3AuthProvider";
 import { ModalState } from "@/utils/types";
 
 export default function ExportModal({ exportModal, setExportModal, setErrorModal }: { exportModal: ModalState; setExportModal: any; setErrorModal: any }) {
   // hooks
   const t = useTranslations("App.Payments");
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
 
   // states
   const [startMonthYear, setStartMonthYear] = useState("");
@@ -22,7 +22,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
         const res = await fetch("/api/getPaymentsRange", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ w3Info }),
+          body: JSON.stringify({ web3AuthInfo }),
         });
         const resJson = await res.json();
         if (resJson.status === "success") {
@@ -75,7 +75,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
       const res = await fetch("/api/getPaymentsForExport", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ w3Info, startDate, endDate }),
+        body: JSON.stringify({ web3AuthInfo, startDate, endDate }),
       });
       var resJson = await res.json();
     } catch (e) {}

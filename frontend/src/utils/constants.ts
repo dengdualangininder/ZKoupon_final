@@ -494,7 +494,7 @@ export const abb2full: { [key: string]: string } = {
   MC: "Monaco",
   ME: "Montenegro",
   NL: "Netherlands", // 16
-  PH: "Philippines / PHP",
+  PH: "Philippines",
   PT: "Portugal", // 17
   SM: "San Marino",
   SK: "Slovakia", // 18
@@ -569,15 +569,12 @@ export const paymentSettings: PaymentSettings = {
   merchantCountry: "",
   merchantCurrency: "",
   merchantPaymentType: "",
-  merchantWebsite: "",
-  merchantBusinessType: "",
-  merchantFields: [],
   merchantGoogleId: "",
   qrCodeUrl: "",
+  hasEmployeePass: false,
 };
 
 export const cashoutSettings: CashoutSettings = {
   cex: "Coinbase",
   cexEvmAddress: "",
-  isEmployeePass: false,
 };

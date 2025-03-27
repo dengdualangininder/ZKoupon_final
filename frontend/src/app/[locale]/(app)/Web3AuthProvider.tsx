@@ -20,11 +20,11 @@ import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { getPublic } from "@toruslabs/eccrypto";
 // utils
 import { deleteUserJwtCookie, setNullaCookies } from "@/actions";
-import { W3Info } from "@/utils/types";
+import { Web3AuthInfo } from "@/utils/types";
 
 const queryClient = new QueryClient();
-const W3InfoContext = createContext<W3Info | null>(null);
-export const useW3Info = () => useContext(W3InfoContext);
+const Web3AuthInfoContext = createContext<Web3AuthInfo | null>(null);
+export const useWeb3AuthInfo = () => useContext(Web3AuthInfoContext);
 
 // create privateKeyProvider
 const chains = [polygon];
@@ -84,7 +84,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
   console.log("(app)/web3auth-provider.tsx");
   const router = useRouter();
   const pathname = usePathname();
-  const [w3Info, setW3Info] = useState<W3Info | null>(null);
+  const [web3AuthInfo, setWeb3AuthInfo] = useState<Web3AuthInfo | null>(null);
 
   // Need to satisfy 4 conditions:
   // Condition 1 - userJwt exists, enters /app, no sessionId (user types in /app)
@@ -122,7 +122,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
 
     if (web3AuthInstance.connected) {
       console.log("web3AuthInstance already connected");
-      setW3InfoAndNullaCookies(); // this sets W3Info and pushes to /app
+      setWeb3AuthInfoAndNullaCookies();
     } else {
       // Condition 2
       console.log("sessionId exists but web3AuthInstance not connected");
@@ -150,26 +150,25 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     console.log("listening to on connect...");
     web3AuthInstance?.on(ADAPTER_EVENTS.CONNECTED, async (data: CONNECTED_EVENT_DATA) => {
       console.log("web3Auth-provider.tsx, CONNECTED to web3Auth", web3AuthInstance.connected);
-      setW3InfoAndNullaCookies();
+      setWeb3AuthInfoAndNullaCookies();
     });
   }
 
-  // merchantEvmAddress needed to set Nulla cookies, so combine with set W3Info
-  async function setW3InfoAndNullaCookies() {
-    console.log("setting w3Info and nullaCookies...");
+  // merchantEvmAddress needed to set Nulla cookies, so combine with set Web3AuthInfo
+  async function setWeb3AuthInfoAndNullaCookies() {
+    console.log("setting web3AuthInfo and Nulla cookies...");
     try {
       const userInfo = await web3AuthInstance?.getUserInfo();
       const privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
       const publicKey = getPublic(Buffer.from(privateKey.padStart(64, "0"), "hex")).toString("hex");
-      console.log("publicKey", publicKey);
       // const merchantEvmAddress = getAddress("0x" + keccak256(new Uint8Array(Buffer.from(publicKey.substring(2), "hex"))).slice(-40)); // slice(-40) keeps last 40 chars
       const merchantEvmAddress = getAddress("0x" + keccak256(("0x" + publicKey.substring(2)) as `0x${string}`).slice(-40)); // slice(-40) keeps last 40 chars
       if (userInfo.idToken && publicKey) {
         const userType = getCookie("userType");
         const userJwt = getCookie("userJwt");
         if (!userType || userType === "employee" || !userJwt) await setNullaCookies("owner", merchantEvmAddress); // setNullaCookies will re-render entire route
-        setW3Info({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
-        console.log("web3Auth-provider.tsx, setW3Info successful");
+        setWeb3AuthInfo({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
+        console.log("web3Auth-provider.tsx, setWeb3AuthInfo successful");
 
         // check for isIntro; if true, then redirect. Need in case user refresh/crash while in /intro
         if (window.localStorage.getItem("isIntro")) {
@@ -192,10 +191,10 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
   }
 
   return (
-    <W3InfoContext.Provider value={w3Info}>
+    <Web3AuthInfoContext.Provider value={web3AuthInfo}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </WagmiProvider>
-    </W3InfoContext.Provider>
+    </Web3AuthInfoContext.Provider>
   );
 }

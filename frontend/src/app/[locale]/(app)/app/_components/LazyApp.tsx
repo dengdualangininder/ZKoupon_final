@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 // custom hooks
 import { useQueryClient } from "@tanstack/react-query";
-import { useW3Info } from "../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 import { useAccount } from "wagmi";
 import { useTheme } from "next-themes";
 // pusher
@@ -22,16 +22,15 @@ import SignOutModal from "./modals/SignOutModal";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types
-import { NullaInfo, Filter, AllRates } from "@/utils/types";
-import { CashoutSettings, PaymentSettings, Transaction } from "@/db/UserModel";
-type Settings = { paymentSettings: PaymentSettings; cashoutSettings: CashoutSettings };
+import { SettingsType, NullaInfo, AllRates } from "@/utils/types";
+import { Transaction } from "@/db/UserModel";
 // import PullToRefresh from "pulltorefreshjs";
 
-export default function App({ nullaInfo, allRates, settings }: { nullaInfo: NullaInfo; allRates: AllRates; settings: Settings }) {
+export default function App({ nullaInfo, allRates, settings }: { nullaInfo: NullaInfo; allRates: AllRates; settings: SettingsType }) {
   console.log("(app)/app/_components/LazyApp.tsx");
 
   // hooks
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const queryClient = useQueryClient();
   const { address } = useAccount();
   const { setTheme } = useTheme();
@@ -116,7 +115,7 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
 
       {/*---menu tabs---*/}
       {selectedMenu === "payments" && <Payments nullaInfo={nullaInfo} setErrorModal={setErrorModal} paymentSettings={settings.paymentSettings} />}
-      {selectedMenu === "cashout" && w3Info && (
+      {selectedMenu === "cashout" && web3AuthInfo && (
         <CashOut
           nullaInfo={nullaInfo}
           paymentSettings={settings.paymentSettings}
@@ -126,7 +125,9 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
           allRates={allRates}
         />
       )}
-      {selectedMenu === "settings" && w3Info && <Settings paymentSettings={settings.paymentSettings} cashoutSettings={settings.cashoutSettings} setErrorModal={setErrorModal} />}
+      {selectedMenu === "settings" && web3AuthInfo && (
+        <Settings paymentSettings={settings.paymentSettings} cashoutSettings={settings.cashoutSettings} setErrorModal={setErrorModal} />
+      )}
 
       {/*--- modals ---*/}
       {newTxn && <Notification paymentSettings={settings.paymentSettings} newTxn={newTxn} setNewTxn={setNewTxn} />}

@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tansta
 import { useDisconnect, useAccount, useReadContract } from "wagmi";
 import { getTransactionReceipt } from "@wagmi/core";
 // utils
-import { NullaInfo, W3Info } from "@/utils/types";
+import { NullaInfo, Web3AuthInfo } from "@/utils/types";
 import erc20Abi from "@/utils/abis/erc20Abi";
 // actions
 import { deleteUserJwtCookie } from "@/actions";
@@ -14,7 +14,7 @@ import { Transaction } from "@/db/UserModel";
 import { Rates, Filter } from "@/utils/types";
 import { formatUnits } from "viem";
 
-export const useSettingsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo) => {
+export const useSettingsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: NullaInfo) => {
   const router = useRouter();
   const logout = useLogout();
   return useQuery({
@@ -25,7 +25,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo) =>
       const res = await fetch("/api/getSettings", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ w3Info, nullaInfo }),
+        body: JSON.stringify({ web3AuthInfo, nullaInfo }),
       });
       const resJson = await res.json();
       if (resJson.status === "success") {
@@ -43,7 +43,7 @@ export const useSettingsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo) =>
       }
       throw new Error();
     },
-    enabled: (nullaInfo && nullaInfo.userType === "owner" && w3Info) || (nullaInfo && nullaInfo.userType === "employee") ? true : false,
+    enabled: (nullaInfo && nullaInfo.userType === "owner" && web3AuthInfo) || (nullaInfo && nullaInfo.userType === "employee") ? true : false,
     staleTime: Infinity,
     gcTime: Infinity,
   });
@@ -54,12 +54,12 @@ export const useSettingsMutation = () => {
   const logout = useLogout();
 
   return useMutation({
-    mutationFn: async ({ changes, w3Info }: { changes: { [key: string]: string }; w3Info: W3Info | null }) => {
+    mutationFn: async ({ changes, web3AuthInfo }: { changes: { [key: string]: string }; web3AuthInfo: Web3AuthInfo | null }) => {
       console.log("useSettingsMutation mutationFn ran");
       const res = await fetch("/api/saveSettings", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ changes, w3Info }),
+        body: JSON.stringify({ changes, web3AuthInfo }),
       });
       const resJson = await res.json();
       if (resJson === "saved") return;
@@ -72,7 +72,7 @@ export const useSettingsMutation = () => {
   });
 };
 
-export const useTxnsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo, filter: Filter) => {
+export const useTxnsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: NullaInfo, filter: Filter) => {
   const logout = useLogout();
   return useInfiniteQuery({
     queryKey: ["txns", filter],
@@ -82,7 +82,7 @@ export const useTxnsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo, filter
       const res = await fetch("/api/getPayments", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pageParam, w3Info, nullaInfo, filter }),
+        body: JSON.stringify({ pageParam, web3AuthInfo, nullaInfo, filter }),
       });
       const resJson = await res.json();
       if (resJson.status === "success") {
@@ -98,7 +98,7 @@ export const useTxnsQuery = (w3Info: W3Info | null, nullaInfo: NullaInfo, filter
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => (lastPage?.length ? allPages.length : undefined), // lastPage = [10 items], allPages = [[10 items]]; should return "undefined" if no next page
-    enabled: (nullaInfo && nullaInfo.userType === "owner" && w3Info) || (nullaInfo && nullaInfo.userType === "employee") ? true : false,
+    enabled: (nullaInfo && nullaInfo.userType === "owner" && web3AuthInfo) || (nullaInfo && nullaInfo.userType === "employee") ? true : false,
   });
 };
 

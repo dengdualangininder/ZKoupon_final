@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 // context
-import { useW3Info } from "../../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../../Web3AuthProvider";
 // hooks
 import { useNullaBalanceQuery } from "../../../hooks";
 import { useQueryClient } from "@tanstack/react-query";
@@ -50,7 +50,7 @@ const DetailsModal = ({
   const queryClient = useQueryClient();
   const account = useAccount();
   const config = useConfig();
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const { queryKey: nullaBalanceQueryKey } = useNullaBalanceQuery();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -72,7 +72,7 @@ const DetailsModal = ({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          w3Info,
+          web3AuthInfo,
           nullaInfo,
           txnHash: clickedTxn.txnHash,
           change: { key: "toRefund", value: !clickedTxn.toRefund },
@@ -105,7 +105,7 @@ const DetailsModal = ({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          w3Info,
+          web3AuthInfo,
           nullaInfo,
           txnHash: clickedTxn.txnHash,
           change: { key: "note", value: note },
@@ -239,7 +239,7 @@ const DetailsModal = ({
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            w3Info: w3Info,
+            web3AuthInfo: web3AuthInfo,
             refundTxnHash: refundTxnHashTemp,
             txnHash: clickedTxn?.txnHash,
           }),
@@ -364,7 +364,7 @@ const DetailsModal = ({
                     <Toggle checked={clickedTxn?.toRefund} onClick={onClickToRefund} />
                   </div>
                   {/*--- refund button ---*/}
-                  {w3Info && (
+                  {web3AuthInfo && (
                     <div className="w-full h-[56px] flex items-center justify-between">
                       {refundState === "notRefunded" && (
                         <>

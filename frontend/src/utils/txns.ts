@@ -1,24 +1,20 @@
-import { Transaction } from "@/db/UserModel";
+import { PaymentSettings, CashoutSettings, Transaction } from "@/db/UserModel";
 
-export const fakePaymentSettings = {
+export const fakePaymentSettings: PaymentSettings = {
   merchantEvmAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
   merchantEmail: "germany@gmail.com",
   merchantName: "",
   merchantCountry: "Germany",
   merchantCurrency: "EUR",
   merchantPaymentType: "inperson",
-  merchantWebsite: "",
-  merchantBusinessType: "",
-  merchantFields: [],
   merchantGoogleId: "",
   qrCodeUrl: `https://metamask.app.link/dapp/${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/pay?paymentType=inperson&merchantName=A%20Store%20In%20Europe&merchantCurrency=EUR&merchantEvmAddress=0xA206df5844dA81470C82d07AE1b797d139bE58C2`,
+  hasEmployeePass: false,
 };
-export const fakeCashoutSettings = {
+
+export const fakeCashoutSettings: CashoutSettings = {
   cex: "Coinbase",
   cexEvmAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-  cexAccountName: "Tester Account",
-  isEmployeePass: false,
-  cashoutIntro: true,
 };
 
 export const fakeTxns: Transaction[] = [
@@ -40,17 +36,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586a6a7011bf6af2f2d1d18ac30521b0ac7a219306c31194f2a72b9328640",
   },
   {
@@ -71,17 +56,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a701dbf6af2f2d1d18ac30521b0ac7a219306c31194f2a72b9328645",
   },
   {
@@ -102,17 +76,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea5d6c6a7011bf6af2f2d1d18ac30521b0ac7a219306c31194f2a72b9328641",
   },
   {
@@ -133,17 +96,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a7011bd6af2f2d1d18ac30521b0ac7a219306c31194f2a72b9328642",
   },
   {
@@ -164,17 +116,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a7011bf6af2f2d1d18ac30521b0ac7a219306d31194f2a72b9328643",
   },
   {
@@ -195,17 +136,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a7011bf6af2f2d1d18ac30521b0ac7a219h06c31194f2a72b9328647",
   },
   {
@@ -226,17 +156,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a7011bf6af2f2d1d18ac30521b0ac7ag19306c31194f2a72b9328647",
   },
   {
@@ -257,17 +176,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec qu",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a7011bf6af2f2d1d18ac30521b0ac7a219c06c31194f2a72b9328647",
   },
   {
@@ -288,17 +196,6 @@ export const fakeTxns: Transaction[] = [
     refund: "",
     toRefund: false,
     note: "",
-    // online params
-    customerEmail: "",
-    item: "",
-    startDate: "",
-    endDate: "",
-    singleDate: "",
-    time: "",
-    countString: "",
-    shipping: {},
-    sku: "",
-    // txnHash
     txnHash: "0x1ea586c6a7011bf6af2f2d1d18ac30521b0ac7a219306c31194f2a72b93a8648",
   },
 ];

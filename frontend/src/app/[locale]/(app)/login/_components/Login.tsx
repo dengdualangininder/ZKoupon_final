@@ -187,13 +187,13 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                   onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
-                  className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-lightText1 [transition:color_500ms]"
+                  className="loginEyeContainer"
                   onClick={() => {
                     setShow(!show);
                     passwordRef.current?.focus();
                   }}
                 >
-                  {show ? <PiEyeLight className="text-[24px]" /> : <PiEyeSlashLight className="text-[24px]" />}
+                  {show ? <PiEyeLight /> : <PiEyeSlashLight />}
                 </div>
               </div>
               {/*--sign in button---*/}

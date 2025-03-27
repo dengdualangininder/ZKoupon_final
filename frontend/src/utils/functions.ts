@@ -71,7 +71,7 @@ export const formatUsd = (amount: string) => {
 //       const res = await fetch("/api/getSettings", {
 //         method: "POST",
 //         headers: { "content-type": "application/json" },
-//         body: JSON.stringify({ w3Info: w3Info }),
+//         body: JSON.stringify({ web3AuthInfo: web3AuthInfo }),
 //       });
 //       if (!res.ok) throw new Error("Failed to fetch");
 //       const resJson = await res.json();
@@ -85,7 +85,7 @@ export const formatUsd = (amount: string) => {
 //       throw new Error("error");
 //     }
 //   },
-//   enabled: w3Info && nullaInfo ? true : false,
+//   enabled: web3AuthInfo && nullaInfo ? true : false,
 //   staleTime: Infinity,
 //   gcTime: Infinity,
 // });
@@ -105,7 +105,7 @@ export const formatUsd = (amount: string) => {
 //       const res = await fetch("/api/getPayments", {
 //         method: "POST",
 //         headers: { "content-type": "application/json" },
-//         body: JSON.stringify({ w3Info: w3Info, nullaInfo: nullaInfo }),
+//         body: JSON.stringify({ web3AuthInfo: web3AuthInfo, nullaInfo: nullaInfo }),
 //       });
 //       if (!res.ok) throw new Error("Failed to fetch");
 //       const resJson = await res.json();
@@ -119,15 +119,15 @@ export const formatUsd = (amount: string) => {
 //       }
 //     }
 //   },
-//   enabled: w3Info && nullaInfo ? true : false,
+//   enabled: web3AuthInfo && nullaInfo ? true : false,
 // });
 
 async function verifyAndGetMerchantData() {
   // console.log("/app, verifyAndGetData()");
   // // get idToken and publicKey
   // try {
-  //   const w3Info = await web3AuthInstance?.getW3Info();
-  //   var idToken = w3Info?.idToken;
+  //   const web3AuthInfo = await web3AuthInstance?.getW3Info();
+  //   var idToken = web3AuthInfo?.idToken;
   //   var privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
   //   var publicKey = getPublic(Buffer.from(privateKey.padStart(64, "0"), "hex")).toString("hex");
   // } catch (e) {
@@ -155,8 +155,8 @@ async function verifyAndGetMerchantData() {
   //   // THREE POSSIBLE REUTRN VALUES
   //   if (data.status == "success") {
   //     console.log("user doc fetched");
-  //     // set w3Info state
-  //     setW3Info({ idToken: idToken, publicKey: publicKey });
+  //     // set web3AuthInfo state
+  //     setWeb3AuthInfo({ idToken: idToken, publicKey: publicKey });
   //     // // subscribe pusher
   //     // subscribePusher(data.doc.paymentSettings.merchantEvmAddress);
   //     // check if redirected from Coinbase

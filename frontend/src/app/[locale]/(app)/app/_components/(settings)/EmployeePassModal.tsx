@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { useW3Info } from "../../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../../Web3AuthProvider";
 import { useQueryClient } from "@tanstack/react-query";
 // utils
 import { fetchPost } from "@/utils/functions";
@@ -8,11 +8,11 @@ import { FaAngleLeft, FaCircleCheck } from "react-icons/fa6";
 import { PiEyeLight, PiEyeSlashLight } from "react-icons/pi";
 import Spinner from "@/utils/components/Spinner";
 
-export default function EmployeePassModal({ setEmployeePassModal, setErrorModal, isEmployeePass }: { setEmployeePassModal: any; setErrorModal: any; isEmployeePass: boolean }) {
+export default function EmployeePassModal({ setEmployeePassModal, setErrorModal, hasEmployeePass }: { setEmployeePassModal: any; setErrorModal: any; hasEmployeePass: boolean }) {
   // hooks
   const t = useTranslations("App.Settings");
   const tcommon = useTranslations("Common");
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const passwordInputRef1 = useRef<HTMLInputElement | null>(null); // focus input when eye is clicked
   const passwordInputRef2 = useRef<HTMLInputElement | null>(null); // focus input when eye is clicked
   const queryClient = useQueryClient();
@@ -53,7 +53,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
     }
     setStatus("pending");
     try {
-      const resJson = await fetchPost("/api/saveEmployeePass", { employeePass: type === "change" ? password1 : "", w3Info });
+      const resJson = await fetchPost("/api/saveEmployeePass", { employeePass: type === "change" ? password1 : "", web3AuthInfo });
       if (resJson === "saved") {
         type === "change" ? setStatus("changed") : setStatus("removed");
         return;
@@ -81,7 +81,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
         )}
 
         {/*--- header ---*/}
-        <div className="fullModalHeader">{isEmployeePass ? t("employeePassModal.changeTitle") : t("employeePassModal.addTitle")}</div>
+        <div className="fullModalHeader">{hasEmployeePass ? t("employeePassModal.changeTitle") : t("employeePassModal.addTitle")}</div>
 
         {/*--- content ---*/}
         <div className="fullModalContentContainer scrollbar">
@@ -111,7 +111,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                       disabled={status === "initial" ? false : true}
                     ></input>
                     <div
-                      className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-lightText1 [transition:color_500ms]"
+                      className="loginEyeContainer"
                       onClick={() => {
                         if (passwordInputRef1.current) {
                           setShow(!show);
@@ -123,7 +123,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                         }
                       }}
                     >
-                      {show ? <PiEyeLight className="text-[24px]" /> : <PiEyeSlashLight className="text-[24px]" />}
+                      {show ? <PiEyeLight /> : <PiEyeSlashLight />}
                     </div>
                     {errors.password1 && <p className="loginError">{errors.password1}</p>}
                   </div>
@@ -150,7 +150,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                       disabled={status === "initial" ? false : true}
                     ></input>
                     <div
-                      className="absolute h-full right-4 top-0 flex justify-center items-center desktop:cursor-pointer text-slate-400 peer-focus:text-lightText1 [transition:color_500ms]"
+                      className="loginEyeContainer"
                       onClick={() => {
                         if (passwordInputRef2.current) {
                           setShow2(!show2);
@@ -162,7 +162,7 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                         }
                       }}
                     >
-                      {show2 ? <PiEyeLight className="text-[24px]" /> : <PiEyeSlashLight className="text-[24px]" />}
+                      {show2 ? <PiEyeLight /> : <PiEyeSlashLight />}
                     </div>
                     {errors.password2 && <p className="loginError">{errors.password2}</p>}
                   </div>
@@ -171,13 +171,13 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                 {/*---buttons---*/}
                 <div className="py-[20px]">
                   <button className="appButton1 w-full" onClick={() => submit("change")}>
-                    {isEmployeePass && t("employeePassModal.changeButton")}
-                    {!isEmployeePass && t("employeePassModal.addButton")}
+                    {hasEmployeePass && t("employeePassModal.changeButton")}
+                    {!hasEmployeePass && t("employeePassModal.addButton")}
                   </button>
                 </div>
 
                 {/*--- remove ---*/}
-                {isEmployeePass && (
+                {hasEmployeePass && (
                   <div className="flex-1 flex items-end pb-[16px]">
                     <button className="appButtonRed w-full" onClick={() => submit("remove")}>
                       {t("employeePassModal.removeButton")}
@@ -195,12 +195,12 @@ export default function EmployeePassModal({ setEmployeePassModal, setErrorModal,
                   <>
                     <div className="flex items-center gap-[12px]">
                       <FaCircleCheck className="inline-block text-green-500 text-[1.4em]" />
-                      {status === "changed" ? (isEmployeePass ? t("employeePassModal.changeMsg") : t("employeePassModal.addMsg")) : t("employeePassModal.removeMsg")}
+                      {status === "changed" ? (hasEmployeePass ? t("employeePassModal.changeMsg") : t("employeePassModal.addMsg")) : t("employeePassModal.removeMsg")}
                     </div>
                     <button
                       className="appButton1 w-full"
                       onClick={() => {
-                        queryClient.invalidateQueries({ queryKey: ["settings"] }); // do this at end to keep old isEmployeePass state
+                        queryClient.invalidateQueries({ queryKey: ["settings"] }); // do this at end to keep old hasEmployeePass state
                         setEmployeePassModal(false);
                       }}
                     >

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 // custom hooks
-import { useW3Info } from "../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 import { useTxnsQuery } from "../../hooks";
 // i18n
 import { useTranslations } from "next-intl";
@@ -28,10 +28,10 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
   console.log("(app)/_components/Payments.tsx");
   // hooks
   const t = useTranslations("App.Payments");
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const loadRef = useRef(null);
   const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery, while setTempFilter will not
-  const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(w3Info, nullaInfo, filter);
+  const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(web3AuthInfo, nullaInfo, filter);
   console.log("txns:", txns);
 
   // states
@@ -93,13 +93,13 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
         {/*--- BUTTONS ---*/}
         <div
           className={`pt-[20px] portrait:sm:pt-[32px] landscape:lg:pt-[32px] desktop:!pt-[24px] paymentsWidth grid ${
-            w3Info ? "grid-cols-[25%_25%_50%]" : "grid-cols-[50%_50%]"
+            web3AuthInfo ? "grid-cols-[25%_25%_50%]" : "grid-cols-[50%_50%]"
           } items-center`}
         >
           <button className="paymentsIconContainer" onClick={() => setSearchModal({ render: true, show: true })}>
             <FiSearch className="paymentsIcon" />
           </button>
-          {w3Info && (
+          {web3AuthInfo && (
             <button
               className="paymentsIconContainer"
               onClick={() => {

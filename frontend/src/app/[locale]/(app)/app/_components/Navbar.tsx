@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { useW3Info } from "../../Web3AuthProvider";
+import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 import { useTranslations } from "next-intl";
 
 export default function Navbar({ selectedMenu, setSelectedMenu, setSignOutModal }: { selectedMenu: string; setSelectedMenu: any; setSignOutModal: any }) {
-  const w3Info = useW3Info();
+  const web3AuthInfo = useWeb3AuthInfo();
   const t = useTranslations("App.Page");
 
   const menus = [
@@ -15,7 +15,7 @@ export default function Navbar({ selectedMenu, setSelectedMenu, setSignOutModal 
   return (
     <div className="appNavColor fixed landscape:w-[120px] landscape:lg:w-[160px] landscape:desktop:w-[200px]! landscape:h-screen portrait:w-full portrait:h-[80px] portrait:sm:h-[140px] portrait:desktop:h-[140px]! flex justify-center items-center z-1">
       <div className="w-full h-full flex landscape:flex-col items-center justify-around landscape:lg:max-h-[640px] desktop:max-h-[500px]! portrait:portrait:px-[4px] portrait:max-w-[650px] portrait:pb-[15px]">
-        {w3Info &&
+        {web3AuthInfo &&
           menus.map((menu) => (
             <div
               className={`${
@@ -33,7 +33,7 @@ export default function Navbar({ selectedMenu, setSelectedMenu, setSignOutModal 
             </div>
           ))}
 
-        {!w3Info && (
+        {!web3AuthInfo && (
           <div className="link" onClick={() => setSignOutModal(true)}>
             Sign Out
           </div>
