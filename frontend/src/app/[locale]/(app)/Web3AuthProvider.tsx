@@ -161,7 +161,9 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       const userInfo = await web3AuthInstance?.getUserInfo();
       const privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
       const publicKey = getPublic(Buffer.from(privateKey.padStart(64, "0"), "hex")).toString("hex");
-      const merchantEvmAddress = getAddress("0x" + keccak256(new Uint8Array(Buffer.from(publicKey.substring(2), "hex"))).slice(-40)); // slice(-40) keeps last 40 chars
+      console.log("publicKey", publicKey);
+      // const merchantEvmAddress = getAddress("0x" + keccak256(new Uint8Array(Buffer.from(publicKey.substring(2), "hex"))).slice(-40)); // slice(-40) keeps last 40 chars
+      const merchantEvmAddress = getAddress("0x" + keccak256(("0x" + publicKey.substring(2)) as `0x${string}`).slice(-40)); // slice(-40) keeps last 40 chars
       if (userInfo.idToken && publicKey) {
         const userType = getCookie("userType");
         const userJwt = getCookie("userJwt");

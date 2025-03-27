@@ -4,27 +4,29 @@ import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 
 export const GET = async (request: Request) => {
-  console.log("getEmployeeData api");
-  // read cookies
-  const cookieStore = cookies();
-  const jwt = cookieStore.get("employeeJwt")?.value ?? "";
+  console.log("/api/getEmployeeData api");
 
+  // get userJwt
+  const cookieStore = cookies();
+  const userJwt = cookieStore.get("userJwt")?.value ?? "";
+  if (!userJwt) Response.json({ status: "error", message: "no userJwt" });
+
+  // verify
   try {
-    // verify
-    const secret = new TextEncoder().encode(process.env.JWT_KEY!); // format secret
-    const { payload } = await jwtVerify(jwt, secret, {}); // verify token
-    // fetch doc and return transactions
-    await dbConnect();
-    try {
-      const doc = await UserModel.findOne({ "paymentSettings.merchantEmail": payload.merchantEmail });
-      console.log("found doc and return transactions");
-      return Response.json({ status: "success", paymentSettings: doc.paymentSettings, transactions: doc.transactions });
-    } catch (error) {
-      console.log(error);
-      return Response.json({ status: "error", message: "could not fetch doc" });
-    }
-  } catch (error) {
+    const secret = new TextEncoder().encode(process.env.JWT_KEY!); // convert to Uint8Array
+    var { payload } = await jwtVerify(userJwt, secret, {}); // throws error if not verified
+  } catch (e) {
     console.log("Token is invalid");
     return Response.json({ status: "error", message: "token is invalid" });
+  }
+
+  // fetch data
+  try {
+    await dbConnect();
+    const doc = await UserModel.findOne({ "paymentSettings.merchantEmail": payload.merchantEmail });
+    return Response.json({ status: "success", paymentSettings: doc.paymentSettings, transactions: doc.transactions });
+  } catch (e) {
+    console.log(e);
+    return Response.json({ status: "error", message: "could not fetch doc" });
   }
 };
