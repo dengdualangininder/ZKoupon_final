@@ -16,18 +16,18 @@
       "selectCurrency": "Select your currency",
       "step-1": "You display a QR code",
       "step-2": "Customer scans and pays with MetaMask",
-      "step-3": "You confirm payment on the Nulla App",
+      "step-3": "You confirm payment on the Nulla Pay App",
       "step-4": "You cash out",
       "step-1-1": "You receive the QR code after setting up",
       "step-2-1": "When the customer scans your QR code, their <span1><span2>MetaMask app<sup>?</sup></span2><div>{tooltip}</div></span1> will open",
       "step-2-2": "The customer enters the amount of {merchantCurrency} for payment",
-      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask to your Nulla App",
-      "step-3-1": "~5 seconds after a customer pays, you should see the payment in the Nulla App. Your employees can also log into your Nulla App (with restricted functions), so they can confirm successful payments",
+      "step-2-3": "When the customer submits payment, <span1><span2>USDC tokens<sup>?</sup></span2><div>{tooltip}</div></span1> <span3>(with a value equal to the amount of {merchantCurrency} entered)</span3> will be sent from their MetaMask to your Nulla Pay App",
+      "step-3-1": "~5 seconds after a customer pays, you should see the payment in the Nulla Pay App. Your employees can also log into your Nulla Pay App (with restricted functions), so they can confirm successful payments",
       "step-4-1cb": "To transfer funds to your bank, you must have a Coinbase account (sign up here)",
-      "step-4-2cb": "In the Nulla App, click \u0022Link Coinbase Account\u0022",
+      "step-4-2cb": "In the Nulla Pay App, click \u0022Link Coinbase Account\u0022",
       "step-4-3cb": "Click \u0022Cash Out\u0022 and follow the on-screen instructions. USDC will be automatically converted to {merchantCurrency}<span> at a 1:1 rate</span> and the money sent to your bank (~0% fees)",
       "step-4-1": "<a>Download the MAX Exchange App</a> and register an account",
-      "step-4-2": "Copy your MAX account's USDC deposit address (for Polygon) and paste it into the Nulla App (in the \u0022Cash Out Platform\u0022 field under \u0022Settings\u0022)",
+      "step-4-2": "Copy your MAX account's USDC deposit address (for Polygon) and paste it into the Nulla Pay App (in the \u0022Cash Out Platform\u0022 field under \u0022Settings\u0022)",
       "step-4-3": "In the \u0022Cash Out\u0022 menu, click \u0022Transfer to MAX\u0022 to transfer USDC to your MAX account",
       "step-4-4": "Log into your MAX App. Sell USDC for TWD* and withdraw the money to your bank",
       "step-4-setup": "Set Up",
@@ -56,8 +56,8 @@
     "Simple": {
       "header-1": "Simplicity means",
       "header-2": "low overhead",
-      "body-1": "The Nulla App has a minimalistic interface, so you or your employees can easily confirm payments or make refunds.",
-      "body-2": "<span>If you have a PoS system,</span> using Nulla Pay should not significantly increase your overhead. When a customer pays through Nulla Pay, we recommend entering the transaction in your PoS system as a cash payment, so you have a record of the transaction within a single system. You or your employees would only use the Nulla App to confirm if a payment was successful or not."
+      "body-1": "The Nulla Pay App has a minimalistic interface, so you or your employees can easily confirm payments or make refunds.",
+      "body-2": "<span>If you have a PoS system,</span> using Nulla Pay should not significantly increase your overhead. When a customer pays through Nulla Pay, we recommend entering the transaction in your PoS system as a cash payment, so you have a record of the transaction within a single system. You or your employees would only use the Nulla Pay App to confirm if a payment was successful or not."
     },
     "Why": {
       "header": "Why set up crypto payments?",
@@ -93,12 +93,12 @@
       "lesson-5-1": "If you have MetaMask, you can easily receive USDC payments from customers. What can Nulla Pay do that MetaMask cannot do?",
       "lesson-5-2": "First, most blockchain users transact in USDC (1 USDC = 1 USD). In non-USD countries, businesses and customers will have to agree on how much USDC should be sent for payment. With Nulla Pay, the customer can enter the amount of local currency ({merchantCurrency}) for payment. Nulla Pay then applies a fair exchange rate to calculate the amount of USDC sent for payment. Nulla Pay does not profit through exchange rates, so you and your customers are always gauranteed true market rates. Furthermore, Nulla Pay is designed so that you will not lose money from fluctuating rates (<span1><span2>how?</span2><div>{tooltip}</div></span1>).",
       "lesson-5-3": "Furthermore, with Nulla Pay, businesses do not need to worry about 12-word secret phrases or gas tokens, making Nulla Pay much easier to use than MetaMask. Lastly, businesses can download a .CSV file of all payment details to help with accounting.",
-      "lesson-5-4": "Nulla Pay also helps businesses cash out to the bank with zero additional fees. Without Nulla Pay, businesses will have to transfer tokens from MetaMask to their cryptocurrency exchange, log into their cryptocurrency exchange, sell USDC, and make a withdrawal to their bank. This is a time consuming process. With Nulla Pay,businesses can cash out to their bank in a single interface on the Nulla App.",
+      "lesson-5-4": "Nulla Pay also helps businesses cash out to the bank with zero additional fees. Without Nulla Pay, businesses will have to transfer tokens from MetaMask to their cryptocurrency exchange, log into their cryptocurrency exchange, sell USDC, and make a withdrawal to their bank. This is a time consuming process. With Nulla Pay,businesses can cash out to their bank in a single interface on the Nulla Pay App.",
       "lesson-5-5": "The functions above cannot be completed with MetaMask alone. Nulla Pay is a simple, low-cost tool that can help any business set up crypto payments."
     },
     "Support": {
       "header": "Support",
-      "body": "For helpful information, read the “Instructions” in the Nulla App’s “Settings” menu or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@nullapay.com"
+      "body": "For helpful information, read the “Instructions” in the Nulla Pay App’s “Settings” menu or the “How It Works” and “Learning Center” sections on this website. For further assistance, email support@nullapay.com"
     },
     "Footer": { "company": "Company", "links": "Links", "about": "About Us", "how": "How It Works", "why": "Why Use Nulla Pay", "learn": "Learning Center" },
     "Common": {

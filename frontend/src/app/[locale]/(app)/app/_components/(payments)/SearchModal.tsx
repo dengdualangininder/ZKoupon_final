@@ -47,7 +47,7 @@ export default function SearchModal({
   return (
     <>
       <div className={`fixed inset-0 z-10`} onClick={close}></div>
-      <div className={`${searchModal.show ? "animate-slideIn" : "animate-slideOut"} sidebarModal`}>
+      <div className={`sidebarModal ${searchModal.show ? "!translate-x-0" : "translate-x-[-101%]"} transition-all duration-500`}>
         {/*--- mobile back ---*/}
         <FaAngleLeft className="mobileBack" onClick={close} />
         {/*--- tablet/desktop close ---*/}

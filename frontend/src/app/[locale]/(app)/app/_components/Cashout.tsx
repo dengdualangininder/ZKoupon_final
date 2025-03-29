@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 // hooks
-import { useCexBalanceQuery, useNullaBalanceQuery, useCexTxnsQuery } from "../../hooks";
+import { useCexBalanceQuery, useNullaBalanceQuery, useCexTxnsQuery } from "../../../../../utils/hooks";
 // other
 import { v4 as uuidv4 } from "uuid";
 // i18n

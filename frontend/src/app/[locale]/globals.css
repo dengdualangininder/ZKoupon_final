@@ -123,11 +123,11 @@
 }
 
 @utility appButtonSizeStd {
-  @apply h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:h-[48px]! textBaseApp font-medium;
+  @apply flex-none h-[56px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:h-[48px]! textBaseApp font-medium;
 }
 
 @utility appButtonSizeSm {
-  @apply h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:h-[40px]! textSmApp font-medium;
+  @apply flex-none h-[48px] portrait:sm:h-[52px] landscape:lg:h-[52px] desktop:h-[40px]! textSmApp font-medium;
 }
 
 /*--- app buttons ---*/
@@ -170,29 +170,22 @@
 
 /* --- intro buttons --- */
 
-.introButtonPrimary {
-  @apply w-[120px] appButtonHeight button1ColorLight font-medium rounded-full;
-}
-
-.introButtonSecondary {
-  @apply w-[120px] appButtonHeight border-2 button2Color font-medium rounded-full;
-}
-
-@utility introNextNoColor {
-  @apply mr-[4px] w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:w-[96px]! appButtonHeight font-semibold rounded-[6px];
+@utility introButtonWidth {
+  @apply w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:w-[92px]!;
 }
 
 .introNext {
-  @apply introNextNoColor button1ColorLight;
-}
-
-.cashoutIntroNext {
-  @apply introNextNoColor button1Color;
+  @apply button1ColorLight appButtonSizeStd flex items-center justify-center rounded-[8px] introButtonWidth;
 }
 
 .introBack {
-  @apply ml-[8px] xs:ml-0 w-[104px] portrait:sm:w-[120px] landscape:lg:w-[120px] desktop:w-[96px]! appButtonHeight font-semibold text-slate-400 active:brightness-[1.2] desktop:hover:brightness-[1.2];
+  @apply button2Color border-transparent! appButtonSizeStd flex items-center justify-center rounded-[8px] introButtonWidth;
 }
+
+.cashoutIntroNext {
+  @apply button1Color appButtonSizeStd flex items-center justify-center rounded-[8px] introButtonWidth;
+}
+
 /* --- input colors --- */
 
 @utility appInputHeight {
@@ -200,11 +193,11 @@
 }
 
 @utility inputColor {
-  @apply rounded-[8px] border-[1.5px] bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms];
+  @apply rounded-[8px] border-[1.5px] bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholderStyle transition-all duration-[500ms];
 }
 
 @utility settingsInputColor {
-  @apply rounded-[8px] border-[1.5px] bg-transparent focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 focus:text-lightText1! dark:focus:text-darkText1! border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholder:placeholderColor focus:placeholder:text-transparent transition-all duration-[500ms] desktop:group-hover:text-slate-500;
+  @apply rounded-[8px] border-[1.5px] bg-transparent focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 focus:text-lightText1! dark:focus:text-darkText1! border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholderStyle transition-all duration-[500ms] desktop:group-hover:text-slate-500;
 }
 
 @utility checkboxColor {
@@ -215,8 +208,8 @@
   @apply text-[20px] portrait:sm:text-[24px] landscape:lg:text-[24px] desktop:text-[16px]!;
 }
 
-@utility placeholderColor {
-  @apply italic text-slate-400 dark:text-zinc-700;
+@utility placeholderStyle {
+  @apply placeholder:italic placeholder:text-slate-400 dark:placeholder:text-zinc-700 focus:placeholder:text-transparent;
 }
 
 /* --- app input --- */
@@ -229,22 +222,14 @@
   @apply textBaseAppPx appInputHeight inputColor px-[0.7em];
 }
 
+.appInputSmPx {
+  @apply textSmAppPx appInputHeight inputColor px-[0.7em];
+}
+
 .appInputLabel {
-  @apply pb-[1px] portrait:sm:pb-[3px] landscape:lg:pb-[3px] desktop:pb-[1px] font-medium;
-}
-/* --- intro input --- */
-
-.introLabelFont {
-  @apply font-medium text-lg desktop:text-base;
+  @apply pb-[4px] font-medium;
 }
 
-.introInputFont {
-  @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[12px] text-lg desktop:text-base bg-white border border-slate-400 focus:border-blue-500 outline-hidden transition-all duration-[500ms] rounded-[4px] placeholder:italic;
-}
-
-.introInputFontSmall {
-  @apply mt-1 w-full max-w-[480px] h-[52px] desktop:h-[44px] px-[4px] text-[15px] tracking-tighter bg-white border border-slate-400 outline-hidden focus:border-blue-500 transition-colors duration-500 rounded-[4px] placeholder:italic placeholder:text-lg placeholder:pl-[8px] focus:placeholder:text-transparent;
-}
 /* --- input elements --- */
 
 .checkbox {
@@ -331,7 +316,7 @@
 }
 
 .introButtonContainer {
-  @apply w-full px-2 desktop:px-0 pt-[32px] pb-[44px] flex justify-between flex-none;
+  @apply w-full px-[16px] desktop:px-0 pt-[32px] pb-[44px] flex justify-between flex-none;
 }
 
 .introBulletContainer {
@@ -567,7 +552,7 @@
 }
 /* modal sizes (smallest to largest) */
 @utility errorModalSize {
-  @apply w-[93%] portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:max-w-[440px]! max-h-[90%];
+  @apply w-[90%] portrait:sm:max-w-[500px] landscape:lg:max-w-[500px] desktop:max-w-[400px]! max-h-[90%];
 }
 
 @utility cashoutIntroModalSize {
@@ -597,7 +582,7 @@
 /* specific modals */
 
 .errorModal {
-  @apply modalBase modalColor errorModalSize modalYpadding;
+  @apply modalBase modalColor errorModalSize py-[40px];
 }
 
 .infoModal {
@@ -630,7 +615,7 @@
 
 /* modal content container */
 .errorModalContentContainer {
-  @apply w-full flex flex-col items-center modalXpaddingLg overflow-y-auto;
+  @apply px-[24px] w-full flex flex-col items-center overflow-y-auto;
 }
 
 .fullModalContentContainer {
@@ -638,7 +623,7 @@
 }
 
 .fullModalContentContainer2 {
-  @apply w-full px-[12px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col; /* must define max-w in each individual modal */
+  @apply w-full px-[16px] portrait:sm:px-[32px] landscape:lg:px-[32px] flex flex-col; /* must define max-w in each individual modal */
 }
 /* modal styling */
 @utility modalYpadding {

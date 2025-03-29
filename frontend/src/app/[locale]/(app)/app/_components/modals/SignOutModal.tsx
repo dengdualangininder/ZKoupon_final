@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { deleteUserJwtCookie } from "@/actions";
+import { deleteCookieAction } from "@/utils/actions";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 
 export default function EmployeePassModal({ setSignOutModal }: { setSignOutModal: any }) {
@@ -21,7 +21,7 @@ export default function EmployeePassModal({ setSignOutModal }: { setSignOutModal
             <div className="modalButtonContainer">
               <button
                 onClick={async () => {
-                  await deleteUserJwtCookie();
+                  await deleteCookieAction("userJwt");
                   window.location.href = "/login"; // hard refresh on route
                 }}
                 className="appButton1 modalButtonWidth"

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 // custom hooks
-import { useNullaBalanceQuery, useCexBalanceQuery, useCexTxnsQuery } from "../../../hooks";
+import { useNullaBalanceQuery, useCexBalanceQuery, useCexTxnsQuery } from "../../../../../../utils/hooks";
 // wagmi & viem
 import { useConfig, useAccount } from "wagmi";
 import { readContract, signTypedData, getTransactionReceipt } from "@wagmi/core";

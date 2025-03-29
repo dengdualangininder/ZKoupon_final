@@ -5,7 +5,7 @@ import { useRouter } from "@/i18n/routing";
 // hooks
 import { useTheme } from "next-themes";
 import { useWeb3AuthInfo } from "../../Web3AuthProvider";
-import { useLogout, useSettingsMutation } from "../../hooks";
+import { useLogout, useSettingsMutation } from "../../../../../utils/hooks";
 // i18n
 import { useLocale, useTranslations } from "next-intl";
 // hook-form & zod
@@ -318,7 +318,7 @@ export default function Settings({ paymentSettings, cashoutSettings, setErrorMod
               {paymentSettings.hasEmployeePass ? (
                 "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
               ) : (
-                <p className="italic pr-[3px] text-slate-400 dark:text-slate-500">{t("empty")}</p>
+                <p className="italic pr-[3px] text-slate-400 dark:text-zinc-700">{t("empty")}</p>
               )}
               <div className="pt-[2px] text-[18px]">&#10095;</div>
             </div>

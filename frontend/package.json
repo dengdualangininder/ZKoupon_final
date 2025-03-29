@@ -31,6 +31,7 @@
     "eslint-config-next": "^14.2.13",
     "ethers": "^6.11.1",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.6.2",
     "googleapis": "^142.0.0",
     "jose": "^5.2.3",
     "jsonwebtoken": "^9.0.2",

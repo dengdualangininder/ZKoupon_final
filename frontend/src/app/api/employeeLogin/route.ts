@@ -7,20 +7,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { SignJWT } from "jose";
 import { createSecretKey } from "crypto";
 
-export const POST = async (request: Request) => {
-  console.log("entering employeeLogin api");
+export const POST = async (req: Request) => {
+  console.log("entered /api/employeeLogin");
+  const { merchantEmail, employeePass } = await req.json();
 
-  // request body
-  const { merchantEmail, employeePass } = await request.json();
-
-  await dbConnect();
   try {
+    await dbConnect();
     var doc = await UserModel.findOne({ "paymentSettings.merchantEmail": merchantEmail }, { "paymentSettings.merchantEvmAddress": 1, hashedEmployeePass: 1 });
-  } catch (e) {
-    return Response.json({ status: "error", message: "Error when searching the database" });
-  }
-
-  try {
     if (doc) {
       const isPasswordCorrect = await bcrypt.compare(employeePass, doc.hashedEmployeePass);
       if (isPasswordCorrect) {
@@ -32,12 +25,13 @@ export const POST = async (request: Request) => {
         const response = NextResponse.json({ status: "success" });
         response.cookies.set("userJwt", token);
         response.cookies.set("userType", "employee");
-        return response;
+        return NextResponse.redirect(new URL("/app", req.url));
+      } else {
+        return NextResponse.json({ status: "error", message: "Incorrect email or password" });
       }
+    } else {
+      return NextResponse.json({ status: "error", message: "Incorrect email or password" });
     }
-    return Response.json({ status: "error", message: "Incorrect email or password" });
-  } catch (e) {
-    console.log(e);
-    return Response.json({ status: "error", message: "Incorrect email or password" });
-  }
+  } catch (e) {}
+  return Response.json({ status: "error", message: "Internal server error" });
 };

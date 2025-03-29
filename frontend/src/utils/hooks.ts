@@ -2,44 +2,34 @@ import { useCallback } from "react";
 import { useRouter } from "@/i18n/routing";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useDisconnect, useAccount, useReadContract } from "wagmi";
-import { getTransactionReceipt } from "@wagmi/core";
 // utils
+import { fetchPost } from "@/utils/functions";
 import { NullaInfo, Web3AuthInfo } from "@/utils/types";
 import erc20Abi from "@/utils/abis/erc20Abi";
-// actions
-import { deleteUserJwtCookie } from "@/actions";
+import { deleteCookieAction, initIntroAction } from "@/utils/actions";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
-// types
 import { Transaction } from "@/db/UserModel";
-import { Rates, Filter } from "@/utils/types";
+import { Filter } from "@/utils/types";
 import { formatUnits } from "viem";
 
 export const useSettingsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: NullaInfo) => {
-  const router = useRouter();
   const logout = useLogout();
   return useQuery({
     queryKey: ["settings"],
-    queryFn: async (): Promise<{ paymentSettings: PaymentSettings; cashoutSettings: CashoutSettings } | null> => {
+    queryFn: async (): Promise<{ paymentSettings: PaymentSettings; cashoutSettings: CashoutSettings }> => {
       console.log("useSettingsQuery queryFn ran");
-
-      const res = await fetch("/api/getSettings", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ web3AuthInfo, nullaInfo }),
-      });
-      const resJson = await res.json();
+      const resJson = await fetchPost("/api/getSettings", { web3AuthInfo, nullaInfo });
       if (resJson.status === "success") {
         console.log("settings fetched", resJson.data);
         return resJson.data;
       }
-      if (resJson === "create new user") {
-        console.log("queryFn detected new user, pushed to /intro");
-        router.push("/intro");
-        return null;
+      if (resJson.status === "new user") {
+        console.log("queryFn detected new user, set isIntro=true, pushed to /intro");
+        initIntroAction();
+        return resJson.data;
       }
       if (resJson === "not verified") {
         logout();
-        return null;
       }
       throw new Error();
     },
@@ -67,7 +57,7 @@ export const useSettingsMutation = () => {
       throw new Error();
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["settings"] });
+      queryClient.invalidateQueries({ queryKey: ["settings"] }); // use onSettled over onSuccess to revert any optimistic updates
     },
   });
 };
@@ -185,7 +175,7 @@ export const useLogout = () => {
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     window.localStorage.removeItem("auth_store");
-    await deleteUserJwtCookie();
+    await deleteCookieAction("userJwt");
     await disconnectAsync();
     window.location.href = "/login"; // hard refresh so provider useEffect is re-run (router.push not effective); locale is facotred in
   }, []);
@@ -197,6 +187,6 @@ export async function logoutNoDisconnect() {
   console.log("logoutNoDisconnect()");
   window.sessionStorage.removeItem("cbAccessToken");
   window.localStorage.removeItem("cbRefreshToken");
-  await deleteUserJwtCookie();
+  await deleteCookieAction("userJwt");
   window.location.href = "/login"; // hard refresh so provider useEffect is re-run (router.push not effective); locale is facotred in
 }

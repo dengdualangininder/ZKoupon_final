@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 // custom hooks
 import { useWeb3AuthInfo } from "../../Web3AuthProvider";
-import { useTxnsQuery } from "../../hooks";
+import { useTxnsQuery } from "../../../../../utils/hooks";
 // i18n
 import { useTranslations } from "next-intl";
 // components
@@ -96,7 +96,13 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
             web3AuthInfo ? "grid-cols-[25%_25%_50%]" : "grid-cols-[50%_50%]"
           } items-center`}
         >
-          <button className="paymentsIconContainer" onClick={() => setSearchModal({ render: true, show: true })}>
+          <button
+            className="paymentsIconContainer"
+            onClick={() => {
+              setSearchModal({ render: true, show: false });
+              setTimeout(() => setSearchModal({ render: true, show: true }), 20);
+            }}
+          >
             <FiSearch className="paymentsIcon" />
           </button>
           {web3AuthInfo && (

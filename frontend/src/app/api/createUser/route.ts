@@ -17,15 +17,15 @@ export const POST = async (request: NextRequest) => {
   const verified = (jwtDecoded.payload as any).wallets[2].public_key.toLowerCase() === publicKeyCompressed.toLowerCase();
   if (!verified) return Response.json("not verified");
 
-  // return doc of existing user or create new user
+  // create new user
   try {
     await dbConnect();
-    const doc = await UserModel.findOne({ "paymentSettings.merchantEvmAddress": merchantEvmAddress });
-    if (doc) {
-      return NextResponse.json("user already exists"); // this should not happen, as merchantEvmAddress already checked in /api/getSettings. But, use this in case.
+    const exists = await UserModel.exists({ "paymentSettings.merchantEvmAddress": merchantEvmAddress });
+    if (exists) {
+      return NextResponse.json("user already exists"); // need this if existing user goes to /intro
     } else {
       await UserModel.create({
-        hasEmployeePass: false,
+        hashedEmployeePass: "",
         "paymentSettings.merchantEvmAddress": merchantEvmAddress,
         "paymentSettings.merchantEmail": merchantEmail,
         "paymentSettings.merchantName": "",
@@ -34,6 +34,7 @@ export const POST = async (request: NextRequest) => {
         "paymentSettings.merchantPaymentType": "inperson",
         "paymentSettings.merchantGoogleId": "",
         "paymentSettings.qrCodeUrl": "",
+        "paymentSettings.hasEmployeePass": false,
         "cashoutSettings.cex": cex,
         "cashoutSettings.cexEvmAddress": "",
         transactions: [],

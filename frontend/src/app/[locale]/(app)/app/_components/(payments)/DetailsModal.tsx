@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 // context
 import { useWeb3AuthInfo } from "../../../Web3AuthProvider";
 // hooks
-import { useNullaBalanceQuery } from "../../../hooks";
+import { useNullaBalanceQuery } from "../../../../../../utils/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 // i18n
 import { useTranslations } from "next-intl";

@@ -5,7 +5,7 @@ import { useRouter } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { getCookie } from "cookies-next";
 // my hooks
-import { logoutNoDisconnect } from "./hooks";
+import { logoutNoDisconnect } from "../../../utils/hooks";
 // wagmi
 import { WagmiProvider, createConfig, http, type Config } from "wagmi";
 import { polygon } from "wagmi/chains";
@@ -19,7 +19,7 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { getPublic } from "@toruslabs/eccrypto";
 // utils
-import { deleteUserJwtCookie, setNullaCookies } from "@/actions";
+import { deleteCookieAction, setNullaCookiesAction } from "@/utils/actions";
 import { Web3AuthInfo } from "@/utils/types";
 
 const queryClient = new QueryClient();
@@ -114,7 +114,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     // Condition 1
     if (!sessionId) {
       console.log("no sessionId");
-      if (userJwt) deleteUserJwtCookie(); // just in case
+      if (userJwt) deleteCookieAction("userJwt"); // just in case
       listenToOnConnect();
       if (pathname != "/login") router.push("/login"); // just in case
       return;
@@ -132,7 +132,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       setTimeout(() => {
         if (!web3AuthInstance.connected) {
           console.log("web3AuthInstance not connected after 6s, deleted userJwt and auth_store");
-          deleteUserJwtCookie();
+          deleteCookieAction("userJwt");
           window.localStorage.removeItem("auth_store");
           window.location.reload(); // using router.push("/login") won't work, as middleware will redirect to /app, as userJwt cookie not deleted yet
         }
@@ -161,33 +161,16 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
       const userInfo = await web3AuthInstance?.getUserInfo();
       const privateKey: any = await web3AuthInstance?.provider?.request({ method: "eth_private_key" });
       const publicKey = getPublic(Buffer.from(privateKey.padStart(64, "0"), "hex")).toString("hex");
-      // const merchantEvmAddress = getAddress("0x" + keccak256(new Uint8Array(Buffer.from(publicKey.substring(2), "hex"))).slice(-40)); // slice(-40) keeps last 40 chars
-      const merchantEvmAddress = getAddress("0x" + keccak256(("0x" + publicKey.substring(2)) as `0x${string}`).slice(-40)); // slice(-40) keeps last 40 chars
+      const merchantEvmAddress = getAddress("0x" + keccak256(("0x" + publicKey.substring(2)) as `0x${string}`).slice(-40));
       if (userInfo.idToken && publicKey) {
-        const userType = getCookie("userType");
-        const userJwt = getCookie("userJwt");
-        if (!userType || userType === "employee" || !userJwt) await setNullaCookies("owner", merchantEvmAddress); // setNullaCookies will re-render entire route
-        setWeb3AuthInfo({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email });
-        console.log("web3Auth-provider.tsx, setWeb3AuthInfo successful");
-
-        // check for isIntro; if true, then redirect. Need in case user refresh/crash while in /intro
-        if (window.localStorage.getItem("isIntro")) {
-          router.push("/intro");
-          return;
-        }
-
-        if (pathname != "/app") {
-          console.log(`pathname is ${pathname}, so pushed to /app`);
-          router.push("/app");
-        }
-      } else {
-        console.log("logged out because idToken or publicKey returned undefined");
-        logoutNoDisconnect();
+        setWeb3AuthInfo({ idToken: userInfo.idToken, publicKey: publicKey, email: userInfo.email }); // set web3auth info
+        setNullaCookiesAction(merchantEvmAddress, pathname); // sever action will redirect to /app if not already in /app
+        console.log("setWeb3AuthInfo & setNullaCookies successful");
+        return;
       }
-    } catch (e) {
-      console.log("logged out because error when getting idToken or publicKey");
-      logoutNoDisconnect();
-    }
+    } catch (e) {}
+    console.log("logged out, error when getting idToken or publicKey");
+    logoutNoDisconnect();
   }
 
   return (

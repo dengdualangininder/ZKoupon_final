@@ -79,8 +79,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
       });
       const resJson = await res.json();
       if (resJson.status == "success") {
-        console.log("employee login authenticated, pushed to /app");
-        router.push("/app");
+        console.log("employee authenticated, pushed to /app"); // api will redirect to /app
       } else if (resJson.status == "error") {
         console.log("Incorrect email or password");
         setErrorModal(resJson.message);
@@ -96,7 +95,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   };
 
   return (
-    <div className="w-full h-screen flex flex-col items-center overflow-y-auto textBaseApp bg-light2 text-lightText1">
+    <div className="w-full h-screen flex justify-center overflow-y-auto textBaseApp bg-light2 text-lightText1">
       <div className="pt-[12px] px-[24px] w-full max-w-[440px] desktop:max-w-[360px] h-full max-h-[900px] flex flex-col items-center my-auto">
         {/*--- LANG/LOGO/MENU CONTAINER ---*/}
         <div className="flex-none w-full h-[34%] min-h-[240px] flex flex-col items-center justify-between">
