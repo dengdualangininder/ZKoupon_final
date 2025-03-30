@@ -95,12 +95,12 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     console.log("web3Auth-provider.tsx useEffect");
 
     // redirect to "saveToHome" if needed
-    // const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
-    // const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    // if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
-    //   router.push("/saveAppToHome");
-    //   return;
-    // }
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
+      router.push("/saveAppToHome");
+      return;
+    }
 
     // get cookies & session Id (must use getCookie inside useEffect)
     const userType = getCookie("userType");
@@ -109,10 +109,7 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     const auth_store = window.localStorage.getItem("auth_store");
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
 
-    if (userType === "employee" && userJwt) {
-      console.log("userType = employee, skipped web3auth flow");
-      return; // if logged in as employee, skip web3auth flow; if employee (but not logged in), must keep web3auth in case user logs in as owner later
-    }
+    if (userType === "employee" && userJwt) return; // if employee and logged in (has userJwt), skip web3auth flow; if employee but not logged in, listen to web3auth connect in case
 
     // Condition 1
     if (!sessionId) {

@@ -14,7 +14,7 @@ import SelectLang from "@/utils/components/SelectLang";
 import ErrorModalLight from "@/utils/components/ErrorModalLight";
 import { MyConnector } from "@/utils/types";
 import { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
-import { setCookieAction } from "@/utils/actions";
+import { deleteCookieAction, setCookieAction } from "@/utils/actions";
 
 export default function Login({ userTypeFromCookies }: { userTypeFromCookies: string | undefined }) {
   console.log("(app)/login/_components/Login.tsx");
@@ -40,14 +40,14 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const [errorModal, setErrorModal] = useState<React.ReactNode | null>(null);
 
   // redirect to "saveToHome" page if mobile & not standalone
-  // useEffect(() => {
-  //   const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
-  //   const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-  //   if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
-  //     router.push("/saveAppToHome");
-  //     return;
-  //   }
-  // }, []);
+  useEffect(() => {
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
+      router.push("/saveAppToHome");
+      return;
+    }
+  }, []);
 
   // if Apple, add Apple social login
   useEffect(() => {
@@ -60,7 +60,6 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
     try {
       await connectAsync({ connector: connectors[connectorIndex] }); // wait for web3Auth.on CONNECT to initiate and redirect to /app
     } catch (e) {
-      console.log(e);
       setSelectedSocial("");
       setIsLoggingIn(false);
     }
@@ -135,7 +134,6 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                   key={i.name}
                   className="w-full h-[68px] desktop:h-[54px] flex items-center text-slate-600 font-medium bg-white rounded-[8px] shadow-md hover:shadow-lg active:shadow-lg transition-all duration-300 cursor-pointer select-none"
                   onClick={async () => {
-                    await setCookieAction("userType", "owner");
                     setSelectedSocial(i.name);
                     ownerLogin(i.connectorIndex);
                   }}
@@ -206,6 +204,8 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
                   localStorage.clear();
+                  deleteCookieAction("userType");
+                  deleteCookieAction("userJwt");
                 }}
               >
                 {t("forgot")}
