@@ -437,7 +437,7 @@
   @apply pt-[40px] desktop:pt-[36px] pb-[24px] transferCard;
 }
 
-.appInputLabeltransferIcon {
+.transferIcon {
   @apply flex-none w-[52px] h-[52px] desktop:w-[50px] desktop:h-[50px] rounded-[8px] overflow-hidden relative;
 }
 
