@@ -445,7 +445,7 @@
     "balance": "餘額",
     "blockchainFee": "區塊鏈費用",
     "fromCoinbase": "從 Coinbase",
-    "toBank": "到銀行",
+    "bank": "銀行",
     "enterAnEvmAddress": "輸入 EVM 地址",
     "transferring": "出金中",
     "transferSuccessful": "出金成功",

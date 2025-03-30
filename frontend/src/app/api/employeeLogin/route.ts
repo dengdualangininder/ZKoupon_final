@@ -3,7 +3,7 @@ import UserModel from "@/db/UserModel";
 import { keccak256, getAddress } from "viem";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
 import { createSecretKey } from "crypto";
 
@@ -22,10 +22,9 @@ export const POST = async (req: Request) => {
           .setProtectedHeader({ alg: "HS256" }) // algorithm
           .setExpirationTime("3 days") // token expiration time, e.g., "1 day"
           .sign(secretKey); // secretKey generated from previous step
-        const response = NextResponse.json({ status: "success" });
-        response.cookies.set("userJwt", token);
-        response.cookies.set("userType", "employee");
-        return NextResponse.redirect(new URL("/app", req.url));
+        cookies().set("userJwt", token);
+        cookies().set("userType", "employee");
+        return NextResponse.json("success");
       } else {
         return NextResponse.json({ status: "error", message: "Incorrect email or password" });
       }
@@ -33,5 +32,5 @@ export const POST = async (req: Request) => {
       return NextResponse.json({ status: "error", message: "Incorrect email or password" });
     }
   } catch (e) {}
-  return Response.json({ status: "error", message: "Internal server error" });
+  return NextResponse.json({ status: "error", message: "Internal server error" });
 };

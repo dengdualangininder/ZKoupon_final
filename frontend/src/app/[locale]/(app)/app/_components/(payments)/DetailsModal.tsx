@@ -278,14 +278,14 @@ const DetailsModal = ({
         {/*--- CONTENT ---*/}
         <div className="fullModalContentContainer scrollbar settingsFont pb-[16px]">
           <div className="fullModalContentContainer2 max-w-[600px]">
-            {/*--- details ---*/}
+            {/*--- Time ---*/}
             <div className="detailsField">
               <p className="detailsLabelText">{t("time")}</p>
               <p className="detailsValueText">
                 {getLocalDate(clickedTxn?.date)} | {getLocalTime(clickedTxn?.date)?.time} {getLocalTime(clickedTxn?.date)?.ampm}
               </p>
             </div>
-            {/*--- value & value after cashback ---*/}
+            {/*--- Payment Value ---*/}
             <div className="detailsField">
               <p className="detailsLabelText">{t("value")}</p>
               <div className="flex items-center">
@@ -303,6 +303,7 @@ const DetailsModal = ({
                 </p>
               </div>
             </div>
+            {/*--- USDC Received ---*/}
             <div className="detailsField">
               <p className="detailsLabelText">{t("tokens")}</p>
               <div className="detailsValueText flex items-center">
@@ -313,6 +314,7 @@ const DetailsModal = ({
                 {clickedTxn?.blockRate} = {clickedTxn?.tokenAmount} USDC
               </div>
             </div>
+            {/*--- Customer's Address ---*/}
             <div className="detailsField">
               <p className="detailsLabelText pr-[16px]">{t("customerAddress")}</p>
               <div
@@ -333,7 +335,50 @@ const DetailsModal = ({
                 )}
               </div>
             </div>
-            <div className="detailsField">
+            {/*--- REFUND STATUS ---*/}
+            {refundState !== "refunded" && (
+              <>
+                {/*--- Label as "To Refund"? ---*/}
+                <div className="detailsField">
+                  <div className="detailsLabelText">{t("toRefund")}</div>
+                  <Toggle checked={clickedTxn?.toRefund} onClick={onClickToRefund} />
+                </div>
+                {/*--- Refund Now? ---*/}
+                {web3AuthInfo && (
+                  <div className="detailsField">
+                    {refundState === "notRefunded" && (
+                      <>
+                        <div className="detailsLabelText">{t("refundNow")}</div>
+                        <button className="button1Color refundButtonBase" onClick={() => setRefundState("confirmRefund")}>
+                          {t("refund")}
+                        </button>
+                      </>
+                    )}
+                    {refundState === "confirmRefund" && (
+                      <>
+                        <div className="font-medium">Confirm refund?</div>
+                        <div className="flex gap-[24px]">
+                          <button className="button1Color refundButtonBase" onClick={onClickRefund}>
+                            {t("refund")}
+                          </button>
+                          <button className="button2Color refundButtonBase" onClick={() => setRefundState("notRefunded")}>
+                            {tcommon("cancel")}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {refundState === "refunding" && (
+                      <>
+                        <div className="font-medium">{t("refunding")}</div>
+                        <SpinningCircleWhiteSm />
+                      </>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+            {/*--- notes ---*/}
+            <div className="detailsField items-start!">
               <p className="detailsLabelText pr-[16px]">{t("notes")}</p>
               <textarea
                 className="inputColor font-normal px-[8px] py-[4px] w-full rounded-[8px] h-auto"
@@ -345,59 +390,15 @@ const DetailsModal = ({
                 placeholder="Enter notes here"
               />
             </div>
-
-            {/*--- REFUND STATUS ---*/}
-            <div className="mt-[14px] w-full bg-light3 dark:bg-dark3 rounded-[16px] px-[24px] py-[20px]">
-              <div className="text-center pb-[24px]">Refund Status</div>
-              {refundState === "refunded" ? (
-                <div className="textSmApp w-full flex flex-col items-center gap-[8px]">
-                  <div className="textGray">{t("refunded")}</div>
-                  <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${refundTxnHash}`} target="_blank">
-                    See transaction <FaArrowUpRightFromSquare className="inline-block text-[16px]" />
-                  </a>
-                </div>
-              ) : (
-                <div className="space-y-[44px]">
-                  {/*--- "To Refund" toggle ---*/}
-                  <div className="w-full flex items-center justify-between">
-                    <div className="font-medium">{t("toRefund")}</div>
-                    <Toggle checked={clickedTxn?.toRefund} onClick={onClickToRefund} />
-                  </div>
-                  {/*--- refund button ---*/}
-                  {web3AuthInfo && (
-                    <div className="w-full h-[56px] flex items-center justify-between">
-                      {refundState === "notRefunded" && (
-                        <>
-                          <div className="font-medium">{t("refundNow")}</div>
-                          <button className="button1Color refundButtonBase" onClick={() => setRefundState("confirmRefund")}>
-                            {t("refund")}
-                          </button>
-                        </>
-                      )}
-                      {refundState === "confirmRefund" && (
-                        <>
-                          <div className="font-medium">Confirm refund?</div>
-                          <div className="flex gap-[24px]">
-                            <button className="button1Color refundButtonBase" onClick={onClickRefund}>
-                              {t("refund")}
-                            </button>
-                            <button className="button2Color refundButtonBase" onClick={() => setRefundState("notRefunded")}>
-                              {tcommon("cancel")}
-                            </button>
-                          </div>
-                        </>
-                      )}
-                      {refundState === "refunding" && (
-                        <>
-                          <div className="font-medium">{t("refunding")}</div>
-                          <SpinningCircleWhiteSm />
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            {/*--- refunded? show this msg ---*/}
+            {refundState === "refunded" && (
+              <div className="py-[32px] w-full flex flex-col items-center gap-[12px]">
+                <div className="textLgApp textGray">{t("refunded")}</div>
+                <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${refundTxnHash}`} target="_blank">
+                  See transaction <FaArrowUpRightFromSquare className="inline-block text-[16px]" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

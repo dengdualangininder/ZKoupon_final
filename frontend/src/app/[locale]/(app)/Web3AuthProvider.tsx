@@ -109,7 +109,10 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     const auth_store = window.localStorage.getItem("auth_store");
     if (auth_store) sessionId = JSON.parse(auth_store).sessionId;
 
-    if (userType === "employee") return; // if employee, skip web3auth flow
+    if (userType === "employee" && userJwt) {
+      console.log("userType = employee, skipped web3auth flow");
+      return; // if logged in as employee, skip web3auth flow; if employee (but not logged in), must keep web3auth in case user logs in as owner later
+    }
 
     // Condition 1
     if (!sessionId) {

@@ -16,7 +16,7 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
 
   //states
   const [email, setEmail] = useState(defaultEmail);
-  const [isSendingEmail, setIsSendingEmail] = useState("initial"); // "initial" | "sending" | "sent"
+  const [status, setStatus] = useState("initial"); // "initial" | "sending" | "sent"
 
   const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
@@ -28,7 +28,7 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
   };
 
   const emailQrCode = async () => {
-    setIsSendingEmail("sending");
+    setStatus("sending");
     // create PDF file blob
     const el = document.getElementById("qrCodeForDownload");
     const dataString = await pdf(
@@ -57,19 +57,25 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
       });
       const resJson = await res.json();
       if (resJson === "email sent") {
-        setIsSendingEmail("sent");
+        setStatus("sent");
         return;
       }
     } catch (e) {}
     setErrorModal(t("emailModal.errors.notSend"));
-    setIsSendingEmail("initial");
+    setStatus("initial");
   };
+
+  function clear() {
+    setEmail("");
+    setIsEmailValid(false);
+    inputRef.current?.focus();
+  }
 
   return (
     <div>
       <div className="fullModal">
         {/*--- CLOSE/BACK BUTTON ---*/}
-        {isSendingEmail != "sending" && (
+        {status !== "sending" && (
           <>
             {/*--- tablet/desktop close ---*/}
             <div className="xButtonContainer" onClick={() => setEmailModal(false)}>
@@ -89,15 +95,18 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
             <div className="mt-[32px]">{t("emailModal.text")}</div>
             <label className="mt-[32px] appInputLabel">{tcommon("email")}</label>
             <div className="flex items-center relative">
-              <input className="appInput pr-[42px] w-full peer" ref={inputRef} onChange={onChangeEmail} value={email} placeholder="Enter an email address" />
-              {email && (
+              <input
+                className="appInput pr-[42px] w-full peer"
+                ref={inputRef}
+                onChange={onChangeEmail}
+                value={email}
+                placeholder="Enter an email address"
+                disabled={status === "initial" ? false : true}
+              />
+              {email && status === "initial" && (
                 <div
                   className="absolute w-[32px] h-[32px] flex items-center justify-center right-[10px] cursor-pointer desktop:hover:text-slate-500 peer-focus:hidden"
-                  onClick={() => {
-                    setEmail("");
-                    setIsEmailValid(false);
-                    inputRef.current?.focus();
-                  }}
+                  onClick={clear}
                 >
                   &#10005;
                 </div>
@@ -105,7 +114,7 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
             </div>
             {/*---button---*/}
             <div className="w-full pt-[50px] pb-[16px] flex justify-center items-center">
-              {isSendingEmail == "initial" && (
+              {status == "initial" && (
                 <button
                   className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
                   onClick={emailQrCode}
@@ -114,12 +123,12 @@ export default function EmailModal({ defaultEmail, setEmailModal, setErrorModal 
                   {t("emailModal.sendEmail")}
                 </button>
               )}
-              {isSendingEmail == "sending" && (
+              {status == "sending" && (
                 <div className="appButton1 w-full">
                   <Spinner />
                 </div>
               )}
-              {isSendingEmail == "sent" && (
+              {status == "sent" && (
                 <div className="appButtonHeight flex items-center justify-center gap-[12px]">
                   <FaCircleCheck className="inline-block text-green-500 text-[1.4em]" />
                   {t("emailModal.sent")}

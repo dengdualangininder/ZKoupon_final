@@ -1,6 +1,10 @@
 import Image from "next/image";
 import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 import { useTranslations } from "next-intl";
+import { FaArrowRightFromBracket } from "react-icons/fa6";
+import { HiMiniArrowRightStartOnRectangle, HiMiniArrowRightOnRectangle } from "react-icons/hi2";
+import { BsBoxArrowRight } from "react-icons/bs";
+import { PiSignOut } from "react-icons/pi";
 
 export default function Navbar({ selectedMenu, setSelectedMenu, setSignOutModal }: { selectedMenu: string; setSelectedMenu: any; setSignOutModal: any }) {
   const web3AuthInfo = useWeb3AuthInfo();
@@ -34,9 +38,9 @@ export default function Navbar({ selectedMenu, setSelectedMenu, setSignOutModal 
           ))}
 
         {!web3AuthInfo && (
-          <div className="link" onClick={() => setSignOutModal(true)}>
-            Sign Out
-          </div>
+          <button className="paymentsIconContainer" onClick={() => setSignOutModal(true)}>
+            <HiMiniArrowRightOnRectangle className="paymentsIcon" />
+          </button>
         )}
       </div>
     </div>

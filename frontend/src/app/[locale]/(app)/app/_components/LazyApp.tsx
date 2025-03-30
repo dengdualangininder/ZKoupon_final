@@ -18,7 +18,7 @@ const Settings = dynamic(() => import("./Settings")); // preloaded
 const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal")); // preloaded
 const CashbackModal = dynamic(() => import("./modals/CashbackModal"));
 const TradeMAXModal = dynamic(() => import("./modals/exchanges/TradeMAXModal"));
-import SignOutModal from "./modals/SignOutModal";
+import SignOutModal from "./modals/EmployeeSignOutModal";
 // utils
 import ErrorModal from "@/utils/components/ErrorModal";
 // types

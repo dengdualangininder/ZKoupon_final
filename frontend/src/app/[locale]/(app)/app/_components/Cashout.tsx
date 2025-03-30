@@ -181,24 +181,13 @@ export default function CashOut({
   };
 
   return (
-    // 96px is height of mobile top menu bar + 14px mt
     <section className="appPageContainer bg-light2 dark:bg-dark1 py-[24px] portrait:sm:py-[32px] landscape:lg:py-[32px] overflow-y-auto">
-      {/* <button
-        className="w-full h-[60px] bg-red-300"
-        onClick={async () => {
-          const receipt = await getTransactionReceipt(config, { hash: "0x6512870f8ef0cf679003d7f5577e6b803d4ee7481b7388a6d6bd87dbaef8e333" });
-          const amount = formatUnits(hexToBigInt(receipt.logs[3].data), 6);
-          console.log(amount);
-        }}
-      >
-        TEST
-      </button> */}
-      {/*---NULLA CARD ---*/}
+      {/*---NULLA PAY CARD ---*/}
       <div className="cashoutCard">
         {/*--- title + more options ---*/}
         <div className="w-full h-[36px] flex justify-between items-center relative">
           {/*--- title ---*/}
-          <div className="cashoutHeader">Nulla {tcommon("account")}</div>
+          <div className="cashoutHeader">Nulla Pay {tcommon("account")}</div>
           {/*--- more options ---*/}
           {nullaBalance && rates && (
             <div

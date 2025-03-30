@@ -83,7 +83,7 @@
 /*--- button colors ---*/
 
 @utility button1ColorLight {
-  @apply border-2 text-white bg-lightButton border-lightButton outline-hidden focus:bg-lightButtonHover focus:border-lightButtonHover desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover;
+  @apply border-2 text-white bg-lightButton border-lightButton outline-hidden focus:bg-lightButtonHover focus:border-lightButtonHover desktop:hover:bg-lightButtonHover desktop:hover:border-lightButtonHover active:bg-lightButtonHover active:border-lightButtonHover [transition:background-color_300ms,border-color_300ms];
 }
 
 @utility button1Color {
@@ -196,6 +196,10 @@
   @apply rounded-[8px] border-[1.5px] bg-white dark:bg-dark1 text-lightText1 dark:text-darkText1 border-slate-300 dark:border-dark4 focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholderStyle transition-all duration-[500ms];
 }
 
+@utility inputColorLight {
+  @apply rounded-[8px] border-[1.5px] bg-white text-lightText1 border-slate-300 focus:border-blue-500 focus:ring-0 outline-hidden placeholderStyle transition-all duration-[500ms];
+}
+
 @utility settingsInputColor {
   @apply rounded-[8px] border-[1.5px] bg-transparent focus:bg-white dark:focus:bg-dark1 text-lightText1 dark:text-darkText1 focus:text-lightText1! dark:focus:text-darkText1! border-transparent focus:border-blue-500 dark:focus:border-slate-600 focus:ring-0 outline-hidden placeholderStyle transition-all duration-[500ms] desktop:group-hover:text-slate-500;
 }
@@ -220,6 +224,10 @@
 
 .appInputPx {
   @apply textBaseAppPx appInputHeight inputColor px-[0.7em];
+}
+
+.appInputLightPx {
+  @apply textBaseAppPx appInputHeight inputColorLight px-[0.7em];
 }
 
 .appInputSmPx {
@@ -362,7 +370,7 @@
 }
 
 .detailsField {
-  @apply py-[16px] desktop:py-[12px] w-full border-t border-slate-300 dark:border-dark6 flex items-center justify-between;
+  @apply py-[24px] desktop:py-[16px] w-full border-t border-slate-300 dark:border-dark6 flex items-center justify-between;
 }
 
 .detailsLabelText {
@@ -585,6 +593,10 @@
   @apply modalBase modalColor errorModalSize py-[40px];
 }
 
+.errorModalLight {
+  @apply modalBase bg-light1 border-light5 errorModalSize py-[40px];
+}
+
 .infoModal {
   @apply modalFullBase modalFullColor modalFullSizeDynamic pb-[32px];
 }
@@ -719,11 +731,11 @@
 }
 
 @utility link {
-  @apply cursor-pointer text-blue-600 dark:text-blue-400 xs:hover:underline active:underline;
+  @apply cursor-pointer text-blue-600 dark:text-blue-400 desktop:hover:underline active:underline focus:underline;
 }
 
 @utility linkLight {
-  @apply cursor-pointer text-blue-600 xs:hover:underline active:underline;
+  @apply cursor-pointer text-blue-600 desktop:hover:underline active:underline focus:underline;
 }
 
 @utility linkDark {

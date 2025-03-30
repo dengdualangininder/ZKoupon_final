@@ -1,24 +1,19 @@
-// import { useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
-// export default function ErrorModalLight({ errorModal, setErrorModal }: { errorModal: React.ReactNode | null; setErrorModal: any }) {
-//   const tcommon = useTranslations("Common");
+export default function ErrorModal({ errorModal, setErrorModal }: { errorModal: React.ReactNode; setErrorModal: any }) {
+  const tcommon = useTranslations("Common");
 
-//   return (
-//     <div className="z-200">
-//       <div className="errorModal font-normal">
-//         {/*--- content ---*/}
-//         <div className="modalXpaddingLg overflow-y-auto">
-//           {/*---text---*/}
-//           <div className="errorModalFont py-[16px]">{errorModal}</div>
-//           {/*--- button ---*/}
-//           <div className="modalButtonContainer">
-//             <button onClick={() => setErrorModal(null)} className="appButton1Light sm:max-w-[300px]">
-//               {tcommon("close")}
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="modalBlackout"></div>
-//     </div>
-//   );
-// }
+  return (
+    <div className="z-200">
+      <div className="errorModalLight">
+        <div className="errorModalContentContainer gap-[40px]">
+          <div className="min-h-[80px]">{errorModal}</div>
+          <button onClick={() => setErrorModal(null)} className="appButton1Light w-full">
+            {tcommon("close")}
+          </button>
+        </div>
+      </div>
+      <div className="modalBlackout"></div>
+    </div>
+  );
+}

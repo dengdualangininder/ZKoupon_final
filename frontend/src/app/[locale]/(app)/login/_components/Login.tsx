@@ -3,20 +3,18 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
-// wagmi
+// others
 import { useConnect } from "wagmi";
-// i18n
 import { useTranslations } from "next-intl";
-// components
-import SelectLang from "@/utils/components/SelectLang";
-// utils
-import ErrorModal from "@/utils/components/ErrorModal";
 // images
 import { PiEyeLight, PiEyeSlashLight } from "react-icons/pi";
 import { ImSpinner2 } from "react-icons/im";
-// types
+// utils
+import SelectLang from "@/utils/components/SelectLang";
+import ErrorModalLight from "@/utils/components/ErrorModalLight";
 import { MyConnector } from "@/utils/types";
 import { SpinningCircleGraySm } from "@/utils/components/SpinningCircleGray";
+import { setCookieAction } from "@/utils/actions";
 
 export default function Login({ userTypeFromCookies }: { userTypeFromCookies: string | undefined }) {
   console.log("(app)/login/_components/Login.tsx");
@@ -71,27 +69,22 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const employeeLogin = async () => {
     setIsLoggingIn(true);
     try {
-      // receive jwt
       const res = await fetch("/api/employeeLogin", {
         method: "POST",
         body: JSON.stringify({ merchantEmail, employeePass }),
         headers: { "content-type": "application/json" },
       });
       const resJson = await res.json();
-      if (resJson.status == "success") {
-        console.log("employee authenticated, pushed to /app"); // api will redirect to /app
-      } else if (resJson.status == "error") {
-        console.log("Incorrect email or password");
+      if (resJson === "success") {
+        router.push("/app");
+        return;
+      } else if (resJson.status === "error") {
         setErrorModal(resJson.message);
         setIsLoggingIn(false);
-      } else {
-        setErrorModal("Server error");
-        setIsLoggingIn(false);
       }
-    } catch (e) {
-      setErrorModal("Server error");
-      setIsLoggingIn(false);
-    }
+    } catch (e) {}
+    setErrorModal("Server error");
+    setIsLoggingIn(false);
   };
 
   return (
@@ -140,8 +133,9 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               {myConnectors.map((i: MyConnector) => (
                 <div
                   key={i.name}
-                  className="w-full h-[68px] desktop:h-[54px] flex items-center text-slate-600 font-medium bg-white rounded-[8px] border border-slate-200 drop-shadow-md desktop:hover:drop-shadow-lg active:drop-shadow-lg transition-all duration-300 cursor-pointer select-none"
-                  onClick={() => {
+                  className="w-full h-[68px] desktop:h-[54px] flex items-center text-slate-600 font-medium bg-white rounded-[8px] shadow-md hover:shadow-lg active:shadow-lg transition-all duration-300 cursor-pointer select-none"
+                  onClick={async () => {
+                    await setCookieAction("userType", "owner");
                     setSelectedSocial(i.name);
                     ownerLogin(i.connectorIndex);
                   }}
@@ -173,7 +167,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
             <div className="flex flex-col">
               {/*--email---*/}
               <label className="appInputLabel">{t("email")}</label>
-              <input type="email" className="appInputPx w-full" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
+              <input type="email" className="appInputLightPx w-full" onBlur={(e) => setMerchantEmail(e.target.value)}></input>
               {/*--password---*/}
               <label className="mt-[24px] appInputLabel">{t("password")}</label>
               <div className="w-full relative">
@@ -182,7 +176,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                   type={show ? "text" : "password"}
                   autoComplete="off"
                   autoCapitalize="off"
-                  className="appInputPx w-full peer"
+                  className="appInputLightPx w-full peer"
                   onBlur={(e) => setEmployeePass(e.target.value)}
                 ></input>
                 <div
@@ -208,7 +202,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
               </button>
               {/*--forgot password?---*/}
               <div
-                className="mx-auto mt-[60px] desktop:mt-[50px] textSmApp link"
+                className="mx-auto mt-[60px] desktop:mt-[50px] textSmApp linkLight"
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
                 }}
@@ -220,7 +214,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
         </div>
       </div>
 
-      {errorModal && <ErrorModal errorModal={errorModal} setErrorModal={setErrorModal} />}
+      {errorModal && <ErrorModalLight errorModal={errorModal} setErrorModal={setErrorModal} />}
     </div>
   );
 }

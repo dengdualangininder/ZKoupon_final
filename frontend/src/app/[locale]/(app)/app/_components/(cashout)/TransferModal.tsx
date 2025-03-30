@@ -325,7 +325,7 @@ export default function TransferModal({
                     </div>
                     {(transferModal === "toCex" || transferModal === "toAny") && (
                       <div>
-                        <p className="transferText">{tcommon("from")}: Nulla</p>
+                        <p className="transferText">{tcommon("from")}: Nulla Pay</p>
                         <p className="transferSubtext truncate">{paymentSettings.merchantName}</p>
                         <p className="transferSubtext">
                           {tcommon("address")}: {paymentSettings?.merchantEvmAddress.slice(0, 7)}...
@@ -335,7 +335,7 @@ export default function TransferModal({
                     )}
                     {transferModal === "toBank" && (
                       <div className="">
-                        <div className="transferText">{tcommon("fromCoinbase")}</div>
+                        <div className="transferText">{tcommon("from")}: Coinbase</div>
                         {cbEvmAddress ? (
                           <div className="transferSubtext">
                             <p>
@@ -364,7 +364,7 @@ export default function TransferModal({
                       step="0.01"
                       inputMode="decimal"
                       onChange={(e) => setUsdcTransferAmount(e.currentTarget.value)}
-                      onBlur={(e) => setUsdcTransferAmount(Number(e.currentTarget.value).toFixed(2))}
+                      onBlur={(e) => (e.currentTarget.value ? setUsdcTransferAmount(Number(e.currentTarget.value).toFixed(2)) : "")}
                       value={usdcTransferAmount || ""}
                       placeholder="0"
                       disabled={transferState === "sending" ? true : false}
@@ -391,7 +391,7 @@ export default function TransferModal({
                       <>
                         ~{blockchainFee} USDC
                         <br />
-                        {tcommon("transferCost")}
+                        {tcommon("blockchainFee")}
                       </>
                     ) : (
                       <>
@@ -453,7 +453,9 @@ export default function TransferModal({
                       )}
                       {transferModal === "toBank" && (
                         <div>
-                          <div className="transferText">{tcommon("toBank")}</div>
+                          <div className="transferText">
+                            {tcommon("to")}: {tcommon("bank")}
+                          </div>
                           {cbBankAccountName ? (
                             <p className="transferSubtext">{cbBankAccountName}</p>
                           ) : (

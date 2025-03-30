@@ -9,7 +9,7 @@ export default function Loading() {
       <div className="w-full mx-[16px] max-w-[450px] h-full min-h-[600px] max-h-[900px] my-auto">
         {/*--- welcome ---*/}
         <div className="w-full h-full flex flex-col items-center justify-center pb-[50px]">
-          <Image src="/logoBlackNoBg.svg" width={220} height={55} alt="logo" priority />
+          <Image src="/logoBlackNoBg.svg" width={220} height={54} alt="logo" priority />
           {/* loading */}
           <div className="w-full h-[272px] flex flex-col items-center">
             <Image src="/loading.svg" width={80} height={80} alt="loading" className="mt-[80px] animate-spin" />
