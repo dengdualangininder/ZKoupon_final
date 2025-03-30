@@ -40,14 +40,14 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
   const [errorModal, setErrorModal] = useState<React.ReactNode | null>(null);
 
   // redirect to "saveToHome" page if mobile & not standalone
-  useEffect(() => {
-    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
-      router.push("/saveAppToHome");
-      return;
-    }
-  }, []);
+  // useEffect(() => {
+  //   const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+  //   const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+  //   if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
+  //     router.push("/saveAppToHome");
+  //     return;
+  //   }
+  // }, []);
 
   // if Apple, add Apple social login
   useEffect(() => {
