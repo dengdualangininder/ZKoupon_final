@@ -205,6 +205,7 @@ export default function Login({ userTypeFromCookies }: { userTypeFromCookies: st
                 className="mx-auto mt-[60px] desktop:mt-[50px] textSmApp linkLight"
                 onClick={() => {
                   setErrorModal(t("forgotModalText"));
+                  localStorage.clear();
                 }}
               >
                 {t("forgot")}
