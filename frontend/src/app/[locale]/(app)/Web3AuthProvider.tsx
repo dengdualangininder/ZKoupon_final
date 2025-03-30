@@ -95,12 +95,12 @@ export default function Web3AuthProvider({ children }: { children: React.ReactNo
     console.log("web3Auth-provider.tsx useEffect");
 
     // redirect to "saveToHome" if needed
-    const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
-      router.push("/saveAppToHome");
-      return;
-    }
+    // const isDesktop = window.matchMedia("(hover: hover) and (pointer:fine)").matches;
+    // const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    // if (!isDesktop && !isStandalone && process.env.NODE_ENV != "development") {
+    //   router.push("/saveAppToHome");
+    //   return;
+    // }
 
     // get cookies & session Id (must use getCookie inside useEffect)
     const userType = getCookie("userType");
