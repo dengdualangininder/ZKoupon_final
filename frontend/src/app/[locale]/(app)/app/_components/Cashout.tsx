@@ -2,22 +2,19 @@
 // next
 import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
-// hooks
-import { useCexBalanceQuery, useNullaBalanceQuery, useCexTxnsQuery } from "../../../../../utils/hooks";
-// other
+// others
 import { v4 as uuidv4 } from "uuid";
-// i18n
 import { useTranslations } from "next-intl";
 // components
 import CashoutIntroModal from "./modals/CashoutIntroModal";
 import TransferModal from "./(cashout)/TransferModal";
 import CashoutBalance from "./(cashout)/CashoutBalance";
-
 // images
 import { FaEllipsisVertical } from "react-icons/fa6";
-// types
+// utils
+import { useCexBalanceQuery, useNullaBalanceQuery, useCexTxnsQuery } from "@/utils/hooks";
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
-import { NullaInfo, AllRates } from "@/utils/types";
+import { NullaInfo, Rates } from "@/utils/types";
 
 export default function CashOut({
   nullaInfo,
@@ -25,26 +22,24 @@ export default function CashOut({
   cashoutSettings,
   setErrorModal,
   setTradeMAXModal,
-  allRates,
+  rates,
 }: {
   nullaInfo: NullaInfo;
   paymentSettings: PaymentSettings;
   cashoutSettings: CashoutSettings;
   setErrorModal: any;
   setTradeMAXModal: any;
-  allRates: AllRates;
+  rates: Rates;
 }) {
   console.log("/app, Cashout.tsx");
-
-  const rates = allRates[paymentSettings.merchantCurrency];
 
   // hooks
   const router = useRouter();
   const t = useTranslations("App.CashOut");
   const tcommon = useTranslations("Common");
-  const { data: nullaBalance, refetch: refetchNullaBalance } = useNullaBalanceQuery();
-  const { data: cexBalance } = useCexBalanceQuery();
-  const { data: cexTxns } = useCexTxnsQuery();
+  const { data: nullaBalance, isError: nullaBalanceIsError } = useNullaBalanceQuery();
+  const { data: cexBalance, isError: cexBalanceIsError } = useCexBalanceQuery();
+  const { data: cexTxns, isError: cexTxnsIsError } = useCexTxnsQuery();
 
   // states
   const [isCbLinked, setIsCbLinked] = useState(true); // if Coinbase is linked or not
@@ -67,6 +62,14 @@ export default function CashOut({
     window.localStorage.getItem("cbRefreshToken") ? setIsCbLinked(true) : setIsCbLinked(false);
   }, []);
 
+  // handle react query error
+  useEffect(() => {
+    if (cexBalanceIsError || cexTxnsIsError) {
+      console.log("useCexBalanceQuery or useCexTxnsQuery returned error");
+      unlinkCb();
+    }
+  }, [cexBalanceIsError, cexTxnsIsError]);
+
   const linkCb = async () => {
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
@@ -79,12 +82,12 @@ export default function CashOut({
     );
   };
 
-  const unlinkCb = () => {
+  function unlinkCb() {
     window.sessionStorage.removeItem("cbAccessToken");
     window.localStorage.removeItem("cbRefreshToken");
     setIsCbLinked(false);
     setTransferModal(null);
-  };
+  }
 
   const onClickTransferToCex = async () => {
     // if coinbase

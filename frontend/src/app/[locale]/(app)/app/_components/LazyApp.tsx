@@ -122,7 +122,7 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
           cashoutSettings={settings.cashoutSettings}
           setErrorModal={setErrorModal}
           setTradeMAXModal={setTradeMAXModal}
-          allRates={allRates}
+          rates={allRates[settings.paymentSettings.merchantCurrency]}
         />
       )}
       {selectedMenu === "settings" && web3AuthInfo && (

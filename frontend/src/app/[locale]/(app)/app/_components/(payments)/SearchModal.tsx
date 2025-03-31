@@ -42,7 +42,7 @@ export default function SearchModal({
       <div className={`fixed inset-0 z-10`} onClick={() => setSearchModal(false)}></div>
       <motion.aside className={`sidebarModal`} key="searchModal" initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.3 }}>
         {/*--- mobile back ---*/}
-        <FaAngleLeft className="mobileBack" onClick={close} />
+        <FaAngleLeft className="mobileBack" onClick={() => setSearchModal(false)} />
         {/*--- tablet/desktop close ---*/}
         <div className="xButtonContainer rounded-tr-none" onClick={() => setSearchModal(false)}>
           <div className="xButton">&#10005;</div>

@@ -109,7 +109,7 @@ export const useCexBalanceQuery = () => {
         if (resJson.status === "success") {
           console.log("fetched cexBalance");
           if (resJson.data.newCbAccessToken && resJson.data.newCbRefreshToken) {
-            console.log("stored new tokens");
+            console.log("stored new cbTokens");
             window.sessionStorage.setItem("cbAccessToken", resJson.data.newCbAccessToken);
             window.localStorage.setItem("cbRefreshToken", resJson.data.newCbRefreshToken);
           }
