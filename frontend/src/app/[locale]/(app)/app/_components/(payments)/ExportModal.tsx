@@ -3,9 +3,9 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
 import { Transaction } from "@/db/UserModel";
 import { useWeb3AuthInfo } from "../../../Web3AuthProvider";
-import { ModalState } from "@/utils/types";
+import { motion } from "framer-motion";
 
-export default function ExportModal({ exportModal, setExportModal, setErrorModal }: { exportModal: ModalState; setExportModal: any; setErrorModal: any }) {
+export default function ExportModal({ setExportModal, setErrorModal }: { setExportModal: any; setErrorModal: any }) {
   // hooks
   const t = useTranslations("App.Payments");
   const web3AuthInfo = useWeb3AuthInfo();
@@ -120,22 +120,21 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
   };
 
   function closeModal() {
-    setExportModal({ render: true, show: false });
-    setTimeout(() => setExportModal({ render: false, show: false }), 500);
+    setExportModal(false);
     setStartMonthYear("");
     setEndMonthYear("");
   }
 
   return (
     <>
-      <div className={`fixed inset-0 z-10`} onClick={() => closeModal()}></div>
-      <div id="exportModal" className={`${exportModal.show ? "animate-slideIn" : "animate-slideOut"} sidebarModal`}>
+      <div className={`fixed inset-0 z-10`} onClick={closeModal}></div>
+      <motion.aside className={`sidebarModal`} key="searchModal" initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.3 }}>
         {/*--- HEADER ---*/}
         <div className="modalHeader">{t("downloadModal.title")}</div>
         {/*--- mobile back ---*/}
-        <FaAngleLeft className="mobileBack" onClick={() => closeModal()} />
+        <FaAngleLeft className="mobileBack" onClick={closeModal} />
         {/*--- tablet/desktop close ---*/}
-        <div className="xButtonContainer rounded-tr-none" onClick={() => closeModal()}>
+        <div className="xButtonContainer rounded-tr-none" onClick={closeModal}>
           <div className="xButton">&#10005;</div>
         </div>
         {/*--- content ---*/}
@@ -187,7 +186,7 @@ export default function ExportModal({ exportModal, setExportModal, setErrorModal
             {t("downloadModal.download")}
           </button>
         </div>
-      </div>
+      </motion.aside>
     </>
   );
 }

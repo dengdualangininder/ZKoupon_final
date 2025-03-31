@@ -2,11 +2,10 @@ import { useState } from "react";
 import { FaAngleLeft } from "react-icons/fa6";
 import { useTranslations } from "next-intl";
 import { Filter } from "@/utils/types";
-import { ModalState } from "@/utils/types";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
+import { motion } from "framer-motion";
 
 export default function SearchModal({
-  searchModal,
   setSearchModal,
   setFilter,
   tempFilter,
@@ -15,7 +14,6 @@ export default function SearchModal({
   setClearSearchModal,
   clearFilter,
 }: {
-  searchModal: ModalState;
   setSearchModal: any;
   setFilter: any;
   tempFilter: Filter;
@@ -39,19 +37,14 @@ export default function SearchModal({
     setSearchModal(false);
   };
 
-  function close() {
-    setSearchModal({ render: true, show: false });
-    setTimeout(() => setSearchModal({ render: false, show: false }), 500);
-  }
-
   return (
     <>
-      <div className={`fixed inset-0 z-10`} onClick={close}></div>
-      <div className={`sidebarModal ${searchModal.show ? "!translate-x-0" : "translate-x-[-101%]"} transition-all duration-500`}>
+      <div className={`fixed inset-0 z-10`} onClick={() => setSearchModal(false)}></div>
+      <motion.aside className={`sidebarModal`} key="searchModal" initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.3 }}>
         {/*--- mobile back ---*/}
         <FaAngleLeft className="mobileBack" onClick={close} />
         {/*--- tablet/desktop close ---*/}
-        <div className="xButtonContainer rounded-tr-none" onClick={close}>
+        <div className="xButtonContainer rounded-tr-none" onClick={() => setSearchModal(false)}>
           <div className="xButton">&#10005;</div>
         </div>
 
@@ -73,7 +66,7 @@ export default function SearchModal({
               }}
               value={tempFilter?.last4Chars}
               maxLength={4}
-              placeholder="Af19"
+              placeholder="empty"
             />
           </div>
           {/*--- filter 2 - "to refund" payments ---*/}
@@ -100,20 +93,19 @@ export default function SearchModal({
           <div className="searchModalCategoryContainer border-none relative z-11">
             <div className="font-medium">{t("searchModal.date")}</div>
             <div className="relative">
-              <div
-                className={`${
-                  tempFilter?.searchDate?.to ? "" : "italic text-slate-400 dark:text-zinc-700"
-                } inputColor px-[12px] min-w-[110px] appInputHeight textBaseAppPx flex items-center justify-center cursor-pointer`}
-                // onClick={() => setCalendarModal({ render: true, show: true })}
-                onClick={() => setShowCalendar(true)}
+              <button
+                className={`${tempFilter?.searchDate?.to ? "" : "italic text-slate-400 dark:text-zinc-700"} inputColor ${
+                  showCalendar ? "border-blue-500 dark:border-slate-600" : ""
+                } px-[12px] min-w-[110px] appInputHeight textBaseAppPx flex items-center justify-center cursor-pointer z-[2] relative`}
+                onClick={() => setShowCalendar(!showCalendar)}
               >
                 {tempFilter?.searchDate?.to
                   ? `${tempFilter.searchDate.from?.toLocaleDateString()} - ${tempFilter.searchDate.to.toLocaleDateString()}`
                   : t("searchModal.selectDates")}
-              </div>
+              </button>
               {showCalendar && (
                 <>
-                  <div className="absolute right-0 bottom-[calc(100%+8px)] px-[8px] py-[4px] border border-slate-300 dark:border-dark4 rounded-[8px] bg-light1 dark:bg-dark1 z-100">
+                  <div className="absolute right-0 bottom-[calc(100%+8px)] px-[8px] py-[4px] border border-slate-300 dark:border-dark4 rounded-[8px] bg-light1 dark:bg-dark1 z-[2]">
                     <DayPicker
                       className="textSmApp"
                       classNames={{
@@ -134,7 +126,7 @@ export default function SearchModal({
                       fixedWeeks={true}
                     />
                   </div>
-                  {showCalendar && <div className="fixed w-screen h-screen bg-black/40 left-0 top-0 z-99" onClick={() => setShowCalendar(false)}></div>}
+                  <div className="fixed w-screen h-screen bg-black/40 left-0 top-0 z-[1]" onClick={() => setShowCalendar(false)}></div>
                 </>
               )}
             </div>
@@ -148,7 +140,7 @@ export default function SearchModal({
             </button>
           </div>
         </div>
-      </div>
+      </motion.aside>
     </>
   );
 }

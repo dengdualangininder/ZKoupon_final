@@ -5,22 +5,21 @@ import dynamic from "next/dynamic";
 // custom hooks
 import { useWeb3AuthInfo } from "../../Web3AuthProvider";
 import { useTxnsQuery } from "../../../../../utils/hooks";
-// i18n
+// others
+import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 // components
 const QrCodeModal = dynamic(() => import("./(payments)/QrCodeModal"));
 const DetailsModal = dynamic(() => import("./(payments)/DetailsModal"));
 const SearchModal = dynamic(() => import("./(payments)/SearchModal"));
 const ExportModal = dynamic(() => import("./(payments)/ExportModal"));
-// constants
-import { currency2decimal } from "@/utils/constants";
 // images
 import { HiQrCode } from "react-icons/hi2";
 import { FiDownload, FiSearch } from "react-icons/fi";
 // utils
+import { currency2decimal } from "@/utils/constants";
 import { getLocalTime, getLocalDateWords } from "@/utils/functions";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
-// types
 import { PaymentSettings, Transaction } from "@/db/UserModel";
 import { NullaInfo, Filter, ModalState } from "@/utils/types";
 
@@ -38,8 +37,8 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
   const [tempFilter, setTempFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } });
   const [clickedTxn, setClickedTxn] = useState<Transaction | null>(null);
   // modal states
-  const [searchModal, setSearchModal] = useState<ModalState>({ render: false, show: false });
-  const [exportModal, setExportModal] = useState<ModalState>({ render: false, show: false });
+  const [searchModal, setSearchModal] = useState(false);
+  const [exportModal, setExportModal] = useState(false);
   const [detailsModal, setDetailsModal] = useState(false);
   const [qrCodeModal, setQrCodeModal] = useState(false);
   const [clearSearchModal, setClearSearchModal] = useState(false);
@@ -96,13 +95,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
             web3AuthInfo ? "grid-cols-[25%_25%_50%]" : "grid-cols-[50%_50%]"
           } items-center`}
         >
-          <button
-            className="paymentsIconContainer"
-            onClick={() => {
-              setSearchModal({ render: true, show: false });
-              setTimeout(() => setSearchModal({ render: true, show: true }), 20);
-            }}
-          >
+          <button className="paymentsIconContainer" onClick={() => setSearchModal(true)}>
             <FiSearch className="paymentsIcon" />
           </button>
           {web3AuthInfo && (
@@ -110,7 +103,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
               className="paymentsIconContainer"
               onClick={() => {
                 if (txns && txns.pages.length > 0) {
-                  setExportModal({ render: true, show: true });
+                  setExportModal(true);
                 } else {
                   setErrorModal(t("downloadModal.errors.noPayments"));
                 }
@@ -152,8 +145,8 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
               <div className="flex-1 flex justify-center items-center text-slate-400 dark:text-slate-600">{t("noPayments")}</div>
             ) : (
               <>
-                {txns.pages.map((page: Transaction[] | null, index: number) => (
-                  <div key={index} className="w-full flex flex-col items-center">
+                {txns.pages.map((page: Transaction[] | null) => (
+                  <>
                     {page &&
                       page.map((txn: Transaction) => (
                         <div
@@ -176,7 +169,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
                             {/*---Time---*/}
                             <div className="relative">
                               <div
-                                className={`absolute bottom-[calc(100%-2px)] portrait:sm:bottom-[calc(100%+2px)] landscape:lg:bottom-[calc(100%+2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium ${
+                                className={`absolute bottom-[calc(100%-2px)] text-[14px] portrait:sm:text-[18px] landscape:lg:text-[18px] desktop:!text-[14px] font-medium ${
                                   txn.refund ? "textGrayer" : "textGray"
                                 }`}
                               >
@@ -194,7 +187,7 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
                           </div>
                         </div>
                       ))}
-                  </div>
+                  </>
                 ))}
               </>
             )}
@@ -213,19 +206,20 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
         </div>
       </div>
 
-      {searchModal.render && (
-        <SearchModal
-          searchModal={searchModal}
-          setSearchModal={setSearchModal}
-          setFilter={setFilter}
-          tempFilter={tempFilter}
-          setTempFilter={setTempFilter}
-          clearFilter={clearFilter}
-          setErrorModal={setErrorModal}
-          setClearSearchModal={setClearSearchModal}
-        />
-      )}
-      {exportModal.render && <ExportModal exportModal={exportModal} setExportModal={setExportModal} setErrorModal={setErrorModal} />}
+      <AnimatePresence>
+        {searchModal && (
+          <SearchModal
+            setSearchModal={setSearchModal}
+            setFilter={setFilter}
+            tempFilter={tempFilter}
+            setTempFilter={setTempFilter}
+            clearFilter={clearFilter}
+            setErrorModal={setErrorModal}
+            setClearSearchModal={setClearSearchModal}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>{exportModal && <ExportModal setExportModal={setExportModal} setErrorModal={setErrorModal} />}</AnimatePresence>
       {qrCodeModal && <QrCodeModal setQrCodeModal={setQrCodeModal} paymentSettings={paymentSettings} />}
       {detailsModal && (
         <DetailsModal
