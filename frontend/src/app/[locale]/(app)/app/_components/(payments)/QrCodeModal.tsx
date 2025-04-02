@@ -9,24 +9,14 @@ export default function QrCodeModal({ paymentSettings, setQrCodeModal }: { payme
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <div className="z-10">
-      <div className="fixed inset-0 bg-black">
-        {/*--- close button ---*/}
-        <div
-          className="qrCodeModalIconContainer top-[8px] right-[8px] portrait:sm:top-[32px] portrait:sm:right-[32px] landscape:lg:top-[32px] landscape:lg:right-[32px]"
-          onClick={() => setQrCodeModal(false)}
-        >
-          <div className="text-4xl text-darkText1">&#10005;</div>
-        </div>
-      </div>
-
+    <div className="z-10" onClick={() => setQrCodeModal(false)}>
+      <div className="fixed inset-0 bg-black"></div>
       {/*--- placard ---*/}
       <div className="portrait:w-full portrait:h-[calc(100vw*1.4142)] landscape:w-[calc(100vh/1.4142)] portrait:max-w-[560px] portrait:max-h-[calc(560px*1.4142)] landscape:h-screen fixed inset-1/2 -translate-y-[50%] -translate-x-1/2 z-11">
         <div className="w-full h-full relative">
           <Image src="/placard.svg" alt="placard" fill priority onLoad={() => setIsLoaded(true)} />
         </div>
       </div>
-
       {/*--- qr code ---*/}
       {isLoaded && (
         <div className="fixed top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-12">

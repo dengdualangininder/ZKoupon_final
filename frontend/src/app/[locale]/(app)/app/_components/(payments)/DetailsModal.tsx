@@ -381,7 +381,7 @@ const DetailsModal = ({
             <div className="detailsField items-start!">
               <p className="detailsLabelText pr-[16px]">{t("notes")}</p>
               <textarea
-                className="inputColor font-normal px-[8px] py-[4px] w-full rounded-[8px] h-auto"
+                className="inputColor font-normal px-[8px] py-[4px] w-full rounded-[8px] h-auto textBaseApp"
                 ref={textareaRef}
                 onChange={onChangeTextarea}
                 onBlur={handleOnBlurNote}

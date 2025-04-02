@@ -259,7 +259,8 @@
       },
       "toAddress": "Any address on",
       "enterAnEvmAddress": "Enter address here",
-      "transferToCexSuccessModal": "<span1>{amount} USDC</span1> was sent to your {cex} account. Please wait 5-10 minutes for your {cex} balance to update.",
+      "transferToCexSuccess-1": "{amount} USDC sent",
+      "transferToCexSuccess-2": "Please wait 5-10 minutes for your {cex} balance to update.",
       "transferToBankSuccessModal": {
         "text-1": "was deducted from your Coinbase account.",
         "text-2": "was deposited to your bank.",

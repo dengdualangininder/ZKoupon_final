@@ -77,24 +77,24 @@ export default async function Home() {
       <div
         id="LowCost"
         data-show="yes"
-        className="w-full flex justify-center opacity-0 transition-all duration-1500 bg-light2 text-lightText1 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_350%]"
+        className="w-full flex justify-center opacity-0 transition-all duration-[1500ms] bg-light2 text-lightText1 sm:bg-[url('/globebg.svg')] bg-no-repeat [background-position:50%_calc(100%+200px)] lg:[background-position:50%_350%]"
       >
         <LowCost merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="Simple" data-show="yes" className="w-full flex justify-center opacity-0 bg-dark1 text-darkText1 transition-all duration-1500">
+      <div id="Simple" data-show="yes" className="w-full flex justify-center opacity-0 bg-dark1 text-darkText1 transition-all duration-[1500ms]">
         <Simple />
       </div>
 
-      <div id="Benefits" data-show="yes" className="w-full flex justify-center opacity-0 bg-light2 text-lightText1 transition-all duration-1500">
+      <div id="Benefits" data-show="yes" className="w-full flex justify-center opacity-0 bg-light2 text-lightText1 transition-all duration-[1500ms]">
         <Benefits merchantCurrency={merchantCurrency} allRates={allRates} />
       </div>
 
-      <div id="Learn" data-show="yes" className="w-full flex justify-center bg-[#0A2540] text-white opacity-0 transition-all duration-1000">
+      <div id="Learn" data-show="yes" className="w-full flex justify-center bg-[#0A2540] text-white opacity-0 transition-all duration-[1000ms]">
         <Learn merchantCurrency={merchantCurrency} />
       </div>
 
-      <div id="Support" data-show="yes" className="w-full flex justify-center bg-dark1 text-darkText1 opacity-0 transition-all duration-1000">
+      <div id="Support" data-show="yes" className="w-full flex justify-center bg-dark1 text-darkText1 opacity-0 transition-all duration-[1000ms]">
         <Support />
       </div>
 

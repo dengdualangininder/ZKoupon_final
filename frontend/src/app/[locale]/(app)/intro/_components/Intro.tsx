@@ -88,6 +88,10 @@ export default function Intro({ nullaInfo }: { nullaInfo: NullaInfo }) {
       return;
     }
     setStep("emailSent");
+
+    // setStep("how");
+    // return;
+
     // define settings
     const [merchantCountry, merchantCurrency] = countryCurrency.split(" / ");
     const cex = merchantCountry === "Other" ? "" : countryData[merchantCountry].CEXes[0];
@@ -168,13 +172,13 @@ export default function Intro({ nullaInfo }: { nullaInfo: NullaInfo }) {
               {settings && settings.paymentSettings.merchantCountry ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 3 }}>
                   <div className="w-full h-[272px] flex flex-col items-center">
-                    <div className="mt-[70px] text-xl desktop:text-lg leading-relaxed font-medium text-center animate-fadeInAnimation">
+                    <div className="mt-[70px] text-xl desktop:text-lg leading-relaxed font-medium text-center">
                       {t("welcome.text-1")}
                       <br />
                       {t("welcome.text-2")}
                     </div>
                     <button
-                      className="mt-[70px] w-[220px] desktop:w-[190px] appButtonHeight font-semibold tracking-wide rounded-full button1ColorLight animate-fadeInAnimation"
+                      className="mt-[70px] w-[220px] desktop:w-[190px] appButtonHeight font-semibold tracking-wide rounded-full button1ColorLight"
                       onClick={() => setStep("info")}
                     >
                       {t("welcome.start")}
@@ -247,7 +251,7 @@ export default function Intro({ nullaInfo }: { nullaInfo: NullaInfo }) {
                 &#10094;&nbsp; {tcommon("back")}
               </button>
               <button
-                className="introNext disabled:bg-slate-500! disabled:border-slate-500!"
+                className="introNext disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
                 onClick={() => {
                   setStep("how");
                   setEmailStatus("sending");

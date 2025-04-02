@@ -60,18 +60,18 @@ export default function CashOut({
   useEffect(() => {
     if (cbBalanceIsError || cbTxnsIsError) {
       console.log("cbBalanceIsError or cbTxnsIsError");
-      unlinkCb();
+      // unlinkCb(); // The goal is that Cb is always linked
     }
   }, [cbBalanceIsError, cbTxnsIsError]);
 
   const linkCb = async () => {
-    const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
-    window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
-    const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/cbAuth`);
+    const state = uuidv4();
+    window.sessionStorage.setItem("clientState", state);
+    const redirect_uri = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/cbAuth`);
     const scope =
       "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:trades:read,wallet:transactions:read,wallet:buys:create";
     router.push(
-      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=${scope}`
+      `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirect_uri}&state=${state}&scope=${scope}`
     );
   };
 

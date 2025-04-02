@@ -14,7 +14,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
   return (
     <div className="pt-[80px] pb-[96px] w-full max-w-[1440px] flex flex-col items-center">
       {/*--- header + select currency ---*/}
-      <div data-show="yes" className="opacity-0 transition-all duration-1000">
+      <div data-show="yes" className="opacity-0 transition-all duration-[1000ms]">
         {/*--- header ---*/}
         <div className="textHeaderHome text-center">{t("header")}</div>
         {/*--- select currency ---*/}
@@ -30,7 +30,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
         className="mx-[16px] xs:mx-[24px] lg:mx-[32px] grid grid-cols-[minmax(auto,calc(600px-24px*2))] lg:grid-cols-[400px_400px] xl:grid-cols-[220px_repeat(3,300px)] justify-center lg:gap-x-[80px] xl:gap-x-[44px] gap-y-16 sm:gap-y-10 lg:gap-y-[64px]"
       >
         {/*---step 1---*/}
-        <div data-show="step" className="w-full flex flex-col items-center space-y-4 translate-x-[1600px] transition-all duration-1500 ease-out">
+        <div data-show="step" className="w-full flex flex-col items-center space-y-4 translate-x-[1600px] transition-all duration-[1500ms] ease-out">
           {/*---title---*/}
           <div className="w-full flex items-center space-x-[16px]">
             <div className="howNumber">1</div>
@@ -55,7 +55,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
         </div>
 
         {/*---Step 2---*/}
-        <div data-show="step" className="w-full flex flex-col items-center space-y-[16px] translate-x-[1600px] transition-all duration-1500 ease-out delay-200">
+        <div data-show="step" className="w-full flex flex-col items-center space-y-[16px] translate-x-[1600px] transition-all duration-[1500ms] ease-out delay-200">
           {/*---title---*/}
           <div className="w-full flex items-center space-x-[16px]">
             <div className="howNumber">2</div>
@@ -95,7 +95,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
         </div>
 
         {/*---step 3---*/}
-        <div data-show="step" className="w-full flex flex-col items-center space-y-4 translate-x-[1600px] transition-all duration-1500 ease-out delay-400">
+        <div data-show="step" className="w-full flex flex-col items-center space-y-4 translate-x-[1600px] transition-all duration-[1500ms] ease-out delay-400">
           {/*---title---*/}
           <div className="w-full flex items-center space-x-[16px]">
             <div className="howNumber">3</div>
@@ -110,7 +110,7 @@ export default function How({ merchantCurrency }: { merchantCurrency: string | u
         </div>
 
         {/*---step 4---*/}
-        <div data-show="step" className="w-full flex flex-col items-center translate-x-[1600px] transition-all duration-1500 ease-out space-y-4 delay-600">
+        <div data-show="step" className="w-full flex flex-col items-center translate-x-[1600px] transition-all duration-[1500ms] ease-out space-y-4 delay-600">
           {/*---title---*/}
           <div className="w-full flex items-center space-x-[16px]">
             <div className="howNumber">4</div>

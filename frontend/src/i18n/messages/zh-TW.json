@@ -249,7 +249,8 @@
       },
       "toAddress": "任何地址在",
       "enterAnEvmAddress": "輸入地址",
-      "transferToCexSuccessModal": "<span1>{amount} USDC</span1> 已出金到您的 {cex} 帳戶。請等 5-10 分鐘以便您的 {cex} 餘額更新。",
+      "transferToCexSuccess-1": "{amount} USDC 已出金",
+      "transferToCexSuccess-2": "請等 5-10 分鐘，以便 {cex} 餘額更新。",
       "transferToBankSuccessModal": {
         "text-1": "已從您的 Coinbase 帳戶中扣除。",
         "text-2": "已存入您的銀行。",

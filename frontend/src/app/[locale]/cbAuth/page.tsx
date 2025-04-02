@@ -1,16 +1,13 @@
-// afterning signing into Coinbase, it will redirect to this URL
 "use client";
 // nextjs
 import Image from "next/image";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { fetchPost } from "@/utils/functions";
 
 export default function CbAuth() {
   console.log("/cbAuth/page.tsx");
-  const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("App.CbAuth");
 
@@ -18,10 +15,10 @@ export default function CbAuth() {
     (async () => {
       const code = searchParams.get("code");
       const state = searchParams.get("state");
-      const browserState = window.sessionStorage.getItem("cbRandomSecure");
-      window.sessionStorage.removeItem("cbRandomSecure");
+      const clientState = window.sessionStorage.getItem("clientState");
+      window.sessionStorage.removeItem("clientState");
       // if verified
-      if (code && state && state === browserState) {
+      if (code && state && state === clientState) {
         const resJson = await fetchPost("/api/cbGetNewTokens", { code: code });
         if (resJson.status === "success") {
           console.log("cb linked");

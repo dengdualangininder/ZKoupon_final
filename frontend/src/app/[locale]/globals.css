@@ -99,7 +99,11 @@
 }
 
 @utility buttonPendingColor {
-  @apply border-2 bg-lightButtonHover dark:bg-darkButtonHover text-white border-lightButtonHover dark:border-darkButtonHover;
+  @apply border-2 bg-slate-500 dark:bg-slate-500 text-white dark:text-white border-slate-500 dark:border-slate-500;
+}
+
+@utility buttonDisabledColor {
+  @apply disabled:bg-slate-500! disabled:border-slate-500! disabled:pointer-events-none;
 }
 
 /*--- homepage buttons ---*/
@@ -267,7 +271,7 @@
 }
 
 @utility whiteCard {
-  @apply bg-light1/60 px-[16px] py-[20px] sm:p-[20px] rounded-[24px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-200;
+  @apply bg-light1/60 px-[16px] py-[20px] sm:p-[20px] rounded-[24px] shadow-[0px_2px_12px_0px_rgba(0,0,0,0.15)] desktop:hover:shadow-[0px_2px_12px_8px_rgba(128,128,128,0.4)] ease-in transition-all duration-[300ms];
 }
 
 .whiteCardHeader {
@@ -446,7 +450,7 @@
 }
 
 .transferIcon {
-  @apply flex-none w-[52px] h-[52px] desktop:w-[50px] desktop:h-[50px] rounded-[8px] overflow-hidden relative;
+  @apply flex-none w-[56px] h-[56px] portrait:sm:w-[60px] landscape:lg:w-[60px] portrait:sm:h-[60px] landscape:lg:h-[60px] desktop:w-[52px] desktop:h-[52px] rounded-[8px] overflow-hidden relative;
 }
 
 .transferText {
@@ -454,7 +458,7 @@
 }
 
 .transferSubtext {
-  @apply text-base desktop:text-sm leading-[1.2]! textGray;
+  @apply textSmApp leading-[1.2]! textGray;
 }
 
 .transferUsdc {

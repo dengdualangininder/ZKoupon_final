@@ -9,28 +9,14 @@ module.exports = {
       height: {
         screendvh: "100dvh",
       },
-      transitionDuration: {
-        1500: "1500ms",
-        2000: "2000ms",
-        3000: "3000ms",
-      },
-      transitionDelay: {
-        200: "200ms",
-        400: "400ms",
-        600: "600ms",
-        1500: "1500ms",
-      },
       animation: {
-        slideIn: "slideIn 0.3s ease-out forwards",
-        slideOut: "slideOut 0.3s ease-out forwards",
-        fadeInAnimation: "fadeInAnimation ease 3s 1",
-        flashText: "flashText 6s infinite",
+        nullaText: "nullaText 6s infinite",
         cexText: "cexText 6s infinite",
         bankText: "bankText 6s infinite",
-        flashSolid: "flashSolid 6s infinite",
+        nullaSolid: "nullaSolid 6s infinite",
         cexSolid: "cexSolid 6s infinite",
         bankSolid: "bankSolid 6s infinite",
-        flashOutline: "flashOutline 6s infinite",
+        nullaOutline: "nullaOutline 6s infinite",
         cexOutline: "cexOutline 6s infinite",
         bankOutline: "bankOutline 6s infinite",
         arrow: "arrow 6s linear infinite",
@@ -38,22 +24,85 @@ module.exports = {
         fiat: "fiat 6s linear infinite",
       },
       keyframes: {
-        slideIn: {
-          "0%": { transform: "translateX(-100%)" },
-          "100%": { transform: "translateX(0)" },
+        nullaOutline: {
+          "0%, 80%, 100%": {
+            opacity: "1",
+            translate: "0px 0px",
+            scale: "1",
+          },
+          "10%, 73%": {
+            opacity: "0",
+            translate: "0px -8px",
+            scale: "0.9",
+          },
         },
-        slideOut: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-100%)" },
-        },
-        flashSolid: {
+        nullaSolid: {
           "0%, 80%, 100%": {
             opacity: "0",
             translate: "0px 0px",
+            scale: "1",
           },
-          "7%, 73%": {
+          "10%, 73%": {
             opacity: "1",
-            translate: "0px -12px",
+            translate: "0px -8px",
+            scale: "0.9",
+          },
+        },
+        nullaText: {
+          "0%, 80%, 100%": {
+            opacity: "0",
+            scale: "0.8",
+            translate: "0px 0px",
+          },
+          "10%, 73%": {
+            opacity: "1",
+            scale: "1",
+            translate: "0px -2px",
+          },
+        },
+        bankOutline: {
+          "0%, 41%, 80%, 100%": {
+            opacity: "1",
+            translate: "0px 0px",
+            scale: "1",
+          },
+          "48%, 73%": {
+            opacity: "0",
+            translate: "0px -8px",
+            scale: "0.9",
+          },
+        },
+        bankSolid: {
+          "0%, 41%, 80%, 100%": {
+            opacity: "0",
+            translate: "0px 0px",
+            scale: "1",
+          },
+          "48%, 73%": {
+            opacity: "1",
+            translate: "0px -8px",
+            scale: "0.9",
+          },
+        },
+        bankText: {
+          "0%, 41%, 80%, 100%": {
+            opacity: "0",
+            scale: "0.8",
+            translate: "0px 0px",
+          },
+          "48%, 73%": {
+            opacity: "1",
+            scale: "1",
+            translate: "0px -2px",
+          },
+        },
+        cexOutline: {
+          "0%, 15%, 80%, 100%": {
+            opacity: "1",
+            scale: "1",
+          },
+          "22%, 73%": {
+            opacity: "0",
             scale: "0.9",
           },
         },
@@ -72,64 +121,6 @@ module.exports = {
             rotate: "180deg",
           },
         },
-        bankSolid: {
-          "0%, 41%, 80%, 100%": {
-            opacity: "0",
-            translate: "0px 0px",
-            scale: "1",
-          },
-          "48%, 73%": {
-            opacity: "1",
-            translate: "0px -12px",
-            scale: "0.9",
-          },
-        },
-        flashOutline: {
-          "0%, 80%, 100%": {
-            opacity: "1",
-            translate: "0px 0px",
-            scale: "1",
-          },
-          "7%, 73%": {
-            opacity: "0",
-            translate: "0px -12px",
-            scale: "0.8",
-          },
-        },
-        cexOutline: {
-          "0%, 15%, 80%, 100%": {
-            opacity: "1",
-            scale: "1",
-          },
-          "22%, 73%": {
-            opacity: "0",
-            scale: "0.8",
-          },
-        },
-        bankOutline: {
-          "0%, 41%, 80%, 100%": {
-            opacity: "1",
-            translate: "0px 0px",
-            scale: "1",
-          },
-          "48%, 73%": {
-            opacity: "0",
-            translate: "0px -12px",
-            scale: "0.8",
-          },
-        },
-        flashText: {
-          "0%, 80%, 100%": {
-            opacity: "0",
-            scale: "0.8",
-            translate: "0px 0px",
-          },
-          "7%, 73%": {
-            opacity: "1",
-            scale: "1",
-            translate: "0px -2px",
-          },
-        },
         cexText: {
           "0%, 14%, 80%, 100%": {
             opacity: "0",
@@ -142,18 +133,7 @@ module.exports = {
             translate: "0px -2px",
           },
         },
-        bankText: {
-          "0%, 41%, 80%, 100%": {
-            opacity: "0",
-            scale: "0.8",
-            translate: "0px 0px",
-          },
-          "48%, 73%": {
-            opacity: "1",
-            scale: "1",
-            translate: "0px -2px",
-          },
-        },
+
         arrow: {
           "0%, 7%": {
             width: "0px",
@@ -199,14 +179,6 @@ module.exports = {
           "78%, 100%": {
             opacity: "0",
             left: "82%",
-          },
-        },
-        fadeInAnimation: {
-          "0%": {
-            opacity: "0",
-          },
-          "100%": {
-            opacity: "1",
           },
         },
       },

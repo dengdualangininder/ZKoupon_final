@@ -17,7 +17,6 @@ import { CiBank } from "react-icons/ci";
 import { FaCircleCheck, FaAngleLeft, FaArrowUpRightFromSquare } from "react-icons/fa6";
 // utils
 import { fetchGetWithCred, formatUsd } from "@/utils/functions";
-import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 import { currency2decimal, currency2symbol } from "@/utils/constants";
 import { networkToInfo } from "@/utils/web3Constants";
@@ -26,6 +25,7 @@ import nullaAbi from "@/utils/abis/nullaAbi";
 import { NullaInfo } from "@/utils/types";
 import { queueQuery } from "@/utils/queueQuery";
 import { fetchPost } from "@/utils/functions";
+import Spinner from "@/utils/components/Spinner";
 
 export default function TransferModal({
   transferModal,
@@ -68,6 +68,7 @@ export default function TransferModal({
   const [usdcTransferToCexActual, setUsdcTransferToCexActual] = useState("");
   const [fiatDeposited, setFiatDeposited] = useState<string>("");
 
+  // get cbAccountInfo and/or cbBankName
   useEffect(() => {
     queueQuery(async () => getCbAccountInfo());
     if (transferModal === "toBank") queueQuery(async () => getCbBankName());
@@ -85,7 +86,7 @@ export default function TransferModal({
       }
     } catch (e) {}
     console.log("error fetching cbAccountInfo");
-    unlinkCb();
+    // unlinkCb();
   }
 
   async function getCbBankName() {
@@ -99,7 +100,7 @@ export default function TransferModal({
       }
     } catch (e) {}
     console.log("error fetching cbBankName");
-    unlinkCb();
+    // unlinkCb();
   }
 
   const onClickTransferToCexSubmit = async () => {
@@ -230,8 +231,8 @@ export default function TransferModal({
         return;
       }
 
-      // 6. poll for completion
-      for (let i = 1; i < 50; i++) {
+      // 6. poll for completion, total time=40*1.5s=1min
+      for (let i = 1; i < 40; i++) {
         try {
           var taskStatus = await relay.getTaskStatus(taskId);
         } catch {} // try needed so one failed request won't exit function
@@ -251,11 +252,10 @@ export default function TransferModal({
           setTransferState("initial");
           return;
         }
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
       }
-
       // if polling time out
-      setErrorModal("We were unable to confirm if the withdrawal was successful. Please check your wallet balance to confirm. We apologize for the inconvenience.");
+      console.log("gelato relay polling timed out");
       setTransferState("initial");
     };
     await makeGaslessTransfer();
@@ -353,7 +353,7 @@ export default function TransferModal({
                 {/*--- FROM CARD ---*/}
                 <div className="transferCard z-2">
                   {/*--- from info ---*/}
-                  <div className="flex items-center gap-x-[12px]">
+                  <div className="flex items-center gap-x-[8px]">
                     <div className="transferIcon">
                       {(transferModal === "toCex" || transferModal === "toAny") && <Image src="/logoIcon.svg" alt="logo" fill />}
                       {transferModal === "toBank" && <Image src="/coinbase.svg" alt="logo" fill />}
@@ -421,7 +421,7 @@ export default function TransferModal({
                 <div className="mx-auto flex items-center relative">
                   <Image src="./transferArrow.svg" alt="arrow" width={38} height={50} className="my-[8px] mx-auto" />
                   {/*--- TRANSFER FEE ---*/}
-                  <div className="w-[150px] absolute left-[calc(100%+12px)] text-base desktop:text-xs desktop:leading-[1.2] textGray leading-tight">
+                  <div className="w-[150px] absolute left-[calc(100%+12px)] textSmApp desktop:leading-[1.2] textGray leading-tight">
                     {transferModal === "toCex" || transferModal === "toAny" ? (
                       <>
                         ~{blockchainFee} USDC
@@ -444,7 +444,7 @@ export default function TransferModal({
                 <div className="transferCard">
                   {/*--- to info ---*/}
                   {(transferModal === "toCex" || transferModal === "toBank") && (
-                    <div className="flex items-center gap-x-[12px]">
+                    <div className="flex items-center gap-x-[8px]">
                       {/*--- icon ---*/}
                       {transferModal === "toCex" && (
                         <div className="transferIcon">
@@ -544,24 +544,20 @@ export default function TransferModal({
             )}
 
             {transferState === "sent" && (
-              <div className="h-[420px] portrait:sm:h-[450px] landscape:lg:h-[450px] desktop:h-[380px]! flex flex-col justify-center gap-[60px]">
-                <div className="w-full flex flex-col items-center gap-[16px]">
-                  <FaCircleCheck className="text-[100px] text-green-500" />
-                  <div className="text2XlApp font-medium">{tcommon("transferSuccessful")}!</div>
-                </div>
+              <div className="h-[420px] portrait:sm:h-[450px] landscape:lg:h-[450px] desktop:h-[380px]! flex flex-col justify-center items-center gap-[60px]">
+                <FaCircleCheck className="text-[80px] text-green-500" />
+                <div className="text2XlApp font-medium">{t.rich("transferToCexSuccess-1", { amount: usdcTransferAmount })}!</div>
                 {(transferModal === "toCex" || transferModal === "toAny") && (
-                  <div className="text-center flex flex-col items-center gap-[40px]">
-                    <p>
-                      {t.rich("transferToCexSuccessModal", {
-                        span1: (chunks) => <span className="font-bold">{chunks}</span>,
-                        amount: usdcTransferAmount,
+                  <>
+                    <p className="text-center">
+                      {t.rich("transferToCexSuccess-2", {
                         cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex) : tcommon("CEX"),
                       })}
                     </p>
                     <a className="flex items-center link gap-[8px]" href={`https://polygonscan.com/tx/${txHash}`} target="_blank">
                       {tcommon("viewTxn")} <FaArrowUpRightFromSquare className="inline-block text-[16px]" />
                     </a>
-                  </div>
+                  </>
                 )}
                 {transferModal === "toBank" && (
                   <div className="space-y-[16px] text-center">
@@ -586,39 +582,27 @@ export default function TransferModal({
               {transferState == "initial" && (
                 <>
                   {transferModal === "toCex" && (
-                    <button
-                      className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
-                      onClick={onClickTransferToCexSubmit}
-                      disabled={!cbEvmAddress ? true : false}
-                    >
+                    <button className="appButton1 w-full buttonDisabledColor" onClick={onClickTransferToCexSubmit} disabled={cbEvmAddress ? false : true}>
                       {tcommon("transferToCEX", {
                         cex: cashoutSettings.cex ? tcommon(cashoutSettings.cex).replace(" Exchange", "") : tcommon("CEX"),
                       })}
                     </button>
                   )}
                   {transferModal === "toAny" && (
-                    <button
-                      className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
-                      onClick={onClickTransferToCexSubmit}
-                      disabled={!cbEvmAddress || !anyAddress ? true : false}
-                    >
+                    <button className="appButton1 w-full buttonDisabledColor" onClick={onClickTransferToCexSubmit} disabled={cbEvmAddress && anyAddress ? false : true}>
                       {tcommon("transfer")}
                     </button>
                   )}
                   {transferModal === "toBank" && (
-                    <button
-                      className="appButton1 w-full disabled:bg-slate-500 disabled:border-slate-500 disabled:pointer-events-none"
-                      onClick={onClickTransferToBankSubmit}
-                      disabled={!cbBankAccountName ? true : false}
-                    >
+                    <button className="appButton1 w-full buttonDisabledColor" onClick={onClickTransferToBankSubmit} disabled={cbBankAccountName ? false : true}>
                       {tcommon("transferToBank")}
                     </button>
                   )}
                 </>
               )}
               {transferState === "sending" && (
-                <button className="flex items-center justify-center w-full appButtonPending">
-                  <SpinningCircleWhite />
+                <button className="flex items-center justify-center gap-[4px] w-full appButtonPending">
+                  <Spinner />
                   &nbsp; {tcommon("transferring")}...
                 </button>
               )}
