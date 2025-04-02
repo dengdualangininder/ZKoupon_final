@@ -1,9 +1,9 @@
 "use client";
 // next
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 // custom hooks
-import { useNullaBalanceQuery, useCexBalanceQuery, useCexTxnsQuery } from "../../../../../../utils/hooks";
+import { useNullaBalanceQuery, useCbBalanceQuery, useCbTxnsQuery } from "@/utils/hooks";
 // wagmi & viem
 import { useConfig, useAccount } from "wagmi";
 import { readContract, signTypedData, getTransactionReceipt } from "@wagmi/core";
@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { CiBank } from "react-icons/ci";
 import { FaCircleCheck, FaAngleLeft, FaArrowUpRightFromSquare } from "react-icons/fa6";
 // utils
-import { formatUsd } from "@/utils/functions";
+import { fetchGetWithCred, formatUsd } from "@/utils/functions";
 import SpinningCircleWhite from "@/utils/components/SpinningCircleWhite";
 import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 import { currency2decimal, currency2symbol } from "@/utils/constants";
@@ -24,6 +24,8 @@ import { networkToInfo } from "@/utils/web3Constants";
 import erc20Abi from "@/utils/abis/erc20Abi";
 import nullaAbi from "@/utils/abis/nullaAbi";
 import { NullaInfo } from "@/utils/types";
+import { queueQuery } from "@/utils/queueQuery";
+import { fetchPost } from "@/utils/functions";
 
 export default function TransferModal({
   transferModal,
@@ -32,10 +34,8 @@ export default function TransferModal({
   cashoutSettings,
   rates,
   setErrorModal,
-  nullaInfo,
-  cbEvmAddress,
-  cbAccountName,
-  cbBankAccountName,
+  unlinkCb,
+  isCbLinked,
 }: {
   transferModal: "toCex" | "toAny" | "toBank" | null;
   setTransferModal: any;
@@ -43,10 +43,8 @@ export default function TransferModal({
   cashoutSettings: CashoutSettings;
   rates: any;
   setErrorModal: any;
-  nullaInfo: NullaInfo;
-  cbEvmAddress: string;
-  cbAccountName: string;
-  cbBankAccountName: string;
+  unlinkCb: any;
+  isCbLinked: boolean;
 }) {
   // hooks
   const t = useTranslations("App.CashOut");
@@ -54,10 +52,13 @@ export default function TransferModal({
   const account = useAccount();
   const config = useConfig();
   const { data: nullaBalance, refetch: refetchNullaBalance } = useNullaBalanceQuery();
-  const { data: cexBalance } = useCexBalanceQuery();
-  const { refetch: refetchCexTxns } = useCexTxnsQuery();
+  const { data: cexBalance } = useCbBalanceQuery(isCbLinked);
+  const { refetch: refetchCexTxns } = useCbTxnsQuery(isCbLinked);
 
   // states
+  const [cbEvmAddress, setCbEvmAddress] = useState("");
+  const [cbAccountName, setCbAccountName] = useState("");
+  const [cbBankAccountName, setCbBankAccountName] = useState("");
   const [blockchainFee, setBlockchainFee] = useState(0.01); // TODO: poll gas fee
   const [usdcTransferAmount, setUsdcTransferAmount] = useState<string>("");
   const [anyAddress, setAnyAddress] = useState<string>("");
@@ -66,6 +67,40 @@ export default function TransferModal({
   const [usdcTransferToBankActual, setUsdcTransferToBankActual] = useState("");
   const [usdcTransferToCexActual, setUsdcTransferToCexActual] = useState("");
   const [fiatDeposited, setFiatDeposited] = useState<string>("");
+
+  useEffect(() => {
+    queueQuery(async () => getCbAccountInfo());
+    if (transferModal === "toBank") queueQuery(async () => getCbBankName());
+  }, []);
+
+  async function getCbAccountInfo() {
+    console.log("queued getCbAccountInfo()");
+    try {
+      const resJson = await fetchGetWithCred("/api/cbGetAccountInfo");
+      if (resJson.status === "success") {
+        console.log("fetched cbAccountInfo");
+        setCbEvmAddress(resJson.data.cbEvmAddress);
+        setCbAccountName(resJson.data.cbAccountName);
+        return;
+      }
+    } catch (e) {}
+    console.log("error fetching cbAccountInfo");
+    unlinkCb();
+  }
+
+  async function getCbBankName() {
+    console.log("queued getCbBankName()");
+    try {
+      const resJson = await fetchGetWithCred("/api/cbGetBankName");
+      if (resJson.status === "success") {
+        console.log("fetched cbBankName");
+        setCbBankAccountName(resJson.data);
+        return;
+      }
+    } catch (e) {}
+    console.log("error fetching cbBankName");
+    unlinkCb();
+  }
 
   const onClickTransferToCexSubmit = async () => {
     // check if amount exists

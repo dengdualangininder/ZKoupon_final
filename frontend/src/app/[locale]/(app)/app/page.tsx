@@ -35,17 +35,18 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
   } catch (e) {
     var allRates = defaultRates;
   }
-  const date2 = new Date();
-  const time2 = date2.toLocaleTimeString("en-US", { hour12: false }) + `.${date2.getMilliseconds()}`;
-  console.log(time2, "allRates", allRates);
+
+  console.log("allRates", allRates);
 
   const userType = cookies().get("userType")!.value; // middleware ensures userType exists
   const userJwt = cookies().get("userJwt")!.value; // middleware ensures userJwt exists
   const nullaInfo: NullaInfo = { userType, userJwt };
+  const isCbLinked = cookies().get("cbRefreshToken")?.value ? true : false;
+  console.log("isCbLinked", isCbLinked);
 
   return (
     <>
-      <App nullaInfo={nullaInfo} allRates={allRates} />
+      <App nullaInfo={nullaInfo} allRates={allRates} isCbLinked={isCbLinked} />
     </>
   );
 }

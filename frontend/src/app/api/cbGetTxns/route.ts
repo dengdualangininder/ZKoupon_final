@@ -1,68 +1,78 @@
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import { Varela } from "next/font/google";
 
-export const POST = async (request: Request) => {
+export async function GET(req: NextRequest) {
   console.log("/api/cbGetTxns");
-  const { cbAccessToken, cbRefreshToken } = await request.json();
+  let newTokens;
 
-  // if cbAccessToken exists, get balance
-  let txns;
-  if (cbAccessToken) txns = await getCbTxns(cbAccessToken);
+  try {
+    // get cookies
+    const cookieStore = cookies();
+    let cbAccessToken = cookieStore.get("cbAccessToken")?.value;
+    const cbRefreshToken = cookieStore.get("cbRefreshToken")?.value;
 
-  if (txns) {
-    return Response.json({ status: "success", data: { txns } });
-  } else {
-    // 1. get new tokens
-    const {
-      data: { refresh_token: newCbRefreshToken },
-      data: { access_token: newCbAccessToken },
-    } = await axios.post("https://api.coinbase.com/oauth/token", {
-      grant_type: "refresh_token",
-      client_id: process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID,
-      client_secret: process.env.COINBASE_CLIENT_SECRET,
-      refresh_token: cbRefreshToken,
-    });
-    // 2. get balance
-    const txns = await getCbTxns(newCbAccessToken);
-    if (txns) {
-      return Response.json({ status: "success", data: { txns, newCbRefreshToken, newCbAccessToken } });
-    } else {
-      return Response.json({ status: "error", message: "Failed to get Coinbase txns" });
+    if (!cbRefreshToken) throw new Error();
+
+    if (!cbAccessToken) {
+      newTokens = await getNewTokens(cbRefreshToken);
+      cbAccessToken = newTokens.newAccessToken;
     }
-  }
-};
 
-async function getCbTxns(accessToken: string) {
-  console.log("getCbTxns function");
-  // get accountId
-  const { usdAccountId, usdcAccountId } = await getAccountIdsForUsd(accessToken);
+    // get usdAccountId & usdcAccountId
+    let res = await fetch("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
+    if (res.status === 401) {
+      newTokens = await getNewTokens(cbRefreshToken);
+      cbAccessToken = newTokens.newAccessToken;
+      res = await fetch("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
+    }
+    const resJson = await res.json();
+    const usdAccountId = resJson.data.find((i: any) => i.name === "Cash (USD)")?.id ?? ""; // resJson.data = array of accounts
+    const usdcAccountId = resJson.data.find((i: any) => i.name === "USDC Wallet")?.id ?? "";
 
-  let pendingUsdcDeposits, pendingUsdcWithdrawals, pendingUsdWithdrawals;
-  // get pending usdc deposits & withdrawals
-  try {
-    const res = await axios.get(`https://api.coinbase.com/v2/accounts/${usdcAccountId}/transactions`, { headers: { Authorization: `Bearer ${accessToken}` } });
-    const txns = res.data.data; // txns = array of last 25 txns
-    pendingUsdcDeposits = txns.filter((txn: any) => txn.status === "pending" && Number(txn.amount.amount) > 0);
-    pendingUsdcWithdrawals = txns.filter((txn: any) => txn.status === "pending" && Number(txn.amount.amount) < 0);
+    if (usdAccountId && usdcAccountId) {
+      // get pending usdc deposits & withdrawals
+      try {
+        const res = await axios.get(`https://api.coinbase.com/v2/accounts/${usdcAccountId}/transactions`, { headers: { Authorization: `Bearer ${cbAccessToken}` } });
+        const txns = res.data.data; // txns = array of last 25 txns
+        var pendingUsdcDeposits = txns.filter((txn: any) => txn.status === "pending" && Number(txn.amount.amount) > 0);
+        var pendingUsdcWithdrawals = txns.filter((txn: any) => txn.status === "pending" && Number(txn.amount.amount) < 0);
+      } catch (e) {}
+
+      // get pending usd withdrawals
+      try {
+        const res = await axios.get(`https://api.coinbase.com/v2/accounts/${usdAccountId}/transactions`, { headers: { Authorization: `Bearer ${cbAccessToken}` } });
+        const txns = res.data.data; // txns = array of last 25 txns
+        var pendingUsdWithdrawals = txns.filter((txn: any) => txn.status === "pending" && txn.type === "fiat_withdrawal");
+      } catch (e) {}
+
+      // create response
+      if (pendingUsdcDeposits && pendingUsdcWithdrawals && pendingUsdWithdrawals) {
+        const nextRes = NextResponse.json({ status: "success", data: { pendingUsdcDeposits, pendingUsdcWithdrawals, pendingUsdWithdrawals } });
+        if (newTokens) {
+          nextRes.cookies.set("cbAccessToken", newTokens.newAccessToken, { httpOnly: true, secure: true, sameSite: "lax", maxAge: 60 * 60 }); // 1h
+          nextRes.cookies.set("cbRefreshToken", newTokens.newRefreshToken, { httpOnly: true, secure: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 30 }); // 30d
+        }
+        return nextRes;
+      }
+    }
   } catch (e) {}
-  // get pending usd withdrawals
-  try {
-    const res = await axios.get(`https://api.coinbase.com/v2/accounts/${usdAccountId}/transactions`, { headers: { Authorization: `Bearer ${accessToken}` } });
-    const txns = res.data.data; // txns = array of last 25 txns
-    pendingUsdWithdrawals = txns.filter((txn: any) => txn.status === "pending" && txn.type === "fiat_withdrawal");
-  } catch (e) {}
-
-  return { pendingUsdcDeposits, pendingUsdcWithdrawals, pendingUsdWithdrawals };
+  return NextResponse.json({ status: "error", message: "error in getting cbTxns" });
 }
 
-async function getAccountIdsForUsd(accessToken: string): Promise<any> {
-  try {
-    const res = await axios.get("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${accessToken}`, "CB-VERSION": "2024-07-01" } });
-    const accounts = res.data.data; // array of accounts
-    const usdAccountId = accounts.find((i: any) => i.name === "Cash (USD)")?.id ?? null;
-    const usdcAccountId = accounts.find((i: any) => i.name === "USDC Wallet")?.id ?? null;
-    return { usdAccountId: usdAccountId, usdcAccountId: usdcAccountId };
-  } catch (e) {
-    console.log("error in getAccountIdsForUsd");
+// if error, above has try/catch; returns undefined if nothing returned
+async function getNewTokens(cbRefreshToken: string): Promise<{ newRefreshToken: string; newAccessToken: string }> {
+  const { data } = await axios.post("https://api.coinbase.com/oauth/token", {
+    grant_type: "refresh_token",
+    client_id: process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID,
+    client_secret: process.env.COINBASE_CLIENT_SECRET,
+    refresh_token: cbRefreshToken,
+  });
+
+  if (data.refresh_token && data.access_token) {
+    console.log("fetched new cbTokens");
+    return { newRefreshToken: data.refresh_token, newAccessToken: data.access_token };
+  } else {
+    throw new Error();
   }
 }

@@ -6,13 +6,14 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { fetchPost } from "@/utils/functions";
 
 export default function CbAuth() {
+  console.log("/cbAuth/page.tsx");
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("App.CbAuth");
 
-  // need useEffect because need to access window object
   useEffect(() => {
     (async () => {
       const code = searchParams.get("code");
@@ -21,25 +22,15 @@ export default function CbAuth() {
       window.sessionStorage.removeItem("cbRandomSecure");
       // if verified
       if (code && state && state === browserState) {
-        const res = await fetch("/api/cbGetNewTokens", {
-          method: "POST",
-          body: JSON.stringify({ code: code }),
-          headers: { "content-type": "application/json" },
-        });
-        if (!res.ok) throw new Error("failed to fetch");
-        const resJson = await res.json();
+        const resJson = await fetchPost("/api/cbGetNewTokens", { code: code });
         if (resJson.status === "success") {
-          window.sessionStorage.setItem("cbAccessToken", resJson.data.cbAccessToken);
-          window.localStorage.setItem("cbRefreshToken", resJson.data.cbRefreshToken);
-          window.localStorage.setItem("cbNewlyLinked", "true");
-          router.push("/app");
-          return;
+          console.log("cb linked");
+        } else {
+          console.log("cb not linked");
         }
       }
-      // if not verified
-      window.sessionStorage.removeItem("cbAccessToken");
-      window.localStorage.removeItem("cbRefreshToken");
-      router.push("/app");
+      window.localStorage.setItem("goToCashout", "true");
+      window.location.href = "/app"; // use this instead of router.push() to get full page reload so browser sees new cookie
     })();
   }, []);
 

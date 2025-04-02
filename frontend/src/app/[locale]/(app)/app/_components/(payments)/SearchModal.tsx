@@ -75,7 +75,7 @@ export default function SearchModal({
             <input
               type="checkbox"
               className="checkbox"
-              onChange={(e) => setTempFilter({ ...tempFilter, toRefund: e.target.checked ? true : false })}
+              onChange={(e) => setTempFilter({ ...tempFilter, toRefund: e.target.checked ? true : false, refunded: false })}
               checked={tempFilter?.toRefund}
             />
           </div>
@@ -85,7 +85,7 @@ export default function SearchModal({
             <input
               type="checkbox"
               className="checkbox"
-              onChange={(e) => setTempFilter({ ...tempFilter, refunded: e.target.checked ? true : false })}
+              onChange={(e) => setTempFilter({ ...tempFilter, refunded: e.target.checked ? true : false, toRefund: false })}
               checked={tempFilter?.refunded}
             />
           </div>

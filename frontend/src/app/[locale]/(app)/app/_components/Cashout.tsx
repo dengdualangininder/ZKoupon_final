@@ -12,9 +12,10 @@ import CashoutBalance from "./(cashout)/CashoutBalance";
 // images
 import { FaEllipsisVertical } from "react-icons/fa6";
 // utils
-import { useCexBalanceQuery, useNullaBalanceQuery, useCexTxnsQuery } from "@/utils/hooks";
+import { useCbBalanceQuery, useCbTxnsQuery, useNullaBalanceQuery } from "@/utils/hooks";
 import { PaymentSettings, CashoutSettings } from "@/db/UserModel";
 import { NullaInfo, Rates } from "@/utils/types";
+import { deleteCookieAction } from "@/utils/actions";
 
 export default function CashOut({
   nullaInfo,
@@ -23,6 +24,7 @@ export default function CashOut({
   setErrorModal,
   setTradeMAXModal,
   rates,
+  isCbLinked,
 }: {
   nullaInfo: NullaInfo;
   paymentSettings: PaymentSettings;
@@ -30,6 +32,7 @@ export default function CashOut({
   setErrorModal: any;
   setTradeMAXModal: any;
   rates: Rates;
+  isCbLinked: boolean;
 }) {
   console.log("/app, Cashout.tsx");
 
@@ -38,14 +41,10 @@ export default function CashOut({
   const t = useTranslations("App.CashOut");
   const tcommon = useTranslations("Common");
   const { data: nullaBalance, isError: nullaBalanceIsError } = useNullaBalanceQuery();
-  const { data: cexBalance, isError: cexBalanceIsError } = useCexBalanceQuery();
-  const { data: cexTxns, isError: cexTxnsIsError } = useCexTxnsQuery();
+  const { data: cbBalance, isError: cbBalanceIsError } = useCbBalanceQuery(isCbLinked);
+  const { data: cbTxns, isError: cbTxnsIsError } = useCbTxnsQuery(isCbLinked);
 
   // states
-  const [isCbLinked, setIsCbLinked] = useState(true); // if Coinbase is linked or not
-  const [cbEvmAddress, setCbEvmAddress] = useState("");
-  const [cbAccountName, setCbAccountName] = useState("");
-  const [cbBankAccountName, setCbBankAccountName] = useState("");
   const [cbOptionsModal, setCbOptionsModal] = useState(false);
   const [nullaOptionsModal, setNullaOptionsModal] = useState(false);
   const [nullaDetails, setNullaDetails] = useState(false);
@@ -54,124 +53,64 @@ export default function CashOut({
   const [cashoutIntroModal, setCashoutIntroModal] = useState(false);
 
   useEffect(() => {
-    console.log("/app, Cashout.tsx, useEffect");
-    // show cashoutIntroModal or not
-    const isCashoutIntroModal = window.localStorage.getItem("cashoutIntroModal");
-    if (isCashoutIntroModal) setCashoutIntroModal(true);
-    // determine if Coinbase linked
-    window.localStorage.getItem("cbRefreshToken") ? setIsCbLinked(true) : setIsCbLinked(false);
+    if (window.localStorage.getItem("cashoutIntroModal")) setCashoutIntroModal(true); // show cashoutIntroModal or not
   }, []);
 
   // handle react query error
   useEffect(() => {
-    if (cexBalanceIsError || cexTxnsIsError) {
-      console.log("useCexBalanceQuery or useCexTxnsQuery returned error");
+    if (cbBalanceIsError || cbTxnsIsError) {
+      console.log("cbBalanceIsError or cbTxnsIsError");
       unlinkCb();
     }
-  }, [cexBalanceIsError, cexTxnsIsError]);
+  }, [cbBalanceIsError, cbTxnsIsError]);
 
   const linkCb = async () => {
     const cbRandomSecure = uuidv4() + "SUBSTATEcashOut";
     window.sessionStorage.setItem("cbRandomSecure", cbRandomSecure);
     const redirectUrlEncoded = encodeURI(`${process.env.NEXT_PUBLIC_DEPLOYED_BASE_URL}/cbAuth`);
-    const scopeBase =
-      "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:trades:read,wallet:transactions:read";
-    const scope = paymentSettings?.merchantCurrency === "USD" ? scopeBase + ",wallet:buys:create" : scopeBase;
+    const scope =
+      "wallet:accounts:read,wallet:addresses:read,wallet:sells:create,wallet:withdrawals:create,wallet:payment-methods:read,wallet:user:read,wallet:withdrawals:read,wallet:trades:read,wallet:transactions:read,wallet:buys:create";
     router.push(
       `https://www.coinbase.com/oauth/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_COINBASE_CLIENT_ID}&redirect_uri=${redirectUrlEncoded}&state=${cbRandomSecure}&scope=${scope}`
     );
   };
 
+  //TODO: usecallback
   function unlinkCb() {
-    window.sessionStorage.removeItem("cbAccessToken");
-    window.localStorage.removeItem("cbRefreshToken");
-    setIsCbLinked(false);
+    deleteCookieAction("cbAccessToken");
+    deleteCookieAction("cbRefreshToken");
     setTransferModal(null);
   }
 
   const onClickTransferToCex = async () => {
-    // if coinbase
     if (cashoutSettings.cex === "Coinbase") {
-      if (isCbLinked) {
-        setTransferModal("toCex");
-        getCbAccountInfo();
-        return;
-      } else {
-        setErrorModal(t("errors.linkCb"));
-        return;
-      }
-    } else if (cashoutSettings?.cexEvmAddress) {
-      setTransferModal("toCex");
+      isCbLinked ? setTransferModal("toCex") : setErrorModal(t("errors.linkCb"));
     } else {
-      setErrorModal(
-        t.rich("errors.platformAddress", {
-          span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
-          span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
-          span3: (chunks) => (
-            <span
-              className="link"
-              onClick={() => {
-                setTransferModal("toAny");
-                setErrorModal(null);
-              }}
-            >
-              {chunks}
-            </span>
-          ),
-          icon: () => <FaEllipsisVertical className="inline-block" />,
-          span4: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
-        })
-      );
+      if (cashoutSettings?.cexEvmAddress) {
+        setTransferModal("toCex");
+      } else {
+        setErrorModal(
+          t.rich("errors.platformAddress", {
+            span1: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+            span2: (chunks) => <span className="font-semibold dark:font-bold">{chunks}</span>,
+            span3: (chunks) => (
+              <span
+                className="link"
+                onClick={() => {
+                  setTransferModal("toAny");
+                  setErrorModal(null);
+                }}
+              >
+                {chunks}
+              </span>
+            ),
+            icon: () => <FaEllipsisVertical className="inline-block" />,
+            span4: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
+          })
+        );
+      }
     }
   };
-
-  async function getCbAccountInfo() {
-    const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
-    const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
-    try {
-      const res = await fetch("/api/cbGetAccountInfo", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ cbAccessToken, cbRefreshToken }),
-      });
-      const resJson = await res.json();
-      if (resJson.status === "success") {
-        if (resJson.data.newAccessToken) {
-          window.sessionStorage.setItem("cbAccessToken", resJson.data.newAccessToken);
-          window.localStorage.setItem("cbRefreshToken", resJson.data.newRefreshToken);
-        }
-        setCbEvmAddress(resJson.data.cbEvmAddress);
-        setCbAccountName(resJson.data.cbAccountName);
-        return;
-      }
-    } catch (e) {}
-    unlinkCb();
-  }
-
-  async function onClickTransferToBank() {
-    setTransferModal("toBank");
-    const cbAccessToken = window?.sessionStorage.getItem("cbAccessToken") ?? "";
-    const cbRefreshToken = window?.localStorage.getItem("cbRefreshToken") ?? "";
-    try {
-      const res = await fetch("/api/cbGetBankInfo", {
-        method: "POST",
-        body: JSON.stringify({ cbRefreshToken, cbAccessToken }),
-        headers: { "content-type": "application/json" },
-      });
-      const data = await res.json();
-      if (data.status === "success") {
-        if (data.newAccessToken) {
-          window.sessionStorage.setItem("cbAccessToken", data.newAccessToken);
-          window.localStorage.setItem("cbRefreshToken", data.newRefreshToken);
-        }
-        setCbBankAccountName(data.cbBankAccountName);
-        return;
-      }
-    } catch (e) {
-      setErrorModal("Error");
-      setTransferModal(null);
-    }
-  }
 
   const onClickOutsideCexOptions = () => {
     setCbOptionsModal(false);
@@ -229,7 +168,7 @@ export default function CashOut({
               {/*--- title ---*/}
               <div className="cashoutHeader">Coinbase {tcommon("account")}</div>
               {/*--- ellipsis ---*/}
-              {isCbLinked && cexBalance && rates && (
+              {isCbLinked && cbBalance && rates && (
                 <div
                   className={`${cbOptionsModal ? "bg-slate-200 dark:bg-dark5" : ""} cashoutEllipsisContainer`}
                   onClick={() => {
@@ -249,7 +188,7 @@ export default function CashOut({
             </div>
             {/*--- balance ---*/}
             {isCbLinked ? (
-              <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={cexBalance} details={cexDetails} setDetails={setCexDetails} />
+              <CashoutBalance paymentSettings={paymentSettings} rates={rates} balance={cbBalance} details={cexDetails} setDetails={setCexDetails} />
             ) : (
               <div className="flex-1 w-full flex justify-center items-center">
                 <span className="link" onClick={linkCb}>
@@ -258,28 +197,28 @@ export default function CashOut({
               </div>
             )}
             {/*--- button ---*/}
-            {isCbLinked && cexBalance && rates && (
-              <button className="cashoutButton" onClick={onClickTransferToBank}>
+            {isCbLinked && cbBalance && rates && (
+              <button className="cashoutButton" onClick={() => setTransferModal("toBank")}>
                 {tcommon("transferToBank")}
               </button>
             )}
           </div>
           {/*--- pending transactions ---*/}
-          {isCbLinked && cexTxns && (cexTxns.pendingUsdWithdrawals.length > 0 || cexTxns.pendingUsdcDeposits.length > 0 || cexTxns.pendingUsdcWithdrawals.length > 0) && (
+          {isCbLinked && cbTxns && (cbTxns.pendingUsdWithdrawals.length > 0 || cbTxns.pendingUsdcDeposits.length > 0 || cbTxns.pendingUsdcWithdrawals.length > 0) && (
             <div className="pendingCard">
-              {cexTxns.pendingUsdcDeposits.map((txn, index) => (
+              {cbTxns.pendingUsdcDeposits.map((txn: any, index: number) => (
                 <div key={index} className="w-full flex justify-between">
                   <p>Pending USDC deposit</p>
                   <p>{txn.amount.amount}</p>
                 </div>
               ))}
-              {cexTxns.pendingUsdcWithdrawals.map((txn) => (
-                <div className="w-full flex justify-between">
+              {cbTxns.pendingUsdcWithdrawals.map((txn: any, index: number) => (
+                <div key={index} className="w-full flex justify-between">
                   <p>Pending USDC withdrawal</p>
                   <p>{txn.amount.amount}</p>
                 </div>
               ))}
-              {cexTxns.pendingUsdWithdrawals.map((txn, index) => (
+              {cbTxns.pendingUsdWithdrawals.map((txn: any, index: number) => (
                 <div key={index} className="w-full flex justify-between">
                   <p>Pending USD withdrawal</p>
                   <p>{txn.amount.amount}</p>
@@ -298,10 +237,8 @@ export default function CashOut({
           cashoutSettings={cashoutSettings}
           rates={rates}
           setErrorModal={setErrorModal}
-          nullaInfo={nullaInfo}
-          cbEvmAddress={cbEvmAddress}
-          cbAccountName={cbAccountName}
-          cbBankAccountName={cbBankAccountName}
+          unlinkCb={unlinkCb}
+          isCbLinked={isCbLinked}
         />
       )}
       {cashoutIntroModal && paymentSettings && cashoutSettings && (

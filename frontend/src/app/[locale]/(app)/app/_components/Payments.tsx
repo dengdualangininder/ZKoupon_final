@@ -21,7 +21,7 @@ import { currency2decimal } from "@/utils/constants";
 import { getLocalTime, getLocalDateWords } from "@/utils/functions";
 import SpinningCircleGray from "@/utils/components/SpinningCircleGray";
 import { PaymentSettings, Transaction } from "@/db/UserModel";
-import { NullaInfo, Filter, ModalState } from "@/utils/types";
+import { NullaInfo, Filter } from "@/utils/types";
 
 export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: { nullaInfo: NullaInfo; setErrorModal: any; paymentSettings: PaymentSettings }) {
   console.log("(app)/_components/Payments.tsx");
@@ -29,14 +29,13 @@ export default function Payments({ nullaInfo, setErrorModal, paymentSettings }: 
   const t = useTranslations("App.Payments");
   const web3AuthInfo = useWeb3AuthInfo();
   const loadRef = useRef(null);
-  const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery, while setTempFilter will not
+  const [filter, setFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } }); // setFilter will trigger useTxnsQuery (best practice), while setTempFilter will not
   const { data: txns, fetchNextPage, isFetchingNextPage, isFetching } = useTxnsQuery(web3AuthInfo, nullaInfo, filter);
   console.log("txns:", txns);
 
   // states
   const [tempFilter, setTempFilter] = useState<Filter>({ last4Chars: "", toRefund: false, refunded: false, searchDate: { from: undefined, to: undefined } });
   const [clickedTxn, setClickedTxn] = useState<Transaction | null>(null);
-  // modal states
   const [searchModal, setSearchModal] = useState(false);
   const [exportModal, setExportModal] = useState(false);
   const [detailsModal, setDetailsModal] = useState(false);

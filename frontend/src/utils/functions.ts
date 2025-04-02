@@ -13,6 +13,15 @@ export async function fetchPost(url: string, obj: { [key: string]: any }) {
   return resJson;
 }
 
+export async function fetchGetWithCred(url: string) {
+  const res = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error();
+  return await res.json();
+}
+
 export function clientToProvider(client: Client<Transport, Chain>) {
   const { chain, transport } = client;
   const network = {

@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import axios from "axios";
 
-export async function GET(req: NextRequest) {
-  console.log("/api/cbGetBalance");
+export async function GET() {
+  console.log("entered /api/cbGetBankInfo");
   let newTokens;
 
   try {
@@ -19,20 +19,16 @@ export async function GET(req: NextRequest) {
       cbAccessToken = newTokens.newAccessToken;
     }
 
-    // get balance
-    let res = await fetch("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
+    let res = await fetch("https://api.coinbase.com/api/v3/brokerage/payment_methods", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
     if (res.status === 401) {
       newTokens = await getNewTokens(cbRefreshToken);
       cbAccessToken = newTokens.newAccessToken;
-      res = await fetch("https://api.coinbase.com/v2/accounts", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
+      res = await fetch("https://api.coinbase.com/api/v3/brokerage/payment_methods", { headers: { Authorization: `Bearer ${cbAccessToken}` } });
     }
     const resJson = await res.json();
-    const balanceFull = resJson.data.find((i: any) => i.name === "USDC Wallet").balance.amount; // res.data = array of accounts, "balanceFull" is string w/ 6 decimals
-    const balance = (Math.floor(Number(balanceFull) * 100) / 100).toString();
-
-    // create response
-    if (balance) {
-      const nextRes = NextResponse.json({ status: "success", data: balance });
+    const cbBankName = resJson.payment_methods.find((i: any) => i.type === "ACH").name; // resJson.data.payment_methods is an array of payment methods
+    if (cbBankName) {
+      const nextRes = NextResponse.json({ status: "success", data: cbBankName });
       if (newTokens) {
         nextRes.cookies.set("cbAccessToken", newTokens.newAccessToken, { httpOnly: true, secure: true, sameSite: "lax", maxAge: 60 * 60 }); // 1h
         nextRes.cookies.set("cbRefreshToken", newTokens.newRefreshToken, { httpOnly: true, secure: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 30 }); // 30d
@@ -40,7 +36,7 @@ export async function GET(req: NextRequest) {
       return nextRes;
     }
   } catch (e) {}
-  return NextResponse.json({ status: "error", message: "error in getting balance" });
+  return Response.json({ status: "error", msg: "error in getting cbBankName" });
 }
 
 // if error, above has try/catch; returns undefined if nothing returned
@@ -55,7 +51,6 @@ async function getNewTokens(cbRefreshToken: string): Promise<{ newRefreshToken: 
   if (data.refresh_token && data.access_token) {
     console.log("fetched new cbTokens");
     return { newRefreshToken: data.refresh_token, newAccessToken: data.access_token };
-  } else {
-    throw new Error();
   }
+  throw new Error();
 }

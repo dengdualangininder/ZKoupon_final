@@ -1,16 +1,16 @@
 import { useCallback } from "react";
-import { useRouter } from "@/i18n/routing";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useDisconnect, useAccount, useReadContract } from "wagmi";
-// utils
-import { fetchPost } from "@/utils/functions";
-import { NullaInfo, Web3AuthInfo } from "@/utils/types";
-import erc20Abi from "@/utils/abis/erc20Abi";
-import { deleteCookieAction, initIntroAction } from "@/utils/actions";
-import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
-import { Transaction } from "@/db/UserModel";
-import { Filter } from "@/utils/types";
 import { formatUnits } from "viem";
+// utils
+import { fetchPost, fetchGetWithCred } from "@/utils/functions";
+import { queueQuery } from "@/utils/queueQuery";
+import { deleteCookieAction, initIntroAction } from "@/utils/actions";
+import erc20Abi from "@/utils/abis/erc20Abi";
+import { Transaction } from "@/db/UserModel";
+import { NullaInfo, Web3AuthInfo } from "@/utils/types";
+import { Filter } from "@/utils/types";
+import { CashoutSettings, PaymentSettings } from "@/db/UserModel";
 
 export const useSettingsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: NullaInfo) => {
   const logout = useLogout();
@@ -42,7 +42,6 @@ export const useSettingsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: N
 export const useSettingsMutation = () => {
   const queryClient = useQueryClient();
   const logout = useLogout();
-
   return useMutation({
     mutationFn: async ({ changes, web3AuthInfo }: { changes: { [key: string]: string }; web3AuthInfo: Web3AuthInfo | null }) => {
       console.log("useSettingsMutation mutationFn ran");
@@ -67,7 +66,7 @@ export const useTxnsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: Nulla
   return useInfiniteQuery({
     queryKey: ["txns", filter],
     queryFn: async ({ pageParam }): Promise<Transaction[] | null> => {
-      console.log("useTxnsQuery queryFn ran, pageParam:", pageParam);
+      console.log("useTxnsQuery queryFn ran, pageParam:", pageParam, filter);
 
       const res = await fetch("/api/getPayments", {
         method: "POST",
@@ -92,64 +91,39 @@ export const useTxnsQuery = (web3AuthInfo: Web3AuthInfo | null, nullaInfo: Nulla
   });
 };
 
-export const useCexBalanceQuery = () => {
+export const useCbBalanceQuery = (isCbLinked: boolean) => {
   return useQuery({
-    queryKey: ["cexBalance"],
-    queryFn: async (): Promise<string> => {
-      console.log("useCexBalance queryFn ran");
-      const cbAccessToken = window.sessionStorage.getItem("cbAccessToken");
-      const cbRefreshToken = window.localStorage.getItem("cbRefreshToken");
-      if (cbRefreshToken) {
-        const res = await fetch("/api/cbGetBalance", {
-          method: "POST",
-          body: JSON.stringify({ cbAccessToken, cbRefreshToken }),
-          headers: { "content-type": "application/json" },
-        });
-        const resJson = await res.json();
+    queryKey: ["cbBalance"],
+    queryFn: () =>
+      queueQuery(async () => {
+        console.log("queued useCbBalanceQuery queryFn");
+        const resJson = await fetchGetWithCred("/api/cbGetBalance");
         if (resJson.status === "success") {
-          console.log("fetched cexBalance");
-          if (resJson.data.newCbAccessToken && resJson.data.newCbRefreshToken) {
-            console.log("stored new cbTokens");
-            window.sessionStorage.setItem("cbAccessToken", resJson.data.newCbAccessToken);
-            window.localStorage.setItem("cbRefreshToken", resJson.data.newCbRefreshToken);
-          }
-          return (Math.floor(resJson.data.balance * 100) / 100).toString();
+          console.log("fetched cbBalance");
+          return resJson.data;
         }
-      }
-      throw new Error();
-    },
-    enabled: window && window.localStorage.getItem("cbRefreshToken") ? true : false,
+        console.log("error fetching cbBalance");
+        throw new Error();
+      }),
+    enabled: isCbLinked ? true : false,
   });
 };
 
-type CexTxns = { pendingUsdcDeposits: any[]; pendingUsdcWithdrawals: any[]; pendingUsdWithdrawals: any[] };
-export const useCexTxnsQuery = () => {
+export const useCbTxnsQuery = (isCbLinked: boolean) => {
   return useQuery({
-    queryKey: ["cexTxns"],
-    queryFn: async (): Promise<CexTxns> => {
-      console.log("useCexTxns queryFn ran");
-      const cbAccessToken = window.sessionStorage.getItem("cbAccessToken");
-      const cbRefreshToken = window.localStorage.getItem("cbRefreshToken");
-      if (cbRefreshToken) {
-        const res = await fetch("/api/cbGetTxns", {
-          method: "POST",
-          body: JSON.stringify({ cbAccessToken, cbRefreshToken }),
-          headers: { "content-type": "application/json" },
-        });
-        const resJson = await res.json();
+    queryKey: ["cbTxns"],
+    queryFn: () =>
+      queueQuery(async () => {
+        console.log("queued useCbTxnQuery queryFn");
+        const resJson = await fetchGetWithCred("/api/cbGetTxns");
         if (resJson.status === "success") {
-          console.log("fetched cexTxns", resJson.data);
-          if (resJson.data.newCbAccessToken && resJson.data.newCbRefreshToken) {
-            console.log("stored new tokens");
-            window.sessionStorage.setItem("cbAccessToken", resJson.data.newCbAccessToken);
-            window.localStorage.setItem("cbRefreshToken", resJson.data.newCbRefreshToken);
-          }
-          return resJson.data.txns;
+          console.log("fetched cbTxns");
+          return resJson.data;
         }
-      }
-      throw new Error();
-    },
-    enabled: window && window.localStorage.getItem("cbRefreshToken") ? true : false,
+        console.log("error fetching cbTxns");
+        throw new Error();
+      }),
+    enabled: isCbLinked ? true : false,
   });
 };
 
@@ -190,3 +164,53 @@ export async function logoutNoDisconnect() {
   await deleteCookieAction("userJwt");
   window.location.href = "/login"; // hard refresh so provider useEffect is re-run (router.push not effective); locale is facotred in
 }
+
+// export const useCbBalanceQuery = () => {
+//   return useQuery({
+//     queryKey: ["cbBalance"],
+//     queryFn: () =>
+//       queueQuery(async () => {
+//         console.log("queued useCbBalanceQuery queryFn");
+//         const cbRefreshToken = window.localStorage.getItem("cbRefreshToken");
+//         const cbAccessToken = window.sessionStorage.getItem("cbAccessToken");
+//         const resJson = await fetchPost("/api/cbGetBalance", { cbRefreshToken, cbAccessToken });
+//         if (resJson.status === "success") {
+//           console.log("fetched cbBalance");
+//           if (resJson.newTokens) {
+//             console.log("set new cbTokens");
+//             window.localStorage.setItem("cbRefreshToken", resJson.newTokens.newRefreshToken);
+//             window.sessionStorage.setItem("cbAccessToken", resJson.newTokens.newAccessToken);
+//           }
+//           return resJson.data;
+//         }
+//         console.log("error fetching cbBalance");
+//         throw new Error();
+//       }),
+//     enabled: window && window.localStorage.getItem("cbRefreshToken") ? true : false,
+//   });
+// };
+
+// export const useCbTxnsQuery = () => {
+//   return useQuery({
+//     queryKey: ["cbTxns"],
+//     queryFn: () =>
+//       queueQuery(async () => {
+//         console.log("queued useCbTxnQuery queryFn");
+//         const cbRefreshToken = window.localStorage.getItem("cbRefreshToken");
+//         const cbAccessToken = window.sessionStorage.getItem("cbAccessToken");
+//         const resJson = await fetchPost("/api/cbGetTxns", { cbRefreshToken, cbAccessToken });
+//         if (resJson.status === "success") {
+//           console.log("fetched cbTxns");
+//           if (resJson.newTokens) {
+//             console.log("set new cbTokens");
+//             window.localStorage.setItem("cbRefreshToken", resJson.newTokens.newRefreshToken);
+//             window.sessionStorage.setItem("cbAccessToken", resJson.newTokens.newAccessToken);
+//           }
+//           return resJson.data;
+//         }
+//         console.log("error fetching cbTxns");
+//         throw new Error();
+//       }),
+//     enabled: window && window.localStorage.getItem("cbRefreshToken") ? true : false,
+//   });
+// };

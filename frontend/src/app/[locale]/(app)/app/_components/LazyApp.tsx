@@ -26,7 +26,7 @@ import { SettingsType, NullaInfo, AllRates } from "@/utils/types";
 import { Transaction } from "@/db/UserModel";
 // import PullToRefresh from "pulltorefreshjs";
 
-export default function App({ nullaInfo, allRates, settings }: { nullaInfo: NullaInfo; allRates: AllRates; settings: SettingsType }) {
+export default function App({ nullaInfo, allRates, settings, isCbLinked }: { nullaInfo: NullaInfo; allRates: AllRates; settings: SettingsType; isCbLinked: boolean }) {
   console.log("(app)/app/_components/LazyApp.tsx");
 
   // hooks
@@ -58,8 +58,9 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
   // misc effects
   useEffect(() => {
     if (window.localStorage.getItem("cashbackModal")) setCashbackModal(true);
-    if (window.localStorage.getItem("cbNewlyLinked")) {
-      window.localStorage.removeItem("cbNewlyLinked");
+    // if user attempts to link cb, goToCashout should exist
+    if (window.localStorage.getItem("goToCashout")) {
+      window.localStorage.removeItem("goToCashout");
       setSelectedMenu("cashout");
     }
     if (!window.localStorage.getItem("theme")) setTheme("dark");
@@ -123,6 +124,7 @@ export default function App({ nullaInfo, allRates, settings }: { nullaInfo: Null
           setErrorModal={setErrorModal}
           setTradeMAXModal={setTradeMAXModal}
           rates={allRates[settings.paymentSettings.merchantCurrency]}
+          isCbLinked={isCbLinked}
         />
       )}
       {selectedMenu === "settings" && web3AuthInfo && (
