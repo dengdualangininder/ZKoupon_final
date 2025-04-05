@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   webpack: (config) => {
+    // Handle fallbacks
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -15,19 +16,17 @@ const nextConfig = {
       asyncWebAssembly: true,
       layers: true,
     };
+
+    // Add path aliases
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname, 'src'),
+    };
     
     return config;
   },
   images: {
     unoptimized: true
-  },
-  // Add path aliases
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, 'src'),
-    };
-    return config;
   }
 };
 
