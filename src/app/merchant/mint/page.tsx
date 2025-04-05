@@ -1,128 +1,143 @@
 'use client';
 
-import { Box, Button, Text, VStack, Image, useToast } from "@chakra-ui/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useWallet } from "@/lib/web3/hooks";
-import { ethers } from "ethers";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { ethers } from 'ethers';
+import {
+  Box,
+  Button,
+  Text,
+  VStack,
+  Image,
+  useToast,
+  Container,
+} from "@chakra-ui/react";
 import { WalletConnect } from "@/components/WalletConnect";
 
-// ZKoupon contract ABI
-const ZKOUPON_ABI = [
-  "function mintCoupon(address customer, uint256 amount, uint256 eligibleValue) public returns (uint256)",
-  "function useCoupon(uint256 tokenId) public",
-  "function getCouponData(uint256 tokenId) public view returns (address customer, uint256 amount, uint256 eligibleValue, bool used)",
-  "function ownerOf(uint256 tokenId) public view returns (address)",
-  "function tokenURI(uint256 tokenId) public view returns (string)"
+// NFT contract ABI (only including necessary functions)
+const NFT_ABI = [
+  "function burn(uint256 tokenId) returns (bool)",
+  "function ownerOf(uint256 tokenId) view returns (address)"
 ];
 
-// Contract address
-const ZKOUPON_ADDRESS = "0x7943d6965D2824BC71d86409f38250415a5b4C94";
+const NFT_ADDRESS = "0x8B1c80Da76BF663803b502416e5b759572f80603";
 
-interface Transaction {
+interface NFTMetadata {
+  tokenId: number;
+  value: number;
   from: string;
   to: string;
-  value: string;
+  cashRewards: number;
+  eligibleValue: number;
+  burned: boolean;
+  imageUrl?: string;
 }
 
-export default function MintPage() {
+export default function MerchantMint() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const toast = useToast();
-  const { account, library } = useWallet();
-  
-  const [isLoading, setIsLoading] = useState(false);
-  const [transaction, setTransaction] = useState<Transaction>({
-    from: "0x4bAd2C7a8DF21B1356390786dbE9c58fD0a709dC",
-    to: account || "0xMerchantAddress",
-    value: "11",
-  });
-  
-  const txId = searchParams.get('tx');
+  const [nft, setNft] = useState<NFTMetadata | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [burned, setBurned] = useState(false);
 
   useEffect(() => {
-    if (account) {
-      setTransaction((prev: Transaction) => ({
-        ...prev,
-        to: account
-      }));
+    // Get NFT data from localStorage
+    const storedNFT = localStorage.getItem('selectedNFT');
+    if (storedNFT) {
+      try {
+        const parsedNFT = JSON.parse(storedNFT);
+        console.log('Loaded NFT data:', parsedNFT);
+        setNft(parsedNFT);
+      } catch (err) {
+        console.error('Error parsing NFT data:', err);
+        toast({
+          title: "Error",
+          description: "Failed to load NFT data",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        router.push('/customer/collection');
+      }
+    } else {
+      console.log('No NFT data found in localStorage');
+      router.push('/customer/collection');
     }
-  }, [account]);
+  }, [router, toast]);
 
-  const handleMint = async () => {
-    if (!account || !library) {
-      toast({
-        title: 'Error',
-        description: 'Please connect your wallet first',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-      return;
-    }
-
+  const handleBurn = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
+
+      if (!nft) {
+        throw new Error('No NFT selected');
+      }
+
+      if (typeof window.ethereum === 'undefined') {
+        throw new Error('Please install MetaMask');
+      }
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(NFT_ADDRESS, NFT_ABI, signer);
+
+      console.log('Burning token ID:', nft.tokenId);
+
+      // Verify ownership before burning
+      const owner = await contract.ownerOf(nft.tokenId);
+      const currentAddress = await signer.getAddress();
+
+      console.log('Token owner:', owner);
+      console.log('Current address:', currentAddress);
+
+      if (owner.toLowerCase() !== currentAddress.toLowerCase()) {
+        throw new Error('You are not the owner of this NFT');
+      }
+
+      // Burn the NFT
+      console.log('Initiating burn transaction...');
+      const tx = await contract.burn(nft.tokenId);
+      console.log('Burn transaction sent:', tx.hash);
       
-      // Get the signer
-      const signer = library.getSigner();
-      
-      // Get the contract instance
-      const contract = new ethers.Contract(
-        ZKOUPON_ADDRESS,
-        ZKOUPON_ABI,
-        signer
-      );
+      console.log('Waiting for transaction confirmation...');
+      await tx.wait();
+      console.log('Burn transaction confirmed');
 
-      // Convert USDC amount to wei (6 decimals for USDC)
-      const amount = ethers.BigNumber.from(transaction.value).mul(ethers.BigNumber.from(10).pow(6));
-      
-      console.log('Minting with params:', {
-        customer: transaction.from,
-        amount: amount.toString(),
-        eligibleValue: amount.toString()
-      });
-
-      // Call the mintCoupon function
-      const tx = await contract.mintCoupon(
-        transaction.from, // customer address
-        amount, // amount in wei
-        amount // eligible value (same as amount for now)
-      );
-
-      console.log('Transaction sent:', tx.hash);
-
-      // Wait for the transaction to be mined
-      const receipt = await tx.wait();
-      console.log('Transaction confirmed:', receipt);
-
+      setBurned(true);
       toast({
-        title: 'Success',
-        description: 'NFT minted successfully!',
-        status: 'success',
+        title: "Success",
+        description: "NFT has been burned successfully!",
+        status: "success",
         duration: 5000,
         isClosable: true,
       });
 
-      // Redirect to merchant page after successful mint
-      router.push('/merchant');
-    } catch (error) {
-      console.error('Error minting NFT:', error);
+      // Update the NFT data in localStorage
+      const updatedNFT = { ...nft, burned: true };
+      localStorage.setItem('selectedNFT', JSON.stringify(updatedNFT));
+      setNft(updatedNFT);
+
+    } catch (err) {
+      console.error('Error burning NFT:', err);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to mint NFT. Please try again.',
-        status: 'error',
+        title: "Error",
+        description: err instanceof Error ? err.message : 'Failed to burn NFT',
+        status: "error",
         duration: 5000,
         isClosable: true,
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleBack = () => {
-    router.push('/merchant');
+  const handleBackToDashboard = () => {
+    router.push('/customer');
   };
+
+  if (!nft) {
+    return null;
+  }
 
   return (
     <Box 
@@ -131,85 +146,150 @@ export default function MintPage() {
       color="white"
       p={4}
     >
-      <VStack spacing={6} align="stretch" maxW="container.sm" mx="auto">
-        {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-          <Text fontSize="2xl" fontWeight="bold">ZKoupon</Text>
-          <WalletConnect />
-        </Box>
+      <Container maxW="container.md">
+        <VStack spacing={6}>
+          {/* Header */}
+          <Box display="flex" justifyContent="space-between" alignItems="center" w="100%" mb={4}>
+            <Text fontSize="2xl" fontWeight="bold">ZKoupon</Text>
+            <WalletConnect />
+          </Box>
 
-        {/* Title */}
-        <Text 
-          fontSize="3xl"
-          fontWeight="bold"
-          textAlign="center"
-          mb={6}
-        >
-          Mint NFT Coupon
-        </Text>
-
-        {/* NFT Preview */}
-        <Box 
-          bg="gray.900"
-          p={6}
-          borderRadius="lg"
-          mb={6}
-        >
-          <Image
-            src="/usdc-stamp.png"
-            alt="USDC Stamp"
-            width={300}
-            height={300}
-            style={{ margin: '0 auto' }}
-          />
-        </Box>
-
-        {/* Transaction Details */}
-        <Box 
-          bg="gray.900"
-          p={4}
-          borderRadius="lg"
-          mb={6}
-        >
-          <Text fontSize="lg" mb={2}>Transaction Details</Text>
-          <Text color="gray.300" fontSize="sm">
-            Amount: ${transaction.value} USDC
+          {/* Title */}
+          <Text 
+            fontSize="3xl"
+            fontWeight="bold"
+            textAlign="center"
+            mb={6}
+          >
+            Transaction detail
           </Text>
-          <Text color="gray.300" fontSize="sm">
-            From: {transaction.from}
-          </Text>
-          <Text color="gray.300" fontSize="sm">
-            To: {transaction.to}
-          </Text>
-        </Box>
 
-        {/* Mint Button */}
-        <Button
-          onClick={handleMint}
-          size="lg"
-          bg="gray.200"
-          color="black"
-          _hover={{ bg: "gray.300" }}
-          isLoading={isLoading}
-          loadingText="Minting..."
-          mb={4}
-        >
-          MINT NFT
-        </Button>
+          {/* Transaction Details */}
+          <Box
+            bg="gray.800"
+            p={6}
+            borderRadius="lg"
+            w="100%"
+          >
+            <VStack spacing={4} align="stretch">
+              <Box>
+                <Text color="gray.400">From:</Text>
+                <Text>{nft.from}</Text>
+              </Box>
+              <Box>
+                <Text color="gray.400">To:</Text>
+                <Text>{nft.to}</Text>
+              </Box>
+              <Box>
+                <Text color="gray.400">Amount:</Text>
+                <Text>{nft.value} USDC</Text>
+              </Box>
+              <Box>
+                <Text color="gray.400">Cash rewards:</Text>
+                <Text>{nft.cashRewards}%</Text>
+              </Box>
+              <Box>
+                <Text color="gray.400">Eligible Value:</Text>
+                <Text>{nft.eligibleValue} USDC</Text>
+              </Box>
+            </VStack>
+          </Box>
 
-        {/* Back Button */}
-        <Button 
-          onClick={handleBack}
-          size="lg"
-          variant="outline"
-          borderRadius="full"
-          borderColor="gray.200"
-          color="white"
-          _hover={{ bg: "whiteAlpha.100" }}
-        >
-          BACK
-        </Button>
-      </VStack>
+          {/* NFT Display */}
+          <Box
+            bg="gray.900"
+            p={6}
+            borderRadius="lg"
+            w="100%"
+            position="relative"
+          >
+            <Image
+              src={nft.imageUrl || "/usdc-logo.png"}
+              alt={`NFT #${nft.tokenId}`}
+              width="200px"
+              height="auto"
+              mx="auto"
+              className={burned ? 'burned' : ''}
+              style={{
+                filter: burned ? 'grayscale(100%)' : 'none',
+                opacity: burned ? 0.7 : 1,
+              }}
+            />
+            <Text mt={4} textAlign="center">Value: {nft.value} USDC</Text>
+            {burned && (
+              <Text
+                position="absolute"
+                top="50%"
+                left="50%"
+                transform="translate(-50%, -50%) rotate(-45deg)"
+                fontSize="4xl"
+                fontWeight="bold"
+                color="red.500"
+                textTransform="uppercase"
+                letterSpacing="wider"
+              >
+                Burned
+              </Text>
+            )}
+          </Box>
+
+          {/* Action Button */}
+          {!burned ? (
+            <Button
+              onClick={handleBurn}
+              isLoading={loading}
+              loadingText="Burning..."
+              size="lg"
+              colorScheme="red"
+              width="200px"
+              borderRadius="full"
+            >
+              Burn!
+            </Button>
+          ) : (
+            <Text
+              color="gray.400"
+              fontSize="lg"
+              fontWeight="bold"
+            >
+              Burned
+            </Text>
+          )}
+
+          {/* Back Button */}
+          <Button 
+            onClick={handleBackToDashboard}
+            size="lg"
+            variant="outline"
+            borderRadius="full"
+            borderColor="gray.200"
+            color="white"
+            _hover={{ bg: "whiteAlpha.100" }}
+            mt={6}
+          >
+            Dashboard
+          </Button>
+        </VStack>
+      </Container>
+
+      <style jsx global>{`
+        .burned {
+          position: relative;
+        }
+        .burned::after {
+          content: 'BURNED';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-45deg);
+          font-size: 2em;
+          font-weight: bold;
+          color: red;
+          border: 2px solid red;
+          padding: 0.5em;
+          white-space: nowrap;
+        }
+      `}</style>
     </Box>
   );
 } 

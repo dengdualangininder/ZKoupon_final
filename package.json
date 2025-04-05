@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "@selfxyz/contracts": "^0.0.2",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "axios": "^1.8.4",
@@ -16,6 +18,7 @@
     "ethers": "^5.7.2",
     "next": "^13.4.19",
     "picocolors": "^1.0.0",
+    "qr-scanner": "^1.4.2",
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -41,6 +44,6 @@
     "hardhat": "^2.17.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "5.8.3"
   }
 }
