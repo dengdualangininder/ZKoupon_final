@@ -27,6 +27,13 @@ const nextConfig = {
   },
   images: {
     unoptimized: true
+  },
+  // Add path aliases for Next.js
+  basePath: '',
+  assetPrefix: '',
+  // Enable path aliases
+  experimental: {
+    appDir: true,
   }
 };
 
