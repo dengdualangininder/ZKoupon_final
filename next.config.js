@@ -9,6 +9,13 @@ const nextConfig = {
       net: false,
       tls: false,
     };
+    
+    // Handle WebAssembly files
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
+    
     return config;
   },
   images: {
