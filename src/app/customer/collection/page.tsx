@@ -115,7 +115,7 @@ export default function CustomerCollection() {
       const contract = new ethers.Contract(NFT_ADDRESS, NFT_ABI, provider);
 
       try {
-        const tokenId = 4; // 指定的 Token ID
+        const tokenId = 4;
         console.log('Checking ownership for token ID:', tokenId);
         
         const owner = await contract.ownerOf(tokenId);
@@ -124,7 +124,7 @@ export default function CustomerCollection() {
         
         if (owner.toLowerCase() === userAddress.toLowerCase()) {
           console.log('User owns this token');
-          const nftMetadata = {
+          const nftMetadata: NFTMetadata = {
             tokenId: tokenId,
             value: 30,
             from: userAddress,
