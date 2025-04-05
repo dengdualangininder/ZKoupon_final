@@ -1,67 +1,67 @@
 'use client';
 
-import { Button, useToast } from "@chakra-ui/react";
-import { useWallet } from "@/lib/web3/hooks";
+import { useWeb3React } from '@web3-react/core';
+import { InjectedConnector } from '@web3-react/injected-connector';
+import { Button, useToast } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
-export function WalletConnect() {
-  const { account, connect, disconnect } = useWallet();
+const injected = new InjectedConnector({
+  supportedChainIds: [11155111], // Sepolia testnet
+});
+
+export const WalletConnect = () => {
+  const { active, account, activate, deactivate } = useWeb3React();
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const handleConnect = async () => {
+  const connect = async () => {
     try {
-      await connect();
+      setLoading(true);
+      await activate(injected);
       toast({
-        title: "Connected",
-        description: "Wallet connected successfully",
-        status: "success",
+        title: 'Wallet Connected',
+        status: 'success',
         duration: 3000,
         isClosable: true,
       });
     } catch (error) {
-      console.error("Connection error:", error);
+      console.error('Error connecting wallet:', error);
       toast({
-        title: "Connection Error",
-        description: "Failed to connect wallet. Please try again.",
-        status: "error",
+        title: 'Error connecting wallet',
+        description: (error as Error).message,
+        status: 'error',
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDisconnect = async () => {
+  const disconnect = () => {
     try {
-      await disconnect();
+      deactivate();
       toast({
-        title: "Disconnected",
-        description: "Wallet disconnected successfully",
-        status: "info",
+        title: 'Wallet Disconnected',
+        status: 'info',
         duration: 3000,
         isClosable: true,
       });
     } catch (error) {
-      console.error("Disconnection error:", error);
-      toast({
-        title: "Disconnection Error",
-        description: "Failed to disconnect wallet. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      console.error('Error disconnecting wallet:', error);
     }
   };
 
   return (
     <Button
-      onClick={account ? handleDisconnect : handleConnect}
-      variant="outline"
-      borderRadius="full"
-      size="sm"
-      color="black"
-      bg="gray.200"
-      _hover={{ bg: "gray.300" }}
+      onClick={active ? disconnect : connect}
+      isLoading={loading}
+      colorScheme={active ? 'red' : 'blue'}
+      size="md"
     >
-      {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : "connect wallet"}
+      {active
+        ? `Disconnect ${account?.slice(0, 6)}...${account?.slice(-4)}`
+        : 'Connect Wallet'}
     </Button>
   );
-} 
+}; 
