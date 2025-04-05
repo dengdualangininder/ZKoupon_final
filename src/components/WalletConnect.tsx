@@ -9,7 +9,7 @@ const injected = new InjectedConnector({
   supportedChainIds: [11155111], // Sepolia testnet
 });
 
-export const WalletConnect = () => {
+const WalletConnect = () => {
   const { active, account, activate, deactivate } = useWeb3React();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -64,4 +64,6 @@ export const WalletConnect = () => {
         : 'Connect Wallet'}
     </Button>
   );
-}; 
+};
+
+export default WalletConnect; 

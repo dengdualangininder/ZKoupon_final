@@ -16,24 +16,11 @@ const nextConfig = {
       asyncWebAssembly: true,
       layers: true,
     };
-
-    // Add path aliases
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, 'src'),
-    };
     
     return config;
   },
   images: {
     unoptimized: true
-  },
-  // Add path aliases for Next.js
-  basePath: '',
-  assetPrefix: '',
-  // Enable path aliases
-  experimental: {
-    appDir: true,
   }
 };
 
