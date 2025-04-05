@@ -1,0 +1,18 @@
+# 敏感信息配置說明
+
+本專案需要配置以下敏感信息才能正常運行：
+
+1. `.env` 文件需要配置：
+   - ALCHEMY_API_URL: 您的 Alchemy API URL
+   - PRIVATE_KEY: 您的錢包私鑰
+   - ETHERSCAN_API_KEY: 您的 Etherscan API Key
+
+2. `.env.local` 文件需要配置：
+   - NEXT_PUBLIC_ZKOUPON_ADDRESS: 部署後的合約地址
+   - NEXT_PUBLIC_NETWORK: 使用的網絡（如 sepolia）
+   - NEXT_PUBLIC_RPC_URL: 您的 Infura 或其他 RPC 提供商的 URL
+
+注意事項：
+1. 這些文件已經被添加到 .gitignore 中，不會被提交到版本控制系統
+2. 請確保不要將這些敏感信息分享給他人
+3. 建議使用環境變量或安全的密鑰管理系統來存儲這些信息 

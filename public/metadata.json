@@ -1,0 +1,15 @@
+{
+  "name": "ZKoupon NFT",
+  "description": "A coupon NFT for USDC payments",
+  "image": "/usdc-stamp.png",
+  "attributes": [
+    {
+      "trait_type": "Amount",
+      "value": "11 USDC"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Coupon"
+    }
+  ]
+} 
