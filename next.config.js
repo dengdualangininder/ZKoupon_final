@@ -14,6 +14,11 @@ const nextConfig = {
     domains: ['lh3.googleusercontent.com'],
   },
   transpilePackages: ['@google/generative-ai'],
+  swcMinify: true,
+  compiler: {
+    // Enables the styled-components SWC transform
+    styledComponents: true
+  }
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
