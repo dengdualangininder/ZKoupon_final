@@ -25,9 +25,6 @@ const nextConfig = {
     domains: ['lh3.googleusercontent.com'],
   },
   transpilePackages: ['@google/generative-ai'],
-  experimental: {
-    serverActions: true,
-  },
 };
 
 module.exports = nextConfig; 
