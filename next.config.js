@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
   webpack: (config) => {
-    // Handle fallbacks
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -11,17 +8,9 @@ const nextConfig = {
       tls: false,
       crypto: false,
     };
-    
-    // Handle WebAssembly files
-    config.experiments = {
-      asyncWebAssembly: true,
-      layers: true,
-    };
-    
     return config;
   },
   images: {
-    unoptimized: true,
     domains: ['lh3.googleusercontent.com'],
   },
   transpilePackages: ['@google/generative-ai'],
