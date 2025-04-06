@@ -9,6 +9,7 @@ const nextConfig = {
       fs: false,
       net: false,
       tls: false,
+      crypto: false,
     };
     
     // Handle WebAssembly files
@@ -20,8 +21,13 @@ const nextConfig = {
     return config;
   },
   images: {
-    unoptimized: true
-  }
+    unoptimized: true,
+    domains: ['lh3.googleusercontent.com'],
+  },
+  transpilePackages: ['@google/generative-ai'],
+  experimental: {
+    serverActions: true,
+  },
 };
 
 module.exports = nextConfig; 
